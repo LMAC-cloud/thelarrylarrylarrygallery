@@ -851,6 +851,21 @@ figure {
 </head>
 
 <body>
+   ">
+    <a href="niagarafalls.html" style="
+        color: white;
+        text-decoration: none;
+        text-shadow: 0 0 5px red, 0 0 10px yellow, 0 0 20px cyan;
+    ">
+        ★★★ YOU WON! ★★★
+        <br>
+        NIAGARA FALLS!
+        <br>
+        <span style="font-size: 20px;">
+            CLICK HERE FOR YOUR PRIZE
+        </span>
+    </a>
+</div>
 
 <!-- ============================================================
      COUNTER
@@ -1770,7 +1785,11 @@ function puzzleSolved() {
 
     addLarBucks(3);
 
-    shopBell();
+if (larBucks >= 20) {
+    document.getElementById("niagaraPrize").style.display = "block";
+}
+
+shopBell();
 
     createConfetti();
 
