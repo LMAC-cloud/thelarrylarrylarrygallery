@@ -142,6 +142,451 @@ h1 {
 }
 
 /* ============================================================
+   NIAGARA BUS SELECTION ROOM
+   ============================================================ */
+
+#busSelectionOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 12000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    background:
+        radial-gradient(circle at center,
+            rgba(255,255,255,.12),
+            rgba(0,0,0,.94) 65%);
+}
+
+#busSelectionBox {
+    width: min(1180px, 96vw);
+    max-height: 94vh;
+    overflow: auto;
+    box-sizing: border-box;
+    background: #111;
+    border: 10px solid #d7bd70;
+    box-shadow:
+        0 0 0 5px #fff,
+        0 0 45px #ffd700,
+        0 25px 80px black;
+    padding: 22px;
+    text-align: center;
+}
+
+#busSelectionTitle {
+    color: #ffeaa0;
+    font-size: clamp(24px, 4vw, 48px);
+    font-weight: 1000;
+    text-shadow:
+        0 0 8px #fff,
+        0 0 20px #ffcf00,
+        3px 3px 0 black;
+    margin-bottom: 8px;
+}
+
+#busSelectionInstruction {
+    color: white;
+    font-size: clamp(14px, 2vw, 21px);
+    margin-bottom: 18px;
+}
+
+#busChoices {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    align-items: stretch;
+}
+
+.busChoice {
+    min-width: 0;
+    background: #050505;
+    border: 4px solid #333;
+    padding: 10px;
+    cursor: pointer;
+    color: white;
+    box-shadow:
+        inset 0 0 20px black,
+        0 8px 18px rgba(0,0,0,.8);
+    transition:
+        transform .18s ease,
+        border-color .18s ease,
+        box-shadow .18s ease;
+}
+
+.busChoice:hover {
+    transform: translateY(-7px) scale(1.02);
+    border-color: #ffe27a;
+    box-shadow:
+        inset 0 0 20px black,
+        0 0 22px #ffe27a,
+        0 12px 28px black;
+}
+
+.busChoice.wrong {
+    animation: busWrong .45s ease-in-out 2;
+    border-color: #ff2222;
+}
+
+.busChoice.right {
+    border-color: #fff2a8;
+    box-shadow:
+        inset 0 0 20px black,
+        0 0 35px #ffd400,
+        0 0 80px rgba(255,220,0,.65);
+}
+
+@keyframes busWrong {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-12px) rotate(-1deg); }
+    75% { transform: translateX(12px) rotate(1deg); }
+}
+
+.busPictureWindow {
+    height: 180px;
+    background:
+        radial-gradient(circle at 50% 35%, #28303a, #050505 68%);
+    border: 5px solid #222;
+    box-shadow:
+        inset 0 0 25px black,
+        0 0 12px black;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.busPictureWindow::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(
+            125deg,
+            transparent 0 43%,
+            rgba(255,255,255,.13) 44%,
+            transparent 48% 100%
+        );
+    pointer-events: none;
+}
+
+.busGraphic {
+    position: absolute;
+    left: 7%;
+    right: 7%;
+    bottom: 30px;
+    height: 88px;
+}
+
+.busBody {
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    bottom: 20px;
+    height: 54px;
+    border-radius: 16px 20px 9px 9px;
+    background: linear-gradient(#f8df72, #8d5d12);
+    border: 4px solid #151515;
+    box-shadow: 0 8px 8px rgba(0,0,0,.7);
+}
+
+.busBody.second {
+    background: linear-gradient(#bcbcbc, #5a5a5a);
+}
+
+.busBody.third {
+    background: linear-gradient(#b56f39, #4a2415);
+}
+
+.busBody.fourth {
+    background: linear-gradient(#6f4b2e, #23150d);
+    border-radius: 8px 8px 4px 4px;
+}
+
+.busRoof {
+    position: absolute;
+    left: 15%;
+    right: 18%;
+    top: -14px;
+    height: 22px;
+    border-radius: 14px 14px 0 0;
+    background: #d9bd5a;
+    border: 4px solid #151515;
+}
+
+.busWindow {
+    position: absolute;
+    top: 8px;
+    width: 17%;
+    height: 22px;
+    background: #07121c;
+    border: 2px solid #ddd;
+}
+
+.busWindow.w1 { left: 13%; }
+.busWindow.w2 { left: 35%; }
+.busWindow.w3 { left: 57%; }
+
+.busWheel {
+    position: absolute;
+    width: 27px;
+    height: 27px;
+    bottom: 2px;
+    border-radius: 50%;
+    background: #050505;
+    border: 5px solid #777;
+    box-shadow: 0 0 0 2px black;
+}
+
+.busWheel.left { left: 16%; }
+.busWheel.right { right: 16%; }
+
+.busLuggage {
+    position: absolute;
+    right: 1%;
+    bottom: 44px;
+    width: 28px;
+    height: 22px;
+    background: #aa1717;
+    border: 3px solid #111;
+    transform: rotate(-8deg);
+}
+
+.busBadge {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 1000;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 3px black;
+    pointer-events: none;
+}
+
+.trikeGraphic .trikeBody {
+    position: absolute;
+    left: 18%;
+    right: 16%;
+    bottom: 28px;
+    height: 32px;
+    background: #76502f;
+    border: 4px solid #111;
+    border-radius: 6px 15px 8px 8px;
+}
+
+.trikeGraphic .oldMan {
+    position: absolute;
+    left: 43%;
+    bottom: 57px;
+    width: 28px;
+    height: 35px;
+    border-radius: 45% 45% 30% 30%;
+    background: #aaa;
+    border: 3px solid #111;
+}
+
+.trikeGraphic .oldMan::after {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: -11px;
+    width: 20px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ddd;
+    border: 2px solid #111;
+}
+
+.trikeWheel {
+    position: absolute;
+    width: 31px;
+    height: 31px;
+    bottom: 1px;
+    border-radius: 50%;
+    background: #111;
+    border: 5px solid #777;
+}
+
+.trikeWheel.one { left: 12%; }
+.trikeWheel.two { right: 12%; }
+.trikeWheel.three {
+    left: 48%;
+    width: 23px;
+    height: 23px;
+}
+
+.busName {
+    color: #ffe98a;
+    font-size: 17px;
+    font-weight: 1000;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.busDescription {
+    color: #ddd;
+    font-size: 12px;
+    line-height: 1.25;
+    min-height: 58px;
+}
+
+.busStatus {
+    margin-top: 8px;
+    min-height: 20px;
+    color: #ff8a8a;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+#busChancePanel {
+    display: none;
+    margin-top: 18px;
+    padding: 14px;
+    border: 3px dashed #ffe16b;
+    background: #171717;
+    color: white;
+}
+
+#busChancePanel .chanceTitle {
+    color: #ffef99;
+    font-weight: 1000;
+    margin-bottom: 10px;
+}
+
+.busMoneyButton,
+#busCloseButton,
+#niagaraPortalButton {
+    border: 4px solid #111;
+    padding: 11px 15px;
+    margin: 5px;
+    font-weight: 1000;
+    cursor: pointer;
+    box-shadow:
+        0 4px 0 #000,
+        0 0 15px rgba(255,220,90,.45);
+}
+
+.busMoneyButton {
+    background: #ffe36b;
+    color: #111;
+}
+
+#busCloseButton {
+    background: #ddd;
+    color: #111;
+}
+
+#niagaraPortal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 13000;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(circle,
+            rgba(255,255,255,.28),
+            rgba(0,0,0,.92) 60%);
+}
+
+#niagaraPortalBox {
+    width: min(720px, 92vw);
+    background: #111;
+    color: white;
+    border: 12px solid #d9bd67;
+    outline: 5px solid white;
+    padding: 28px;
+    text-align: center;
+    box-shadow:
+        0 0 40px #ffd000,
+        0 0 100px rgba(255,210,0,.6),
+        0 25px 80px black;
+}
+
+#niagaraPortalBox h2 {
+    color: #fff1a3;
+    font-size: clamp(28px, 5vw, 54px);
+    margin: 0 0 10px;
+    text-shadow:
+        0 0 10px white,
+        0 0 25px #ffd000;
+}
+
+#niagaraPortalBox p {
+    font-size: 18px;
+    line-height: 1.4;
+}
+
+#niagaraPortalButton {
+    background: #ffe16b;
+    color: #111;
+    font-size: 20px;
+}
+
+#tinyLarryNotices {
+    position: fixed;
+    inset: 0;
+    z-index: 11000;
+    pointer-events: none;
+}
+
+.tinyLarryNotice {
+    position: absolute;
+    width: 145px;
+    min-height: 72px;
+    box-sizing: border-box;
+    padding: 8px;
+    background: #fff;
+    color: #111;
+    border: 4px solid #111;
+    box-shadow:
+        0 0 12px black,
+        0 5px 12px rgba(0,0,0,.75);
+    font-size: 10px;
+    line-height: 1.15;
+    font-weight: 900;
+    animation:
+        tinyNoticeIn .18s ease-out,
+        tinyNoticeOut .45s ease-in 2.0s forwards;
+}
+
+.tinyLarryNotice strong {
+    display: block;
+    color: #c40000;
+    font-size: 11px;
+    margin-bottom: 3px;
+}
+
+@keyframes tinyNoticeIn {
+    from { opacity: 0; transform: scale(.35) rotate(-7deg); }
+    to   { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+@keyframes tinyNoticeOut {
+    to { opacity: 0; transform: scale(.2) rotate(10deg); }
+}
+
+@media (max-width: 800px) {
+    #busChoices {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .busPictureWindow {
+        height: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    #busChoices {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================================
    GALLERY
    ============================================================ */
 
@@ -947,7 +1392,7 @@ figure {
      NIAGARA PRIZE — RANDOMLY CHOOSES ONE OF FOUR EXPERIENCES
      ============================================================ -->
 
-<div id="niagaraPrize" style="display:none;">
+<div id="niagaraPrize" style="display:none !important;">
     <a href="#" id="niagaraPrizeLink" style="
         color: white;
         text-decoration: none;
@@ -1009,6 +1454,88 @@ figure {
 <div id="zoomInfo">
     Wheel: zoom &nbsp; | &nbsp; Drag: move &nbsp; | &nbsp; Esc: close
 </div>
+
+<!-- ============================================================
+     NIAGARA BUS SELECTION ROOM
+     ============================================================ -->
+
+<div id="busSelectionOverlay">
+
+    <div id="busSelectionBox">
+
+        <div id="busSelectionTitle">
+            LARRY'S NIAGARA TRANSPORTATION DEPARTMENT
+        </div>
+
+        <div id="busSelectionInstruction">
+            FOUR VEHICLES HAVE ARRIVED. ONLY ONE IS THE CORRECT
+            NIAGARA VEHICLE. CHOOSE CAREFULLY.
+        </div>
+
+        <div id="busChoices"></div>
+
+        <div id="busChancePanel">
+
+            <div class="chanceTitle">
+                WRONG VEHICLE. LARRY HAS NOT GIVEN UP ON YOU.
+            </div>
+
+            <button class="busMoneyButton" id="buyOneChance">
+                PAY 3 LAR-BUCKS — ONE MORE CHANCE
+            </button>
+
+            <button class="busMoneyButton" id="buyThreeChances">
+                PAY 8 LAR-BUCKS — THREE MORE CHANCES
+            </button>
+
+            <button class="busMoneyButton" id="buyTenChances">
+                PAY 20 LAR-BUCKS — TEN MORE CHANCES
+            </button>
+
+        </div>
+
+        <button id="busCloseButton">
+            CLOSE THE TRANSPORTATION DEPARTMENT
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ============================================================
+     NIAGARA PORTAL
+     ============================================================ -->
+
+<div id="niagaraPortal">
+
+    <div id="niagaraPortalBox">
+
+        <h2>NIAGARA FALLS PORTAL</h2>
+
+        <p>
+            THE CORRECT VEHICLE HAS BEEN SELECTED.
+            <br><br>
+            LARRY HAS NOW AUTHORISED YOUR JOURNEY.
+            <br>
+            THERE IS NO REFUND.
+        </p>
+
+        <button id="niagaraPortalButton">
+            BOARD THE BUS — GO TO NIAGARA FALLS
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ============================================================
+     TINY RANDOM LARRY NOTICES / COUPONS
+     ============================================================ -->
+
+<div id="tinyLarryNotices"></div>
+
 
 <!-- ============================================================
      PUZZLE
@@ -1368,6 +1895,113 @@ scheduleGalleryGlitch();
 
 
 /* ============================================================
+   RANDOM TINY LARRY DISCLAIMERS / COUPONS
+   Based on the original Larry sales notices, but intentionally
+   smaller and shorter-lived.
+   ============================================================ */
+
+const tinyLarryMessages = [
+
+    "WHY NOT BUY MORE? You are already here.",
+    "URGENT: Your Lar-Bucks are becoming lonely.",
+    "For TWO more Lar-Bucks, you can spend FIVE Lar-Bucks!",
+    "LIMITED TIME: This offer lasts until Larry gets bored.",
+    "ONLY 2 CUSTOMERS ALLOWED! Unfortunately, you are one.",
+    "ACT NOW! Or act later. But preferably now.",
+    "BUY MORE ART. Larry has already put the boxes out.",
+    "CONSUMER ALERT: You have not purchased enough imaginary merchandise.",
+    "EXCLUSIVE DEAL: Spend 7 Lar-Bucks to unlock the opportunity to spend 9.",
+    "FLASH SALE! Everything is 100% off except the things that aren't.",
+    "FOR JUST 4 LAR-BUCKS: receive absolutely no guarantee whatsoever.",
+    "CONGRATULATIONS! You have qualified to consider purchasing something.",
+    "URGENT DEAL: Spend 5. Receive the satisfaction of having spent 5.",
+    "EXTRA VALUE: One imaginary Lar-Buck may be worth another imaginary Lar-Buck.",
+    "LAST CHANCE! This is your last chance until the next last chance.",
+    "COUPON: SHOW THIS BOX TO LARRY. Larry may look at it.",
+    "SPECIAL OFFER: 3 Lar-Bucks for the price of 3 Lar-Bucks!",
+    "FREE GIFT: The gift is the opportunity to continue browsing.",
+    "TODAY ONLY: Absolutely nothing is normal.",
+    "DEAL OF THE MINUTE: You have approximately no minutes left."
+];
+
+function createTinyLarryNotice() {
+
+    const host =
+        document.getElementById(
+            "tinyLarryNotices"
+        );
+
+    if(!host) {
+        return;
+    }
+
+    const notice =
+        document.createElement("div");
+
+    notice.className =
+        "tinyLarryNotice";
+
+    const message =
+        tinyLarryMessages[
+            Math.floor(
+                Math.random() *
+                tinyLarryMessages.length
+            )
+        ];
+
+    notice.innerHTML =
+        "<strong>LARRY NOTICE</strong>" +
+        message;
+
+    notice.style.left =
+        (Math.random() * 78 + 8) + "%";
+
+    notice.style.top =
+        (Math.random() * 72 + 10) + "%";
+
+    host.appendChild(
+        notice
+    );
+
+    setTimeout(
+        function() {
+            notice.remove();
+        },
+        2550
+    );
+}
+
+
+function scheduleTinyLarryNotice() {
+
+    setTimeout(
+        function() {
+
+            /*
+               It appears only occasionally, so the gallery is
+               not buried under notices.
+            */
+
+            if(
+                Math.random() < 0.72 &&
+                !document.getElementById(
+                    "busSelectionOverlay"
+                ).style.display
+            ) {
+                createTinyLarryNotice();
+            }
+
+            scheduleTinyLarryNotice();
+
+        },
+        18000 + Math.random() * 30000
+    );
+}
+
+scheduleTinyLarryNotice();
+
+
+/* ============================================================
    ELEMENTS
    ============================================================ */
 
@@ -1464,9 +2098,10 @@ if(window.visualViewport) {
 
 
 /* ============================================================
-   NIAGARA PRIZE — RANDOM BUS
-   The prize sends the winner to exactly one of the four
-   Niagara experiences, chosen randomly at click time.
+   NIAGARA TRANSPORTATION DEPARTMENT
+   Forty ridiculous vehicle variants exist.
+   Four are randomly drawn for each selection round.
+   Exactly one is the correct vehicle.
    ============================================================ */
 
 const niagaraVersions = [
@@ -1476,19 +2111,560 @@ const niagaraVersions = [
     "niagara34.html"
 ];
 
-const niagaraPrizeLink =
-    document.getElementById("niagaraPrizeLink");
+const busFleet = [
 
-niagaraPrizeLink.addEventListener(
+    /* FIRST CLASS */
+    {
+        tier: 1,
+        name: "THE LARRY ROYAL GOLDEN COACH",
+        description: "Velvet seats, gold trim, a tiny brass orchestra and a driver who refuses to make eye contact.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE EMPEROR'S NIAGARA EXPRESS",
+        description: "A ridiculous luxury coach with chandeliers, champagne-shaped windows and a carpet no one is allowed to walk on.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE FIVE-STAR WATERFALL LINER",
+        description: "Leather seats, heated cup holders and a concierge who whispers your boarding number.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE GOLDEN LAR-MOBILE",
+        description: "Polished gold bodywork, private curtains and one unnecessarily enormous horn.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE ROYAL GALLERY BUS",
+        description: "An art-museum-on-wheels with velvet ropes and a conductor named Sir Larrysworth.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE PLATINUM PIGEON",
+        description: "A luxury coach shaped vaguely like a bird and staffed by three very serious attendants.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE EXECUTIVE WATERFALL PALACE",
+        description: "A moving palace with gold curtains, marble-effect flooring and a snack nobody understands.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE LAR-GOLD DELUXE",
+        description: "Every seat is first class because Larry says the whole bus is first class.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE NIAGARA CROWN COACH",
+        description: "A giant crown sits on top. Nobody knows why. Nobody is allowed to remove it.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE IMPERIAL LARRYLINER",
+        description: "Private cabins, velvet curtains and a tiny bell that rings whenever someone says Niagara.",
+        style: "first"
+    },
+
+    /* SECOND CLASS */
+    {
+        tier: 2,
+        name: "THE SLIGHTLY USED EXECUTIVE",
+        description: "Comfortable enough, although one seat makes a mysterious squeak every eleven minutes.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE SILVERISH EXPRESS",
+        description: "It was silver once. Larry insists it is still silver.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE SECOND-BEST BUS",
+        description: "The first-best bus is visible through the window. This is the second-best one.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE MILDLY LUXURIOUS LAR-BUS",
+        description: "Padded seats, lukewarm air conditioning and a complimentary pencil.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE ECONOMY ROYALE",
+        description: "A respectable coach with one curtain and two working cup holders.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE MIDRANGE MIRACLE",
+        description: "Not fancy. Not terrible. It has successfully completed several trips.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE SILVER BUCKET EXPRESS",
+        description: "Named after its exterior. The interior is surprisingly comfortable.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE LARRY VALUE COACH",
+        description: "A sensible vehicle, which Larry considers deeply suspicious.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE NIAGARA COMMUTER DELUXE",
+        description: "A normal bus with an abnormal amount of yellow tape.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE PRETTY GOOD EXPRESS",
+        description: "Pretty good. Quite honestly, that's the official name.",
+        style: "second"
+    },
+
+    /* THIRD CLASS */
+    {
+        tier: 3,
+        name: "THE CRANKY OLD COACH",
+        description: "It rattles whenever it sees a hill and has a bell that rings by itself.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE WOBBLEWAGON",
+        description: "The driver says the wobbling is part of the suspension system.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE BROWN THUNDER",
+        description: "Brown, loud and theoretically capable of reaching Niagara Falls.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE LARRY HAND-ME-DOWN",
+        description: "Three owners ago it was considered luxurious.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE DUSTY EXPRESS",
+        description: "The seats are dusty, the windows are dusty and the brochure is also dusty.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE ALMOST-RELIABLE",
+        description: "It has made the trip before, though not always in the intended direction.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE BUMPY NIAGARA SPECIAL",
+        description: "Free massage included, because the road does most of the work.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE BUS THAT SHOULD HAVE RETIRED",
+        description: "It keeps coming back. Larry refuses to explain.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE RATTLEBOX EXPRESS",
+        description: "Every window rattles in harmony with every other window.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE THIRD-CLASS TRAVEL MACHINE",
+        description: "Technically a bus. Spiritually a shopping cart with ambitions.",
+        style: "third"
+    },
+
+    /* FOURTH CLASS — ABSURD */
+    {
+        tier: 4,
+        name: "THE OLD MAN'S GIANT TRICYCLE",
+        description: "An elderly gentleman pedals you to Niagara Falls while towing a wooden wagon.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE GOAT-PULLED TOUR BUS",
+        description: "The goat has not agreed to this arrangement, but the trip is apparently happening.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE BARREL WITH WHEELS",
+        description: "A barrel. Four wheels. A destination. Larry calls this public transportation.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE MANUAL HORSEPOWER EXPRESS",
+        description: "A very determined old man pulls the wagon himself. He asks for tips.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE LAWN-CHAIR LIMOUSINE",
+        description: "Two lawn chairs, one rope and a highly questionable steering system.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE SHOPPING CART OF DESTINY",
+        description: "It has one wheel that squeaks and a map drawn on a napkin.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE WOODEN WHEELBARROW EXPRESS",
+        description: "The driver says Niagara is downhill. This has not been independently verified.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE GRANDPA PEDAL WAGON",
+        description: "Grandpa pedals. You sit in the wagon. Everyone pretends this is normal.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE LARRY STRING-AND-WAGON SERVICE",
+        description: "A wagon attached to a bicycle by a rope that is much too long.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE FOURTH-CLASS NIAGARA CONTRAPTION",
+        description: "Nobody can identify the vehicle. It is nevertheless headed toward Niagara.",
+        style: "fourth"
+    }
+];
+
+const busChoices =
+    document.getElementById("busChoices");
+
+const busSelectionOverlay =
+    document.getElementById("busSelectionOverlay");
+
+const busChancePanel =
+    document.getElementById("busChancePanel");
+
+const buyOneChance =
+    document.getElementById("buyOneChance");
+
+const buyThreeChances =
+    document.getElementById("buyThreeChances");
+
+const buyTenChances =
+    document.getElementById("buyTenChances");
+
+const busCloseButton =
+    document.getElementById("busCloseButton");
+
+const niagaraPortal =
+    document.getElementById("niagaraPortal");
+
+const niagaraPortalButton =
+    document.getElementById("niagaraPortalButton");
+
+let currentBusChoices = [];
+let correctBusIndex = -1;
+let busExtraChances = 0;
+let busSelectionLocked = false;
+
+
+function shuffleArray(array) {
+
+    const copy =
+        array.slice();
+
+    for(let i = copy.length - 1; i > 0; i--) {
+
+        const j =
+            Math.floor(Math.random() * (i + 1));
+
+        [copy[i], copy[j]] =
+            [copy[j], copy[i]];
+    }
+
+    return copy;
+}
+
+
+function makeBusGraphic(bus) {
+
+    if(bus.style === "fourth") {
+
+        return `
+            <div class="busGraphic trikeGraphic">
+                <div class="trikeBody"></div>
+                <div class="oldMan"></div>
+                <div class="trikeWheel one"></div>
+                <div class="trikeWheel two"></div>
+                <div class="trikeWheel three"></div>
+                <div class="busBadge">LARRY TRANSPORT</div>
+            </div>
+        `;
+    }
+
+    const className =
+        bus.style === "second" ? "second" :
+        bus.style === "third" ? "third" : "";
+
+    return `
+        <div class="busGraphic">
+            <div class="busRoof"></div>
+            <div class="busBody ${className}">
+                <div class="busWindow w1"></div>
+                <div class="busWindow w2"></div>
+                <div class="busWindow w3"></div>
+                <div class="busLuggage"></div>
+                <div class="busBadge">NIAGARA</div>
+            </div>
+            <div class="busWheel left"></div>
+            <div class="busWheel right"></div>
+        </div>
+    `;
+}
+
+
+function makeBusChoiceCard(bus, index) {
+
+    const card =
+        document.createElement("div");
+
+    card.className =
+        "busChoice";
+
+    card.innerHTML =
+        '<div class="busPictureWindow">' +
+            makeBusGraphic(bus) +
+        '</div>' +
+        '<div class="busName">' +
+            bus.name +
+        '</div>' +
+        '<div class="busDescription">' +
+            bus.description +
+        '</div>' +
+        '<div class="busStatus"></div>';
+
+    card.addEventListener(
+        "click",
+        function() {
+            chooseBus(index, card);
+        }
+    );
+
+    return card;
+}
+
+
+function drawBusChoices() {
+
+    busChoices.innerHTML =
+        "";
+
+    busSelectionLocked =
+        false;
+
+    busChancePanel.style.display =
+        "none";
+
+    const shuffledFleet =
+        shuffleArray(busFleet);
+
+    currentBusChoices =
+        shuffledFleet.slice(0, 4);
+
+    correctBusIndex =
+        Math.floor(
+            Math.random() * 4
+        );
+
+    currentBusChoices.forEach(
+        function(bus, index) {
+
+            busChoices.appendChild(
+                makeBusChoiceCard(
+                    bus,
+                    index
+                )
+            );
+        }
+    );
+}
+
+
+function openBusSelectionRoom() {
+
+    busExtraChances = 0;
+
+    drawBusChoices();
+
+    busSelectionOverlay.style.display =
+        "flex";
+}
+
+
+function chooseBus(index, card) {
+
+    if(busSelectionLocked) {
+        return;
+    }
+
+    if(index === correctBusIndex) {
+
+        busSelectionLocked =
+            true;
+
+        card.classList.add("right");
+
+        card.querySelector(".busStatus").textContent =
+            "CORRECT VEHICLE. LARRY APPROVES.";
+
+        setTimeout(
+            function() {
+
+                busSelectionOverlay.style.display =
+                    "none";
+
+                niagaraPortal.style.display =
+                    "flex";
+
+            },
+            900
+        );
+
+        return;
+    }
+
+    card.classList.add("wrong");
+
+    card.querySelector(".busStatus").textContent =
+        "WRONG VEHICLE — IT IS GOING SOMEWHERE ELSE.";
+
+    if(busExtraChances > 0) {
+
+        busExtraChances--;
+
+        setTimeout(
+            function() {
+                drawBusChoices();
+            },
+            650
+        );
+
+        return;
+    }
+
+    busChancePanel.style.display =
+        "block";
+}
+
+
+function buyBusChances(cost, amount) {
+
+    if(larBucks < cost) {
+
+        busChancePanel.querySelector(
+            ".chanceTitle"
+        ).textContent =
+            "NOT ENOUGH LAR-BUCKS. LARRY SAYS YOU NEED " +
+            cost +
+            " TO BUY THIS MANY CHANCES.";
+
+        return;
+    }
+
+    larBucks -= cost;
+
+    larBucksDisplay.textContent =
+        larBucks;
+
+    busExtraChances +=
+        amount;
+
+    busChancePanel.querySelector(
+        ".chanceTitle"
+    ).textContent =
+        amount +
+        " EXTRA CHANCES PURCHASED. CHOOSE AGAIN.";
+
+    setTimeout(
+        function() {
+            drawBusChoices();
+        },
+        450
+    );
+}
+
+
+buyOneChance.addEventListener(
     "click",
-    function(event) {
+    function() {
+        buyBusChances(3, 1);
+    }
+);
 
-        event.preventDefault();
+buyThreeChances.addEventListener(
+    "click",
+    function() {
+        buyBusChances(8, 3);
+    }
+);
+
+buyTenChances.addEventListener(
+    "click",
+    function() {
+        buyBusChances(20, 10);
+    }
+);
+
+
+busCloseButton.addEventListener(
+    "click",
+    function() {
+
+        busSelectionOverlay.style.display =
+            "none";
+
+        puzzleMode =
+            "art";
+    }
+);
+
+
+niagaraPortalButton.addEventListener(
+    "click",
+    function() {
 
         const chosenNiagara =
             niagaraVersions[
                 Math.floor(
-                    Math.random() * niagaraVersions.length
+                    Math.random() *
+                    niagaraVersions.length
                 )
             ];
 
@@ -1497,6 +2673,10 @@ niagaraPrizeLink.addEventListener(
     }
 );
 
+
+/* ============================================================
+   LAR-BUCKS
+   ============================================================ */
 
 /* ============================================================
    LAR-BUCKS
@@ -2270,65 +3450,10 @@ function puzzleSolved() {
 
     if(puzzleMode === "bus") {
 
-        const busResults = [
-            {
-                title: "FIRST CLASS BUS",
-                detail: "You got First Class. The other customer is furious."
-            },
-            {
-                title: "SECOND CLASS BUS",
-                detail: "Sorry — the other customer beat you to First Class."
-            },
-            {
-                title: "THIRD CLASS BUS",
-                detail: "Third Class. Larry says the view is still quite good."
-            },
-            {
-                title: "FOURTH CLASS BUS",
-                detail: "Fourth Class. Larry says you should be grateful there is a seat."
-            }
-        ];
-
-        const result =
-            busResults[
-                Math.floor(
-                    Math.random() * busResults.length
-                )
-            ];
-
-        larryCongratulations.innerHTML =
-            '<div class="big">YOU HAVE WON A BUS TRIP TO NIAGARA FALLS!</div>' +
-            '<div class="small">' +
-            '<strong>' + result.title + '</strong><br><br>' +
-            result.detail +
-            '<br><br>CLICK THIS NOTICE TO RETURN TO THE GALLERY.' +
-            '</div>';
-
         puzzleOverlay.style.display =
             "none";
 
-        larryCongratulations.style.display =
-            "block";
-
-        larryCongratulations.onclick =
-            function() {
-
-                larryCongratulations.style.display =
-                    "none";
-
-                larryCongratulations.onclick =
-                    null;
-
-                puzzleMode = "art";
-
-                if(prizeReplacedItem) {
-                    prizeReplacedItem.style.display =
-                        "inline-block";
-                }
-
-                prizeGalleryItem.style.display =
-                    "none";
-            };
+        openBusSelectionRoom();
 
         return;
     }
