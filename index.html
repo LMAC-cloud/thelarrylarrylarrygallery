@@ -63,82 +63,26 @@ h1 {
     margin: 30px 0 20px 0;
 }
 
+/* Gallery paintings remain stationary and fully clickable. */
+
 /* ============================================================
-   GALLERY WIND / MOVING ORDER
+   GALLERY CLICK SAFETY
+   All 72 paintings stay present, stationary and clickable.
    ============================================================ */
-
-@keyframes galleryWind {
-    0%   { transform: translate3d(0, 0, 0); }
-    20%  { transform: translate3d(var(--wind-a), var(--wind-y-a), 0); }
-    50%  { transform: translate3d(var(--wind-b), var(--wind-y-b), 0); }
-    78%  { transform: translate3d(var(--wind-c), var(--wind-y-c), 0); }
-    100% { transform: translate3d(0, 0, 0); }
-}
-
-.excerpt-figure {
-    will-change: transform;
-}
-
-.excerpt-figure.gallery-moving {
-    animation-name: galleryWind;
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
-}
-
-.excerpt-figure.gallery-glitch-hidden {
-    visibility: hidden;
-}
-
-.prize-gallery-item {
-    display: inline-block;
-    margin: 15px;
-    text-align: center;
+#artworkGallery {
     position: relative;
-    width: min(18vw, 300px);
-    min-width: 150px;
-    vertical-align: top;
-    cursor: pointer;
-    will-change: transform;
+    z-index: 30;
+    pointer-events: auto;
 }
-
-.prize-gallery-card {
-    height: min(18vw, 300px);
-    min-height: 150px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 22px;
-    background:
-        repeating-conic-gradient(
-            from 0deg,
-            #fff200 0deg 12deg,
-            #ff2b00 12deg 24deg
-        );
-    border: 15px solid #111;
-    box-shadow:
-        0 0 20px black,
-        0 0 45px #ffe600,
-        0 20px 30px rgba(0,0,0,0.9);
-    color: #111;
-    font-size: clamp(18px, 2.2vw, 32px);
-    font-weight: 1000;
-    line-height: 1.05;
-    text-shadow: 2px 2px 0 white;
-    animation: prizeFlash 0.65s infinite alternate;
+#artworkGallery .excerpt-figure {
+    position: relative;
+    z-index: 31;
+    pointer-events: auto !important;
 }
-
-.prize-gallery-item:hover .prize-gallery-card {
-    box-shadow:
-        0 0 20px white,
-        0 0 50px #ffe600,
-        0 0 90px white,
-        0 20px 35px rgba(0,0,0,0.9);
-}
-
-@keyframes prizeFlash {
-    from { filter: brightness(1); }
-    to   { filter: brightness(1.35); }
+#artworkGallery .excerpt-figure img {
+    position: relative;
+    z-index: 32;
+    pointer-events: auto !important;
 }
 
 /* ============================================================
@@ -147,18 +91,22 @@ h1 {
 
 .excerpt-figure.niagara-target {
     position: relative;
-    z-index: 20;
+    z-index: 40;
 }
 
 .excerpt-figure.niagara-target img {
     border-color: white !important;
+    box-shadow: 0 20px 35px rgba(0,0,0,.95) !important;
+    cursor: pointer;
+}
+
+.excerpt-figure.niagara-target.niagara-highlight img {
     box-shadow:
         0 0 8px white,
         0 0 18px white,
         0 0 35px white,
         0 0 70px rgba(255,255,255,.95),
         0 20px 35px rgba(0,0,0,.95) !important;
-    cursor: pointer;
 }
 
 .excerpt-figure.niagara-target figcaption {
@@ -171,6 +119,7 @@ h1 {
 }
 
 .niagara-arrow {
+    display: none;
     position: absolute;
     z-index: 50;
     color: #8b4513;
@@ -205,6 +154,10 @@ h1 {
 .niagara-arrow.a14 { left: 32%; bottom: -58px; transform: rotate(-82deg); }
 .niagara-arrow.a15 { left: 56%; bottom: -55px; transform: rotate(-98deg); }
 .niagara-arrow.a16 { left: 77%; bottom: -45px; transform: rotate(-115deg); }
+
+.excerpt-figure.niagara-target.niagara-highlight .niagara-arrow {
+    display: block;
+}
 
 @keyframes niagaraArrowPulse {
     from {
@@ -1937,6 +1890,13 @@ images.forEach(function(imagePath) {
     ) {
 
         item.classList.add("niagara-target");
+        item.dataset.niagaraTarget = "true";
+
+        /* The Niagara destination is not shown until the visitor
+           has returned from a Niagara page. */
+        if(localStorage.getItem("larryNiagaraReturned") !== "1") {
+            item.style.display = "none";
+        }
 
         for(let arrowNumber = 1; arrowNumber <= 16; arrowNumber++) {
 
@@ -1992,45 +1952,8 @@ function createPrizeGalleryItem() {
 prizeGalleryItem = createPrizeGalleryItem();
 
 
-/* ============================================================
-   FAST RANDOM GALLERY MOVEMENT
-   ============================================================ */
-
-function startGalleryMotion() {
-
-    const items =
-        Array.from(
-            artworkGallery.querySelectorAll(".excerpt-figure")
-        );
-
-    items.forEach(function(item) {
-
-        item.classList.add("gallery-moving");
-
-        item.style.setProperty("--wind-a",
-            (Math.random() * 90 - 45) + "px");
-        item.style.setProperty("--wind-b",
-            (Math.random() * 140 - 70) + "px");
-        item.style.setProperty("--wind-c",
-            (Math.random() * 100 - 50) + "px");
-
-        item.style.setProperty("--wind-y-a",
-            (Math.random() * 30 - 15) + "px");
-        item.style.setProperty("--wind-y-b",
-            (Math.random() * 45 - 22) + "px");
-        item.style.setProperty("--wind-y-c",
-            (Math.random() * 30 - 15) + "px");
-
-        item.style.animationDuration =
-            (2.8 + Math.random() * 3.0) + "s";
-
-        item.style.animationDelay =
-            (-Math.random() * 3.0) + "s";
-    });
-}
-
-startGalleryMotion();
-
+/* Gallery motion removed so no paintings can drift off-screen or become
+   difficult to click. All 72 remain in their normal grid positions. */
 
 /* ============================================================
    IMAGE PRELOAD / LOAD SAFETY
@@ -2090,27 +2013,8 @@ images.forEach(function(imagePath) {
 });
 
 
-/* ============================================================
-   GALLERY VISIBILITY
-   All 72 paintings remain available at all times.
-   The earlier random glitch that temporarily hid most paintings
-   has been deliberately removed.
-   ============================================================ */
-let galleryGlitchTimer = null;
-function runGalleryGlitch() {
-    const items = Array.from(artworkGallery.querySelectorAll(".excerpt-figure"));
-    items.forEach(function(item) {
-        item.classList.remove("gallery-glitch-hidden");
-        item.style.visibility = "visible";
-        item.style.opacity = "1";
-    });
-}
-function scheduleGalleryGlitch() {
-    clearTimeout(galleryGlitchTimer);
-    /* Do not hide or remove any gallery paintings. */
-}
-runGalleryGlitch();
-
+/* Gallery visibility control intentionally removed.
+   No script hides, fades, or replaces multiple paintings. */
 
 /* ============================================================
    RANDOM TINY LARRY DISCLAIMERS / COUPONS
@@ -2909,6 +2813,10 @@ niagaraPortalButton.addEventListener(
                     niagaraVersions.length
                 )
             ];
+
+        localStorage.setItem("larryNiagaraReturned", "1");
+
+        localStorage.setItem("larryNiagaraReturned", "1");
 
         window.location.href =
             chosenNiagara;
@@ -4111,77 +4019,69 @@ function goToRandomNiagara() {
 
 
 /* ============================================================
-   NORMAL IMAGE CLICK
+   ROBUST NORMAL IMAGE CLICK
+   One delegated handler keeps every painting clickable even if
+   the gallery is re-rendered or animated.
    ============================================================ */
+artworkGallery.addEventListener("click", function(event) {
 
-document
-    .querySelectorAll(".excerpt-figure img")
-    .forEach(function(image) {
+    const image = event.target.closest(".excerpt-figure img");
+    if(!image || !artworkGallery.contains(image)) return;
 
-        image.addEventListener(
-            "click",
-            function(event) {
+    event.preventDefault();
+    event.stopPropagation();
 
-                event.stopPropagation();
+    const imagePath = image.getAttribute("src");
 
-                const imagePath =
-                    image.getAttribute("src");
+    if(imagePath === "images/LMAC-CallTheArtWorldAndInformThemOfThisArt.jpg") {
+        goToRandomNiagara();
+        return;
+    }
 
-                /*
-                   This one painting is now the unmistakable
-                   Niagara destination. It bypasses the puzzle
-                   completely and randomly selects one of the
-                   four Niagara pages.
-                */
-                if(
-                    imagePath ===
-                    "images/LMAC-CallTheArtWorldAndInformThemOfThisArt.jpg"
-                ) {
+    if(!image.complete || image.naturalWidth === 0) {
+        image.addEventListener("load", function() {
+            floatingArtwork.src = image.src;
+            floatingArtwork.alt = image.alt;
+            puzzleMode = "art";
+            startPuzzle(image.src);
+        }, { once:true });
+        return;
+    }
 
-                    goToRandomNiagara();
+    floatingArtwork.src = image.src;
+    floatingArtwork.alt = image.alt;
+    puzzleMode = "art";
+    startPuzzle(image.src);
+});
 
-                    return;
-                }
 
-                /*
-                   Do not start a puzzle from an image that the
-                   browser failed to load. This prevents a blank
-                   puzzle from ever being deliberately opened.
-                */
-                if(
-                    !image.complete ||
-                    image.naturalWidth === 0
-                ) {
+/* ============================================================
+   NIAGARA DESTINATION APPEARANCE
+   The special painting is unlocked after returning from Niagara.
+   Its glow/arrows appear only periodically.
+   ============================================================ */
+function setupNiagaraReturnTarget() {
+    const target = artworkGallery.querySelector(".niagara-target");
+    if(!target) return;
 
-                    image.addEventListener(
-                        "load",
-                        function() {
+    if(localStorage.getItem("larryNiagaraReturned") === "1") {
+        target.style.display = "inline-block";
 
-                            startPuzzle(
-                                image.src
-                            );
+        function pulseNiagaraTarget() {
+            if(target.style.display === "none") return;
+            target.classList.add("niagara-highlight");
+            setTimeout(function() {
+                target.classList.remove("niagara-highlight");
+            }, 3600);
 
-                        },
-                        { once: true }
-                    );
+            setTimeout(pulseNiagaraTarget, 9000 + Math.random() * 15000);
+        }
 
-                    return;
-                }
+        setTimeout(pulseNiagaraTarget, 2500 + Math.random() * 5000);
+    }
+}
 
-                floatingArtwork.src =
-                    image.src;
-
-                floatingArtwork.alt =
-                    image.alt;
-
-                puzzleMode = "art";
-
-                startPuzzle(
-                    image.src
-                );
-            }
-        );
-    });
+setupNiagaraReturnTarget();
 
 
 /* ============================================================
