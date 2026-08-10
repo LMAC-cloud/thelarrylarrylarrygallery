@@ -4349,6 +4349,38 @@ setTimeout(function() {
 
 }, 2500);
 
+/* V11 FINAL CLICK BACKSTOP
+   One capture-phase listener recognises any click on a gallery painting.
+   This is intentionally independent of image load timing. */
+document.addEventListener("click", function(event) {
+    const img = event.target && event.target.closest
+        ? event.target.closest("#artworkGallery .ordinary-artwork img")
+        : null;
+    if(!img) return;
+
+    const item = img.closest(".ordinary-artwork");
+    if(!item) return;
+
+    if(item.dataset.larryClickHandled === "1") return;
+    item.dataset.larryClickHandled = "1";
+    setTimeout(function(){ delete item.dataset.larryClickHandled; }, 0);
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    const clickedPath = img.getAttribute("src");
+    if(clickedPath === "images/LMAC-CallTheArtWorldAndInformThemOfThisArt.jpg") {
+        goToRandomNiagara();
+        return;
+    }
+
+    floatingArtwork.src = img.src;
+    floatingArtwork.alt = img.alt;
+    puzzleMode = "art";
+    startPuzzle(img.src);
+
+}, true);
+
 </script>
 
 </body>
