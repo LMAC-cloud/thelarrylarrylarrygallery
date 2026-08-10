@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -935,10 +937,14 @@ figure {
    FREE LAR-BUCK WHEEL
    ============================================================ */
 #freeLarBucksButton {
-    position: fixed;
-    right: 16px;
-    bottom: 16px;
-    z-index: 5000;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    position: fixed !important;
+    right: 18px !important;
+    bottom: 18px !important;
+    z-index: 99999 !important;
     background: #fff4b0;
     color: #3b2100;
     border: 4px solid #6b3d00;
@@ -950,7 +956,7 @@ figure {
 }
 #freeLarBucksButton:hover { transform: rotate(-2deg) scale(1.06); }
 #wheelOverlay {
-    display: none; position: fixed; inset: 0; z-index: 9000;
+    display: none; position: fixed !important; inset: 0; z-index: 99998 !important;
     background: rgba(0,0,0,.86); align-items: center; justify-content: center;
 }
 #wheelBox {
@@ -1690,7 +1696,7 @@ figure {
 <!-- ============================================================
      FREE LAR-BUCK WHEEL
      ============================================================ -->
-<button id="freeLarBucksButton">FREE LAR BUCKS!</button>
+<button id="freeLarBucksButton" type="button">FREE LAR BUCKS! — SPIN!</button>
 <div id="wheelOverlay">
     <div id="wheelBox">
         <h2>LARRY'S FREE LAR-BUCK WHEEL</h2>
@@ -2085,58 +2091,25 @@ images.forEach(function(imagePath) {
 
 
 /* ============================================================
-   GLITCH: OCCASIONALLY ONLY A SMALL RANDOM SET SHOWS
-   Hidden paintings retain their gallery positions.
+   GALLERY VISIBILITY
+   All 72 paintings remain available at all times.
+   The earlier random glitch that temporarily hid most paintings
+   has been deliberately removed.
    ============================================================ */
-
 let galleryGlitchTimer = null;
-
 function runGalleryGlitch() {
-
-    const items =
-        Array.from(
-            artworkGallery.querySelectorAll(".excerpt-figure")
-        );
-
-    if(items.length < 12) {
-        return;
-    }
-
+    const items = Array.from(artworkGallery.querySelectorAll(".excerpt-figure"));
     items.forEach(function(item) {
         item.classList.remove("gallery-glitch-hidden");
+        item.style.visibility = "visible";
+        item.style.opacity = "1";
     });
-
-    const keepCount =
-        10 + Math.floor(Math.random() * 9);
-
-    const shuffled =
-        items.slice().sort(
-            () => Math.random() - 0.5
-        );
-
-    shuffled.slice(keepCount).forEach(function(item) {
-        item.classList.add("gallery-glitch-hidden");
-    });
-
-    setTimeout(function() {
-        items.forEach(function(item) {
-            item.classList.remove("gallery-glitch-hidden");
-        });
-    }, 1700 + Math.random() * 1800);
 }
-
 function scheduleGalleryGlitch() {
-
     clearTimeout(galleryGlitchTimer);
-
-    galleryGlitchTimer =
-        setTimeout(function() {
-            runGalleryGlitch();
-            scheduleGalleryGlitch();
-        }, 15000 + Math.random() * 15000);
+    /* Do not hide or remove any gallery paintings. */
 }
-
-scheduleGalleryGlitch();
+runGalleryGlitch();
 
 
 /* ============================================================
@@ -2298,6 +2271,9 @@ const wheelResult = document.getElementById("wheelResult");
 let wheelRotation = 0;
 let wheelSpinning = false;
 let puzzleCompleted = false;
+forceLarBuckButtonVisible();
+setTimeout(forceLarBuckButtonVisible, 100);
+setTimeout(forceLarBuckButtonVisible, 1000);
 
 
 /* ============================================================
@@ -2313,6 +2289,16 @@ const fixedCornerControls = [
 
 const originalDevicePixelRatio =
     window.devicePixelRatio || 1;
+
+function forceLarBuckButtonVisible() {
+    const btn = document.getElementById("freeLarBucksButton");
+    if(!btn) return;
+    btn.style.setProperty("display", "block", "important");
+    btn.style.setProperty("visibility", "visible", "important");
+    btn.style.setProperty("opacity", "1", "important");
+    btn.style.setProperty("pointer-events", "auto", "important");
+    btn.style.setProperty("z-index", "99999", "important");
+}
 
 function keepCornerControlsAtOriginalSize() {
 
