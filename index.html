@@ -64,6 +64,9 @@ h1 {
 }
 
 /* Gallery paintings remain stationary and fully clickable. */
+/* V10: ordinary paintings are never hidden by gallery logic. */
+#artworkGallery .ordinary-artwork { display: inline-block !important; visibility: visible !important; opacity: 1 !important; }
+#artworkGallery .ordinary-artwork img { pointer-events: auto !important; }
 
 /* ============================================================
    GALLERY CLICK SAFETY
@@ -646,9 +649,7 @@ h1 {
         0 0 40px black,
         0 0 60px rgba(0,0,0,0.8),
         0 20px 30px rgba(0,0,0,0.9);
-    animation:
-        smokyPulse 4s ease-in-out infinite,
-        floatingShadow 6s ease-in-out infinite;
+    animation: none;
     transition: box-shadow 0.25s ease;
     cursor: pointer;
 }
@@ -1874,7 +1875,7 @@ function artworkTitle(path) {
 images.forEach(function(imagePath) {
 
     const item = document.createElement("li");
-    item.className = "excerpt-figure";
+    item.className = "excerpt-figure ordinary-artwork";
 
     const figure = document.createElement("figure");
     const image = document.createElement("img");
@@ -1883,6 +1884,35 @@ images.forEach(function(imagePath) {
     image.src = imagePath;
     image.alt = artworkTitle(imagePath);
     caption.textContent = artworkTitle(imagePath);
+
+    /*
+       V10 CLICK SAFETY: attach the click handler directly to each image
+       while the image is being created. This does not depend on a later
+       delegated listener or on any other gallery code completing first.
+    */
+    image.addEventListener("click", function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const clickedPath = image.getAttribute("src");
+
+        if(clickedPath === "images/LMAC-CallTheArtWorldAndInformThemOfThisArt.jpg") {
+            goToRandomNiagara();
+            return;
+        }
+
+        floatingArtwork.src = image.src;
+        floatingArtwork.alt = image.alt;
+        puzzleMode = "art";
+
+        if(image.complete && image.naturalWidth > 0) {
+            startPuzzle(image.src);
+        } else {
+            image.addEventListener("load", function() {
+                startPuzzle(image.src);
+            }, { once: true });
+        }
+    });
 
     if (
         imagePath ===
@@ -1954,6 +1984,31 @@ prizeGalleryItem = createPrizeGalleryItem();
 
 /* Gallery motion removed so no paintings can drift off-screen or become
    difficult to click. All 72 remain in their normal grid positions. */
+
+/* ============================================================
+   V10 GALLERY VISIBILITY GUARD
+   Ordinary paintings are never hidden or replaced. The sole exception
+   is the special Niagara target, which is intentionally controlled below.
+   ============================================================ */
+const galleryVisibilityGuard = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+        if(mutation.type !== "attributes" || mutation.attributeName !== "style") return;
+        const target = mutation.target;
+        if(target.classList && target.classList.contains("ordinary-artwork") &&
+           !target.classList.contains("niagara-target")) {
+            target.style.display = "inline-block";
+            target.style.visibility = "visible";
+            target.style.opacity = "1";
+        }
+    });
+});
+
+Array.from(artworkGallery.querySelectorAll(".ordinary-artwork")).forEach(function(item) {
+    galleryVisibilityGuard.observe(item, { attributes: true });
+    item.style.display = "inline-block";
+    item.style.visibility = "visible";
+    item.style.opacity = "1";
+});
 
 /* ============================================================
    IMAGE PRELOAD / LOAD SAFETY
@@ -4019,41 +4074,10 @@ function goToRandomNiagara() {
 
 
 /* ============================================================
-   ROBUST NORMAL IMAGE CLICK
-   One delegated handler keeps every painting clickable even if
-   the gallery is re-rendered or animated.
+   IMAGE CLICK HANDLERS
+   Each gallery image receives its own handler when created above.
+   There is deliberately no gallery-wide click handler here.
    ============================================================ */
-artworkGallery.addEventListener("click", function(event) {
-
-    const image = event.target.closest(".excerpt-figure img");
-    if(!image || !artworkGallery.contains(image)) return;
-
-    event.preventDefault();
-    event.stopPropagation();
-
-    const imagePath = image.getAttribute("src");
-
-    if(imagePath === "images/LMAC-CallTheArtWorldAndInformThemOfThisArt.jpg") {
-        goToRandomNiagara();
-        return;
-    }
-
-    if(!image.complete || image.naturalWidth === 0) {
-        image.addEventListener("load", function() {
-            floatingArtwork.src = image.src;
-            floatingArtwork.alt = image.alt;
-            puzzleMode = "art";
-            startPuzzle(image.src);
-        }, { once:true });
-        return;
-    }
-
-    floatingArtwork.src = image.src;
-    floatingArtwork.alt = image.alt;
-    puzzleMode = "art";
-    startPuzzle(image.src);
-});
-
 
 /* ============================================================
    NIAGARA DESTINATION APPEARANCE
