@@ -915,16 +915,15 @@ figure {
     position: fixed;
     right: 18px;
     bottom: 18px;
-    z-index: 250000;
-    border: 6px solid #4b2b0b;
+    z-index: 2147483000;
+    border: 5px solid #4b2b0b;
     border-radius: 8px;
     padding: 13px 18px;
     background: #ffe66d;
     color: #4b2b0b;
     font-weight: 1000;
-    font-size: 19px;
+    font-size: 17px;
     cursor: pointer;
-    animation: larWheelPulse 1.8s ease-in-out infinite;
     box-shadow: 0 0 12px white, 0 0 25px #ffd400;
 }
 
@@ -932,8 +931,8 @@ figure {
     display: none;
     position: fixed;
     inset: 0;
-    z-index: 260000;
-    background: rgba(0,0,0,.82);
+    z-index: 2147483001;
+    background: rgba(0,0,0,.72);
     align-items: center;
     justify-content: center;
 }
@@ -1202,27 +1201,6 @@ figure {
     }
 }
 
-@keyframes larWheelPulse {
-    0%,100% { transform: scale(1); }
-    50% { transform: scale(1.07); }
-}
-
-
-#freeLarBucksButtonTop {
-    position: fixed;
-    right: 18px;
-    bottom: 78px;
-    z-index: 250000;
-    border: 5px solid #4b2b0b;
-    border-radius: 10px;
-    padding: 9px 14px;
-    background: #fff;
-    color: #4b2b0b;
-    font-weight: 1000;
-    font-size: 14px;
-    cursor: pointer;
-    box-shadow: 0 0 12px white, 0 0 24px gold;
-}
 </style>
 </head>
 
@@ -1486,20 +1464,17 @@ figure {
     </button>
 </div>
 
-
-<button id="freeLarBucksButtonTop" type="button">SPIN LAR BUCKS WHEEL</button>
-
-<button id="freeLarBucksButton">
-    FREE LAR BUCKS!
+<button id="freeLarBucksButton" type="button" aria-label="Open Larry's free Lar Bucks wheel">
+    FREE LAR BUCKS!<br><span style="font-size:12px;">CLICK TO SPIN</span>
 </button>
 
 <div id="wheelOverlay">
     <div id="wheelBox">
         <h2>LARRY'S FREE LAR-BUCK WHEEL</h2>
         <p>
-        MOSTLY 1, 2 OR 5 LAR BUCKS.<br>
-        <strong>10 LAR BUCKS IS VERY RARE.</strong><br>
-        <strong>50 LAR BUCKS IS AN EXTREMELY RARE JACKPOT.</strong>
+        Usually 1, 2 or 5 Lar Bucks.
+        Very rarely: <strong>10</strong> or the ridiculous
+        <strong>50 LAR-BUCK JACKPOT!</strong>
     </p>
         <div id="wheelStage">
             <div id="wheelPointer"></div>
@@ -2244,41 +2219,32 @@ function puzzleSolved() {
     /* The completed image is already assembled in puzzleBoard. */
     puzzleBoard.classList.add("puzzleCompleted");
 
-    /*
-       IMPORTANT: the completed puzzle remains visible.
-       The first click anywhere on the page dismisses it.
-       A zero-delay guard prevents the click that placed the
-       final piece from immediately closing the completed image.
-    */
-    setTimeout(function() {
-        function dismissCompletedPuzzle(event) {
+    /* After the final piece, the completed picture remains visible.
+       A click anywhere on the screen dismisses the completed puzzle. */
+    function dismissCompletedPuzzle(event) {
 
-            document.removeEventListener(
-                "click",
-                dismissCompletedPuzzle,
-                true
-            );
+        if(event && event.target && event.target.closest &&
+           event.target.closest("#larryCongratulations")) {
+            return;
+        }
 
-            puzzleBoard.classList.remove("puzzleCompleted");
+        document.removeEventListener("click", dismissCompletedPuzzle, true);
+        puzzleBoard.onclick = null;
+        puzzleBoard.classList.remove("puzzleCompleted");
 
-            larryCongratulations.style.display = "none";
+        larryCongratulations.style.display = "none";
         qualitySeal.style.display = "none";
         puzzleOverlay.style.display = "none";
 
-            floatingArtwork.style.display = "block";
-            paperBag.style.display = "block";
+        floatingArtwork.style.display = "block";
+        paperBag.style.display = "block";
 
-            openArtworkAfterPuzzle();
+        openArtworkAfterPuzzle();
 
-            setTimeout(salesBarrage, 350);
-        }
+        setTimeout(salesBarrage, 350);
+    }
 
-        document.addEventListener(
-            "click",
-            dismissCompletedPuzzle,
-            true
-        );
-    }, 0);
+    document.addEventListener("click", dismissCompletedPuzzle, true);
 }
 
 
@@ -2710,13 +2676,6 @@ freeLarBucksButton.addEventListener(
     "click",
     function() {
 
-        if(
-            typeof puzzleOverlay !== "undefined" &&
-            puzzleOverlay.style.display === "block"
-        ) {
-            return;
-        }
-
         wheelOverlay.style.display =
             "flex";
 
@@ -2727,19 +2686,6 @@ freeLarBucksButton.addEventListener(
         wheelSpinButton.disabled = false;
     }
 );
-
-
-const freeLarBucksButtonTop = document.getElementById("freeLarBucksButtonTop");
-if (freeLarBucksButtonTop) {
-    freeLarBucksButtonTop.addEventListener("click", function() {
-        if (wheelOverlay) {
-            wheelOverlay.style.display = "flex";
-            wheelResult.textContent = "READY TO SPIN";
-            wheelSpinning = false;
-            wheelSpinButton.disabled = false;
-        }
-    });
-}
 
 wheelCloseButton.addEventListener(
     "click",
