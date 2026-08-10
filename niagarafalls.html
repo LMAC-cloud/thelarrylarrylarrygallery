@@ -5325,49 +5325,16 @@ setInterval(
    ============================================================ */
 
 document
-    .getElementById(
-        "larryButton"
-    )
+    .getElementById("larryButton")
     .addEventListener(
         "click",
         function() {
 
-            riverGeneration++;
-
-
-            document
-                .querySelectorAll(
-                    ".paintingWrap:not(.immortalized)"
-                )
-                .forEach(
-                    function(painting) {
-
-                        painting.remove();
-
-                    }
-                );
-
-
-            paintingNumber = 0;
-
-            usedImages = [];
-
-
-            nextGroup =
-                7 +
-                Math.floor(
-                    Math.random() * 5
-                );
-
-
-            startPaintingSequence(
-                riverGeneration
-            );
+            window.location.href =
+                "https://larrysvariety.ca/";
 
         }
     );
-
-
 /* ============================================================
    START
    ============================================================ */
