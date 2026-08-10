@@ -1633,33 +1633,61 @@ body {
 }
 
 #larryButton {
-    padding: 9px 16px;
+    padding: 14px 18px;
+    min-width: 125px;
 
     background:
-        rgba(0,0,0,.65);
+        linear-gradient(
+            135deg,
+            #b88958 0%,
+            #9a683b 45%,
+            #7d4f2b 100%
+        );
 
-    color: white;
+    color: #fff8e8;
 
     border:
-        1px solid rgba(255,255,255,.5);
+        2px solid #6b421f;
+
+    border-radius: 3px;
+
+    box-shadow:
+        2px 3px 6px rgba(0,0,0,.55),
+        inset 0 0 12px rgba(255,255,255,.12);
+
+    font-family:
+        Georgia, "Times New Roman", serif;
+
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 1.15;
 
     cursor: pointer;
+
+    transform: rotate(-2deg);
+
+    position: relative;
 }
 
-#savedCounter {
-    position: fixed;
+#larryButton::before {
+    content: "";
+    position: absolute;
 
-    z-index: 100;
+    top: 4px;
+    left: 7px;
+    right: 7px;
 
-    bottom: 20px;
-    left: 20px;
+    height: 1px;
 
-    color:
-        rgba(255,255,255,.75);
+    background: rgba(255,255,255,.25);
+}
 
-    font-size: 13px;
+#larryButton:hover {
+    transform: rotate(2deg) scale(1.04);
 
-    pointer-events: none;
+    box-shadow:
+        3px 5px 9px rgba(0,0,0,.65),
+        inset 0 0 14px rgba(255,255,255,.15);
 }
 
 
