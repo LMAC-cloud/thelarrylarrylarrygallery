@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -62,87 +64,8 @@ h1 {
 }
 
 /* ============================================================
-   GALLERY WIND / MOVING ORDER
-   ============================================================ */
-
-@keyframes galleryWind {
-    0%   { transform: translate3d(0, 0, 0); }
-    20%  { transform: translate3d(var(--wind-a), var(--wind-y-a), 0); }
-    50%  { transform: translate3d(var(--wind-b), var(--wind-y-b), 0); }
-    78%  { transform: translate3d(var(--wind-c), var(--wind-y-c), 0); }
-    100% { transform: translate3d(0, 0, 0); }
-}
-
-.excerpt-figure {
-    will-change: transform;
-}
-
-.excerpt-figure.gallery-moving {
-    animation-name: galleryWind;
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
-}
-
-.excerpt-figure.gallery-glitch-hidden {
-    visibility: hidden;
-}
-
-.prize-gallery-item {
-    display: inline-block;
-    margin: 15px;
-    text-align: center;
-    position: relative;
-    width: min(18vw, 300px);
-    min-width: 150px;
-    vertical-align: top;
-    cursor: pointer;
-    will-change: transform;
-}
-
-.prize-gallery-card {
-    height: min(18vw, 300px);
-    min-height: 150px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 22px;
-    background:
-        repeating-conic-gradient(
-            from 0deg,
-            #fff200 0deg 12deg,
-            #ff2b00 12deg 24deg
-        );
-    border: 15px solid #111;
-    box-shadow:
-        0 0 20px black,
-        0 0 45px #ffe600,
-        0 20px 30px rgba(0,0,0,0.9);
-    color: #111;
-    font-size: clamp(18px, 2.2vw, 32px);
-    font-weight: 1000;
-    line-height: 1.05;
-    text-shadow: 2px 2px 0 white;
-    animation: prizeFlash 0.65s infinite alternate;
-}
-
-.prize-gallery-item:hover .prize-gallery-card {
-    box-shadow:
-        0 0 20px white,
-        0 0 50px #ffe600,
-        0 0 90px white,
-        0 20px 35px rgba(0,0,0,0.9);
-}
-
-@keyframes prizeFlash {
-    from { filter: brightness(1); }
-    to   { filter: brightness(1.35); }
-}
-
-/* ============================================================
    GALLERY
    ============================================================ */
-
 
 .excerpt-figure {
     display: inline-block;
@@ -152,13 +75,7 @@ h1 {
 }
 
 .excerpt-figure img {
-    /*
-       Keep the gallery paintings thumbnail-like at every browser zoom.
-       Because Ctrl+mouse-wheel browser zoom changes the CSS viewport,
-       using vw lets the individual paintings shrink as the page is enlarged
-       instead of becoming enormous.
-    */
-    height: clamp(95px, 18vw, 300px);
+    height: 300px;
     width: auto;
     display: block;
     margin: 0 auto;
@@ -281,21 +198,21 @@ figure {
     z-index: 5000;
     background: #ffef00;
     color: black;
-    border: 4px solid red;
-    padding: 7px 10px;
-    font-size: 12px;
-    line-height: 1.15;
-    max-width: 210px;
-    text-align: center;
+    border: 5px solid red;
+    padding: 10px 15px;
     font-weight: 900;
     box-shadow: 0 0 20px black;
     animation: alertPulse 0.8s infinite alternate;
-    transform-origin: top right;
 }
 
 @keyframes alertPulse {
-    from { box-shadow: 0 0 20px black; }
-    to   { box-shadow: 0 0 28px black; }
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.04);
+    }
 }
 
 /* ============================================================
@@ -429,7 +346,7 @@ figure {
    ============================================================ */
 
 #puzzleBox {
-    width: min(1080px, 96vw);
+    width: min(900px, 95vw);
     margin: 20px auto;
     background: #eee;
     color: black;
@@ -478,7 +395,7 @@ figure {
    ============================================================ */
 
 #puzzleBoard {
-    width: min(680px, 82vw);
+    width: min(600px, 90vw);
     aspect-ratio: 1 / 1;
     margin: 15px auto;
     position: relative;
@@ -543,9 +460,9 @@ figure {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    width: min(680px, 82vw);
-    margin: 15px auto;
-    padding: 10px;
+    width: min(600px, 90vw);
+    margin: 20px auto;
+    padding: 15px;
     background: #222;
     border: 5px solid #555;
     box-sizing: border-box;
@@ -930,36 +847,364 @@ figure {
     pointer-events: none;
 }
 
-/*
-   Gallery/browser-zoom behaviour:
-   Ctrl + mouse-wheel browser zoom changes the CSS viewport. The gallery
-   thumbnails use viewport-relative sizing so they shrink as the page is
-   enlarged, while fixed-position alerts remain anchored to the viewport.
-*/
+
+/* ============================================================
+   72-IMAGE STATIC GALLERY / CLICK SAFETY
+   ============================================================ */
+
+#artworkGallery {
+    display: grid !important;
+    grid-template-columns: repeat(6, minmax(120px, 1fr));
+    gap: 18px;
+    width: 96vw;
+    margin: 0 auto !important;
+    position: relative;
+    z-index: 20;
+}
+
+#artworkGallery .excerpt-figure {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative;
+    z-index: 21;
+    cursor: pointer;
+    pointer-events: auto !important;
+}
+
+#artworkGallery .excerpt-figure img {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    cursor: pointer;
+    width: 100%;
+    height: auto;
+}
+
+/* Niagara painting: hidden until a Niagara return has happened. */
+#artworkGallery .niagara-target.niagara-locked {
+    display: none !important;
+}
+
+#artworkGallery .niagara-target.niagara-flashing img {
+    box-shadow:
+        0 0 10px white,
+        0 0 25px white,
+        0 0 50px white,
+        0 0 90px white !important;
+}
+
+#artworkGallery .niagara-target {
+    border: 6px solid white;
+    box-shadow: 0 0 18px white, 0 0 40px rgba(255,255,255,.9);
+}
+
+/* Never run a gallery hide/show animation. */
+.gallery-glitch-hidden {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* ============================================================
+   FREE LAR-BUCK WHEEL
+   ============================================================ */
+
+#freeLarBucksButton {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 99999;
+    border: 5px solid #4b2b0b;
+    border-radius: 8px;
+    padding: 13px 18px;
+    background: #ffe66d;
+    color: #4b2b0b;
+    font-weight: 1000;
+    font-size: 17px;
+    cursor: pointer;
+    box-shadow: 0 0 12px white, 0 0 25px #ffd400;
+}
+
+#wheelOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+    background: rgba(0,0,0,.72);
+    align-items: center;
+    justify-content: center;
+}
+
+#wheelBox {
+    width: min(650px, 92vw);
+    background: radial-gradient(circle, #fff8d0, #e9d39a);
+    border: 8px solid #d4af37;
+    box-shadow: 0 0 35px white, 0 0 80px gold;
+    padding: 20px;
+    text-align: center;
+}
+
+#wheelStage {
+    position: relative;
+    width: min(440px, 78vw);
+    aspect-ratio: 1;
+    margin: 15px auto;
+}
+
+#larBuckWheel {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 9px solid #5b3a16;
+    background: conic-gradient(
+        #f8e79a 0deg 20deg,
+        #d9b56b 20deg 40deg,
+        #fff1b8 40deg 60deg,
+        #c9a35f 60deg 80deg,
+        #f8e79a 80deg 100deg,
+        #d9b56b 100deg 120deg,
+        #fff1b8 120deg 140deg,
+        #c9a35f 140deg 160deg,
+        #f8e79a 160deg 180deg,
+        #d9b56b 180deg 200deg,
+        #fff1b8 200deg 220deg,
+        #c9a35f 220deg 240deg,
+        #f8e79a 240deg 260deg,
+        #d9b56b 260deg 280deg,
+        #fff1b8 280deg 300deg,
+        #c9a35f 300deg 320deg,
+        #f8e79a 320deg 340deg,
+        #d9b56b 340deg 360deg
+    );
+    transition: transform 4s cubic-bezier(.12,.72,.18,1);
+    position: relative;
+}
+
+#wheelPointer {
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 18px solid transparent;
+    border-right: 18px solid transparent;
+    border-top: 38px solid red;
+    z-index: 3;
+    filter: drop-shadow(0 0 6px white);
+}
+
+.wheelNumber {
+    position: absolute;
+    font-size: 26px;
+    font-weight: 1000;
+    color: #4b2b0b;
+}
+
+#freeLarBucksButton,
+#wheelSpinButton,
+#wheelCloseButton {
+    cursor: pointer;
+}
+
+#wheelSpinButton,
+#wheelCloseButton {
+    border: 4px solid #4b2b0b;
+    padding: 11px 18px;
+    margin: 5px;
+    font-weight: 1000;
+    background: white;
+}
+
+/* ============================================================
+   RANDOM LARRY ADS
+   ============================================================ */
+
+#larryRandomAd {
+    display: none;
+    position: fixed;
+    z-index: 90000;
+    width: min(390px, 72vw);
+    padding: 16px 18px;
+    background: #fff4bd;
+    color: #3b2100;
+    border: 6px solid #6b3f16;
+    box-shadow: 0 0 15px white, 0 0 35px rgba(255,205,50,.9);
+    text-align: center;
+    font-weight: 900;
+    transform: rotate(-2deg);
+    pointer-events: none;
+}
+
+#larryRandomAd .adFine {
+    margin-top: 8px;
+    font-size: 10px;
+    line-height: 1.15;
+    font-weight: 600;
+}
+
+@media(max-width: 900px) {
+    #artworkGallery {
+        grid-template-columns: repeat(4, minmax(100px, 1fr));
+    }
+}
+
+@media(max-width: 600px) {
+    #artworkGallery {
+        grid-template-columns: repeat(3, minmax(90px, 1fr));
+        gap: 10px;
+    }
+}
+
+/* Completed puzzle remains visibly assembled until clicked. */
+#puzzleBoard.puzzleCompleted {
+    cursor: pointer;
+    box-shadow:
+        0 0 20px white,
+        0 0 45px gold,
+        inset 0 0 18px rgba(255,255,255,.7);
+}
+
+
+#niagaraPrizeCard {
+    display:none;
+    position:fixed;
+    left:50%;
+    top:18%;
+    transform:translateX(-50%);
+    z-index:95000;
+    width:min(620px,86vw);
+    padding:26px;
+    text-align:center;
+    background:#111;
+    color:white;
+    border:7px solid #fff;
+    box-shadow:0 0 18px white,0 0 45px #ff3b00,0 0 90px #ffd400;
+}
+#niagaraPrizeCard h2{
+    margin:0 0 12px;
+    font-size:clamp(28px,5vw,48px);
+    color:#fff36a;
+    text-shadow:0 0 8px red,0 0 18px yellow;
+}
+#niagaraPrizeCard button{
+    border:5px solid #6b3f16;
+    background:#ffe66d;
+    color:#3b2100;
+    padding:13px 22px;
+    font-weight:1000;
+    font-size:18px;
+    cursor:pointer;
+}
+
+
+/* ============================================================
+   NIAGARA VEHICLE SELECTION
+   ============================================================ */
+
+#vehicleOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 120000;
+    background: rgba(0,0,0,.88);
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+    padding: 25px;
+    box-sizing: border-box;
+}
+
+#vehicleBox {
+    width: min(1050px, 96vw);
+    background: #eee;
+    color: #111;
+    border: 9px solid #6b3d00;
+    box-shadow:
+        0 0 30px white,
+        0 0 80px #d7a700;
+    padding: 22px;
+    box-sizing: border-box;
+}
+
+#vehicleChoices {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.vehicleChoice {
+    min-height: 280px;
+    background: #050505;
+    color: white;
+    border: 5px solid #555;
+    padding: 12px;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 0 15px black;
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.vehicleChoice:hover {
+    transform: translateY(-7px) rotate(-1deg);
+    box-shadow: 0 0 20px white, 0 0 35px gold;
+}
+
+.vehicleClass {
+    color: #ffd85c;
+    font-size: 20px;
+    font-weight: 1000;
+    margin-bottom: 8px;
+}
+
+.vehicleDrawing {
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 62px;
+    filter: drop-shadow(0 0 8px white);
+}
+
+.vehicleName {
+    font-size: 17px;
+    font-weight: 1000;
+    margin: 8px 0;
+}
+
+.vehicleDescription {
+    font-size: 12px;
+    line-height: 1.25;
+}
+
+#vehicleResult {
+    display: none;
+    margin-top: 18px;
+    padding: 18px;
+    background: white;
+    border: 5px solid #111;
+    font-size: 20px;
+    font-weight: 1000;
+}
+
+@media(max-width: 850px) {
+    #vehicleChoices {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width: 500px) {
+    #vehicleChoices {
+        grid-template-columns: 1fr;
+    }
+}
+
 </style>
 </head>
 
 <body>
-
-<!-- ============================================================
-     NIAGARA PRIZE — RANDOMLY CHOOSES ONE OF FOUR EXPERIENCES
-     ============================================================ -->
-
-<div id="niagaraPrize" style="display:none;">
-    <a href="#" id="niagaraPrizeLink" style="
-        color: white;
-        text-decoration: none;
-        text-shadow: 0 0 5px red, 0 0 10px yellow, 0 0 20px cyan;
-    ">
-        ★★★ YOU WON! ★★★
-        <br>
-        NIAGARA FALLS!
-        <br>
-        <span style="font-size: 20px;">
-            CLICK HERE FOR YOUR PRIZE
-        </span>
-    </a>
-</div>
 
 <!-- ============================================================
      COUNTER
@@ -978,16 +1223,88 @@ figure {
     BUY NOW BEFORE THE OTHER CUSTOMER DOES!
 </div>
 
-<h1>LARRY'S LAR-GALLERY</h1>
+<h1>LMAC</h1>
 
-<!-- ============================================================
-     72-IMAGE ARTWORK COLLECTION
-     The artwork files live in the lowercase images/ folder.
-     This list is built directly into index.html so this page no
-     longer needs images.js for its gallery.
-     ============================================================ -->
+<ul style="padding:0; margin:0; list-style:none;">
 
-<ul id="artworkGallery" style="padding:0; margin:0; list-style:none;"></ul>
+<li class="excerpt-figure">
+    <figure>
+        <img src="Images/LMACastropopeffect.jpg" alt="Astropop Effect">
+        <figcaption>Astropop Effect</figcaption>
+    </figure>
+</li>
+
+<li class="excerpt-figure">
+    <figure>
+        <img src="Images/LMACmegaman10.jpg" alt="Megaman 10">
+        <figcaption>Megaman 10</figcaption>
+    </figure>
+</li>
+
+<li class="excerpt-figure">
+    <figure>
+        <img src="Images/LMACpinballching.jpg" alt="Pinball Ching">
+        <figcaption>Pinball Ching</figcaption>
+    </figure>
+</li>
+
+<li class="excerpt-figure">
+    <figure>
+        <img src="Images/LMACthehoneybee.jpg" alt="The Honey Bee">
+        <figcaption>The Honey Bee</figcaption>
+    </figure>
+</li>
+
+<li class="excerpt-figure">
+    <figure>
+        <img src="Images/LMACjosekandontske.jpg" alt="Jose Kandonske">
+        <figcaption>Jose Kandonske</figcaption>
+    </figure>
+</li>
+
+<li class="excerpt-figure">
+    <figure>
+        <img src="Images/LMACsacredsanctuary.jpg" alt="Sacred Sanctuary">
+        <figcaption>Sacred Sanctuary</figcaption>
+    </figure>
+</li>
+
+<li class="excerpt-figure">
+    <figure>
+        <img src="Images/LMACcontentment.jpg" alt="Contentment">
+        <figcaption>Contentment</figcaption>
+    </figure>
+</li>
+
+<li class="excerpt-figure">
+    <figure>
+        <img src="Images/LMACrespect.jpg" alt="Respect">
+        <figcaption>Respect</figcaption>
+    </figure>
+</li>
+
+<li class="excerpt-figure">
+    <figure>
+        <img src="Images/LMAChistorybook.jpg" alt="History Book">
+        <figcaption>History Book</figcaption>
+    </figure>
+</li>
+
+<li class="excerpt-figure">
+    <figure>
+        <img src="Images/LMACnewnewcanadianart.jpg" alt="New New Canadian Art">
+        <figcaption>New New Canadian Art</figcaption>
+    </figure>
+</li>
+
+<li class="excerpt-figure">
+    <figure>
+        <img src="Images/LMACcasparfreidric1800.jpg" alt="Caspar Freidric 1800">
+        <figcaption>Caspar Freidric 1800</figcaption>
+    </figure>
+</li>
+
+</ul>
 
 <!-- ============================================================
      ARTWORK
@@ -1127,243 +1444,64 @@ figure {
 
 <div id="salesContainer"></div>
 
+
+<!-- ============================================================
+     FREE LAR-BUCKS
+     ============================================================ -->
+
+
+<div id="niagaraPrizeCard">
+    <h2>YOU HAVE WON A PRIZE!</h2>
+    <div style="font-size:22px;font-weight:900;">
+        YOU HAVE EARNED 20 LAR BUCKS!
+    </div>
+    <p>
+        Larry's Variety is now providing you with a completely
+        unnecessary trip to Niagara Falls.
+    </p>
+    <button id="niagaraPrizeButton">
+        GO TO NIAGARA FALLS
+    </button>
+</div>
+
+<button id="freeLarBucksButton">
+    FREE LAR BUCKS!
+</button>
+
+<div id="wheelOverlay">
+    <div id="wheelBox">
+        <h2>LARRY'S FREE LAR-BUCK WHEEL</h2>
+        <p>
+        Usually 1, 2 or 5 Lar Bucks.
+        Very rarely: <strong>10</strong> or the ridiculous
+        <strong>50 LAR-BUCK JACKPOT!</strong>
+    </p>
+        <div id="wheelStage">
+            <div id="wheelPointer"></div>
+            <div id="larBuckWheel"></div>
+        </div>
+        <div id="wheelResult">READY TO SPIN</div>
+        <button id="wheelSpinButton">SPIN!</button>
+        <button id="wheelCloseButton">CLOSE</button>
+    </div>
+</div>
+
+<div id="larryRandomAd"></div>
+
+
+<div id="vehicleOverlay">
+    <div id="vehicleBox">
+        <h2>YOUR NIAGARA TRANSPORTATION HAS ARRIVED</h2>
+        <p>
+            Four vehicles have been selected from Larry's
+            extremely questionable fleet. Choose one.
+        </p>
+        <div id="vehicleChoices"></div>
+        <div id="vehicleResult"></div>
+    </div>
+</div>
+
 <script>
-
-/* ============================================================
-   72-IMAGE ARTWORK COLLECTION
-   ============================================================ */
-
-const images = [
-    "images/LMAC-ArquaneTheQuietTeenPoet.jpg",
-    "images/LMAC-AstropopEffect.jpg",
-    "images/LMAC-AtGulliversMuseumOfAbstractArt.jpg",
-    "images/LMAC-AylaDream.jpg",
-    "images/LMAC-BarthesDilnsby.jpg",
-    "images/LMAC-BeautifulConversations.jpg",
-    "images/LMAC-BeBopASaurus.jpg",
-    "images/LMAC-Blondie.jpg",
-    "images/LMAC-BumblebeeVsOptimusPrime.jpg",
-    "images/LMAC-ButSiddharthaWasLookingBeyondThePresent.jpg",
-    "images/LMAC-BuzzardZilla.jpg",
-    "images/LMAC-CallTheArtWorldAndInformThemOfThisArt.jpg",
-    "images/LMAC-CanyonCross.jpg",
-    "images/LMAC-CasparFreidric1800.jpg",
-    "images/LMAC-Contentment.jpg",
-    "images/LMAC-CrusoesBadger.jpg",
-    "images/LMAC-CrusoesWizard.jpg",
-    "images/LMAC-DarkHorsewoman.jpg",
-    "images/LMAC-DesertCivilizationDance.jpg",
-    "images/LMAC-DiamondMineLakeshore.jpg",
-    "images/LMAC-DinosaurSpirit.jpg",
-    "images/LMAC-DinosourFossil.jpg",
-    "images/LMAC-DreamingWoman.jpg",
-    "images/LMAC-EvilCabins.jpg",
-    "images/LMAC-Gooseland.jpg",
-    "images/LMAC-HelloThereEve.jpg",
-    "images/LMAC-HistoryBook.jpg",
-    "images/LMAC-HolidaySnapOfMyMerman.jpg",
-    "images/LMAC-HowYouReallyFeltAtTheTime.jpg",
-    "images/LMAC-Hulot.jpg",
-    "images/LMAC-IcarusIcarus.jpg",
-    "images/LMAC-IDon'tTrustLaoTsuNoMore.jpg",
-    "images/LMAC-IndianaJonesJr.jpg",
-    "images/LMAC-IndianaJr.jpg",
-    "images/LMAC-InThunder.jpg",
-    "images/LMAC-JoseKandontske.jpg",
-    "images/LMAC-Journey'sJourney.jpg",
-    "images/LMAC-LarkaVayYourHairdresser.jpg",
-    "images/LMAC-LenoresHappyDay.jpg",
-    "images/LMAC-LordStitchToothe.jpg",
-    "images/LMAC-MarmouxltTheTrainedFrenchThing.jpg",
-    "images/LMAC-MobySquid.jpg",
-    "images/LMAC-MysticValley.jpg",
-    "images/LMAC-NewNewCanadianArt.jpg",
-    "images/LMAC-PinballChing.jpg",
-    "images/LMAC-PlacesThatHaveBeen.jpg",
-    "images/LMAC-Respect.jpg",
-    "images/LMAC-RobinsonLand.jpg",
-    "images/LMAC-RoncesvallesJazzRacket.jpg",
-    "images/LMAC-SacredSanctuary.jpg",
-    "images/LMAC-SandpiperFlats.jpg",
-    "images/LMAC-TheApproachingSeaDragon.jpg",
-    "images/LMAC-TheBirdEmpress.jpg",
-    "images/LMAC-TheCarnivalGhostsVacation.jpg",
-    "images/LMAC-TheCavemansTV.jpg",
-    "images/LMAC-TheDreamOfSleep.jpg",
-    "images/LMAC-TheElectricFox.jpg",
-    "images/LMAC-TheEmbarrasingAirportIncident.jpg",
-    "images/LMAC-TheGoyaOfMay.jpg",
-    "images/LMAC-TheHoneyBee.jpg",
-    "images/LMAC-TheMonkey'sLunch.jpg",
-    "images/LMAC-TheMustardSeedPrincipleAlien.jpg",
-    "images/LMAC-TheSeaGoat.jpg",
-    "images/LMAC-TheSlap.jpg",
-    "images/LMAC-TheSupposedToBeUnpretentiousSage.jpg",
-    "images/LMAC-TheWeepyMakeupSaleslady.jpg",
-    "images/LMAC-TimeFreeScape.jpg",
-    "images/LMAC-ToTheCaveOfSomethingSpecific.jpg",
-    "images/LMAC-TumbleWeet.jpg",
-    "images/LMAC-VantageShift.jpg",
-    "images/LMAC-WatershipNow.jpg",
-    "images/LMAC-WhySilenceIsGolden.jpg"
-];
-
-const artworkGallery = document.getElementById("artworkGallery");
-
-function artworkTitle(path) {
-    return path
-        .split("/").pop()
-        .replace(/^LMAC-/, "")
-        .replace(/\.jpg$/i, "")
-        .replace(/([a-z])([A-Z])/g, "$1 $2");
-}
-
-images.forEach(function(imagePath) {
-
-    const item = document.createElement("li");
-    item.className = "excerpt-figure";
-
-    const figure = document.createElement("figure");
-    const image = document.createElement("img");
-    const caption = document.createElement("figcaption");
-
-    image.src = imagePath;
-    image.alt = artworkTitle(imagePath);
-    caption.textContent = artworkTitle(imagePath);
-
-    figure.appendChild(image);
-    figure.appendChild(caption);
-    item.appendChild(figure);
-    artworkGallery.appendChild(item);
-});
-
-
-/* ============================================================
-   HIDDEN NIAGARA PRIZE SLOT
-   Replaces one of the 72 gallery positions at 20 Lar-Bucks.
-   ============================================================ */
-
-let prizeGalleryItem = null;
-let prizeReplacedItem = null;
-let prizeHasAppeared = false;
-
-function createPrizeGalleryItem() {
-
-    const item = document.createElement("li");
-    item.className = "prize-gallery-item";
-    item.style.display = "none";
-
-    const card = document.createElement("div");
-    card.className = "prize-gallery-card";
-    card.textContent = "YOU HAVE WON A PRIZE!";
-
-    item.appendChild(card);
-
-    item.addEventListener("click", function(event) {
-        event.stopPropagation();
-        startPrizePuzzle();
-    });
-
-    return item;
-}
-
-prizeGalleryItem = createPrizeGalleryItem();
-
-
-/* ============================================================
-   FAST RANDOM GALLERY MOVEMENT
-   ============================================================ */
-
-function startGalleryMotion() {
-
-    const items =
-        Array.from(
-            artworkGallery.querySelectorAll(".excerpt-figure")
-        );
-
-    items.forEach(function(item) {
-
-        item.classList.add("gallery-moving");
-
-        item.style.setProperty("--wind-a",
-            (Math.random() * 90 - 45) + "px");
-        item.style.setProperty("--wind-b",
-            (Math.random() * 140 - 70) + "px");
-        item.style.setProperty("--wind-c",
-            (Math.random() * 100 - 50) + "px");
-
-        item.style.setProperty("--wind-y-a",
-            (Math.random() * 30 - 15) + "px");
-        item.style.setProperty("--wind-y-b",
-            (Math.random() * 45 - 22) + "px");
-        item.style.setProperty("--wind-y-c",
-            (Math.random() * 30 - 15) + "px");
-
-        item.style.animationDuration =
-            (2.8 + Math.random() * 3.0) + "s";
-
-        item.style.animationDelay =
-            (-Math.random() * 3.0) + "s";
-    });
-}
-
-startGalleryMotion();
-
-
-/* ============================================================
-   GLITCH: OCCASIONALLY ONLY A SMALL RANDOM SET SHOWS
-   Hidden paintings retain their gallery positions.
-   ============================================================ */
-
-let galleryGlitchTimer = null;
-
-function runGalleryGlitch() {
-
-    const items =
-        Array.from(
-            artworkGallery.querySelectorAll(".excerpt-figure")
-        );
-
-    if(items.length < 12) {
-        return;
-    }
-
-    items.forEach(function(item) {
-        item.classList.remove("gallery-glitch-hidden");
-    });
-
-    const keepCount =
-        10 + Math.floor(Math.random() * 9);
-
-    const shuffled =
-        items.slice().sort(
-            () => Math.random() - 0.5
-        );
-
-    shuffled.slice(keepCount).forEach(function(item) {
-        item.classList.add("gallery-glitch-hidden");
-    });
-
-    setTimeout(function() {
-        items.forEach(function(item) {
-            item.classList.remove("gallery-glitch-hidden");
-        });
-    }, 1700 + Math.random() * 1800);
-}
-
-function scheduleGalleryGlitch() {
-
-    clearTimeout(galleryGlitchTimer);
-
-    galleryGlitchTimer =
-        setTimeout(function() {
-            runGalleryGlitch();
-            scheduleGalleryGlitch();
-        }, 15000 + Math.random() * 15000);
-}
-
-scheduleGalleryGlitch();
-
 
 /* ============================================================
    ELEMENTS
@@ -1410,97 +1548,12 @@ const puzzleCancel =
 
 
 /* ============================================================
-   FIXED CORNER CONTROLS — KEEP 100% SIZE
-   ============================================================ */
-
-const fixedCornerControls = [
-    document.getElementById("larBuckCounter"),
-    document.getElementById("customerAlert"),
-    document.getElementById("paperBag")
-];
-
-const originalDevicePixelRatio =
-    window.devicePixelRatio || 1;
-
-function keepCornerControlsAtOriginalSize() {
-
-    const currentDpr =
-        window.devicePixelRatio || 1;
-
-    const scale =
-        originalDevicePixelRatio / currentDpr;
-
-    if(fixedCornerControls[0]) {
-        fixedCornerControls[0].style.transform =
-            "rotate(-2deg) scale(" + scale + ")";
-    }
-
-    if(fixedCornerControls[1]) {
-        fixedCornerControls[1].style.transform =
-            "scale(" + scale + ")";
-    }
-
-    if(fixedCornerControls[2]) {
-        fixedCornerControls[2].style.transform =
-            "scale(" + scale + ")";
-    }
-}
-
-keepCornerControlsAtOriginalSize();
-
-window.addEventListener(
-    "resize",
-    keepCornerControlsAtOriginalSize
-);
-
-if(window.visualViewport) {
-    window.visualViewport.addEventListener(
-        "resize",
-        keepCornerControlsAtOriginalSize
-    );
-}
-
-
-/* ============================================================
-   NIAGARA PRIZE — RANDOM BUS
-   The prize sends the winner to exactly one of the four
-   Niagara experiences, chosen randomly at click time.
-   ============================================================ */
-
-const niagaraVersions = [
-    "niagara16.html",
-    "niagara20.html",
-    "niagara27.html",
-    "niagara34.html"
-];
-
-const niagaraPrizeLink =
-    document.getElementById("niagaraPrizeLink");
-
-niagaraPrizeLink.addEventListener(
-    "click",
-    function(event) {
-
-        event.preventDefault();
-
-        const chosenNiagara =
-            niagaraVersions[
-                Math.floor(
-                    Math.random() * niagaraVersions.length
-                )
-            ];
-
-        window.location.href =
-            chosenNiagara;
-    }
-);
-
-
-/* ============================================================
    LAR-BUCKS
    ============================================================ */
 
 let larBucks = 0;
+
+let niagaraPrizeShown = false;
 
 function addLarBucks(amount) {
 
@@ -1508,8 +1561,18 @@ function addLarBucks(amount) {
 
     larBucksDisplay.textContent = larBucks;
 
-    if(larBucks >= 20) {
-        showNiagaraPrizeSlot();
+    if(
+        larBucks >= 20 &&
+        !niagaraPrizeShown
+    ) {
+        niagaraPrizeShown = true;
+
+        const prizeCard =
+            document.getElementById("niagaraPrizeCard");
+
+        if(prizeCard) {
+            prizeCard.style.display = "block";
+        }
     }
 }
 
@@ -1523,112 +1586,6 @@ let puzzleTimerInterval = null;
 let solvedPieces = 0;
 
 const repairPositions = [1, 4, 7];
-
-let puzzleMode = "art";
-
-
-/* ============================================================
-   NIAGARA PRIZE SLOT
-   ============================================================ */
-
-function showNiagaraPrizeSlot() {
-
-    if(prizeHasAppeared) {
-        return;
-    }
-
-    prizeHasAppeared = true;
-
-    const galleryItems =
-        Array.from(
-            artworkGallery.querySelectorAll(".excerpt-figure")
-        );
-
-    if(!galleryItems.length) {
-        return;
-    }
-
-    const chosenIndex =
-        Math.floor(
-            Math.random() * galleryItems.length
-        );
-
-    prizeReplacedItem =
-        galleryItems[chosenIndex];
-
-    prizeReplacedItem.style.display =
-        "none";
-
-    prizeGalleryItem.style.display =
-        "inline-block";
-
-    prizeReplacedItem.parentNode.insertBefore(
-        prizeGalleryItem,
-        prizeReplacedItem
-    );
-}
-
-
-/* ============================================================
-   BUS-PRIZE PUZZLE IMAGE
-   ============================================================ */
-
-function makePrizePuzzleImage() {
-
-    const svg = `
-        <svg xmlns="http://www.w3.org/2000/svg"
-             width="900" height="900" viewBox="0 0 900 900">
-            <rect width="900" height="900" fill="#fff"/>
-            <rect x="28" y="28" width="844" height="844"
-                  rx="24" fill="#fff6b0" stroke="#111" stroke-width="22"/>
-            <text x="450" y="205"
-                  text-anchor="middle"
-                  font-family="Arial"
-                  font-size="64"
-                  font-weight="900"
-                  fill="#d00000">YOU HAVE WON</text>
-            <text x="450" y="300"
-                  text-anchor="middle"
-                  font-family="Arial"
-                  font-size="58"
-                  font-weight="900"
-                  fill="#111">A BUS TRIP</text>
-            <text x="450" y="390"
-                  text-anchor="middle"
-                  font-family="Arial"
-                  font-size="54"
-                  font-weight="900"
-                  fill="#111">TO NIAGARA FALLS!</text>
-            <rect x="120" y="465" width="660" height="225"
-                  fill="#e8d6a0" stroke="#111" stroke-width="16"/>
-            <text x="450" y="550"
-                  text-anchor="middle"
-                  font-family="Arial"
-                  font-size="42"
-                  font-weight="900"
-                  fill="#111">FIRST • SECOND • THIRD</text>
-            <text x="450" y="615"
-                  text-anchor="middle"
-                  font-family="Arial"
-                  font-size="42"
-                  font-weight="900"
-                  fill="#111">• FOURTH CLASS BUS</text>
-        </svg>
-    `;
-
-    return "data:image/svg+xml;charset=utf-8," +
-        encodeURIComponent(svg);
-}
-
-function startPrizePuzzle() {
-
-    puzzleMode = "bus";
-
-    createPuzzle(
-        makePrizePuzzleImage(),
-        "bus"
-    );
-}
 
 
 /* ============================================================
@@ -1729,11 +1686,11 @@ function salesBarrage() {
 
         count++;
 
-        if(count >= 12) {
+        if(count >= 24) {
             clearInterval(barrage);
         }
 
-    }, 350);
+    }, 230);
 
 }
 
@@ -1806,7 +1763,7 @@ function shopBell() {
 
 function createConfetti() {
 
-    for(let i = 0; i < 180; i++) {
+    for(let i = 0; i < 420; i++) {
 
         const piece =
             document.createElement("div");
@@ -1858,7 +1815,7 @@ function createConfetti() {
 
 function createFireworks() {
 
-    for(let i = 0; i < 18; i++) {
+    for(let i = 0; i < 60; i++) {
 
         setTimeout(function() {
 
@@ -1901,7 +1858,9 @@ function setPieceBackground(
         correctPosition % 3;
 
     piece.style.backgroundImage =
-        "url('" + puzzleImage + "')";
+        'url("' +
+        puzzleImage.replace(/"/g, '\\\"') +
+        '")';
 
     piece.style.backgroundSize =
         "300% 300%";
@@ -1916,9 +1875,8 @@ function setPieceBackground(
    CREATE COMPLETED PICTURE
    ============================================================ */
 
-function createPuzzle(imageSrc, mode = "art") {
+function createPuzzle(imageSrc) {
 
-    puzzleMode = mode;
     puzzleImage = imageSrc;
 
     puzzleBoard.innerHTML = "";
@@ -1934,30 +1892,6 @@ function createPuzzle(imageSrc, mode = "art") {
     qualitySeal.style.display = "none";
     larryCongratulations.style.display = "none";
     wellingtonAd.style.display = "none";
-
-    if(puzzleMode === "bus") {
-
-        puzzleTitle.textContent =
-            "LARRY'S NIAGARA PRIZE DEPARTMENT";
-
-        puzzleMessage.textContent =
-            "YOU HAVE WON A BUS TRIP TO NIAGARA FALLS!";
-
-        puzzleInstruction.textContent =
-            "Assemble the three missing pieces to discover which bus class Larry has decided you deserve.";
-
-    } else {
-
-        puzzleTitle.textContent =
-            "LARRY'S VARIETY ART REPAIR DEPARTMENT";
-
-        puzzleMessage.textContent =
-            "YOU BROKE IT. YOU BOUGHT IT.";
-
-        puzzleInstruction.textContent =
-            "Assemble the three missing pieces to regain access to the artwork. Larry has made this extremely easy because he believes in you.";
-    }
-
 
 
     /*
@@ -2013,17 +1947,13 @@ function createPuzzle(imageSrc, mode = "art") {
 
     /*
        Create three tray pieces.
-
-       They are shuffled only among the three
-       correct positions, so the puzzle is easy.
+       FIXED ORDER: 1, 2, 3.
+       The pieces correspond to the three repair holes
+       from left/top to right/bottom.
     */
 
-    let shuffledPositions =
+    const shuffledPositions =
         [1, 4, 7];
-
-    shuffledPositions.sort(
-        () => Math.random() - 0.5
-    );
 
 
     for(let i = 0; i < 3; i++) {
@@ -2247,12 +2177,9 @@ function createPuzzle(imageSrc, mode = "art") {
    START PUZZLE
    ============================================================ */
 
-function startPuzzle(imageSrc, mode = "art") {
+function startPuzzle(imageSrc) {
 
-    createPuzzle(
-        imageSrc,
-        mode
-    );
+    createPuzzle(imageSrc);
 }
 
 
@@ -2266,120 +2193,52 @@ function puzzleSolved() {
         puzzleTimerInterval
     );
 
-    if(puzzleMode === "bus") {
-
-        const busResults = [
-            {
-                title: "FIRST CLASS BUS",
-                detail: "You got First Class. The other customer is furious."
-            },
-            {
-                title: "SECOND CLASS BUS",
-                detail: "Sorry — the other customer beat you to First Class."
-            },
-            {
-                title: "THIRD CLASS BUS",
-                detail: "Third Class. Larry says the view is still quite good."
-            },
-            {
-                title: "FOURTH CLASS BUS",
-                detail: "Fourth Class. Larry says you should be grateful there is a seat."
-            }
-        ];
-
-        const result =
-            busResults[
-                Math.floor(
-                    Math.random() * busResults.length
-                )
-            ];
-
-        larryCongratulations.innerHTML =
-            '<div class="big">YOU HAVE WON A BUS TRIP TO NIAGARA FALLS!</div>' +
-            '<div class="small">' +
-            '<strong>' + result.title + '</strong><br><br>' +
-            result.detail +
-            '<br><br>CLICK THIS NOTICE TO RETURN TO THE GALLERY.' +
-            '</div>';
-
-        puzzleOverlay.style.display =
-            "none";
-
-        larryCongratulations.style.display =
-            "block";
-
-        larryCongratulations.onclick =
-            function() {
-
-                larryCongratulations.style.display =
-                    "none";
-
-                larryCongratulations.onclick =
-                    null;
-
-                puzzleMode = "art";
-
-                if(prizeReplacedItem) {
-                    prizeReplacedItem.style.display =
-                        "inline-block";
-                }
-
-                prizeGalleryItem.style.display =
-                    "none";
-            };
-
-        return;
-    }
-
-
-    /* ============================================================
-       NORMAL ART PUZZLE COMPLETION
-       ============================================================ */
-
     addLarBucks(3);
 
     shopBell();
-    createConfetti();
-    createFireworks();
+
+    /* Big completion celebration. */
+    for(let i = 0; i < 6; i++) {
+        setTimeout(function() {
+            createConfetti();
+            createFireworks();
+        }, i * 350);
+    }
+
+    qualitySeal.style.display = "block";
 
     larryCongratulations.innerHTML =
         '<div class="big">LARRY IS IMPRESSED!</div>' +
-        '<div class="small">YOU HAVE EARNED <strong>3 LAR BUCKS!</strong></div>';
+        '<div class="small">' +
+        'YOU HAVE EARNED<br><strong>3 LAR BUCKS!</strong><br><br>' +
+        'CLICK THE COMPLETED PICTURE TO CONTINUE.' +
+        '</div>';
 
-    larryCongratulations.style.display =
-        "block";
+    larryCongratulations.style.display = "block";
 
-    puzzleOverlay.style.display =
-        "none";
+    /* The completed image is already assembled in puzzleBoard. */
+    puzzleBoard.classList.add("puzzleCompleted");
 
-    let congratulationsClosed =
-        false;
+    puzzleBoard.onclick = function() {
+        puzzleBoard.onclick = null;
+        puzzleBoard.classList.remove("puzzleCompleted");
 
-    function closeCongratulations() {
+        larryCongratulations.style.display = "none";
+        qualitySeal.style.display = "none";
+        puzzleOverlay.style.display = "none";
 
-        if(congratulationsClosed) {
-            return;
-        }
+        floatingArtwork.style.display = "block";
+        paperBag.style.display = "block";
 
-        congratulationsClosed = true;
+        openArtworkAfterPuzzle();
 
-        larryCongratulations.style.display =
-            "none";
-
-        larryCongratulations.onclick =
-            null;
-
-        puzzleMode = "art";
-    }
-
-    larryCongratulations.onclick =
-        closeCongratulations;
-
-    setTimeout(
-        closeCongratulations,
-        1000
-    );
+        setTimeout(salesBarrage, 350);
+    };
 }
+
+
+/* ============================================================
+   LEAVE IT BROKEN
 
 
 /* ============================================================
@@ -2515,34 +2374,699 @@ function openArtworkAfterPuzzle() {
 }
 
 
+const images = [
+    "images/LMAC-ArquaneTheQuietTeenPoet.jpg",
+    "images/LMAC-AstropopEffect.jpg",
+    "images/LMAC-AtGulliversMuseumOfAbstractArt.jpg",
+    "images/LMAC-AylaDream.jpg",
+    "images/LMAC-BarthesDilnsby.jpg",
+    "images/LMAC-BeautifulConversations.jpg",
+    "images/LMAC-BeBopASaurus.jpg",
+    "images/LMAC-Blondie.jpg",
+    "images/LMAC-BumblebeeVsOptimusPrime.jpg",
+    "images/LMAC-ButSiddharthaWasLookingBeyondThePresent.jpg",
+    "images/LMAC-BuzzardZilla.jpg",
+    "images/LMAC-CallTheArtWorldAndInformThemOfThisArt.jpg",
+    "images/LMAC-CanyonCross.jpg",
+    "images/LMAC-CasparFreidric1800.jpg",
+    "images/LMAC-Contentment.jpg",
+    "images/LMAC-CrusoesBadger.jpg",
+    "images/LMAC-CrusoesWizard.jpg",
+    "images/LMAC-DarkHorsewoman.jpg",
+    "images/LMAC-DesertCivilizationDance.jpg",
+    "images/LMAC-DiamondMineLakeshore.jpg",
+    "images/LMAC-DinosaurSpirit.jpg",
+    "images/LMAC-DinosourFossil.jpg",
+    "images/LMAC-DreamingWoman.jpg",
+    "images/LMAC-EvilCabins.jpg",
+    "images/LMAC-Gooseland.jpg",
+    "images/LMAC-HelloThereEve.jpg",
+    "images/LMAC-HistoryBook.jpg",
+    "images/LMAC-HolidaySnapOfMyMerman.jpg",
+    "images/LMAC-HowYouReallyFeltAtTheTime.jpg",
+    "images/LMAC-Hulot.jpg",
+    "images/LMAC-IcarusIcarus.jpg",
+    "images/LMAC-IDon'tTrustLaoTsuNoMore.jpg",
+    "images/LMAC-IndianaJonesJr.jpg",
+    "images/LMAC-IndianaJr.jpg",
+    "images/LMAC-InThunder.jpg",
+    "images/LMAC-JoseKandontske.jpg",
+    "images/LMAC-Journey'sJourney.jpg",
+    "images/LMAC-LarkaVayYourHairdresser.jpg",
+    "images/LMAC-LenoresHappyDay.jpg",
+    "images/LMAC-LordStitchToothe.jpg",
+    "images/LMAC-MarmouxltTheTrainedFrenchThing.jpg",
+    "images/LMAC-MobySquid.jpg",
+    "images/LMAC-MysticValley.jpg",
+    "images/LMAC-NewNewCanadianArt.jpg",
+    "images/LMAC-PinballChing.jpg",
+    "images/LMAC-PlacesThatHaveBeen.jpg",
+    "images/LMAC-Respect.jpg",
+    "images/LMAC-RobinsonLand.jpg",
+    "images/LMAC-RoncesvallesJazzRacket.jpg",
+    "images/LMAC-SacredSanctuary.jpg",
+    "images/LMAC-SandpiperFlats.jpg",
+    "images/LMAC-TheApproachingSeaDragon.jpg",
+    "images/LMAC-TheBirdEmpress.jpg",
+    "images/LMAC-TheCarnivalGhostsVacation.jpg",
+    "images/LMAC-TheCavemansTV.jpg",
+    "images/LMAC-TheDreamOfSleep.jpg",
+    "images/LMAC-TheElectricFox.jpg",
+    "images/LMAC-TheEmbarrasingAirportIncident.jpg",
+    "images/LMAC-TheGoyaOfMay.jpg",
+    "images/LMAC-TheHoneyBee.jpg",
+    "images/LMAC-TheMonkey'sLunch.jpg",
+    "images/LMAC-TheMustardSeedPrincipleAlien.jpg",
+    "images/LMAC-TheSeaGoat.jpg",
+    "images/LMAC-TheSlap.jpg",
+    "images/LMAC-TheSupposedToBeUnpretentiousSage.jpg",
+    "images/LMAC-TheWeepyMakeupSaleslady.jpg",
+    "images/LMAC-TimeFreeScape.jpg",
+    "images/LMAC-ToTheCaveOfSomethingSpecific.jpg",
+    "images/LMAC-TumbleWeet.jpg",
+    "images/LMAC-VantageShift.jpg",
+    "images/LMAC-WatershipNow.jpg",
+    "images/LMAC-WhySilenceIsGolden.jpg"
+];
+
+
 /* ============================================================
-   NORMAL IMAGE CLICK
+   BUILD THE 72-IMAGE GALLERY
    ============================================================ */
 
-document
-    .querySelectorAll(".excerpt-figure img")
-    .forEach(function(image) {
+const artworkGallery =
+    document.getElementById("artworkGallery");
 
-        image.addEventListener(
-            "click",
-            function(event) {
+images.forEach(function(src, index) {
 
-                event.stopPropagation();
+    const item =
+        document.createElement("li");
 
-                floatingArtwork.src =
-                    image.src;
+    item.className =
+        "excerpt-figure";
 
-                floatingArtwork.alt =
-                    image.alt;
+    item.dataset.index =
+        index;
 
-                puzzleMode = "art";
+    const img =
+        document.createElement("img");
 
-                startPuzzle(
-                    image.src
-                );
-            }
+    img.src = src;
+    img.alt = src
+        .split("/")
+        .pop()
+        .replace(/\.[^.]+$/, "")
+        .replace(/^LMAC-/, "");
+
+    const caption =
+        document.createElement("figcaption");
+
+    caption.textContent =
+        img.alt;
+
+    item.appendChild(img);
+    item.appendChild(caption);
+
+    if(
+        src ===
+        "images/LMAC-CallTheArtWorldAndInformThemOfThisArt.jpg"
+    ) {
+        item.classList.add("niagara-target");
+
+        if(
+            sessionStorage.getItem("larryReturnedFromNiagara") !== "1"
+        ) {
+            item.classList.add("niagara-locked");
+        }
+    }
+
+    artworkGallery.appendChild(item);
+});
+
+
+/* ============================================================
+   LARGER RANDOM FRAME CHANGES
+   ============================================================ */
+
+/*
+   All 72 paintings remain present.
+   The existing frame elements are rearranged in larger batches,
+   rather than hiding most of the gallery. Because the same DOM
+   elements are moved, their click handlers remain attached.
+*/
+function rearrangeGalleryFrames() {
+
+    const cards =
+        Array.from(
+            artworkGallery.querySelectorAll(".excerpt-figure")
         );
+
+    for(let i = cards.length - 1; i > 0; i--) {
+
+        const j =
+            Math.floor(Math.random() * (i + 1));
+
+        const temp = cards[i];
+        cards[i] = cards[j];
+        cards[j] = temp;
+    }
+
+    const fragment =
+        document.createDocumentFragment();
+
+    cards.forEach(function(card) {
+        fragment.appendChild(card);
     });
+
+    artworkGallery.appendChild(fragment);
+}
+
+setTimeout(function() {
+
+    setInterval(
+        rearrangeGalleryFrames,
+        6500 + Math.random() * 3500
+    );
+
+}, 9000);
+
+
+/* ============================================================
+   PERIODIC NIAGARA HIGHLIGHT AFTER RETURN
+   ============================================================ */
+
+const niagaraTarget =
+    artworkGallery.querySelector(".niagara-target");
+
+if(niagaraTarget) {
+
+    if(
+        sessionStorage.getItem("larryReturnedFromNiagara") === "1"
+    ) {
+
+        function flashNiagaraTarget() {
+
+            niagaraTarget.classList.add(
+                "niagara-flashing"
+            );
+
+            setTimeout(function() {
+                niagaraTarget.classList.remove(
+                    "niagara-flashing"
+                );
+            }, 4200);
+        }
+
+        setTimeout(flashNiagaraTarget, 1200);
+
+        setInterval(
+            flashNiagaraTarget,
+            14000 + Math.random() * 10000
+        );
+    }
+}
+
+
+/* ============================================================
+   FREE LAR-BUCK WHEEL
+   ============================================================ */
+
+const freeLarBucksButton =
+    document.getElementById("freeLarBucksButton");
+
+const wheelOverlay =
+    document.getElementById("wheelOverlay");
+
+const larBuckWheel =
+    document.getElementById("larBuckWheel");
+
+const wheelResult =
+    document.getElementById("wheelResult");
+
+const wheelSpinButton =
+    document.getElementById("wheelSpinButton");
+
+const wheelCloseButton =
+    document.getElementById("wheelCloseButton");
+
+const wheelValues = [
+    1,2,5,1,2,1,5,2,1,5,
+    1,2,1,5,2,1,2,5,1,2,
+    5,1,2,1,5,2,1,2,5,1,
+    2,1,5,2,1,2,5,1,2,5,
+    1,2,1,5,2,1,2,5,10,50
+];
+
+let wheelRotation = 0;
+let wheelSpinning = false;
+
+function buildWheelNumbers() {
+
+    wheelValues.forEach(function(value, index) {
+
+        const label =
+            document.createElement("div");
+
+        label.className =
+            "wheelNumber";
+
+        label.textContent =
+            value;
+
+        const angle =
+            index * (360 / wheelValues.length) +
+            (180 / wheelValues.length);
+
+        const radius =
+            39;
+
+        const x =
+            50 + Math.sin(angle * Math.PI / 180) * radius;
+
+        const y =
+            50 - Math.cos(angle * Math.PI / 180) * radius;
+
+        label.style.left =
+            x + "%";
+
+        label.style.top =
+            y + "%";
+
+        label.style.transform =
+            "translate(-50%,-50%)";
+
+        larBuckWheel.appendChild(label);
+    });
+}
+
+buildWheelNumbers();
+
+freeLarBucksButton.addEventListener(
+    "click",
+    function() {
+
+        if(
+            typeof puzzleOverlay !== "undefined" &&
+            puzzleOverlay.style.display === "block"
+        ) {
+            return;
+        }
+
+        wheelOverlay.style.display =
+            "flex";
+
+        wheelResult.textContent =
+            "READY TO SPIN";
+
+        wheelSpinning = false;
+        wheelSpinButton.disabled = false;
+    }
+);
+
+wheelCloseButton.addEventListener(
+    "click",
+    function() {
+        wheelOverlay.style.display =
+            "none";
+    }
+);
+
+document
+    .getElementById("niagaraPrizeButton")
+    .addEventListener(
+        "click",
+        function() {
+
+            document.getElementById(
+                "niagaraPrizeCard"
+            ).style.display = "none";
+
+            openVehicleSelection();
+        }
+    );
+
+wheelSpinButton.addEventListener(
+    "click",
+    function() {
+
+        if(wheelSpinning) {
+            return;
+        }
+
+        wheelSpinning = true;
+        wheelSpinButton.disabled = true;
+
+        const chosenIndex =
+            Math.floor(
+                Math.random() * wheelValues.length
+            );
+
+        const chosenValue =
+            wheelValues[chosenIndex];
+
+        const sectorCenter =
+            chosenIndex * (360 / wheelValues.length) +
+            (180 / wheelValues.length);
+
+        wheelRotation +=
+            360 * 7 +
+            (360 - sectorCenter);
+
+        larBuckWheel.style.transform =
+            "rotate(" +
+            wheelRotation +
+            "deg)";
+
+        wheelResult.textContent =
+            "LARRY IS SPINNING THE ACCOUNTING DEPARTMENT...";
+
+        setTimeout(function() {
+
+            addLarBucks(chosenValue);
+
+            wheelResult.textContent =
+                "YOU WON " +
+                chosenValue +
+                " LAR-BUCK" +
+                (chosenValue === 1 ? "!" : "S!") +
+                " LARRY APPROVES.";
+
+            createConfetti();
+            createFireworks();
+
+            wheelSpinning = false;
+            wheelSpinButton.disabled = false;
+
+        }, 4100);
+    }
+);
+
+
+/* ============================================================
+   40 RANDOM LARRY'S VARIETY ADS
+   ============================================================ */
+
+const larryAds = [
+    ["LARRY'S VARIETY", "WE DON'T NEEEED TO RIP YOU OFF: SALES ARE FINE"],
+    ["BUY ONE!", "OR DON'T. WE'RE NOT YOUR DAD."],
+    ["BIG SAVINGS!", "THE NUMBERS HAVE BEEN ROUNDED IN OUR FAVOUR."],
+    ["TODAY ONLY!", "POSSIBLY TOMORROW TOO."],
+    ["LARRY SAYS", "WHY PAY FULL PRICE WHEN YOU CAN PAY A DIFFERENT PRICE?"],
+    ["HEALTH REMINDER", "BROUGHT TO YOU BY LARRY'S VARIETY: WE CARE ABOUT WHAT YOU EAT!"],
+    ["HEALTH REMINDER", "DRINK SOME WATER. LARRY HAS NO IDEA WHY, BUT APPARENTLY IT'S IMPORTANT."],
+    ["HEALTH REMINDER", "BLINK. YOU'VE BEEN STARING AT THE LARRY'S VARIETY PAGE."],
+    ["HEALTH REMINDER", "PLEASE EAT SOMETHING THAT DIDN'T COME IN A BAG."],
+    ["LARRY'S WELLNESS DEPARTMENT", "TODAY'S EXERCISE: WALK TO THE FRIDGE. THEN THINK ABOUT IT."],
+    ["WELLINGTON BRAND™", "WEDDING CONFETTI — NOW WITH EVEN MORE CONFETTI."],
+    ["FREE!", "SOME RESTRICTIONS, CONDITIONS AND OTHER THINGS."],
+    ["SPECIAL DEAL!", "IT SEEMED SPECIAL WHEN WE WROTE IT."],
+    ["LARRY'S HONEST PRICE GUARANTEE", "WE PROMISE NOT TO EXPLAIN IT."],
+    ["ACT NOW!", "OR ACT LATER. WE'RE FLEXIBLE."],
+    ["DEAL OF THE CENTURY!", "CENTURY NOT SPECIFIED."],
+    ["LOOK! A COUPON!", "YOU MAY ALREADY HAVE MISSED IT."],
+    ["SAVE BIG!", "OR SAVE NORMALLY. BOTH ARE ACCEPTABLE."],
+    ["NO GIMMICKS!", "EXCEPT THE GIMMICKS."],
+    ["LARRY'S VARIETY", "WE SELL VARIETY. THE VARIETY VARIES."],
+    ["EXTRA LAR BUCKS!", "PROBABLY."],
+    ["TODAY'S SPECIAL", "SOMETHING WE HAD TOO MUCH OF."],
+    ["DON'T MISS OUT!", "UNLESS YOU WANT TO."],
+    ["LARRY'S GUARANTEED DEAL", "GUARANTEE SUBJECT TO THE GUARANTEE."],
+    ["SPECIAL CUSTOMER BONUS", "BEING A CUSTOMER WAS THE FIRST REQUIREMENT."],
+    ["WE'VE LOWERED OUR PRICES!", "SOMEWHERE."],
+    ["QUALITY SINCE RECENTLY", "ASK US WHAT YEAR."],
+    ["LIMITED TIME OFFER!", "TIME MAY BE LIMITED INDEPENDENTLY OF THIS OFFER."],
+    ["FREE BONUS!", "BONUS MAY NOT BE FREE."],
+    ["LARRY'S SECRET SALE", "IT'S NOT REALLY SECRET ANYMORE."],
+    ["SPECIAL DEAL FOR YOU!", "WE SAY THAT TO EVERYONE."],
+    ["LARRY'S VARIETY PRESENTS", "A PERFECTLY REASONABLE ADVERTISEMENT."],
+    ["YOU COULD SAVE MONEY!", "YOU COULD ALSO NOT."],
+    ["LARRY'S FOOD ADVISORY", "WE CARE ABOUT WHAT YOU EAT — ESPECIALLY IF IT IS OUR FOOD."],
+    ["PUBLIC SERVICE ANNOUNCEMENT", "YOUR POSTURE IS PROBABLY TERRIBLE. SIT UP."],
+    ["LARRY'S HEALTH DEPARTMENT", "GO OUTSIDE OCCASIONALLY. LARRY HAS CHECKED."],
+    ["SPECIAL OFFER", "BUY SOMETHING AND RECEIVE THE EXPERIENCE OF HAVING BOUGHT SOMETHING."],
+    ["LARRY'S VARIETY CLEARANCE", "WE FOUND THIS IN THE BACK."],
+    ["ONE DAY ONLY!", "THIS DAY HAS BEEN CAREFULLY SELECTED."],
+    ["LARRY SAYS", "WE COULD CHARGE MORE, BUT THEN WE'D HAVE TO FEEL BAD."]
+];
+
+const larryRandomAd =
+    document.getElementById("larryRandomAd");
+
+function showLarryRandomAd() {
+
+    if(
+        (typeof puzzleOverlay !== "undefined" &&
+         puzzleOverlay.style.display === "block") ||
+        wheelOverlay.style.display === "flex"
+    ) {
+        return;
+    }
+
+    const ad =
+        larryAds[
+            Math.floor(
+                Math.random() * larryAds.length
+            )
+        ];
+
+    larryRandomAd.innerHTML =
+        "<div style='font-size:25px;'>" +
+        ad[0] +
+        "</div>" +
+        "<div style='font-size:17px;margin-top:6px;'>" +
+        ad[1] +
+        "</div>" +
+        "<div class='adFine'>" +
+        "Offer may be subject to Larry, local weather, mysterious arithmetic, " +
+        "and the availability of things that may not exist. " +
+        "Lar-Bucks have no cash value. Probably." +
+        "</div>";
+
+    larryRandomAd.style.left =
+        (8 + Math.random() * 58) + "vw";
+
+    larryRandomAd.style.top =
+        (10 + Math.random() * 60) + "vh";
+
+    larryRandomAd.style.transform =
+        "rotate(" +
+        (-4 + Math.random() * 8) +
+        "deg)";
+
+    larryRandomAd.style.display =
+        "block";
+
+    setTimeout(function() {
+        larryRandomAd.style.display =
+            "none";
+    }, 4300);
+}
+
+setTimeout(function() {
+
+    setInterval(
+        showLarryRandomAd,
+        4500 + Math.random() * 4500
+    );
+
+}, 7000);
+
+
+/* ============================================================
+   RANDOM NIAGARA DESTINATION
+   ============================================================ */
+
+function goToRandomNiagara() {
+
+    const destinations = [
+        "niagara16.html",
+        "niagara20.html",
+        "niagara27.html",
+        "niagara34.html"
+    ];
+
+    const chosen =
+        destinations[
+            Math.floor(
+                Math.random() *
+                destinations.length
+            )
+        ];
+
+    sessionStorage.setItem(
+        "larryReturnedFromNiagara",
+        "1"
+    );
+
+    window.location.href =
+        chosen;
+}
+
+
+
+/* ============================================================
+   ABSURD NIAGARA VEHICLE FLEET
+   ============================================================ */
+
+const vehicleOverlay =
+    document.getElementById("vehicleOverlay");
+
+const vehicleChoices =
+    document.getElementById("vehicleChoices");
+
+const vehicleResult =
+    document.getElementById("vehicleResult");
+
+const vehicleFleet = [
+    ["FIRST CLASS", "👑🚌", "A velvet-lined luxury coach with a tiny brass bell and a driver who refuses to make eye contact."],
+    ["FIRST CLASS", "🚍✨", "A chrome Niagara limousine-bus with complimentary imaginary champagne and heated seats."],
+    ["FIRST CLASS", "🚌💎", "The Platinum Larryliner: leather seats, gold curtains, and 47 unnecessary cupholders."],
+    ["FIRST CLASS", "🚎👑", "A private coach with one enormous throne in the back and an unnecessarily large horn."],
+    ["FIRST CLASS", "🚌🎩", "A luxury coach with velvet curtains and a driver who introduces himself as Sir Gary."],
+    ["SECOND CLASS", "🚌🎩", "A respectable bus with curtains, two working windows and a driver named Gary."],
+    ["SECOND CLASS", "🚍☕", "Comfortable enough, provided nobody asks what happened to the suspension."],
+    ["SECOND CLASS", "🚌🧳", "A sturdy coach with luggage racks and exactly one functioning reading light."],
+    ["SECOND CLASS", "🚎📻", "A decent old bus with a radio permanently stuck between two stations."],
+    ["SECOND CLASS", "🚌🧤", "A bus with upholstered seats, one squeaky door and a mysterious glove."],
+    ["THIRD CLASS", "🚌🪑", "A bus whose seats remember several previous decades."],
+    ["THIRD CLASS", "🚍🛠️", "The Larry Economy Cruiser: the brakes work, but only when encouraged."],
+    ["THIRD CLASS", "🚌🥫", "A retired school bus with a surprisingly optimistic driver."],
+    ["THIRD CLASS", "🚎🧤", "A bus with mismatched seats and a glove compartment full of receipts."],
+    ["THIRD CLASS", "🚌📦", "A delivery bus that has apparently been reassigned to Niagara."],
+    ["FOURTH CLASS", "🛒🛞", "A shopping cart with a sail. Larry calls it maritime transportation."],
+    ["FOURTH CLASS", "🚲🧓", "An elderly gentleman on a gigantic tricycle personally pulling a wagon to Niagara."],
+    ["FOURTH CLASS", "🛴🪢", "A scooter tied to a luggage trolley. Nobody knows who approved this."],
+    ["FOURTH CLASS", "🐴🛒", "A wagon apparently pulled by a horse that has read the employee handbook."],
+    ["FOURTH CLASS", "🛶🛞", "A canoe with wheels. It is technically a bus according to Larry."],
+    ["FOURTH CLASS", "🪵🛞", "A wooden cart with a bus pass stapled to it."],
+    ["FOURTH CLASS", "🧓🚲", "The Grandfather Express: one old man, one huge tricycle, one enormous sense of duty."],
+    ["FOURTH CLASS", "🛒🎈", "A shopping trolley propelled by four balloons and Larry's confidence."],
+    ["FOURTH CLASS", "🛋️🛞", "A sofa on wheels with a handwritten sign saying NIAGARA."],
+    ["FOURTH CLASS", "🪑🛞", "A chair mounted on four tiny wheels and pulled by a very determined intern."]
+];
+
+function openVehicleSelection() {
+
+    vehicleOverlay.style.display = "flex";
+    vehicleChoices.innerHTML = "";
+    vehicleResult.style.display = "none";
+
+    const classes = [
+        "FIRST CLASS",
+        "SECOND CLASS",
+        "THIRD CLASS",
+        "FOURTH CLASS"
+    ];
+
+    classes.forEach(function(className) {
+
+        const options =
+            vehicleFleet.filter(function(v) {
+                return v[0] === className;
+            });
+
+        const vehicle =
+            options[
+                Math.floor(Math.random() * options.length)
+            ];
+
+        const card =
+            document.createElement("div");
+
+        card.className = "vehicleChoice";
+
+        card.innerHTML =
+            "<div class='vehicleClass'>" +
+            vehicle[0] +
+            "</div>" +
+            "<div class='vehicleDrawing'>" +
+            vehicle[1] +
+            "</div>" +
+            "<div class='vehicleName'>" +
+            vehicle[2].split(" ").slice(0,5).join(" ") +
+            "</div>" +
+            "<div class='vehicleDescription'>" +
+            vehicle[2] +
+            "</div>";
+
+        card.addEventListener("click", function() {
+
+            vehicleResult.innerHTML =
+                "CONGRATULATIONS! YOUR " +
+                "<strong>" + vehicle[0] + "</strong>" +
+                " TRANSPORT HAS BEEN ASSIGNED.<br><br>" +
+                vehicle[2] +
+                "<br><br>" +
+                "DEPARTURE: IMMEDIATELYISH.";
+
+            vehicleResult.style.display = "block";
+
+            for(let i = 0; i < 5; i++) {
+                setTimeout(function() {
+                    createConfetti();
+                    createFireworks();
+                }, i * 300);
+            }
+
+            setTimeout(goToRandomNiagara, 2600);
+        });
+
+        vehicleChoices.appendChild(card);
+    });
+}
+
+
+/* ============================================================
+   NORMAL IMAGE CLICK
+   PROVEN STATIC-VERSION ARCHITECTURE
+   ============================================================ */
+
+function attachPaintingClicks() {
+
+    document
+        .querySelectorAll(".excerpt-figure img")
+        .forEach(function(image) {
+
+            image.addEventListener(
+                "click",
+                function(event) {
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    const src = image.getAttribute("src");
+
+                    /*
+                       The special Niagara painting is the only
+                       intentional exception to the normal puzzle.
+                    */
+                    if(
+                        src ===
+                        "images/LMAC-CallTheArtWorldAndInformThemOfThisArt.jpg"
+                    ) {
+                        if(
+                            sessionStorage.getItem("larryReturnedFromNiagara") === "1"
+                        ) {
+                            goToRandomNiagara();
+                        }
+                        return;
+                    }
+
+                    floatingArtwork.src = src;
+                    floatingArtwork.alt = image.alt;
+
+                    startPuzzle(src);
+                }
+            );
+        });
+}
+
+/* Activate the proven direct image-click mechanism. */
+attachPaintingClicks();
+
+
+/* ============================================================
+   ARTWORK ANIMATION
 
 
 /* ============================================================
@@ -2562,7 +3086,7 @@ function animateOpen() {
                 fullViewZoom;
 
             floatingArtwork.style.transition =
-                "transform 0.65s cubic-bezier(0.2, 0.8, 0.2, 1)";
+                "transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1)";
 
             updateArtwork();
         });
