@@ -851,8 +851,13 @@ figure {
 </head>
 
 <body>
-   ">
-    <a href="niagarafalls.html" style="
+
+<!-- ============================================================
+     NIAGARA PRIZE — RANDOMLY CHOOSES ONE OF FOUR EXPERIENCES
+     ============================================================ -->
+
+<div id="niagaraPrize" style="display:none;">
+    <a href="#" id="niagaraPrizeLink" style="
         color: white;
         text-decoration: none;
         text-shadow: 0 0 5px red, 0 0 10px yellow, 0 0 20px cyan;
@@ -1186,6 +1191,41 @@ const salesContainer =
 
 const puzzleCancel =
     document.getElementById("puzzleCancel");
+
+
+/* ============================================================
+   NIAGARA PRIZE — RANDOM BUS
+   The prize sends the winner to exactly one of the four
+   Niagara experiences, chosen randomly at click time.
+   ============================================================ */
+
+const niagaraVersions = [
+    "niagara16.html",
+    "niagara20.html",
+    "niagara27.html",
+    "niagara34.html"
+];
+
+const niagaraPrizeLink =
+    document.getElementById("niagaraPrizeLink");
+
+niagaraPrizeLink.addEventListener(
+    "click",
+    function(event) {
+
+        event.preventDefault();
+
+        const chosenNiagara =
+            niagaraVersions[
+                Math.floor(
+                    Math.random() * niagaraVersions.length
+                )
+            ];
+
+        window.location.href =
+            chosenNiagara;
+    }
+);
 
 
 /* ============================================================
