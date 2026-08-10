@@ -1885,12 +1885,9 @@ images.forEach(function(imagePath) {
     image.alt = artworkTitle(imagePath);
     caption.textContent = artworkTitle(imagePath);
 
-    /*
-       V10 CLICK SAFETY: attach the click handler directly to each image
-       while the image is being created. This does not depend on a later
-       delegated listener or on any other gallery code completing first.
-    */
-    image.addEventListener("click", function(event) {
+    /* V12: the image itself owns the click. No delegated handler,
+       no load-event dependency, and no gallery observer is involved. */
+    image.onclick = function(event) {
         event.preventDefault();
         event.stopPropagation();
 
@@ -1898,21 +1895,15 @@ images.forEach(function(imagePath) {
 
         if(clickedPath === "images/LMAC-CallTheArtWorldAndInformThemOfThisArt.jpg") {
             goToRandomNiagara();
-            return;
+            return false;
         }
 
         floatingArtwork.src = image.src;
         floatingArtwork.alt = image.alt;
         puzzleMode = "art";
-
-        if(image.complete && image.naturalWidth > 0) {
-            startPuzzle(image.src);
-        } else {
-            image.addEventListener("load", function() {
-                startPuzzle(image.src);
-            }, { once: true });
-        }
-    });
+        startPuzzle(image.src, "art");
+        return false;
+    };
 
     if (
         imagePath ===
@@ -1986,29 +1977,19 @@ prizeGalleryItem = createPrizeGalleryItem();
    difficult to click. All 72 remain in their normal grid positions. */
 
 /* ============================================================
-   V10 GALLERY VISIBILITY GUARD
-   Ordinary paintings are never hidden or replaced. The sole exception
-   is the special Niagara target, which is intentionally controlled below.
+   V12 GALLERY VISIBILITY
+   No MutationObserver and no batch hiding. Ordinary paintings remain
+   visible and stationary. The Niagara target is the only intentional
+   visibility exception.
    ============================================================ */
-const galleryVisibilityGuard = new MutationObserver(function(mutations) {
-    mutations.forEach(function(mutation) {
-        if(mutation.type !== "attributes" || mutation.attributeName !== "style") return;
-        const target = mutation.target;
-        if(target.classList && target.classList.contains("ordinary-artwork") &&
-           !target.classList.contains("niagara-target")) {
-            target.style.display = "inline-block";
-            target.style.visibility = "visible";
-            target.style.opacity = "1";
-        }
-    });
+Array.from(artworkGallery.querySelectorAll(".ordinary-artwork")).forEach(function(item) {
+    if(!item.classList.contains("niagara-target")) {
+        item.style.display = "inline-block";
+        item.style.visibility = "visible";
+        item.style.opacity = "1";
+    }
 });
 
-Array.from(artworkGallery.querySelectorAll(".ordinary-artwork")).forEach(function(item) {
-    galleryVisibilityGuard.observe(item, { attributes: true });
-    item.style.display = "inline-block";
-    item.style.visibility = "visible";
-    item.style.opacity = "1";
-});
 
 /* ============================================================
    IMAGE PRELOAD / LOAD SAFETY
@@ -3509,7 +3490,7 @@ function buildPuzzleBoard() {
     puzzleCompleted = false;
     puzzleBoard.classList.remove("puzzleComplete");
 
-    puzzleMode = mode;
+    /* Keep the mode already selected by createPuzzle(). */
 
     paperBag.style.display = "none";
     exitSign.style.display = "none";
@@ -4349,37 +4330,7 @@ setTimeout(function() {
 
 }, 2500);
 
-/* V11 FINAL CLICK BACKSTOP
-   One capture-phase listener recognises any click on a gallery painting.
-   This is intentionally independent of image load timing. */
-document.addEventListener("click", function(event) {
-    const img = event.target && event.target.closest
-        ? event.target.closest("#artworkGallery .ordinary-artwork img")
-        : null;
-    if(!img) return;
-
-    const item = img.closest(".ordinary-artwork");
-    if(!item) return;
-
-    if(item.dataset.larryClickHandled === "1") return;
-    item.dataset.larryClickHandled = "1";
-    setTimeout(function(){ delete item.dataset.larryClickHandled; }, 0);
-
-    event.preventDefault();
-    event.stopPropagation();
-
-    const clickedPath = img.getAttribute("src");
-    if(clickedPath === "images/LMAC-CallTheArtWorldAndInformThemOfThisArt.jpg") {
-        goToRandomNiagara();
-        return;
-    }
-
-    floatingArtwork.src = img.src;
-    floatingArtwork.alt = img.alt;
-    puzzleMode = "art";
-    startPuzzle(img.src);
-
-}, true);
+/* V12: direct image onclick handlers are authoritative. */
 
 </script>
 
