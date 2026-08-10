@@ -886,86 +886,14 @@ figure {
 
 <h1>LARRY'S LAR-GALLERY</h1>
 
-<ul style="padding:0; margin:0; list-style:none;">
+<!-- ============================================================
+     72-IMAGE ARTWORK COLLECTION
+     The artwork files live in the lowercase images/ folder.
+     This list is built directly into index.html so this page no
+     longer needs images.js for its gallery.
+     ============================================================ -->
 
-<li class="excerpt-figure">
-    <figure>
-        <img src="Images/LMACastropopeffect.jpg" alt="Astropop Effect">
-        <figcaption>Astropop Effect</figcaption>
-    </figure>
-</li>
-
-<li class="excerpt-figure">
-    <figure>
-        <img src="Images/LMACmegaman10.jpg" alt="Megaman 10">
-        <figcaption>Megaman 10</figcaption>
-    </figure>
-</li>
-
-<li class="excerpt-figure">
-    <figure>
-        <img src="Images/LMACpinballching.jpg" alt="Pinball Ching">
-        <figcaption>Pinball Ching</figcaption>
-    </figure>
-</li>
-
-<li class="excerpt-figure">
-    <figure>
-        <img src="Images/LMACthehoneybee.jpg" alt="The Honey Bee">
-        <figcaption>The Honey Bee</figcaption>
-    </figure>
-</li>
-
-<li class="excerpt-figure">
-    <figure>
-        <img src="Images/LMACjosekandontske.jpg" alt="Jose Kandonske">
-        <figcaption>Jose Kandonske</figcaption>
-    </figure>
-</li>
-
-<li class="excerpt-figure">
-    <figure>
-        <img src="Images/LMACsacredsanctuary.jpg" alt="Sacred Sanctuary">
-        <figcaption>Sacred Sanctuary</figcaption>
-    </figure>
-</li>
-
-<li class="excerpt-figure">
-    <figure>
-        <img src="Images/LMACcontentment.jpg" alt="Contentment">
-        <figcaption>Contentment</figcaption>
-    </figure>
-</li>
-
-<li class="excerpt-figure">
-    <figure>
-        <img src="Images/LMACrespect.jpg" alt="Respect">
-        <figcaption>Respect</figcaption>
-    </figure>
-</li>
-
-<li class="excerpt-figure">
-    <figure>
-        <img src="Images/LMAChistorybook.jpg" alt="History Book">
-        <figcaption>History Book</figcaption>
-    </figure>
-</li>
-
-<li class="excerpt-figure">
-    <figure>
-        <img src="Images/LMACnewnewcanadianart.jpg" alt="New New Canadian Art">
-        <figcaption>New New Canadian Art</figcaption>
-    </figure>
-</li>
-
-<li class="excerpt-figure">
-    <figure>
-        <img src="Images/LMACcasparfreidric1800.jpg" alt="Caspar Freidric 1800">
-        <figcaption>Caspar Freidric 1800</figcaption>
-    </figure>
-</li>
-
-</ul>
+<ul id="artworkGallery" style="padding:0; margin:0; list-style:none;"></ul>
 
 <!-- ============================================================
      ARTWORK
@@ -1106,6 +1034,115 @@ figure {
 <div id="salesContainer"></div>
 
 <script>
+
+/* ============================================================
+   72-IMAGE ARTWORK COLLECTION
+   ============================================================ */
+
+const images = [
+    "images/LMAC-ArquaneTheQuietTeenPoet.jpg",
+    "images/LMAC-AstropopEffect.jpg",
+    "images/LMAC-AtGulliversMuseumOfAbstractArt.jpg",
+    "images/LMAC-AylaDream.jpg",
+    "images/LMAC-BarthesDilnsby.jpg",
+    "images/LMAC-BeautifulConversations.jpg",
+    "images/LMAC-BeBopASaurus.jpg",
+    "images/LMAC-Blondie.jpg",
+    "images/LMAC-BumblebeeVsOptimusPrime.jpg",
+    "images/LMAC-ButSiddharthaWasLookingBeyondThePresent.jpg",
+    "images/LMAC-BuzzardZilla.jpg",
+    "images/LMAC-CallTheArtWorldAndInformThemOfThisArt.jpg",
+    "images/LMAC-CanyonCross.jpg",
+    "images/LMAC-CasparFreidric1800.jpg",
+    "images/LMAC-Contentment.jpg",
+    "images/LMAC-CrusoesBadger.jpg",
+    "images/LMAC-CrusoesWizard.jpg",
+    "images/LMAC-DarkHorsewoman.jpg",
+    "images/LMAC-DesertCivilizationDance.jpg",
+    "images/LMAC-DiamondMineLakeshore.jpg",
+    "images/LMAC-DinosaurSpirit.jpg",
+    "images/LMAC-DinosourFossil.jpg",
+    "images/LMAC-DreamingWoman.jpg",
+    "images/LMAC-EvilCabins.jpg",
+    "images/LMAC-Gooseland.jpg",
+    "images/LMAC-HelloThereEve.jpg",
+    "images/LMAC-HistoryBook.jpg",
+    "images/LMAC-HolidaySnapOfMyMerman.jpg",
+    "images/LMAC-HowYouReallyFeltAtTheTime.jpg",
+    "images/LMAC-Hulot.jpg",
+    "images/LMAC-IcarusIcarus.jpg",
+    "images/LMAC-IDon'tTrustLaoTsuNoMore.jpg",
+    "images/LMAC-IndianaJonesJr.jpg",
+    "images/LMAC-IndianaJr.jpg",
+    "images/LMAC-InThunder.jpg",
+    "images/LMAC-JoseKandontske.jpg",
+    "images/LMAC-Journey'sJourney.jpg",
+    "images/LMAC-LarkaVayYourHairdresser.jpg",
+    "images/LMAC-LenoresHappyDay.jpg",
+    "images/LMAC-LordStitchToothe.jpg",
+    "images/LMAC-MarmouxltTheTrainedFrenchThing.jpg",
+    "images/LMAC-MobySquid.jpg",
+    "images/LMAC-MysticValley.jpg",
+    "images/LMAC-NewNewCanadianArt.jpg",
+    "images/LMAC-PinballChing.jpg",
+    "images/LMAC-PlacesThatHaveBeen.jpg",
+    "images/LMAC-Respect.jpg",
+    "images/LMAC-RobinsonLand.jpg",
+    "images/LMAC-RoncesvallesJazzRacket.jpg",
+    "images/LMAC-SacredSanctuary.jpg",
+    "images/LMAC-SandpiperFlats.jpg",
+    "images/LMAC-TheApproachingSeaDragon.jpg",
+    "images/LMAC-TheBirdEmpress.jpg",
+    "images/LMAC-TheCarnivalGhostsVacation.jpg",
+    "images/LMAC-TheCavemansTV.jpg",
+    "images/LMAC-TheDreamOfSleep.jpg",
+    "images/LMAC-TheElectricFox.jpg",
+    "images/LMAC-TheEmbarrasingAirportIncident.jpg",
+    "images/LMAC-TheGoyaOfMay.jpg",
+    "images/LMAC-TheHoneyBee.jpg",
+    "images/LMAC-TheMonkey'sLunch.jpg",
+    "images/LMAC-TheMustardSeedPrincipleAlien.jpg",
+    "images/LMAC-TheSeaGoat.jpg",
+    "images/LMAC-TheSlap.jpg",
+    "images/LMAC-TheSupposedToBeUnpretentiousSage.jpg",
+    "images/LMAC-TheWeepyMakeupSaleslady.jpg",
+    "images/LMAC-TimeFreeScape.jpg",
+    "images/LMAC-ToTheCaveOfSomethingSpecific.jpg",
+    "images/LMAC-TumbleWeet.jpg",
+    "images/LMAC-VantageShift.jpg",
+    "images/LMAC-WatershipNow.jpg",
+    "images/LMAC-WhySilenceIsGolden.jpg"
+];
+
+const artworkGallery = document.getElementById("artworkGallery");
+
+function artworkTitle(path) {
+    return path
+        .split("/").pop()
+        .replace(/^LMAC-/, "")
+        .replace(/\.jpg$/i, "")
+        .replace(/([a-z])([A-Z])/g, "$1 $2");
+}
+
+images.forEach(function(imagePath) {
+
+    const item = document.createElement("li");
+    item.className = "excerpt-figure";
+
+    const figure = document.createElement("figure");
+    const image = document.createElement("img");
+    const caption = document.createElement("figcaption");
+
+    image.src = imagePath;
+    image.alt = artworkTitle(imagePath);
+    caption.textContent = artworkTitle(imagePath);
+
+    figure.appendChild(image);
+    figure.appendChild(caption);
+    item.appendChild(figure);
+    artworkGallery.appendChild(item);
+});
+
 
 /* ============================================================
    ELEMENTS
