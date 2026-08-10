@@ -75,7 +75,13 @@ h1 {
 }
 
 .excerpt-figure img {
-    height: 300px;
+    /*
+       Keep the gallery paintings thumbnail-like at every browser zoom.
+       Because Ctrl+mouse-wheel browser zoom changes the CSS viewport,
+       using vw lets the individual paintings shrink as the page is enlarged
+       instead of becoming enormous.
+    */
+    height: clamp(95px, 18vw, 300px);
     width: auto;
     display: block;
     margin: 0 auto;
@@ -198,8 +204,12 @@ figure {
     z-index: 5000;
     background: #ffef00;
     color: black;
-    border: 5px solid red;
-    padding: 10px 15px;
+    border: 4px solid red;
+    padding: 7px 10px;
+    font-size: 12px;
+    line-height: 1.15;
+    max-width: 210px;
+    text-align: center;
     font-weight: 900;
     box-shadow: 0 0 20px black;
     animation: alertPulse 0.8s infinite alternate;
@@ -346,7 +356,7 @@ figure {
    ============================================================ */
 
 #puzzleBox {
-    width: min(900px, 95vw);
+    width: min(760px, 92vw);
     margin: 20px auto;
     background: #eee;
     color: black;
@@ -395,7 +405,7 @@ figure {
    ============================================================ */
 
 #puzzleBoard {
-    width: min(600px, 90vw);
+    width: min(440px, 76vw);
     aspect-ratio: 1 / 1;
     margin: 15px auto;
     position: relative;
@@ -460,9 +470,9 @@ figure {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    width: min(600px, 90vw);
-    margin: 20px auto;
-    padding: 15px;
+    width: min(440px, 76vw);
+    margin: 15px auto;
+    padding: 10px;
     background: #222;
     border: 5px solid #555;
     box-sizing: border-box;
@@ -847,6 +857,12 @@ figure {
     pointer-events: none;
 }
 
+/*
+   Gallery/browser-zoom behaviour:
+   Ctrl + mouse-wheel browser zoom changes the CSS viewport. The gallery
+   thumbnails use viewport-relative sizing so they shrink as the page is
+   enlarged, while fixed-position alerts remain anchored to the viewport.
+*/
 </style>
 </head>
 
@@ -1943,7 +1959,7 @@ shopBell();
             500
         );
 
-    }, 4800);
+    }, 1500);
 }
 
 
@@ -2125,7 +2141,7 @@ function animateOpen() {
                 fullViewZoom;
 
             floatingArtwork.style.transition =
-                "transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1)";
+                "transform 0.65s cubic-bezier(0.2, 0.8, 0.2, 1)";
 
             updateArtwork();
         });
