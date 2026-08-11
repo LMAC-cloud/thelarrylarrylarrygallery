@@ -269,10 +269,11 @@ function makeGenerators() {
   generatorsEl.innerHTML = "";
   for (let i = 0; i < 8; i++) {
     const gen = document.createElement("div");
-    gen.className = "generator" + (generatorState[i] ? " active" : " locked");
+    const available = generatorState[i] && imagesReady;
+    gen.className = "generator" + (available ? " active" : " locked");
     gen.dataset.generator = i;
 
-    if (generatorState[i]) {
+    if (generatorState[i] && imagesReady) {
       const img = document.createElement("img");
       img.src = images[Math.min(i, images.length - 1)];
       img.alt = "Generator " + (i + 1);
@@ -298,6 +299,11 @@ function firstEmptyCell() {
 function generateFrom(generatorNumber) {
   if (!generatorState[generatorNumber]) return;
 
+  if (!imagesReady) {
+    statusEl.textContent = "The paintings are still being prepared…";
+    return;
+  }
+
   const cell = firstEmptyCell();
   if (!cell) {
     statusEl.textContent = "The 64-space board is full.";
@@ -314,13 +320,38 @@ function generateFrom(generatorNumber) {
     " produced " + imageName(images[level - 1]) + ".";
 }
 
-// Preload all 72 paintings so a merge can replace the two old pieces immediately.
-const preloadedImages = [];
-images.forEach((src, i) => {
-  const image = new Image();
-  image.src = src;
-  preloadedImages[i] = image;
-});
+// Fully preload AND decode all 72 paintings before the game starts.
+// This prevents the "first time this painting appears" delay.
+const decodedImages = new Array(images.length);
+let imagesReady = false;
+
+async function prepareAllImages() {
+  statusEl.textContent = "Preparing the 72 paintings…";
+
+  await Promise.all(images.map(async (src, i) => {
+    const img = new Image();
+    img.src = src;
+
+    try {
+      await img.decode();
+    } catch (err) {
+      // Some browsers report decode errors even though the image is usable.
+      // We still retain the loaded image.
+      await new Promise(resolve => {
+        if (img.complete) resolve();
+        else img.onload = resolve;
+      });
+    }
+
+    decodedImages[i] = img;
+  }));
+
+  imagesReady = true;
+  statusEl.textContent =
+    "Generator 1 is active. Click it to generate the first painting.";
+  makeGenerators();
+}
+
 
 // A short merge sound generated locally with Web Audio.
 // No external sound file is required.
@@ -365,7 +396,8 @@ function createItem(cell, level) {
 
   const img = document.createElement("img");
   img.className = "item";
-  img.src = images[level - 1];
+  const prepared = decodedImages[level - 1];
+  img.src = prepared ? prepared.src : images[level - 1];
   img.alt = "Level " + level;
   img.draggable = false;
   img.dataset.level = level;
@@ -538,6 +570,7 @@ resetBtn.addEventListener("click", () => {
 
 makeBoard();
 makeGenerators();
+prepareAllImages();
 </script>
 </body>
 </html>
