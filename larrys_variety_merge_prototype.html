@@ -279,6 +279,7 @@ let nextId = 1;
 let generatorCellIndex = 27;
 let generatorLevel = 1;
 let generatorDragging = false;
+let suppressGeneratorClick = false;
 
 function makeBoard() {
   board.innerHTML = "";
@@ -315,6 +316,10 @@ function placeGenerator() {
 
   gen.addEventListener("pointerdown", startGeneratorDrag);
   gen.addEventListener("click", () => {
+    if (suppressGeneratorClick) {
+      suppressGeneratorClick = false;
+      return;
+    }
     if (!generatorDragging) spillFromGenerator();
   });
 
@@ -332,10 +337,6 @@ function updateGeneratorDisplay() {
 }
 
 function upgradeGenerator() {
-  if (!imagesReady) {
-    statusEl.textContent = "The paintings are still being prepared…";
-    return;
-  }
   generatorLevel = generatorLevel === 1 ? 2 : 1;
   updateGeneratorDisplay();
   statusEl.textContent = generatorLevel === 2
@@ -365,10 +366,6 @@ function neighbouringCells(index) {
 }
 
 function spillFromGenerator() {
-  if (!imagesReady) {
-    statusEl.textContent = "The paintings are still being prepared…";
-    return;
-  }
   const empty = neighbouringCells(generatorCellIndex)
     .filter(i => !cells[i].querySelector(".item"));
   if (!empty.length) {
@@ -384,17 +381,54 @@ function spillFromGenerator() {
 
 function startGeneratorDrag(e) {
   if (e.pointerType === "mouse" && e.button !== 0) return;
+
   e.preventDefault();
   e.stopPropagation();
 
   const gen = e.currentTarget;
   const sourceCell = gen.parentElement;
-  const startX = e.clientX, startY = e.clientY;
-  generatorDragging = false;
+  const rect = gen.getBoundingClientRect();
+  const startX = e.clientX;
+  const startY = e.clientY;
+
+  let moved = false;
+  let ghost = null;
 
   const move = ev => {
-    if (Math.abs(ev.clientX - startX) + Math.abs(ev.clientY - startY) > 6) {
+    ev.preventDefault();
+
+    if (!moved) {
+      if (Math.abs(ev.clientX - startX) + Math.abs(ev.clientY - startY) < 6) return;
+
+      moved = true;
       generatorDragging = true;
+
+      ghost = gen.cloneNode(true);
+      ghost.style.position = "fixed";
+      ghost.style.left = rect.left + "px";
+      ghost.style.top = rect.top + "px";
+      ghost.style.width = rect.width + "px";
+      ghost.style.height = rect.height + "px";
+      ghost.style.zIndex = "99999";
+      ghost.style.pointerEvents = "none";
+      ghost.style.opacity = "0.85";
+      document.body.appendChild(ghost);
+
+      gen.style.opacity = "0.25";
+    }
+
+    ghost.style.left =
+      (ev.clientX - rect.width / 2) + "px";
+    ghost.style.top =
+      (ev.clientY - rect.height / 2) + "px";
+
+    document.querySelectorAll(".cell").forEach(c => c.style.outline = "");
+
+    const target =
+      document.elementFromPoint(ev.clientX, ev.clientY)?.closest(".cell");
+
+    if (target) {
+      target.style.outline = "3px solid rgba(255,255,255,.9)";
     }
   };
 
@@ -402,22 +436,38 @@ function startGeneratorDrag(e) {
     document.removeEventListener("pointermove", move);
     document.removeEventListener("pointerup", up);
 
-    if (!generatorDragging) return;
+    document.querySelectorAll(".cell").forEach(c => c.style.outline = "");
 
-    const target = document.elementFromPoint(ev.clientX, ev.clientY)?.closest(".cell");
+    if (!moved) {
+      // It was a click, not a drag. The normal click handler will fire.
+      return;
+    }
+
+    suppressGeneratorClick = true;
+
+    const target =
+      document.elementFromPoint(ev.clientX, ev.clientY)?.closest(".cell");
+
     if (target && target !== sourceCell && !target.querySelector(".item")) {
       sourceCell.innerHTML = "";
       target.appendChild(gen);
       generatorCellIndex = Number(target.dataset.index);
       statusEl.textContent = "Generator moved.";
     } else {
+      gen.style.opacity = "1";
       statusEl.textContent = "The generator needs an empty square.";
     }
-    setTimeout(() => generatorDragging = false, 0);
+
+    if (ghost) ghost.remove();
+    gen.style.opacity = "1";
+
+    setTimeout(() => {
+      generatorDragging = false;
+    }, 0);
   };
 
-  document.addEventListener("pointermove", move, {passive:true});
-  document.addEventListener("pointerup", up, {once:true});
+  document.addEventListener("pointermove", move, { passive: false });
+  document.addEventListener("pointerup", up, { once: true });
 }
 
 function createSupply(cell) {
@@ -519,33 +569,26 @@ function generateFrom(generatorNumber) {
 const decodedImages = new Array(images.length);
 let imagesReady = false;
 
-async function prepareAllImages() {
-  statusEl.textContent = "Preparing the 72 paintings…";
-
-  await Promise.all(images.map(async (src, i) => {
-    const img = new Image();
-    img.src = src;
-
-    try {
-      await img.decode();
-    } catch (err) {
-      // Some browsers report decode errors even though the image is usable.
-      // We still retain the loaded image.
-      await new Promise(resolve => {
-        if (img.complete) resolve();
-        else img.onload = resolve;
-      });
-    }
-
-    decodedImages[i] = img;
-  }));
-
+function prepareAllImages() {
+  // Prepare in the background. The game does NOT wait for all 72 images.
+  // This keeps the generator immediately playable.
   imagesReady = true;
   statusEl.textContent =
-    "Generator 1× is ready. Click it to spill a painting.";
+    "Generator 1× is ready. The 72 paintings are loading in the background.";
+
+  images.forEach((src, i) => {
+    const img = new Image();
+    img.src = src;
+    decodedImages[i] = img;
+
+    // Ask the browser to decode when possible, but never block the game.
+    if (img.decode) {
+      img.decode().catch(() => {});
+    }
+  });
+
   updateGeneratorDisplay();
 }
-
 
 // A short merge sound generated locally with Web Audio.
 // No external sound file is required.
