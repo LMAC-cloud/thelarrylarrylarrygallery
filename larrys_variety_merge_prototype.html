@@ -151,6 +151,23 @@ button:disabled{opacity:.45;cursor:default}
   .layout{width:98vw}
   .board{height:78vw;min-height:0}
 }
+
+.generator-stamp{
+  width:82%;height:82%;
+  background:#f5f1e8;
+  border:3px solid #b7aa94;
+  clip-path:polygon(0 0,8% 4%,16% 0,24% 4%,32% 0,40% 4%,48% 0,56% 4%,64% 0,72% 4%,80% 0,88% 4%,100% 0,96% 10%,100% 20%,96% 30%,100% 40%,96% 50%,100% 60%,96% 70%,100% 80%,96% 90%,100% 100%,88% 96%,80% 100%,72% 96%,64% 100%,56% 96%,48% 100%,40% 96%,32% 100%,24% 96%,16% 100%,8% 96%,0 100%,4% 90%,0 80%,4% 70%,0 60%,4% 50%,0 40%,4% 30%,0 20%,4% 10%);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 3px 7px rgba(0,0,0,.3);
+  pointer-events:none;
+}
+.horn-mark{
+  font-family:Georgia,serif;
+  color:#111;
+  font-size:clamp(28px,4vw,48px);
+  font-weight:bold;
+  transform:rotate(-12deg);
+}
 </style>
 </head>
 <body>
@@ -267,10 +284,7 @@ let audioContext=null;
 let music=null;
 let musicOn=false;
 
-const generators={
-  1:{cell:27,level:1,boost:0,unlocked:true},
-  2:{cell:28,level:1,boost:0,unlocked:false}
-};
+const generators={1:{cell:27,level:1,unlocked:true},2:{cell:28,level:1,unlocked:false}};
 const series7Letters={1:false,2:false};
 let imagesReady=true;
 let nextOrderId=1;
@@ -325,6 +339,59 @@ function makeBoard(){
   }
   // Fixed postal mailbox: always visible on the board.
   createMailbox(cells[35]);
+}
+
+function createGenerator(cell,which=1){
+  cell.innerHTML="";
+  const g=generators[which] || (generators[which]={cell:cell,level:1,unlocked:true});
+  g.cell=cell;
+  g.unlocked=true;
+
+  const d=document.createElement("div");
+  d.className="generator";
+  d.dataset.generator=which;
+  d.title="UP postal stamp";
+  d.setAttribute("aria-label","UP postal stamp");
+
+  // A stamp-shaped tile with a black postal horn. No explanatory text.
+  const stamp=document.createElement("div");
+  stamp.className="generator-stamp";
+  stamp.innerHTML='<div class="horn-mark">♬</div>';
+  d.appendChild(stamp);
+
+  d.addEventListener("pointerdown",startGeneratorDrag);
+  d.addEventListener("click",e=>{
+    if(!d.dataset.moved){
+      playGeneratorPop();
+      spill(which);
+    }
+    delete d.dataset.moved;
+  });
+  cell.appendChild(d);
+}
+
+function startGeneratorDrag(e){
+  if(e.pointerType==="mouse"&&e.button!==0)return;
+  e.preventDefault();
+  e.stopPropagation();
+  const d=e.currentTarget;
+  const from=d.parentElement;
+  let moved=false;
+  const sx=e.clientX,sy=e.clientY;
+
+  const move=ev=>{
+    ev.preventDefault();
+    if(Math.abs(ev.clientX-sx)+Math.abs(ev.clientY-sy)>6)moved=true;
+  };
+  const up=ev=>{
+    document.removeEventListener("pointermove",move);
+    document.removeEventListener("pointerup",up);
+    document.removeEventListener("pointercancel",up);
+    if(moved)d.dataset.moved="1";
+  };
+  document.addEventListener("pointermove",move,{passive:false});
+  document.addEventListener("pointerup",up,{once:true});
+  document.addEventListener("pointercancel",up,{once:true});
 }
 
 function emptyCells(exclude=[]){
@@ -799,6 +866,9 @@ document.addEventListener("pointerdown",()=>{
 },{once:false});
 
 makeBoard();
+createGenerator(cells[27],1);
+if(generators[2] && generators[2].unlocked)createGenerator(cells[28],2);
+
 renderOrders();
 renderGenerators();
 updateBonusButton();
