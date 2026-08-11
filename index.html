@@ -142,85 +142,8 @@ h1 {
 }
 
 /* ============================================================
-   NIAGARA DESTINATION ARTWORK
-   ============================================================ */
-
-.excerpt-figure.niagara-target {
-    position: relative;
-    z-index: 20;
-}
-
-.excerpt-figure.niagara-target img {
-    border-color: white !important;
-    box-shadow:
-        0 0 8px white,
-        0 0 18px white,
-        0 0 35px white,
-        0 0 70px rgba(255,255,255,.95),
-        0 20px 35px rgba(0,0,0,.95) !important;
-    cursor: pointer;
-}
-
-.excerpt-figure.niagara-target figcaption {
-    color: white;
-    font-weight: 1000;
-    text-shadow:
-        0 0 5px white,
-        0 0 12px white,
-        0 0 22px #8b4513;
-}
-
-.niagara-arrow {
-    position: absolute;
-    z-index: 50;
-    color: #8b4513;
-    font-size: 38px;
-    line-height: 1;
-    font-weight: 1000;
-    pointer-events: none;
-    text-shadow:
-        0 0 3px #fff,
-        0 0 7px #c98b5b,
-        0 0 15px #8b4513,
-        0 0 28px #8b4513;
-    animation: niagaraArrowPulse 1.05s ease-in-out infinite alternate;
-}
-
-.niagara-arrow.a1  { left: -58px; top: 8%;  transform: rotate(25deg); }
-.niagara-arrow.a2  { left: -72px; top: 30%; transform: rotate(8deg); }
-.niagara-arrow.a3  { left: -65px; top: 54%; transform: rotate(-8deg); }
-.niagara-arrow.a4  { left: -50px; top: 76%; transform: rotate(-24deg); }
-
-.niagara-arrow.a5  { right: -58px; top: 8%;  transform: rotate(155deg); }
-.niagara-arrow.a6  { right: -72px; top: 30%; transform: rotate(172deg); }
-.niagara-arrow.a7  { right: -65px; top: 54%; transform: rotate(188deg); }
-.niagara-arrow.a8  { right: -50px; top: 76%; transform: rotate(204deg); }
-
-.niagara-arrow.a9  { left: 8%;  top: -48px; transform: rotate(65deg); }
-.niagara-arrow.a10 { left: 32%; top: -58px; transform: rotate(82deg); }
-.niagara-arrow.a11 { left: 56%; top: -55px; transform: rotate(98deg); }
-.niagara-arrow.a12 { left: 77%; top: -45px; transform: rotate(115deg); }
-
-.niagara-arrow.a13 { left: 8%;  bottom: -48px; transform: rotate(-65deg); }
-.niagara-arrow.a14 { left: 32%; bottom: -58px; transform: rotate(-82deg); }
-.niagara-arrow.a15 { left: 56%; bottom: -55px; transform: rotate(-98deg); }
-.niagara-arrow.a16 { left: 77%; bottom: -45px; transform: rotate(-115deg); }
-
-@keyframes niagaraArrowPulse {
-    from {
-        opacity: .55;
-        filter: brightness(.85);
-    }
-    to {
-        opacity: 1;
-        filter: brightness(1.55);
-    }
-}
-
-/* ============================================================
    NIAGARA BUS SELECTION ROOM
    ============================================================ */
-
 
 #busSelectionOverlay {
     position: fixed;
@@ -1311,7 +1234,7 @@ figure {
     pointer-events: none;
     animation:
         popupIn 0.2s ease-out,
-        popupOut 0.55s ease-in 3.65s forwards;
+        popupOut 0.5s ease-in 2.8s forwards;
 }
 
 .salesPopup strong {
@@ -1319,25 +1242,6 @@ figure {
     color: red;
     font-size: 18px;
     margin-bottom: 6px;
-    line-height: 1.05;
-}
-
-.salesPopup .adBody {
-    font-size: 15px;
-    line-height: 1.2;
-    margin-bottom: 8px;
-}
-
-.salesPopup .finePrint {
-    display: block;
-    font-family: Arial, sans-serif;
-    font-size: 8px;
-    line-height: 1.05;
-    font-weight: normal;
-    color: #333;
-    letter-spacing: 0.1px;
-    border-top: 1px dotted #777;
-    padding-top: 5px;
 }
 
 @keyframes popupIn {
@@ -1856,28 +1760,6 @@ images.forEach(function(imagePath) {
     image.alt = artworkTitle(imagePath);
     caption.textContent = artworkTitle(imagePath);
 
-    if (
-        imagePath ===
-        "images/LMAC-CallTheArtWorldAndInformThemOfThisArt.jpg"
-    ) {
-
-        item.classList.add("niagara-target");
-
-        for(let arrowNumber = 1; arrowNumber <= 16; arrowNumber++) {
-
-            const arrow =
-                document.createElement("span");
-
-            arrow.className =
-                "niagara-arrow a" + arrowNumber;
-
-            arrow.textContent =
-                "➜";
-
-            item.appendChild(arrow);
-        }
-    }
-
     figure.appendChild(image);
     figure.appendChild(caption);
     item.appendChild(figure);
@@ -1955,64 +1837,6 @@ function startGalleryMotion() {
 }
 
 startGalleryMotion();
-
-
-/* ============================================================
-   IMAGE PRELOAD / LOAD SAFETY
-   ============================================================ */
-
-images.forEach(function(imagePath) {
-
-    const probe =
-        new Image();
-
-    probe.onload =
-        function() {
-
-            const matching =
-                document.querySelector(
-                    '.excerpt-figure img[src="' +
-                    imagePath.replace(/"/g, '\\"') +
-                    '"]'
-                );
-
-            if(matching) {
-                matching.dataset.galleryLoaded =
-                    "true";
-            }
-        };
-
-    probe.onerror =
-        function() {
-
-            const matching =
-                Array.from(
-                    document.querySelectorAll(
-                        ".excerpt-figure img"
-                    )
-                ).find(function(img) {
-                    return img.getAttribute("src") === imagePath;
-                });
-
-            if(matching) {
-
-                matching.dataset.galleryLoaded =
-                    "false";
-
-                /*
-                   Keep the gallery visible, but make an actual
-                   missing file obvious instead of allowing the
-                   puzzle to appear blank.
-                */
-                matching.title =
-                    "Larry cannot find this image file: " +
-                    imagePath;
-            }
-        };
-
-    probe.src =
-        imagePath;
-});
 
 
 /* ============================================================
@@ -2906,24 +2730,13 @@ function showNiagaraPrizeSlot() {
         return;
     }
 
-    const eligibleGalleryItems =
-        galleryItems.filter(function(item) {
-            return !item.classList.contains(
-                "niagara-target"
-            );
-        });
-
-    if(!eligibleGalleryItems.length) {
-        return;
-    }
-
     const chosenIndex =
         Math.floor(
-            Math.random() * eligibleGalleryItems.length
+            Math.random() * galleryItems.length
         );
 
     prizeReplacedItem =
-        eligibleGalleryItems[chosenIndex];
+        galleryItems[chosenIndex];
 
     prizeReplacedItem.style.display =
         "none";
@@ -3005,46 +2818,47 @@ function startPrizePuzzle() {
    ============================================================ */
 
 const salesMessages = [
-    {h:"LARRY'S VARIETY", b:"WE DON'T NEEEED TO RIP YOU OFF: SALES ARE FINE.", f:"Prices may be reduced, rearranged, reconsidered, or defended by Larry in a court of imaginary law."},
-    {h:"BUY ONE!", b:"OR DON'T. WE'RE NOT YOUR DAD.", f:"Larry's Variety accepts no responsibility for parental guidance, poor shopping decisions, or excellent ones."},
-    {h:"LARRY'S HONEST SALE", b:"Everything is reduced! Some things were never expensive.", f:"Reduction calculated using Larry's proprietary arithmetic, which contains numbers and confidence."},
-    {h:"TODAY ONLY!", b:"Possibly tomorrow too. Larry hasn't checked.", f:"Offer expires when Larry remembers he made it. Time zone unspecified."},
-    {h:"LARRY SAYS", b:"WHY PAY FULL PRICE WHEN YOU CAN PAY A DIFFERENT PRICE?", f:"Different price may be higher, lower, sideways, or merely printed in a different font."},
-    {h:"BIG SAVINGS!", b:"The numbers have been rounded in our favour.", f:"Rounding may include rounding up, rounding down, or simply looking at the number until it feels right."},
-    {h:"WELLINGTON BRAND™", b:"WEDDING CONFETTI — NOW WITH 17% MORE CONFETTI.", f:"Premium paper, probably. Please do not eat the confetti. It is not a salad."},
-    {h:"LARRY'S CUSTOMER APPRECIATION", b:"Customers are appreciated. Especially the ones who keep clicking.", f:"Appreciation has no cash value and cannot be exchanged for actual appreciation."},
-    {h:"HALF PRICE!", b:"Subject to complicated mathematical conditions.", f:"Half price means half of something. We decline to specify what. Ask Larry after lunch."},
-    {h:"YOU COULD SAVE MONEY!", b:"You could also not. Both outcomes are available.", f:"Savings are hypothetical until confirmed by a person who has seen the receipt."},
-    {h:"LARRY'S CLEARANCE", b:"We found this in the back. Now it's your problem.", f:"Clearance merchandise may have been moved from another room, shelf, decade, or universe."},
-    {h:"SPECIAL DEAL!", b:"It seemed special when we wrote it.", f:"Specialness is judged by Larry's personal committee of one."},
-    {h:"ACT NOW!", b:"Or act later. We remain strangely open to either.", f:"No actual deadline has been established. Please maintain a reasonable sense of urgency."},
-    {h:"FREE!", b:"Some restrictions, conditions, exceptions and other little surprises.", f:"Free item may require purchase of another item, participation in a puzzle, or simply believing very hard."},
-    {h:"THE SALE THAT MAKES NO SENSE", b:"Finally, a sale you can understand.", f:"Understanding not guaranteed. Confusion may occur before, during, or after purchase."},
-    {h:"LARRY'S PRICE GUARANTEE", b:"We promise not to explain it.", f:"Guarantee covers the existence of this guarantee. Nothing else has yet been guaranteed."},
-    {h:"BUY IT BEFORE IT'S GONE!", b:"We have no idea when that will be.", f:"Inventory may disappear naturally, mysteriously, or because Larry moved it."},
-    {h:"DEAL OF THE CENTURY!", b:"Century not specified.", f:"Could refer to any century. Offer has not been reviewed by a historian."},
-    {h:"LOOK! A COUPON!", b:"You may already have missed it.", f:"Coupon has no known expiry date because its expiry date was printed too small to find."},
-    {h:"LARRY'S HEALTH REMINDER", b:"WE CARE ABOUT WHAT YOU EAT! PLEASE EAT SOMETHING THAT IS ACTUALLY A VEGETABLE.", f:"Brought to you by Larry's Variety. We are not nutritionists. We are barely grocers. Drink some water."},
-    {h:"ANOTHER HEALTH REMINDER", b:"HAVE YOU HAD WATER TODAY? LARRY HAS.", f:"Larry's water was reportedly inside coffee. Results may vary. This is a friendly reminder, not medical advice."},
-    {h:"LARRY'S WELLNESS DEPARTMENT", b:"PLEASE STAND UP AND STRETCH. YOUR SCREEN IS NOT GOING ANYWHERE.", f:"Unless it is being dragged. In that case, please finish dragging it first."},
-    {h:"HEALTHY CHOICE!", b:"A LITTLE WALK WOULD BE NICE. EVEN TO THE FRIDGE.", f:"Walking to the refrigerator counts as movement. Walking back is strongly encouraged."},
-    {h:"LARRY CARES", b:"EAT SOMETHING GREEN TODAY. MONEY DOES NOT COUNT.", f:"Green Lar-Bucks are currency in the Larry universe and are therefore excluded from the vegetable category."},
-    {h:"PUBLIC HEALTH ANNOUNCEMENT", b:"PLEASE BLINK. YES, YOU. BLINK NOW.", f:"Thank you. Larry has completed his public service for the next several seconds."},
-    {h:"NUTRITION DEAL", b:"ONE FRUIT. ONE VEGETABLE. ZERO ARGUMENTS.", f:"Chocolate-covered raisins are currently under review by the Larry Food Ethics Board."},
-    {h:"CONSUMER ALERT", b:"YOU HAVE NOT PURCHASED ENOUGH IMAGINARY MERCHANDISE.", f:"Imaginary merchandise is not required for a fulfilling life, but Larry has already imagined the warehouse."},
-    {h:"URGENT LAR-BUCK NOTICE", b:"YOUR LAR-BUCKS ARE BECOMING LONELY.", f:"Please introduce them to other Lar-Bucks. Do not put them in direct sunlight."},
-    {h:"EXCLUSIVE DEAL", b:"SPEND 7 LAR-BUCKS TO UNLOCK THE OPPORTUNITY TO SPEND 9.", f:"Opportunity is not the same thing as obligation. Larry would like you to notice this distinction."},
-    {h:"FLASH SALE!", b:"EVERYTHING IS 100% OFF EXCEPT THE THINGS THAT AREN'T.", f:"Items excluded from the 100% discount include most items, several concepts, and possibly this advertisement."},
-    {h:"WHY NOT BUY MORE?", b:"LARRY HAS ALREADY PUT THE BOXES OUT.", f:"Boxes are emotionally attached to their contents. Larry refuses to discuss the matter further."},
-    {h:"ONLY 2 CUSTOMERS ALLOWED!", b:"UNFORTUNATELY, YOU ARE ONE OF THEM.", f:"The other customer has been informed. The other customer has no idea what is happening either."},
-    {h:"FOR JUST 4 LAR-BUCKS", b:"RECEIVE ABSOLUTELY NO GUARANTEE WHATSOEVER.", f:"This advertisement is unusually honest. Larry is uncomfortable with this and may revise it later."},
-    {h:"CONGRATULATIONS!", b:"YOU HAVE QUALIFIED TO CONSIDER PURCHASING SOMETHING.", f:"Consideration is free. Purchase is optional. Regret, if any, is not refundable."},
-    {h:"LARRY'S VARIETY WEATHER DESK", b:"TODAY'S FORECAST: 73% CHANCE OF SOMETHING HAPPENING.", f:"Forecast produced by Larry looking out the window for approximately four seconds."},
-    {h:"EMERGENCY DEAL", b:"DON'T PANIC. IT'S JUST A SALE.", f:"If actual emergency conditions exist, please follow appropriate local instructions instead of Larry's sales advice."},
-    {h:"WE HAVE A DEAL FOR YOU", b:"IT'S SOMEWHERE AROUND HERE. KEEP LOOKING.", f:"Deal location may change. Searching for it may constitute participation in a free treasure hunt."},
-    {h:"LARRY'S VARIETY", b:"QUALITY SINCE RECENTLY.", f:"The precise founding date has been misplaced. A commemorative plaque may be ordered."},
-    {h:"NO GIMMICKS!", b:"EXCEPT THE GIMMICKS.", f:"All gimmicks are decorative and should not be operated while driving, swimming, or operating a Niagara Falls portal."},
-    {h:"LAST CHANCE!", b:"THIS IS YOUR LAST CHANCE UNTIL THE NEXT LAST CHANCE.", f:"Additional last chances may be issued without notice. Please retain this notice for absolutely no reason."}
+
+    "WHY NOT BUY MORE? You are already here.",
+
+    "URGENT: Your Lar-Bucks are becoming lonely.",
+
+    "For TWO more Lar-Bucks, you can spend FIVE Lar-Bucks, which could earn you THREE more Lar-Bucks!",
+
+    "LIMITED TIME: This offer lasts approximately until we stop looking at it.",
+
+    "ONLY 2 CUSTOMERS ALLOWED! Unfortunately, you are one of them.",
+
+    "ACT NOW! Or act later. But preferably now.",
+
+    "BUY MORE ART. Larry has already put the boxes out.",
+
+    "CONSUMER ALERT: You have not purchased enough imaginary merchandise.",
+
+    "EXCLUSIVE DEAL: Spend 7 Lar-Bucks to unlock the opportunity to spend 9.",
+
+    "WHY SETTLE FOR ONE LAR-BUCK WHEN YOU COULD OWE SIX?",
+
+    "FINAL WARNING: The sale may end at any moment we choose.",
+
+    "YOUR FRIENDS ARE PROBABLY BUYING MORE LAR-BUCKS.",
+
+    "FLASH SALE! Everything is 100% off except the things that aren't.",
+
+    "FOR JUST 4 LAR-BUCKS: receive absolutely no guarantee whatsoever.",
+
+    "BUY NOW! The other customer is thinking about buying now.",
+
+    "CONGRATULATIONS! You have qualified to consider purchasing something.",
+
+    "URGENT DEAL: Spend 5. Receive the satisfaction of having spent 5.",
+
+    "WHY NOT BUY MORE? Larry has already made the suggestion.",
+
+    "EXTRA VALUE: One imaginary Lar-Buck may be worth another imaginary Lar-Buck.",
+
+    "LAST CHANCE! This is your last chance until the next last chance."
+
 ];
 
 
@@ -3054,18 +2868,11 @@ const salesMessages = [
 
 function createSalesPopup() {
 
-    /* Do not cover an active puzzle, prize room, or Niagara transition. */
-    if(
-        puzzleOverlay.style.display === "block" ||
-        (typeof busSelectionOverlay !== "undefined" && busSelectionOverlay.style.display === "block")
-    ) {
-        return;
-    }
-
     const popup = document.createElement("div");
+
     popup.className = "salesPopup";
 
-    const ad =
+    const message =
         salesMessages[
             Math.floor(
                 Math.random() * salesMessages.length
@@ -3073,9 +2880,8 @@ function createSalesPopup() {
         ];
 
     popup.innerHTML =
-        "<strong>" + ad.h + "</strong>" +
-        "<div class=\"adBody\">" + ad.b + "</div>" +
-        "<small class=\"finePrint\">" + ad.f + "</small>";
+        "<strong>IMPORTANT LARRY NOTICE</strong>" +
+        message;
 
     popup.style.left =
         Math.random() * 70 + 10 + "%";
@@ -3083,19 +2889,11 @@ function createSalesPopup() {
     popup.style.top =
         Math.random() * 70 + 10 + "%";
 
-    popup.style.transform =
-        "rotate(" +
-        (-4 + Math.random() * 8) +
-        "deg)";
-
-    popup.style.width =
-        (250 + Math.random() * 45) + "px";
-
     salesContainer.appendChild(popup);
 
     setTimeout(function() {
         popup.remove();
-    }, 4300);
+    }, 3500);
 }
 
 
@@ -3120,44 +2918,6 @@ function salesBarrage() {
     }, 350);
 
 }
-
-
-/* ============================================================
-   RANDOM LARRY'S VARIETY AD SCHEDULER
-   ============================================================ */
-
-let larryAdTimer = null;
-
-function scheduleRandomLarryAd() {
-
-    const delay =
-        16000 + Math.random() * 18000;
-
-    larryAdTimer = setTimeout(function() {
-
-        if(
-            puzzleOverlay.style.display !== "block" &&
-            !(typeof busSelectionOverlay !== "undefined" && busSelectionOverlay.style.display === "block")
-        ) {
-            /* Occasionally revive the Wellington confetti advertisement. */
-            if(Math.random() < 0.12) {
-                wellingtonAd.style.display = "block";
-                createConfetti();
-
-                setTimeout(function() {
-                    wellingtonAd.style.display = "none";
-                }, 4200);
-            } else {
-                createSalesPopup();
-            }
-        }
-
-        scheduleRandomLarryAd();
-
-    }, delay);
-}
-
-scheduleRandomLarryAd();
 
 
 /* ============================================================
@@ -3322,17 +3082,8 @@ function setPieceBackground(
     const col =
         correctPosition % 3;
 
-    /*
-       Use a DOUBLE-QUOTED CSS URL. Several of the real 72
-       filenames contain apostrophes (for example Journey'sJourney).
-       A single-quoted CSS url() makes those puzzle pieces render
-       blank even though the original image itself exists.
-    */
-    const safePuzzleUrl =
-        puzzleImage.replace(/"/g, '\\"');
-
     piece.style.backgroundImage =
-        'url("' + safePuzzleUrl + '")';
+        "url('" + puzzleImage + "')";
 
     piece.style.backgroundSize =
         "300% 300%";
@@ -3351,79 +3102,6 @@ function createPuzzle(imageSrc, mode = "art") {
 
     puzzleMode = mode;
     puzzleImage = imageSrc;
-
-    /*
-       For ordinary artwork, wait for the actual image to be
-       available before constructing the nine-piece board.
-       This removes the remaining race condition where a fast
-       click could create a blank board before the JPEG finished
-       loading.
-    */
-    if(
-        puzzleMode === "art" &&
-        imageSrc &&
-        !imageSrc.startsWith("data:") &&
-        !imageSrc.startsWith("blob:")
-    ) {
-
-        const loader =
-            new Image();
-
-        loader.onload =
-            function() {
-                if(
-                    puzzleOverlay.style.display ===
-                    "block"
-                ) {
-                    buildPuzzleBoard();
-                }
-            };
-
-        loader.onerror =
-            function() {
-
-                puzzleOverlay.style.display =
-                    "none";
-
-                createSalesPopup();
-
-                setTimeout(
-                    function() {
-                        createSalesPopup();
-                    },
-                    250
-                );
-            };
-
-        loader.src =
-            imageSrc;
-
-        /*
-           The rest of this function must not run until the
-           image has loaded.
-        */
-        if(!loader.complete) {
-            return;
-        }
-
-        if(loader.naturalWidth === 0) {
-            puzzleOverlay.style.display =
-                "none";
-            return;
-        }
-    }
-
-    buildPuzzleBoard();
-}
-
-
-function buildPuzzleBoard() {
-
-    /*
-       The existing puzzle construction is moved into this
-       function so an image load can safely precede it.
-    */
-
 
     puzzleBoard.innerHTML = "";
     pieceTray.innerHTML = "";
@@ -3965,37 +3643,6 @@ function openArtworkAfterPuzzle() {
 
 
 /* ============================================================
-   RANDOM NIAGARA DESTINATION
-   ============================================================ */
-
-function goToRandomNiagara() {
-
-    const chosenNiagara =
-        niagaraVersions[
-            Math.floor(
-                Math.random() *
-                niagaraVersions.length
-            )
-        ];
-
-    /*
-       A tiny delay lets the white glow/arrows register as the
-       customer clicks the destination painting, before the page
-       changes.
-    */
-    setTimeout(
-        function() {
-
-            window.location.href =
-                chosenNiagara;
-
-        },
-        120
-    );
-}
-
-
-/* ============================================================
    NORMAL IMAGE CLICK
    ============================================================ */
 
@@ -4008,50 +3655,6 @@ document
             function(event) {
 
                 event.stopPropagation();
-
-                const imagePath =
-                    image.getAttribute("src");
-
-                /*
-                   This one painting is now the unmistakable
-                   Niagara destination. It bypasses the puzzle
-                   completely and randomly selects one of the
-                   four Niagara pages.
-                */
-                if(
-                    imagePath ===
-                    "images/LMAC-CallTheArtWorldAndInformThemOfThisArt.jpg"
-                ) {
-
-                    goToRandomNiagara();
-
-                    return;
-                }
-
-                /*
-                   Do not start a puzzle from an image that the
-                   browser failed to load. This prevents a blank
-                   puzzle from ever being deliberately opened.
-                */
-                if(
-                    !image.complete ||
-                    image.naturalWidth === 0
-                ) {
-
-                    image.addEventListener(
-                        "load",
-                        function() {
-
-                            startPuzzle(
-                                image.src
-                            );
-
-                        },
-                        { once: true }
-                    );
-
-                    return;
-                }
 
                 floatingArtwork.src =
                     image.src;
