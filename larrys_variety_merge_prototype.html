@@ -28,7 +28,6 @@ button:disabled{opacity:.45;cursor:default}
 .mailbox{font-size:43px;width:90%;height:90%;display:flex;align-items:center;justify-content:center;background:#a73b28;border:4px solid #7a291c;border-radius:7px;box-shadow:inset 0 0 7px rgba(0,0,0,.25);cursor:default}
 .letter{width:88%;height:72%;background:#fff8e8;border:2px solid #a88e6c;border-radius:4px;box-shadow:0 3px 6px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;font-size:28px;position:relative}
 .letter:after{content:"✉";font-size:34px}
-.supply{display:flex;align-items:center;justify-content:center;background:#f4ead7!important;border:2px solid #9a7651!important;object-fit:contain!important;font-size:clamp(26px,4vw,54px)!important}
 .panel{background:rgba(255,248,232,.9);border:2px solid #b49570;border-radius:11px;padding:10px;box-shadow:0 4px 10px rgba(50,30,10,.2)}
 .panel h2{font-size:18px;margin:0 0 8px}
 .money{font-size:20px;font-weight:bold;margin-bottom:9px}
@@ -37,7 +36,7 @@ button:disabled{opacity:.45;cursor:default}
 .order-title{font-weight:bold;margin-bottom:5px}
 .order-row{display:flex;justify-content:space-between;font-size:13px;padding:2px 0}
 .order-slots{display:flex;gap:3px;flex-wrap:wrap;margin:6px 0}
-.order-slot{width:27px;height:27px;border:1px dashed #8d795d;background:white;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:10px}
+.order-slot{width:27px;height:27px;border:1px dashed #8d795d;background:white;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:bold;cursor:default}
 .shop-item{border-top:1px solid #c9b99f;padding:8px 0;font-size:13px}
 .small{font-size:12px;line-height:1.35}
 .help{width:min(1100px,96vw);margin:10px auto 25px;background:rgba(255,248,232,.8);border:1px solid #b49570;border-radius:9px;padding:9px 12px;font-size:13px;line-height:1.4}
@@ -56,7 +55,6 @@ button:disabled{opacity:.45;cursor:default}
 <div class="controls">
 <button id="generatorMode">Generator 1×</button>
 <button id="doubleBonus" disabled>2× Bonus</button>
-<button id="supplyButton">Art Supply</button>
 <button id="musicButton">Background Sound</button>
 <button id="reset">Reset</button>
 </div>
@@ -81,7 +79,7 @@ Two matching stamps merge into the next numbered stamp. At Level 4, a temporary 
 At Level 7, the generator produces a letter. Drag the Level-7 stamp onto the letter to mail it and begin a new
 series. When the next series reaches Level 7, its return letter becomes a second generator. The two generators
 are independent. The mailbox permanently destroys anything deliberately dropped onto it, except a required Level-7
-stamp, which mails the series. Orders on the right reward LAR when their requested stamps are placed in their slots.
+stamp, which mails the series. Orders on the right reward LAR when their requested stamps are dragged into their slots.
 </div>
 
 <script>
@@ -161,7 +159,7 @@ const images = [
 ];
 const board=document.getElementById("board"),statusEl=document.getElementById("status");
 const generatorMode=document.getElementById("generatorMode"),doubleBonus=document.getElementById("doubleBonus");
-const supplyButton=document.getElementById("supplyButton"),musicButton=document.getElementById("musicButton");
+const musicButton=document.getElementById("musicButton");
 const resetBtn=document.getElementById("reset"),moneyEl=document.getElementById("money"),ordersEl=document.getElementById("orders");
 const cells=[]; let nextId=1, money=0, activeSeries=1, secondGenerator=false, generatorDrag=null;
 const generators={1:{cell:27,level:1,boost:0,unlocked:true},2:{cell:28,level:1,boost:0,unlocked:false}};
@@ -215,12 +213,6 @@ function createStamp(cell,level){
 function createLetter(cell,series){
   const l=document.createElement("div");l.className="letter item";l.dataset.level="letter";l.dataset.series=series;l.dataset.id=nextId++;l.title="Letter — drag the Level 7 stamp here";
   cell.appendChild(l);l.addEventListener("pointerdown",startItemDrag);
-}
-function createSupply(cell){
-  const choices=[["brush","🖌️"],["palette","🎨"],["canvas","▣"],["easel","🖼️"]];
-  const [kind,symbol]=choices[Math.floor(Math.random()*choices.length)];
-  const x=document.createElement("div");x.className="item supply";x.dataset.level="supply";x.dataset.supply=kind;x.textContent=symbol;x.dataset.id=nextId++;
-  const b=document.createElement("div");b.className="stamp-number";b.textContent=kind;cell.append(x,b);
 }
 function createMailbox(cell){
   const m=document.createElement("div");m.className="mailbox";m.textContent="📮";m.dataset.level="mailbox";m.title="Mailbox — discard items forever";
@@ -286,7 +278,43 @@ function startItemDrag(e){
   const up=ev=>{
     document.removeEventListener("pointermove",move);document.removeEventListener("pointerup",up);cells.forEach(c=>c.style.outline="");
     source.style.opacity=1;ghost.remove();
-    const target=document.elementFromPoint(ev.clientX,ev.clientY)?.closest(".cell");
+    const dropEl=document.elementFromPoint(ev.clientX,ev.clientY);
+    const orderSlot=dropEl?.closest(".order-slot");
+    const orderBox=dropEl?.closest(".order");
+
+    // Orders are outside the game board, so handle them before looking for a board cell.
+    if(orderSlot||orderBox){
+      const stampLevel=+level;
+      if(!Number.isFinite(stampLevel)){
+        statusEl.textContent="Only numbered stamps can be placed in an order.";
+        return;
+      }
+      const orderElement=orderSlot?.closest(".order")||orderBox;
+      const orderId=+orderElement.dataset.orderId;
+      const order=orders.find(o=>o.id===orderId);
+      if(!order){
+        statusEl.textContent="That order is unavailable.";
+        return;
+      }
+      const need=order.req.reduce((n,[l,c])=>n+(l===stampLevel?c:0),0);
+      const have=order.filled.filter(x=>x===stampLevel).length;
+      if(need===0){
+        statusEl.textContent="That stamp is not requested in this order.";
+        return;
+      }
+      if(have>=need){
+        statusEl.textContent="That order already has enough Stamp "+stampLevel+".";
+        return;
+      }
+      from.innerHTML="";
+      order.filled.push(stampLevel);
+      checkOrder(order);
+      renderOrders();
+      if(!order.done)statusEl.textContent="Stamp "+stampLevel+" placed in Order "+(order.id+1)+".";
+      return;
+    }
+
+    const target=dropEl?.closest(".cell");
     if(!target||target===from)return;
     const ti=target.querySelector(".item,.generator");
     if(target.querySelector(".generator"))return;
@@ -331,14 +359,19 @@ let orders=makeOrders();
 function renderOrders(){
   ordersEl.innerHTML="";
   orders.forEach(o=>{
-    const div=document.createElement("div");div.className="order"+(o.done?" done":"");
+    const div=document.createElement("div");div.className="order"+(o.done?" done":"");div.dataset.orderId=o.id;
     div.innerHTML='<div class="order-title">Order '+(o.id+1)+' — '+o.reward+' LAR</div>';
     o.req.forEach(([lvl,count])=>{
       const row=document.createElement("div");row.className="order-row";row.innerHTML="<span>Stamp "+lvl+"</span><strong>"+count+" needed</strong>";div.appendChild(row)
     });
     const slots=document.createElement("div");slots.className="order-slots";
     const total=o.req.reduce((n,x)=>n+x[1],0);
-    for(let i=0;i<total;i++){const q=document.createElement("div");q.className="order-slot";q.textContent="";slots.appendChild(q)}
+    for(let i=0;i<total;i++){
+      const q=document.createElement("div");q.className="order-slot";
+      const filledLevel=o.filled[i];
+      if(filledLevel!==undefined){q.textContent=filledLevel;q.title="Stamp "+filledLevel+" received";}
+      slots.appendChild(q)
+    }
     div.appendChild(slots);
     if(!o.done){const b=document.createElement("button");b.textContent="Open order tray";b.onclick=()=>statusEl.textContent="Drag the requested numbered stamps into this order. The order tray is represented by its slots.";div.appendChild(b)}
     ordersEl.appendChild(div);
@@ -367,10 +400,6 @@ doubleBonus.addEventListener("click",()=>{
 });
 generatorMode.addEventListener("click",()=>{
   if(generators[1].boost===0){generators[1].boost=10;statusEl.textContent="2× bonus active for 10 generator spills.";updateControls()}
-});
-supplyButton.addEventListener("click",()=>{
-  const e=emptyCells(Object.values(generators).filter(g=>g.unlocked).map(g=>g.cell));if(!e.length)return;
-  createSupply(e[Math.floor(Math.random()*e.length)]);statusEl.textContent="Art supply generated."
 });
 document.querySelectorAll("[data-buy]").forEach(b=>b.addEventListener("click",()=>{
   const what=b.dataset.buy,price=what==="10"?25:what==="20"?60:120;
