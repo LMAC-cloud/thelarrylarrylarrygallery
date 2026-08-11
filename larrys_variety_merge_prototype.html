@@ -2,10 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Larry's Variety — Stamp Merge Game 12</title>
 <style>
 *{box-sizing:border-box}
+html{touch-action:manipulation;overscroll-behavior:none;zoom:1}
+body{overscroll-behavior:none;overflow-x:hidden;touch-action:manipulation}
 html,body{margin:0;min-height:100%;font-family:Georgia,"Times New Roman",serif;color:#2f2117}
 body{
   min-height:100vh;
@@ -49,8 +51,8 @@ button:disabled{opacity:.45;cursor:default}
 #doubleBonus{background:#557d35}
 .board{
   width:100%;
-  height:min(72vh,700px);
-  min-height:520px;
+  height:min(78vh,850px);
+  min-height:560px;
   display:grid;
   grid-template-columns:repeat(8,minmax(0,1fr));
   grid-template-rows:repeat(8,minmax(0,1fr));
@@ -60,8 +62,7 @@ button:disabled{opacity:.45;cursor:default}
   border:5px solid #432716;
   border-radius:15px;
   box-shadow:inset 0 0 16px rgba(0,0,0,.45),0 6px 14px rgba(30,15,5,.35);
-  contain:layout paint;
-  overflow:hidden;
+  touch-action:none;user-select:none;-webkit-user-select:none;overscroll-behavior:none;
 }
 .cell{
   min-width:0;min-height:0;
@@ -94,7 +95,7 @@ button:disabled{opacity:.45;cursor:default}
   background:#faf8f1;border:3px solid #9e8e77;
   box-shadow:0 4px 9px rgba(0,0,0,.35);
   clip-path:polygon(4% 8%,10% 3%,17% 8%,24% 3%,31% 8%,38% 3%,45% 8%,52% 3%,59% 8%,66% 3%,73% 8%,80% 3%,87% 8%,96% 3%,96% 95%,4% 95%);
-  touch-action:none;cursor:grab;user-select:none;-webkit-user-drag:none
+  touch-action:none;cursor:grab
 }
 .generator .horn-icon{width:62%;height:62%;pointer-events:none}
 .generator .horn-icon *{fill:#111}
@@ -105,9 +106,8 @@ button:disabled{opacity:.45;cursor:default}
   background:linear-gradient(#c94a32,#8f2319);
   border:4px solid #641b14;border-radius:12px 12px 8px 8px;
   box-shadow:inset 0 0 9px rgba(0,0,0,.32),0 5px 9px rgba(0,0,0,.35);
-  color:white;font-size:34px;cursor:grab;touch-action:none;user-select:none
+  color:white;font-size:34px
 }
-.mailbox:active{cursor:grabbing}
 .mailbox:before{
   content:"";position:absolute;top:17%;left:14%;right:14%;height:17%;
   background:#4b1711;border:2px solid #f0d4bb;border-radius:2px
@@ -130,7 +130,7 @@ button:disabled{opacity:.45;cursor:default}
 .money{font-size:20px;font-weight:bold;margin-bottom:9px}
 .order{
   background:#f8f0df;border:1px solid #b79d79;border-radius:8px;
-  padding:8px;margin-bottom:8px;min-height:126px
+  padding:8px;margin-bottom:8px
 }
 .order-title{font-weight:bold;margin-bottom:5px}
 .order-row{display:flex;justify-content:space-between;font-size:13px;padding:2px 0}
@@ -141,11 +141,11 @@ button:disabled{opacity:.45;cursor:default}
   font:bold 12px Arial,sans-serif;color:#4a3a2a
 }
 .order-slot.filled{background:#e3efd9;border-color:#668b58;color:#397332}
-.order.drop-target{outline:3px solid #d6a548;box-shadow:0 0 0 2px rgba(214,165,72,.25)}
+.order.drop-target{outline:3px solid #b54432}
 #musicStatus{font-size:12px;margin-top:8px}
 @media(max-width:1100px){
   .layout{grid-template-columns:1fr}
-  .panel{order:-1;min-height:0}
+  .panel{order:-1}
 }
 @media(max-width:760px){
   .layout{width:98vw}
@@ -263,7 +263,6 @@ let nextId=1;
 let money=0;
 let activeSeries=1;
 let secondGenerator=false;
-let mailboxCell=35;
 let audioContext=null;
 let music=null;
 let musicOn=false;
@@ -325,7 +324,7 @@ function makeBoard(){
     cells.push(c);
   }
   // Fixed postal mailbox: always visible on the board.
-  createMailbox(cells[mailboxCell]);
+  createMailbox(cells[35]);
 }
 
 function emptyCells(exclude=[]){
@@ -369,16 +368,47 @@ function createLetter(cell,series){
 }
 
 function createMailbox(cell){
-  const existing=cell.querySelector(".mailbox");
-  if(existing)return existing;
+  cell.innerHTML="";
   const m=document.createElement("div");
   m.className="mailbox";
   m.textContent="✉";
   m.dataset.level="mailbox";
-  m.title="MAIL — drag this box to an empty square; drop requested stamps here";
+  m.title="MAIL — drag me to another empty square, or drop a requested stamp here";
   cell.appendChild(m);
   m.addEventListener("pointerdown",startMailboxDrag);
-  return m;
+}
+
+function startMailboxDrag(e){
+  if(e.pointerType==="mouse"&&e.button!==0)return;
+  e.preventDefault();
+  e.stopPropagation();
+  const mailbox=e.currentTarget;
+  const from=mailbox.parentElement;
+  const startX=e.clientX,startY=e.clientY;
+  let moved=false;
+
+  const move=ev=>{
+    ev.preventDefault();
+    if(Math.abs(ev.clientX-startX)+Math.abs(ev.clientY-startY)>5)moved=true;
+  };
+  const up=ev=>{
+    document.removeEventListener("pointermove",move);
+    document.removeEventListener("pointerup",up);
+    if(!moved)return;
+    const target=document.elementFromPoint(ev.clientX,ev.clientY)?.closest(".cell");
+    if(target && target!==from && !target.querySelector(".item,.generator,.mailbox")){
+      from.innerHTML="";
+      target.appendChild(mailbox);
+      mailbox.dataset.moved="1";
+      setTimeout(()=>delete mailbox.dataset.moved,50);
+    }else{
+      statusEl.textContent="The MAIL box needs an empty square.";
+    }
+  };
+
+  document.addEventListener("pointermove",move,{passive:false});
+  document.addEventListener("pointerup",up,{once:true});
+  document.addEventListener("pointercancel",up,{once:true});
 }
 
 function hornSVG(){
@@ -572,73 +602,9 @@ function startGeneratorDrag(e,which){
       statusEl.textContent="The generator needs an empty square.";
     }
   };
-  document.addEventListener("pointermove",move,{passive:true});
+  document.addEventListener("pointermove",move,{passive:false});
   document.addEventListener("pointerup",up,{once:true});
-}
-
-function startMailboxDrag(e){
-  if(e.pointerType==="mouse"&&e.button!==0)return;
-  e.preventDefault();
-  e.stopPropagation();
-
-  const source=e.currentTarget;
-  const from=source.parentElement;
-  const rect=source.getBoundingClientRect();
-  let dragging=false;
-
-  const ghost=source.cloneNode(true);
-  ghost.style.position="fixed";
-  ghost.style.width=rect.width+"px";
-  ghost.style.height=rect.height+"px";
-  ghost.style.left=rect.left+"px";
-  ghost.style.top=rect.top+"px";
-  ghost.style.zIndex="99999";
-  ghost.style.pointerEvents="none";
-  ghost.style.opacity=".88";
-  ghost.style.margin="0";
-  document.body.appendChild(ghost);
-  source.style.opacity=".28";
-
-  const clearOutlines=()=>{
-    document.querySelectorAll(".cell,.order").forEach(el=>el.style.outline="");
-  };
-
-  const move=ev=>{
-    dragging=true;
-    ghost.style.left=(ev.clientX-rect.width/2)+"px";
-    ghost.style.top=(ev.clientY-rect.height/2)+"px";
-    clearOutlines();
-    const hit=document.elementFromPoint(ev.clientX,ev.clientY);
-    const target=hit?.closest(".cell");
-    if(target&&target!==from&&!target.querySelector(".item,.generator,.mailbox")){
-      target.style.outline="3px solid #ffe4a8";
-    }
-  };
-
-  const up=ev=>{
-    document.removeEventListener("pointermove",move);
-    document.removeEventListener("pointerup",up);
-    clearOutlines();
-    source.style.opacity="1";
-    ghost.remove();
-
-    if(!dragging)return;
-
-    const target=document.elementFromPoint(ev.clientX,ev.clientY)?.closest(".cell");
-    if(target&&target!==from&&!target.querySelector(".item,.generator,.mailbox")){
-      from.innerHTML="";
-      target.appendChild(source);
-      mailboxCell=+target.dataset.index;
-      source.style.opacity="1";
-      statusEl.textContent="MAIL moved.";
-      return;
-    }
-
-    statusEl.textContent="MAIL can only move to an empty square.";
-  };
-
-  document.addEventListener("pointermove",move,{passive:true});
-  document.addEventListener("pointerup",up,{once:true});
+  document.addEventListener("pointercancel",up,{once:true});
 }
 
 function startItemDrag(e){
@@ -665,6 +631,7 @@ function startItemDrag(e){
   source.style.opacity=".2";
 
   const move=ev=>{
+    ev.preventDefault();
     dragging=true;
     ghost.style.left=(ev.clientX-rect.width/2)+"px";
     ghost.style.top=(ev.clientY-rect.height/2)+"px";
@@ -726,10 +693,6 @@ function startItemDrag(e){
     }
 
     const other=target.querySelector(".item");
-    if(target.querySelector(".mailbox")){
-      deliverToMailbox(source,from,level);
-      return;
-    }
     if(!other){
       const badge=from.querySelector(".stamp-number");
       from.innerHTML="";
@@ -754,7 +717,7 @@ function startItemDrag(e){
     statusEl.textContent="Only two matching stamps can merge.";
   };
 
-  document.addEventListener("pointermove",move,{passive:true});
+  document.addEventListener("pointermove",move,{passive:false});
   document.addEventListener("pointerup",up,{once:true});
 }
 
@@ -816,6 +779,19 @@ musicButton.addEventListener("click",()=>{
   }
 });
 
+document.addEventListener("dblclick",e=>{
+  if(e.target.closest(".board,.order,#doubleBonus,button"))e.preventDefault();
+},{passive:false});
+document.addEventListener("dragstart",e=>{
+  if(e.target.closest(".board,.order"))e.preventDefault();
+},{passive:false});
+document.addEventListener("selectstart",e=>{
+  if(e.target.closest(".board,.order"))e.preventDefault();
+},{passive:false});
+document.addEventListener("gesturestart",e=>e.preventDefault(),{passive:false});
+document.addEventListener("gesturechange",e=>e.preventDefault(),{passive:false});
+document.addEventListener("gestureend",e=>e.preventDefault(),{passive:false});
+
 resetBtn.addEventListener("click",()=>location.reload());
 
 document.addEventListener("pointerdown",()=>{
@@ -824,6 +800,7 @@ document.addEventListener("pointerdown",()=>{
 
 makeBoard();
 renderOrders();
+renderGenerators();
 updateBonusButton();
 statusEl.textContent="Ready. Click the postal-stamp generator to make a Stamp 1.";
 </script>
