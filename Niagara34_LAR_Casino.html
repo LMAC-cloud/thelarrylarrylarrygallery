@@ -1,0 +1,6639 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+
+<title>Niagara Falls — Larry's Art</title>
+
+<style>
+
+/* ============================================================
+   BASIC PAGE
+   ============================================================ */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+}
+
+body {
+    font-family: Georgia, serif;
+}
+
+
+/* ============================================================
+   NIAGARA VIDEO
+   ============================================================ */
+
+#waterfall {
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    z-index: 1;
+
+    pointer-events: none;
+
+    /*
+       FORCE SILENCE.
+    */
+    volume: 0;
+}
+
+
+/* ============================================================
+   PAINTINGS
+   ============================================================ */
+
+.paintingWrap {
+    position: fixed;
+
+    z-index: 20;
+
+    cursor: pointer;
+
+    perspective: 900px;
+
+    transform-style: preserve-3d;
+
+    will-change:
+        left,
+        top,
+        transform,
+        opacity;
+
+    opacity: 0;
+}
+
+.paintingFrame {
+    position: relative;
+
+    padding: 9px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff8df 0%,
+            #d8c58e 18%,
+            #fff3c7 35%,
+            #b99a4d 55%,
+            #f8e9b5 75%,
+            #9d7935 100%
+        );
+
+    border: 4px solid #8c6b2f;
+
+    box-shadow:
+        0 8px 18px rgba(0,0,0,.8),
+        inset 0 0 5px rgba(255,255,255,.9),
+        inset 0 0 0 3px rgba(91,60,15,.7);
+
+    transform-style: preserve-3d;
+}
+
+.paintingFrame::before {
+    content: "";
+
+    position: absolute;
+
+    inset: -5px;
+
+    border: 2px solid rgba(255,245,190,.85);
+
+    pointer-events: none;
+}
+
+.paintingFrame::after {
+    content: "";
+
+    position: absolute;
+
+    inset: 3px;
+
+    border: 2px solid rgba(102,70,20,.7);
+
+    pointer-events: none;
+}
+
+.paintingCanvas {
+    display: block;
+
+    width: 18vw;
+
+    max-width: 320px;
+
+    height: auto;
+
+    background: white;
+
+    border: 7px solid #f8f8f4;
+
+    box-shadow:
+        inset 0 0 5px rgba(0,0,0,.3);
+
+    transform: translateZ(4px);
+
+    filter: none !important;
+
+    opacity: 1 !important;
+
+    mix-blend-mode: normal !important;
+}
+
+
+/* physical canvas thickness */
+
+.paintingWrap::before {
+    content: "";
+
+    position: absolute;
+
+    left: 5px;
+    bottom: -13px;
+
+    width: calc(100% - 10px);
+    height: 13px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #fff,
+            #d7d7d2,
+            #999
+        );
+
+    transform: skewX(-35deg);
+
+    transform-origin: top left;
+
+    z-index: -2;
+}
+
+.paintingWrap::after {
+    content: "";
+
+    position: absolute;
+
+    right: -13px;
+    top: 7px;
+
+    width: 13px;
+    height: calc(100% - 14px);
+
+    background:
+        linear-gradient(
+            to right,
+            #f8f8f4,
+            #d1d1cc,
+            #969691
+        );
+
+    transform: skewY(-35deg);
+
+    transform-origin: top left;
+
+    z-index: -2;
+}
+
+
+
+/* ============================================================
+   IMMORTALIZED / SELECTED PAINTINGS
+   ============================================================ */
+
+.immortalized {
+    z-index: 80;
+    cursor: grab;
+    opacity: 1 !important;
+    user-select: none;
+    touch-action: none;
+}
+
+.immortalized:active {
+    cursor: grabbing;
+}
+
+/* Large, museum-style sky paintings. */
+.immortalized .paintingCanvas {
+    width: 4vw;
+    min-width: 45px;
+    max-width: 80px;
+    border: 3px solid #f8f8f4;
+}
+
+.immortalized .paintingFrame {
+    padding: 4px;
+    border: 4px solid #6f4a18;
+    border-radius: 5px;
+    background:
+        linear-gradient(135deg,
+            #6b4312 0%,
+            #c99732 12%,
+            #f1d47b 22%,
+            #8a5b17 34%,
+            #d9ad4d 48%,
+            #704710 62%,
+            #e1b95a 76%,
+            #7a4d13 90%,
+            #4e300d 100%);
+    box-shadow: none !important;
+}
+
+/* Ornate Louvre-style moulding. */
+.immortalized .paintingFrame::before {
+    inset: -4px;
+    border: 2px double #e8c567;
+    border-radius: 7px;
+    box-shadow:
+        0 0 0 3px #5a370e,
+        0 0 0 6px #c28b27;
+}
+
+.immortalized .paintingFrame::after {
+    inset: -1px;
+    border: 1px solid rgba(255,230,145,.85);
+    box-shadow: inset 0 0 0 2px rgba(65,38,8,.75);
+}
+
+.immortalized::before,
+.immortalized::after {
+    opacity: .85;
+}
+
+.immortalized .halo {
+    width: 38px;
+    height: 13px;
+    top: -18px;
+    border-width: 2px;
+    box-shadow: 0 0 22px gold, 0 0 42px rgba(255,210,40,.65);
+}
+
+
+/* ============================================================
+   ANGEL / DESKTOP ICON STRIP
+   ============================================================ */
+
+#angels {
+    position: fixed;
+
+    z-index: 70;
+
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 20%;
+
+    pointer-events: none;
+}
+
+.angel {
+    position: absolute;
+
+    width: 3.2vw;
+
+    min-width: 24px;
+
+    max-width: 48px;
+
+    cursor: grab;
+
+    pointer-events: auto;
+
+    user-select: none;
+
+    touch-action: none;
+}
+
+.angel:active {
+    cursor: grabbing;
+}
+
+.angelFrame {
+    position: relative;
+
+    padding: 2px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff8df,
+            #c4a35b,
+            #fff1b8,
+            #9a702c,
+            #ead28c
+        );
+
+    border: 2px solid #8c6b2f;
+
+    box-shadow:
+        0 3px 8px rgba(0,0,0,.85);
+}
+
+.angelFrame img {
+    display: block;
+
+    width: 100%;
+
+    background: white;
+
+    border: 2px solid white;
+
+    filter: none !important;
+
+    opacity: 1 !important;
+
+    pointer-events: none;
+}
+
+.halo {
+    position: absolute;
+
+    width: 16px;
+    height: 6px;
+
+    left: 50%;
+    top: -11px;
+
+    transform: translateX(-50%);
+
+    border: 2px solid gold;
+
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 7px gold;
+
+    z-index: 5;
+}
+
+
+/* ============================================================
+   ROPE
+   ============================================================ */
+
+.rescueRope {
+    position: fixed;
+
+    z-index: 500;
+
+    width: 8px;
+
+    background:
+        repeating-linear-gradient(
+            45deg,
+            #8b7651 0,
+            #8b7651 4px,
+            #c6ad7b 4px,
+            #c6ad7b 7px
+        );
+
+    border-radius: 5px;
+
+    pointer-events: none;
+
+    transform-origin: bottom center;
+}
+
+.ropeKnot {
+    position: absolute;
+
+    width: 18px;
+    height: 18px;
+
+    left: 50%;
+    bottom: -8px;
+
+    transform: translateX(-50%);
+
+    border: 4px solid #a78a5b;
+
+    border-radius: 50%;
+}
+
+.ropeBreaking {
+    animation:
+        ropeSnap .5s ease-out forwards;
+}
+
+@keyframes ropeSnap {
+
+    0% {
+        transform: rotate(0deg);
+        opacity: 1;
+    }
+
+    35% {
+        transform:
+            rotate(9deg)
+            scaleY(1.05);
+
+        opacity: 1;
+    }
+
+    60% {
+        transform:
+            rotate(-20deg)
+            scaleY(.7);
+
+        opacity: 1;
+    }
+
+    100% {
+        transform:
+            rotate(28deg)
+            translateY(40px)
+            scaleY(.2);
+
+        opacity: 0;
+    }
+}
+
+.ropePiece {
+    position: fixed;
+
+    z-index: 499;
+
+    width: 7px;
+    height: 70px;
+
+    background:
+        repeating-linear-gradient(
+            45deg,
+            #8b7651 0,
+            #8b7651 4px,
+            #c6ad7b 4px,
+            #c6ad7b 7px
+        );
+
+    border-radius: 5px;
+
+    pointer-events: none;
+}
+
+.ropePiece.left {
+    transform-origin: top center;
+
+    animation:
+        ropeLeftFall 1s ease-out forwards;
+}
+
+.ropePiece.right {
+    transform-origin: top center;
+
+    animation:
+        ropeRightFall 1s ease-out forwards;
+}
+
+@keyframes ropeLeftFall {
+
+    to {
+        transform:
+            translate(-45px,80px)
+            rotate(-35deg);
+
+        opacity: 0;
+    }
+}
+
+@keyframes ropeRightFall {
+
+    to {
+        transform:
+            translate(45px,80px)
+            rotate(35deg);
+
+        opacity: 0;
+    }
+}
+
+
+/* ============================================================
+   FISH
+   ============================================================ */
+
+.fish {
+    position: fixed;
+
+    z-index: 12;
+
+    width: 62px;
+    height: 32px;
+
+    pointer-events: auto;
+
+    cursor: pointer;
+
+    opacity: 0;
+
+    filter:
+        brightness(.5)
+        contrast(1.35)
+        drop-shadow(
+            0 3px 3px rgba(0,0,0,.75)
+        );
+}
+
+.fishBody {
+    position: absolute;
+
+    width: 42px;
+    height: 23px;
+
+    left: 10px;
+    top: 4px;
+
+    background: #292929;
+
+    border-radius:
+        55% 45% 45% 55%;
+}
+
+.fishTail {
+    position: absolute;
+
+    left: 0;
+    top: 2px;
+
+    width: 0;
+    height: 0;
+
+    border-top:
+        14px solid transparent;
+
+    border-bottom:
+        14px solid transparent;
+
+    border-right:
+        19px solid #181818;
+}
+
+.fishEye {
+    position: absolute;
+
+    right: 12px;
+    top: 9px;
+
+    width: 4px;
+    height: 4px;
+
+    background: white;
+
+    border-radius: 50%;
+}
+
+
+/* GOLD FISH */
+
+.goldFish {
+    filter:
+        drop-shadow(
+            0 0 9px rgba(255,210,30,.9)
+        )
+        drop-shadow(
+            0 4px 4px rgba(0,0,0,.7)
+        );
+
+    z-index: 14;
+}
+
+.goldFish .fishBody {
+    background:
+        linear-gradient(
+            135deg,
+            #fff3a0,
+            #ffd21f,
+            #d89400,
+            #ffed62
+        );
+}
+
+.goldFish .fishTail {
+    border-right-color:
+        #d89400;
+}
+
+.goldFish .fishEye {
+    background: black;
+}
+
+
+/* ============================================================
+   SHARK
+   ============================================================ */
+
+.shark {
+    position: fixed;
+
+    width: 125px;
+    height: 55px;
+
+    z-index: 11;
+
+    cursor: pointer;
+
+    pointer-events: auto;
+
+    opacity: 0;
+
+    filter:
+        drop-shadow(
+            0 5px 5px rgba(0,0,0,.8)
+        );
+}
+
+.sharkBody {
+    position: absolute;
+
+    left: 20px;
+    top: 14px;
+
+    width: 82px;
+    height: 35px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #686868,
+            #292929
+        );
+
+    border-radius:
+        70% 55% 55% 65%;
+}
+
+.sharkTail {
+    position: absolute;
+
+    left: 0;
+    top: 10px;
+
+    width: 0;
+    height: 0;
+
+    border-top: 18px solid transparent;
+
+    border-bottom: 18px solid transparent;
+
+    border-right: 28px solid #353535;
+}
+
+.sharkFin {
+    position: absolute;
+
+    left: 55px;
+    top: 0;
+
+    width: 0;
+    height: 0;
+
+    border-left: 10px solid transparent;
+
+    border-right: 10px solid transparent;
+
+    border-bottom: 22px solid #303030;
+}
+
+.sharkEye {
+    position: absolute;
+
+    right: 30px;
+    top: 24px;
+
+    width: 5px;
+    height: 5px;
+
+    background: white;
+
+    border-radius: 50%;
+}
+
+
+@keyframes larBob {
+    0%, 100% {
+        margin-top: 0;
+    }
+    50% {
+        margin-top: -12px;
+    }
+}
+
+
+/* ============================================================
+   BROWN OCTOPUS — click to lose all Lar Bucks
+   ============================================================ */
+
+.octopus {
+    position: fixed;
+    z-index: 17;
+    width: 82px;
+    height: 68px;
+    pointer-events: auto;
+    cursor: pointer;
+    opacity: 0;
+    filter: drop-shadow(0 5px 5px rgba(0,0,0,.75));
+}
+
+.octopusBody {
+    position: absolute;
+    left: 16px;
+    top: 4px;
+    width: 50px;
+    height: 42px;
+    border-radius: 50% 50% 44% 44%;
+    background: radial-gradient(circle at 35% 25%, #9a6940, #5b321d 65%, #3d2113);
+    border: 3px solid #321a0e;
+}
+
+.octopusEye {
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    top: 17px;
+    background: #fff4d0;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 2px #201109;
+}
+
+.octopusEye.left { left: 30px; }
+.octopusEye.right { right: 30px; }
+
+.octopusTentacle {
+    position: absolute;
+    bottom: 4px;
+    width: 15px;
+    height: 30px;
+    border-radius: 0 0 12px 12px;
+    background: linear-gradient(90deg, #3d2113, #754424, #3d2113);
+    transform-origin: top center;
+}
+
+.octopusTentacle.t1 { left: 4px; transform: rotate(30deg); }
+.octopusTentacle.t2 { left: 14px; transform: rotate(15deg); }
+.octopusTentacle.t3 { left: 24px; transform: rotate(5deg); }
+.octopusTentacle.t4 { left: 34px; transform: rotate(-5deg); }
+.octopusTentacle.t5 { left: 44px; transform: rotate(-15deg); }
+.octopusTentacle.t6 { left: 54px; transform: rotate(-30deg); }
+.octopusTentacle.t7 { left: 62px; transform: rotate(-42deg); }
+
+
+/* ============================================================
+   BROWN PAPER BAG
+   ============================================================ */
+
+.paperBag {
+    position: fixed;
+
+    width: 48px;
+    height: 58px;
+
+    z-index: 10;
+
+    cursor: pointer;
+
+    pointer-events: auto;
+
+    opacity: 0;
+
+    background:
+        linear-gradient(
+            90deg,
+            #6d401f,
+            #9a6031,
+            #71411f
+        );
+
+    border:
+        2px solid #4c2b16;
+
+    box-shadow:
+        0 4px 8px rgba(0,0,0,.7);
+
+    transform-origin: center;
+}
+
+.paperBag::before {
+    content: "";
+
+    position: absolute;
+
+    left: 8px;
+    right: 8px;
+    top: -9px;
+
+    height: 15px;
+
+    border:
+        3px solid #70451f;
+
+    border-bottom: none;
+
+    border-radius:
+        50% 50% 0 0;
+}
+
+.paperBag::after {
+    content: "LAR";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+    top: 19px;
+
+    text-align: center;
+
+    color:
+        rgba(255,235,190,.75);
+
+    font-weight: bold;
+
+    font-size: 11px;
+}
+
+
+/* ============================================================
+   BROWN LAR BUCK TOKEN
+   ============================================================ */
+
+.brownBuck {
+    position: fixed;
+
+    z-index: 16;
+
+    width: 42px;
+    height: 42px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            #c49a62,
+            #79502d 70%,
+            #4a2d17
+        );
+
+    border:
+        3px solid #d4ae79;
+
+    color:
+        #f5dfb8;
+
+    font-weight: bold;
+
+    font-size: 13px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    cursor: pointer;
+
+    pointer-events: auto;
+
+    opacity: 0;
+
+    box-shadow:
+        0 4px 8px rgba(0,0,0,.8);
+
+    text-shadow:
+        0 1px 2px #000;
+}
+
+
+/* ============================================================
+   LAR BUCK POPUP
+   ============================================================ */
+
+.larBuckPopup {
+    position: fixed;
+
+    z-index: 3000;
+
+    color: #ffd83d;
+
+    font-family: Georgia, serif;
+
+    font-weight: bold;
+
+    font-size: 20px;
+
+    pointer-events: none;
+
+    text-shadow:
+        0 2px 4px black;
+
+    animation:
+        buckRise 1.6s ease-out forwards;
+}
+
+@keyframes buckRise {
+
+    0% {
+        transform:
+            translate(-50%,0)
+            scale(.6);
+
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    100% {
+        transform:
+            translate(-50%,-80px)
+            scale(1.2);
+
+        opacity: 0;
+    }
+}
+
+
+/* ============================================================
+   PIKE FINS
+   ============================================================ */
+
+.pikeFin {
+    position: fixed;
+
+    z-index: 6;
+
+    width: 0;
+    height: 0;
+
+    border-left:
+        16px solid transparent;
+
+    border-right:
+        16px solid transparent;
+
+    border-bottom:
+        75px solid rgba(25,25,25,.82);
+
+    opacity: 0;
+
+    pointer-events: none;
+}
+
+.pikeFin.rising {
+    animation:
+        pikeRise 1.8s ease-out forwards;
+}
+
+@keyframes pikeRise {
+
+    0% {
+        opacity: 0;
+
+        transform:
+            translateY(35px)
+            scale(.5);
+    }
+
+    25% {
+        opacity: .9;
+    }
+
+    65% {
+        opacity: .9;
+
+        transform:
+            translateY(0)
+            rotate(5deg)
+            scale(1);
+    }
+
+    100% {
+        opacity: 0;
+
+        transform:
+            translateY(35px)
+            rotate(-8deg)
+            scale(.7);
+    }
+}
+
+
+/* ============================================================
+   TURTLE
+   ============================================================ */
+
+#turtle {
+    position: fixed;
+
+    z-index: 13;
+
+    width: 180px;
+    height: 90px;
+
+    left: 110vw;
+    top: 79vh;
+
+    display: none;
+
+    pointer-events: none;
+
+    filter:
+        brightness(.3)
+        contrast(1.55)
+        drop-shadow(
+            0 6px 6px rgba(0,0,0,.9)
+        );
+}
+
+.turtleShell {
+    position: absolute;
+
+    width: 120px;
+    height: 60px;
+
+    left: 20px;
+    top: 8px;
+
+    background:
+        radial-gradient(
+            ellipse,
+            #333 0%,
+            #171717 70%,
+            #080808 100%
+        );
+
+    border-radius:
+        55% 50% 45% 50%;
+
+    border: 4px solid #111;
+}
+
+.turtleHead {
+    position: absolute;
+
+    width: 42px;
+    height: 36px;
+
+    right: 0;
+    top: 21px;
+
+    background: #141414;
+
+    border-radius:
+        60% 50% 50% 60%;
+}
+
+.turtleEye {
+    position: absolute;
+
+    right: 8px;
+    top: 9px;
+
+    width: 5px;
+    height: 5px;
+
+    background: #ddd;
+
+    border-radius: 50%;
+}
+
+.turtleLeg {
+    position: absolute;
+
+    width: 43px;
+    height: 18px;
+
+    background: #121212;
+
+    border-radius: 60%;
+}
+
+.turtleLeg.one {
+    left: 24px;
+    bottom: 2px;
+
+    transform: rotate(25deg);
+}
+
+.turtleLeg.two {
+    left: 93px;
+    bottom: 2px;
+
+    transform: rotate(-25deg);
+}
+
+#turtle.walking {
+    display: block;
+
+    animation:
+        turtleCurrent 15s linear forwards,
+        turtleBob .9s ease-in-out infinite;
+}
+
+@keyframes turtleCurrent {
+
+    0% {
+        left: 110vw;
+        top: 78vh;
+        transform: scale(1);
+    }
+
+    62% {
+        left: 35vw;
+        top: 82vh;
+        transform: scale(.9);
+    }
+
+    84% {
+        left: 10vw;
+        top: 88vh;
+        transform: scale(.58);
+    }
+
+    100% {
+        left: -18vw;
+        top: 98vh;
+        transform: scale(.12);
+    }
+}
+
+@keyframes turtleBob {
+
+    0% {
+        margin-top: -3px;
+    }
+
+    50% {
+        margin-top: 8px;
+    }
+
+    100% {
+        margin-top: -3px;
+    }
+}
+
+
+/* ============================================================
+   SEAGULLS
+   ============================================================ */
+
+.seagull {
+    position: fixed;
+
+    z-index: 15;
+
+    left: 110vw;
+    top: 45vh;
+
+    width: 100px;
+    height: 50px;
+
+    pointer-events: auto;
+
+    cursor: pointer;
+
+    opacity: 0;
+}
+
+.seagullWing {
+    position: absolute;
+
+    width: 55px;
+    height: 18px;
+
+    border-top:
+        6px solid rgba(250,250,250,.9);
+
+    border-radius:
+        70% 70% 0 0;
+}
+
+.seagullWing.left {
+    left: 0;
+    top: 16px;
+
+    transform: rotate(18deg);
+}
+
+.seagullWing.right {
+    right: 0;
+    top: 16px;
+
+    transform: rotate(-18deg);
+}
+
+.seagull.swooping {
+    opacity: 1;
+
+    animation:
+        gullSwoop 5s ease-in-out forwards;
+}
+
+@keyframes gullSwoop {
+
+    0% {
+        left: 110vw;
+        top: 45vh;
+
+        transform:
+            rotate(-8deg)
+            scale(.7);
+    }
+
+    25% {
+        left: 76vw;
+        top: 60vh;
+
+        transform:
+            rotate(18deg)
+            scale(.9);
+    }
+
+    50% {
+        left: 54vw;
+        top: 70vh;
+
+        transform:
+            rotate(30deg)
+            scale(1.05);
+    }
+
+    70% {
+        left: 32vw;
+        top: 61vh;
+
+        transform:
+            rotate(-20deg)
+            scale(1);
+    }
+
+    100% {
+        left: -15vw;
+        top: 80vh;
+
+        transform:
+            rotate(-8deg)
+            scale(.7);
+    }
+}
+
+
+/* ============================================================
+   INSPECTION WINDOW
+   ============================================================ */
+
+#inspection {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 1000;
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-direction: column;
+
+    overflow: hidden;
+
+    background: #111;
+}
+
+#inspection.open {
+    display: flex;
+}
+
+
+/* hypnotic rotating background */
+
+#inspection::before {
+    content: "";
+
+    position: absolute;
+
+    inset: -50%;
+
+    background:
+        repeating-conic-gradient(
+            from 0deg,
+            #050505 0deg 9deg,
+            #f0f0e5 9deg 18deg
+        );
+
+    animation:
+        hypnosisSpin 18s linear infinite;
+
+    opacity: .20;
+
+    pointer-events: none;
+}
+
+@keyframes hypnosisSpin {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* dark veil */
+
+#inspection::after {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(0,0,0,.25),
+            rgba(0,0,0,.82)
+        );
+
+    pointer-events: none;
+}
+
+
+/* framed inspection artwork */
+
+#inspectionFrame {
+    position: relative;
+
+    z-index: 1002;
+
+    padding: 14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #fff8df,
+            #c4a35b,
+            #fff1b8,
+            #9a702c,
+            #ead28c
+        );
+
+    border: 5px solid #8c6b2f;
+
+    box-shadow:
+        0 15px 50px rgba(0,0,0,.9);
+
+    max-width: 78vw;
+    max-height: 76vh;
+
+    cursor: grab;
+
+    touch-action: none;
+
+    user-select: none;
+}
+
+#inspectionFrame.dragging {
+    cursor: grabbing;
+}
+
+#inspectionPainting {
+    position: relative;
+
+    z-index: 1003;
+
+    max-width: 72vw;
+    max-height: 66vh;
+
+    width: auto;
+    height: auto;
+
+    display: block;
+
+    object-fit: contain;
+
+    background: white;
+
+    border:
+        9px solid white;
+
+    filter: none !important;
+
+    opacity: 1 !important;
+
+    mix-blend-mode: normal !important;
+
+    pointer-events: none;
+
+    transform-origin: center center;
+}
+
+
+/* title */
+
+#paintingTitle {
+    position: absolute;
+
+    left: 50%;
+
+    bottom: -48px;
+
+    transform: translateX(-50%);
+
+    z-index: 1015;
+
+    color: white;
+
+    background:
+        rgba(0,0,0,.85);
+
+    border:
+        1px solid rgba(255,255,255,.4);
+
+    padding: 8px 14px;
+
+    white-space: nowrap;
+
+    font-size: 16px;
+
+    display: none;
+}
+
+
+/* ============================================================
+   INSPECTION CONTROLS
+   ============================================================ */
+
+#inspectionTools {
+    position: relative;
+
+    z-index: 1010;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 18px;
+}
+
+.inspectButton {
+    padding: 8px 13px;
+
+    background:
+        rgba(0,0,0,.82);
+
+    color: white;
+
+    border:
+        1px solid rgba(255,255,255,.5);
+
+    border-radius: 5px;
+
+    cursor: pointer;
+
+    font-family: Georgia, serif;
+}
+
+.inspectButton:hover {
+    background:
+        rgba(70,70,70,.9);
+}
+
+#titleButton.locked {
+    color: #d6b66b;
+}
+
+#titleButton.unlocked {
+    color: #ffe58a;
+}
+
+#rejectPainting {
+    color: #ffd0c0;
+    border-color: rgba(180,80,60,.8);
+}
+
+#rejectPainting:hover {
+    background: rgba(110,35,25,.95);
+}
+
+
+/* ============================================================
+   CLOSE BUTTON
+   ============================================================ */
+
+#closeInspection {
+    position: relative;
+
+    z-index: 1010;
+
+    margin-top: 10px;
+
+    min-width: 130px;
+
+    padding: 10px 25px;
+
+    background:
+        repeating-linear-gradient(
+            45deg,
+            #8b7651 0,
+            #8b7651 5px,
+            #c6ad7b 5px,
+            #c6ad7b 9px
+        );
+
+    color: #20170b;
+
+    font-family: Georgia, serif;
+
+    font-weight: bold;
+
+    border:
+        3px solid #70582e;
+
+    border-radius: 8px;
+
+    box-shadow:
+        0 4px 10px rgba(0,0,0,.8);
+
+    cursor: pointer;
+}
+
+
+/* ============================================================
+   INSPECTION SEAGULLS
+   ============================================================ */
+
+.inspectionGull {
+    position: absolute;
+
+    z-index: 1005;
+
+    width: 115px;
+    height: 55px;
+
+    pointer-events: none;
+}
+
+.inspectionGull .wing {
+    position: absolute;
+
+    width: 62px;
+    height: 20px;
+
+    border-top:
+        7px solid white;
+
+    border-radius:
+        70% 70% 0 0;
+}
+
+.inspectionGull .wing.left {
+    left: 0;
+    top: 17px;
+
+    transform: rotate(18deg);
+}
+
+.inspectionGull .wing.right {
+    right: 0;
+    top: 17px;
+
+    transform: rotate(-18deg);
+}
+
+.gullOne {
+    animation:
+        gullHoldOne 3.2s ease-in-out infinite;
+}
+
+.gullTwo {
+    animation:
+        gullHoldTwo 3.7s ease-in-out infinite;
+}
+
+.gullThree {
+    animation:
+        gullHoldThree 4.1s ease-in-out infinite;
+}
+
+.gullFour {
+    animation:
+        gullHoldFour 3.5s ease-in-out infinite;
+}
+
+@keyframes gullHoldOne {
+
+    0% {
+        left: 17%;
+        top: 17%;
+        transform: rotate(-15deg);
+    }
+
+    50% {
+        left: 27%;
+        top: 25%;
+        transform: rotate(12deg);
+    }
+
+    100% {
+        left: 17%;
+        top: 17%;
+        transform: rotate(-15deg);
+    }
+}
+
+@keyframes gullHoldTwo {
+
+    0% {
+        right: 16%;
+        top: 22%;
+        transform: rotate(12deg);
+    }
+
+    50% {
+        right: 27%;
+        top: 34%;
+        transform: rotate(-18deg);
+    }
+
+    100% {
+        right: 16%;
+        top: 22%;
+        transform: rotate(12deg);
+    }
+}
+
+@keyframes gullHoldThree {
+
+    0% {
+        left: 28%;
+        bottom: 16%;
+        transform: rotate(15deg);
+    }
+
+    50% {
+        left: 38%;
+        bottom: 25%;
+        transform: rotate(-8deg);
+    }
+
+    100% {
+        left: 28%;
+        bottom: 16%;
+        transform: rotate(15deg);
+    }
+}
+
+@keyframes gullHoldFour {
+
+    0% {
+        right: 28%;
+        bottom: 15%;
+        transform: rotate(-15deg);
+    }
+
+    50% {
+        right: 38%;
+        bottom: 25%;
+        transform: rotate(10deg);
+    }
+
+    100% {
+        right: 28%;
+        bottom: 15%;
+        transform: rotate(-15deg);
+    }
+}
+
+
+/* ============================================================
+   CONTROLS
+   ============================================================ */
+
+#controls {
+    position: fixed;
+
+    z-index: 100;
+
+    bottom: calc(14px / var(--ui-scale, 1));
+    right: calc(14px / var(--ui-scale, 1));
+
+    transform: scale(var(--ui-scale, 1));
+    transform-origin: bottom right;
+}
+
+#larryButton {
+    position: relative;
+    transform-origin: center center;
+
+    width: 126px;
+    min-height: 52px;
+    padding: 16px 10px 10px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #c79a67 0%,
+            #b9834f 45%,
+            #a86f3e 100%
+        );
+
+    color: #fff8e8;
+
+    border:
+        2px solid #7d4f2c;
+
+    border-radius: 2px 2px 10px 10px;
+
+    box-shadow:
+        0 4px 8px rgba(0,0,0,.55),
+        inset 0 1px 0 rgba(255,255,255,.35),
+        inset 0 -3px 0 rgba(72,40,20,.22);
+
+    cursor: pointer;
+
+    font-family: Georgia, serif;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 1.15;
+    letter-spacing: .4px;
+    text-transform: uppercase;
+
+    text-shadow:
+        0 1px 1px rgba(60,30,10,.65);
+
+    overflow: visible;
+}
+
+/* Folded top of the paper bag */
+#larryButton::before {
+    content: "";
+
+    position: absolute;
+    left: -2px;
+    right: -2px;
+    top: 7px;
+
+    height: 7px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(245,211,166,.7),
+            rgba(125,79,44,.18)
+        );
+
+    border-top:
+        1px solid rgba(255,235,200,.45);
+
+    border-bottom:
+        1px solid rgba(92,54,29,.35);
+
+    pointer-events: none;
+}
+
+#larryButton:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+}
+
+#larryButton:active {
+    transform: translateY(1px);
+}
+
+#larCasinoButton {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 8px 14px;
+    color: #fff3d0;
+    background: linear-gradient(#9a5b2e, #5f3018);
+    border: 3px solid #3e210f;
+    border-radius: 9px;
+    box-shadow: 0 3px 8px rgba(0,0,0,.7), inset 0 1px rgba(255,255,255,.25);
+    font: 700 14px Georgia, serif;
+    text-decoration: none;
+    vertical-align: middle;
+}
+#larCasinoButton:hover { filter: brightness(1.1); }
+
+#savedCounter {
+    position: fixed;
+    contain: layout paint;
+
+    z-index: 100;
+
+    bottom: calc(20px / var(--ui-scale, 1));
+    left: calc(20px / var(--ui-scale, 1));
+
+    transform: scale(var(--ui-scale, 1));
+    transform-origin: bottom left;
+
+    color:
+        rgba(255,255,255,.75);
+
+    font-size: 13px;
+
+    pointer-events: none;
+}
+
+
+/* ============================================================
+   LAR BUCK REWARD FLASH
+   ============================================================ */
+
+.rewardFlash {
+    position: fixed;
+
+    z-index: 4000;
+
+    pointer-events: none;
+
+    color: #ffe38a;
+
+    font-weight: bold;
+
+    font-size: 18px;
+
+    text-shadow:
+        0 2px 4px black;
+
+    animation:
+        rewardFloat 1.1s ease-out forwards;
+}
+
+@keyframes rewardFloat {
+
+    from {
+        transform:
+            translate(-50%,0)
+            scale(.7);
+
+        opacity: 1;
+    }
+
+    to {
+        transform:
+            translate(-50%,-55px)
+            scale(1.15);
+
+        opacity: 0;
+    }
+}
+
+
+/* Randomized museum-style frames for river paintings */
+.paintingWrap.frame-simple { border: 7px solid #6f4a25; box-shadow: 0 0 0 2px #d1b27a, 0 5px 12px rgba(0,0,0,.65); }
+.paintingWrap.frame-ornate { border: 12px double #c79b45; box-shadow: 0 0 0 4px #5a3515, 0 0 0 7px #d8b66b, 0 7px 14px rgba(0,0,0,.7); }
+.paintingWrap.frame-carved { border: 10px solid #8a632e; box-shadow: inset 0 0 0 3px #e0bd72, inset 0 0 0 6px #65431e, 0 6px 15px rgba(0,0,0,.7); }
+.paintingWrap.frame-gilded { border: 9px ridge #d4af55; box-shadow: 0 0 0 3px #6b431b, 0 7px 15px rgba(0,0,0,.72); }
+
+
+.octopus-click-flash {
+    position: fixed;
+    pointer-events: none;
+    z-index: 99999;
+    font-weight: 900;
+    font-size: 24px;
+    color: #fff;
+    text-shadow: 0 0 6px #000, 0 0 12px #fff;
+    animation: octopusFlash .7s ease-out forwards;
+}
+@keyframes octopusFlash {
+    0% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1.7); }
+}
+
+
+/* FINAL MUSEUM FRAME OVERRIDES */
+.paintingFrame,
+.immortalized .paintingFrame {
+    background: #9d8654 !important;
+    border: 4px solid #806c45 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+.paintingFrame::before,
+.immortalized .paintingFrame::before {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background:
+        radial-gradient(circle at 8px 8px, #b29a67 0 5px, transparent 5.5px) 0 0 / 16px 16px;
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    box-shadow: none !important;
+    pointer-events: none;
+}
+.paintingFrame::after,
+.immortalized .paintingFrame::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    border: 1px solid #c0ad7c !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    pointer-events: none;
+}
+.paintingCanvas,
+.immortalized .paintingCanvas {
+    box-shadow: none !important;
+}
+/* remove the old 3-D side illusion */
+.paintingWrap::before,
+.paintingWrap::after,
+.immortalized::before,
+.immortalized::after {
+    display: none !important;
+}
+
+/* smaller, restrained sky paintings */
+.immortalized .paintingCanvas {
+    width: 3.15vw !important;
+    min-width: 42px !important;
+    max-width: 67px !important;
+    border: 2px solid #f1eee5 !important;
+}
+
+/* restrained halo, no large shadow around the picture */
+.immortalized .halo {
+    width: 30px !important;
+    height: 10px !important;
+    top: -15px !important;
+    border: 2px solid #b8a36e !important;
+    box-shadow: 0 0 8px rgba(184,163,110,.45) !important;
+}
+
+
+
+
+
+/* ============================================================
+   V28 STANDALONE SKY / INSPECTION BLUR + WIND
+   ============================================================ */
+
+/* Sky paintings begin only slightly blurred.  The frame stays crisp. */
+.immortalized .paintingCanvas {
+    filter: blur(3.5px) !important;
+    -webkit-filter: blur(3.5px) !important;
+    transition: filter 2.8s ease-out, -webkit-filter 2.8s ease-out !important;
+}
+
+.immortalized[data-approved="true"] .paintingCanvas {
+    filter: blur(0) !important;
+    -webkit-filter: blur(0) !important;
+}
+
+/* Popup: deliberately much blurrier than the small sky painting. */
+#inspectionPainting {
+    filter: blur(26px) !important;
+    -webkit-filter: blur(26px) !important;
+    transition: filter .55s ease-out, -webkit-filter .55s ease-out !important;
+}
+
+#inspectionPainting.popup-deblurred {
+    filter: blur(0) !important;
+    -webkit-filter: blur(0) !important;
+}
+
+#inspectionPainting.popup-slow-clear {
+    filter: blur(0) !important;
+    -webkit-filter: blur(0) !important;
+    transition: filter 2.8s ease-out, -webkit-filter 2.8s ease-out !important;
+}
+
+#deblurButton,
+#gorgeousButton {
+    min-width: 190px;
+    font-family: Georgia, serif;
+    font-weight: 700;
+}
+
+/* Independent wind movement is applied by JavaScript so dragging remains usable. */
+.immortalized.sky-wind-moving {
+    will-change: left, top, transform;
+}
+
+/* Keep the actual frames sharp while their images alone are blurred. */
+.immortalized .paintingFrame,
+.immortalized .paintingFrame::before,
+.immortalized .paintingFrame::after {
+    filter: none !important;
+    -webkit-filter: none !important;
+}
+
+
+
+/* ============================================================
+   V29 FINAL VISUAL + BEHAVIOUR OVERRIDES
+   These rules intentionally come last so older accumulated rules
+   cannot override the requested frame/blur behaviour.
+   ============================================================ */
+
+/* RIVER: substantial ornate frame, but blur ONLY the artwork. */
+.paintingWrap:not(.immortalized) .paintingFrame {
+    border: 12px solid #c8a95e !important;
+    border-radius: 0 !important;
+    background: linear-gradient(135deg,
+        #fff7d7 0%, #c7a65b 18%, #f5dda0 36%,
+        #b58b3e 55%, #f0d487 74%, #c19b4c 100%) !important;
+    box-shadow:
+        0 0 0 3px #8b6a2d,
+        0 0 0 6px #e1c579,
+        0 8px 18px rgba(0,0,0,.75) !important;
+    filter: none !important;
+    -webkit-filter: none !important;
+}
+
+.paintingWrap:not(.immortalized) .paintingFrame::before {
+    content: "" !important;
+    inset: -7px !important;
+    border: 2px solid #f3dda0 !important;
+    border-radius: 0 !important;
+    box-shadow: 0 0 0 2px #8a672a !important;
+    filter: none !important;
+    -webkit-filter: none !important;
+}
+
+.paintingWrap:not(.immortalized) .paintingFrame::after {
+    content: "" !important;
+    inset: 2px !important;
+    border: 2px solid rgba(255,239,184,.95) !important;
+    border-radius: 0 !important;
+    box-shadow: inset 0 0 0 2px rgba(112,76,20,.65) !important;
+    filter: none !important;
+    -webkit-filter: none !important;
+}
+
+/* River image: as deeply hidden as the inspection image at first. */
+.paintingWrap:not(.immortalized) .paintingCanvas {
+    filter: blur(26px) !important;
+    -webkit-filter: blur(26px) !important;
+    transition: filter 2.8s ease-out, -webkit-filter 2.8s ease-out !important;
+}
+
+.paintingWrap:not(.immortalized)[data-revealed="true"] .paintingCanvas {
+    filter: blur(0px) !important;
+    -webkit-filter: blur(0px) !important;
+}
+
+/* SKY: thick, square, ornate frame; artwork alone starts slightly blurred. */
+.immortalized .paintingFrame {
+    padding: 5px !important;
+    border: 12px solid #c8a95e !important;
+    border-radius: 0 !important;
+    background: linear-gradient(135deg,
+        #fff7d7 0%, #c7a65b 18%, #f5dda0 36%,
+        #b58b3e 55%, #f0d487 74%, #c19b4c 100%) !important;
+    box-shadow:
+        0 0 0 3px #8b6a2d,
+        0 0 0 6px #e1c579,
+        0 8px 18px rgba(0,0,0,.8) !important;
+    filter: none !important;
+    -webkit-filter: none !important;
+}
+
+.immortalized .paintingFrame::before {
+    content: "" !important;
+    inset: -7px !important;
+    border: 2px solid #f3dda0 !important;
+    border-radius: 0 !important;
+    box-shadow: 0 0 0 2px #8a672a !important;
+    filter: none !important;
+    -webkit-filter: none !important;
+}
+
+.immortalized .paintingFrame::after {
+    content: "" !important;
+    inset: 2px !important;
+    border: 2px solid rgba(255,239,184,.95) !important;
+    border-radius: 0 !important;
+    box-shadow: inset 0 0 0 2px rgba(112,76,20,.65) !important;
+    filter: none !important;
+    -webkit-filter: none !important;
+}
+
+.immortalized .paintingCanvas {
+    filter: blur(3.5px) !important;
+    -webkit-filter: blur(3.5px) !important;
+    transition: filter 2.8s ease-out, -webkit-filter 2.8s ease-out !important;
+}
+
+.immortalized[data-approved="true"] .paintingCanvas {
+    filter: blur(0px) !important;
+    -webkit-filter: blur(0px) !important;
+}
+
+/* ANGEL frames: substantial and crisp as well. */
+.angelFrame {
+    padding: 4px !important;
+    border: 8px solid #c8a95e !important;
+    border-radius: 0 !important;
+    background: linear-gradient(135deg,
+        #fff7d7 0%, #c7a65b 20%, #f5dda0 40%,
+        #b58b3e 62%, #f0d487 82%, #c19b4c 100%) !important;
+    box-shadow:
+        0 0 0 2px #8b6a2d,
+        0 0 0 4px #e1c579,
+        0 5px 12px rgba(0,0,0,.8) !important;
+    filter: none !important;
+    -webkit-filter: none !important;
+}
+
+.angelFrame img {
+    filter: none !important;
+    -webkit-filter: none !important;
+    border: 0 !important;
+}
+
+/* POP-UP: very thick, uniform, square-edged museum frame. */
+#inspectionFrame {
+    padding: 16px !important;
+    border: 12px solid #c8a95e !important;
+    border-radius: 0 !important;
+    background: linear-gradient(135deg,
+        #fff7d7 0%, #c7a65b 18%, #f5dda0 36%,
+        #b58b3e 55%, #f0d487 74%, #c19b4c 100%) !important;
+    box-shadow:
+        0 0 0 3px #8b6a2d,
+        0 0 0 7px #e1c579,
+        0 18px 55px rgba(0,0,0,.82) !important;
+}
+
+#inspectionFrame::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: -8px !important;
+    border: 2px solid #f3dda0 !important;
+    border-radius: 0 !important;
+    box-shadow: 0 0 0 2px #8a672a !important;
+    pointer-events: none !important;
+}
+
+#inspectionFrame::after {
+    content: "" !important;
+    position: absolute !important;
+    inset: 2px !important;
+    border: 2px solid rgba(255,239,184,.95) !important;
+    border-radius: 0 !important;
+    box-shadow: inset 0 0 0 2px rgba(112,76,20,.65) !important;
+    pointer-events: none !important;
+}
+
+#inspectionPainting {
+    border: 0 !important;
+    border-radius: 0 !important;
+    filter: blur(26px) !important;
+    -webkit-filter: blur(26px) !important;
+}
+
+#inspectionPainting.popup-deblurred {
+    filter: blur(0px) !important;
+    -webkit-filter: blur(0px) !important;
+}
+
+#inspectionPainting.popup-slow-clear {
+    filter: blur(0px) !important;
+    -webkit-filter: blur(0px) !important;
+    transition: filter 2.8s ease-out, -webkit-filter 2.8s ease-out !important;
+}
+
+/* ============================================================
+   V30 RIVER PAINTINGS — LIGHTER BLUR, STRONG ORNATE FRAMES,
+   AND MUCH MORE VISIBLE WATER BOBBING
+   ============================================================ */
+
+/* River artwork is only moderately blurred; the frame stays crisp. */
+.paintingWrap:not(.immortalized) .paintingCanvas {
+    filter: blur(3px) !important;
+    -webkit-filter: blur(2px) !important;
+}
+
+/* Substantial ornate river frame.  No blur is ever applied to it. */
+.paintingWrap:not(.immortalized) .paintingFrame {
+    padding: 11px !important;
+    border: 12px solid #8c6b2f !important;
+    border-radius: 0 !important;
+    background:
+        linear-gradient(
+            135deg,
+            #fff9df 0%,
+            #e4d39b 14%,
+            #fff1bd 28%,
+            #c19b4f 44%,
+            #f7e5ae 61%,
+            #b58b3d 78%,
+            #fff0bb 100%
+        ) !important;
+    box-shadow:
+        0 9px 22px rgba(0,0,0,.82),
+        inset 0 0 0 3px rgba(255,250,215,.95),
+        inset 0 0 0 6px rgba(112,76,20,.62),
+        inset 0 0 12px rgba(255,255,255,.85) !important;
+    filter: none !important;
+    -webkit-filter: none !important;
+}
+
+/* Crisp inner/outer moulding lines. */
+.paintingWrap:not(.immortalized) .paintingFrame::before {
+    inset: -7px !important;
+    border: 3px solid rgba(255,247,201,.95) !important;
+    border-radius: 0 !important;
+    filter: none !important;
+}
+
+.paintingWrap:not(.immortalized) .paintingFrame::after {
+    inset: 4px !important;
+    border: 3px solid rgba(105,70,18,.78) !important;
+    border-radius: 0 !important;
+    filter: none !important;
+}
+
+/* Strong, obvious vertical bobbing.  This animates the frame only,
+   so the river's existing left-to-right current remains intact. */
+@keyframes V30RiverBob {
+    0%, 100% { transform: translateY(-18px); }
+    50%      { transform: translateY(18px); }
+}
+
+.paintingWrap:not(.immortalized):not([data-rescuing="true"]) .paintingFrame {
+    animation: V30RiverBob 2.4s ease-in-out infinite;
+    will-change: transform;
+}
+
+/* Never bob a painting once the rope has caught it. */
+.paintingWrap[data-rescuing="true"] .paintingFrame,
+.paintingWrap.immortalized .paintingFrame {
+    animation: none !important;
+}
+
+
+/* ============================================================
+   V31 FINAL RIVER / POPUP RULES
+   ============================================================ */
+
+/* Mildly soft river artwork; frame remains perfectly crisp. */
+.paintingWrap:not(.immortalized) .paintingCanvas {
+    filter: blur(3px) !important;
+    -webkit-filter: blur(2px) !important;
+}
+
+/* More obvious bobbing while the painting is genuinely in the river. */
+@keyframes V31RiverBob {
+    0%, 100% { margin-top: -20px; }
+    50%      { margin-top: 20px; }
+}
+
+.paintingWrap:not(.immortalized):not([data-rescuing="true"]) {
+    animation: V31RiverBob 2.2s ease-in-out infinite;
+    will-change: margin-top;
+}
+
+.paintingWrap[data-rescuing="true"],
+.paintingWrap.immortalized {
+    animation: none !important;
+    margin-top: 0 !important;
+}
+
+/* Substantial ornate river frame. */
+.paintingWrap:not(.immortalized) .paintingFrame {
+    padding: 11px !important;
+    border: 14px solid #8c6b2f !important;
+    border-radius: 0 !important;
+    background:
+        linear-gradient(
+            135deg,
+            #fff9df 0%,
+            #e4d39b 14%,
+            #fff1bd 28%,
+            #c19b4f 44%,
+            #f7e5ae 61%,
+            #b58b3d 78%,
+            #fff0bb 100%
+        ) !important;
+    box-shadow:
+        0 9px 22px rgba(0,0,0,.82),
+        inset 0 0 0 3px rgba(255,250,215,.95),
+        inset 0 0 0 6px rgba(112,76,20,.62),
+        inset 0 0 12px rgba(255,255,255,.85) !important;
+    filter: none !important;
+    -webkit-filter: none !important;
+}
+
+.paintingWrap:not(.immortalized) .paintingFrame::before,
+.paintingWrap:not(.immortalized) .paintingFrame::after {
+    border-radius: 0 !important;
+    filter: none !important;
+    -webkit-filter: none !important;
+}
+
+/* Popup image/frame remain crisp and substantial; only image blur changes. */
+#inspectionFrame,
+#inspectionFrame::before,
+#inspectionFrame::after {
+    border-radius: 0 !important;
+    filter: none !important;
+    -webkit-filter: none !important;
+}
+
+
+/* ============================================================
+   V32 BIRD SPECTACLES
+   ============================================================ */
+.v32-gull-flock {
+    position: fixed;
+    left: 72vw;
+    top: 12vh;
+    width: 22vw;
+    height: 20vh;
+    pointer-events: none;
+    z-index: 40;
+    opacity: 0;
+}
+
+.v32-gull {
+    position: absolute;
+    width: 18px;
+    height: 9px;
+    opacity: .9;
+}
+
+.v32-gull::before,
+.v32-gull::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    width: 9px;
+    height: 5px;
+    border-top: 2px solid rgba(245,245,245,.9);
+    border-radius: 50% 50% 0 0;
+}
+
+.v32-gull::before { left: 0; transform: rotate(18deg); }
+.v32-gull::after  { right: 0; transform: rotate(-18deg); }
+
+.v32-infinity-flock {
+    position: fixed;
+    left: 64vw;
+    top: 10vh;
+    width: 30vw;
+    height: 18vh;
+    pointer-events: none;
+    z-index: 39;
+    opacity: 0;
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- ============================================================
+     NIAGARA FALLS
+     ============================================================ -->
+
+<video
+    id="waterfall"
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="auto">
+
+    <source
+        src="Videos/NiagaraFalls.mp4"
+        type="video/mp4">
+
+</video>
+
+
+<!-- ANGEL / DESKTOP ICON AREA -->
+
+<div id="angels"></div>
+
+
+<!-- ============================================================
+     TURTLE
+     ============================================================ -->
+
+<div id="turtle">
+
+    <div class="turtleShell"></div>
+
+    <div class="turtleHead">
+        <div class="turtleEye"></div>
+    </div>
+
+    <div class="turtleLeg one"></div>
+    <div class="turtleLeg two"></div>
+
+</div>
+
+
+<!-- ============================================================
+     CONTROLS
+     ============================================================ -->
+
+<div id="controls">
+
+    <button type="button" id="larryButton" aria-label="Return to Larry's Variety">
+        RETURN TO LARRY'S
+    </button>
+
+    <a href="larrystampmerge.html" id="larCasinoButton" aria-label="Enter the LAR Stamp Casino">
+        LAR CASINO — COLLECT ’EM ALL
+    </a>
+
+</div>
+
+
+<div id="savedCounter">
+    Immortalized: 0 | Lar Bucks: 0
+</div>
+
+
+<!-- ============================================================
+     INSPECTION
+     ============================================================ -->
+
+<div id="inspection">
+
+    <div id="inspectionFrame">
+
+        <img
+            id="inspectionPainting"
+            src=""
+            alt="">
+
+        <div id="paintingTitle"></div>
+
+    </div>
+
+
+    <div id="inspectionTools">
+
+        <button
+            class="inspectButton"
+            id="zoomOut">
+            −
+        </button>
+
+        <button
+            class="inspectButton"
+            id="zoomReset">
+            RESET
+        </button>
+
+        <button
+            class="inspectButton"
+            id="zoomIn">
+            +
+        </button>
+
+        <button
+            class="inspectButton locked"
+            id="titleButton">
+            TITLE — 20 LAR BUCKS
+        </button>
+
+        <button
+            class="inspectButton"
+            id="rejectPainting"
+            style="display:none;">
+            REJECT PAINTING
+        </button>
+
+
+        <button
+            class="inspectButton"
+            id="deblurButton">
+            3 LAR BUCKS TO DE-BLUR
+        </button>
+
+        <button
+            class="inspectButton"
+            id="gorgeousButton">
+            Lawks-A-Mussy--Yes!
+        </button>
+
+    </div>
+
+
+    <button id="closeInspection">
+        CLOSE
+    </button>
+
+
+    <div class="inspectionGull gullOne">
+        <div class="wing left"></div>
+        <div class="wing right"></div>
+    </div>
+
+    <div class="inspectionGull gullTwo">
+        <div class="wing left"></div>
+        <div class="wing right"></div>
+    </div>
+
+    <div class="inspectionGull gullThree">
+        <div class="wing left"></div>
+        <div class="wing right"></div>
+    </div>
+
+    <div class="inspectionGull gullFour">
+        <div class="wing left"></div>
+        <div class="wing right"></div>
+    </div>
+
+</div>
+
+
+<script src="images.js"></script>
+
+<script>
+
+function flashOctopusClick(e) {
+    const f = document.createElement("div");
+    f.className = "octopus-click-flash";
+    f.textContent = "WARNING — ALL LAR BUCKS LOST";
+    f.style.left = ((e && e.clientX) || window.innerWidth/2) + "px";
+    f.style.top = ((e && e.clientY) || window.innerHeight/2) + "px";
+    document.body.appendChild(f);
+    setTimeout(() => f.remove(), 750);
+}
+
+
+
+
+
+/* ============================================================
+   FORCE SILENCE
+   ============================================================ */
+
+const waterfall =
+    document.getElementById(
+        "waterfall"
+    );
+
+
+function silenceEverything() {
+
+    /*
+       The Niagara video is the only media
+       that is supposed to exist.
+    */
+
+    waterfall.muted = true;
+
+    waterfall.volume = 0;
+
+    waterfall.setAttribute(
+        "muted",
+        ""
+    );
+
+
+    /*
+       Kill any accidental audio elements.
+    */
+
+    document
+        .querySelectorAll(
+            "audio"
+        )
+        .forEach(
+            function(audio) {
+
+                audio.pause();
+
+                audio.volume = 0;
+
+                audio.remove();
+
+            }
+        );
+
+
+    /*
+       Also silence every other media
+       element if anything adds one later.
+    */
+
+    document
+        .querySelectorAll(
+            "video"
+        )
+        .forEach(
+            function(video) {
+
+                video.muted = true;
+
+                video.volume = 0;
+
+            }
+        );
+
+}
+
+
+silenceEverything();
+
+
+/*
+   Keep it muted even if the browser or
+   page attempts to change the state.
+*/
+
+waterfall.addEventListener(
+    "volumechange",
+    function() {
+
+        waterfall.muted = true;
+
+        waterfall.volume = 0;
+
+    }
+);
+
+
+/* ============================================================
+   VARIABLES
+   ============================================================ */
+
+let usedImages = [];
+
+let savedPaintings = [];
+
+let activePaintings = [];
+
+let paintingNumber = 0;
+
+let riverGeneration = 0;
+
+let nextGroup =
+    7 +
+    Math.floor(
+        Math.random() * 5
+    );
+
+let currentInspectionImage = "";
+
+let currentSkyPainting = null;
+
+let inspectionZoom = 1;
+
+let inspectionDragging = false;
+
+let inspectionDragX = 0;
+
+let inspectionDragY = 0;
+
+let inspectionOffsetX = 0;
+
+let inspectionOffsetY = 0;
+
+let titleUnlocked = [];
+
+
+/* ============================================================
+   LAR BUCKS
+   ============================================================ */
+
+let larBucks = 0;
+
+
+try {
+
+    larBucks =
+        parseInt(
+            localStorage.getItem(
+                "larBucks"
+            ) || "0",
+            10
+        );
+
+    if (
+        isNaN(larBucks)
+    ) {
+        larBucks = 0;
+    }
+
+} catch (e) {
+
+    larBucks = 0;
+
+}
+
+
+/* ============================================================
+   SAVED PAINTINGS
+   ============================================================ */
+
+/*
+   Immortalized paintings are SESSION-ONLY.
+   Every visit starts with zero saved/rescued paintings.
+   Clear the older persistent collection left by previous versions.
+*/
+savedPaintings = [];
+
+try {
+    localStorage.removeItem(
+        "larryImmortalizedPaintings"
+    );
+} catch (e) {}
+
+
+/* ============================================================
+   UNLOCKED TITLES
+   ============================================================ */
+
+try {
+
+    titleUnlocked =
+        JSON.parse(
+            localStorage.getItem(
+                "larryUnlockedTitles"
+            ) || "[]"
+        );
+
+    if (
+        !Array.isArray(
+            titleUnlocked
+        )
+    ) {
+
+        titleUnlocked = [];
+
+    }
+
+} catch (e) {
+
+    titleUnlocked = [];
+
+}
+
+
+/* ============================================================
+   COUNTER
+   ============================================================ */
+
+function updateSavedCounter() {
+
+    document
+        .getElementById(
+            "savedCounter"
+        )
+        .textContent =
+        "Immortalized: " +
+        savedPaintings.length +
+        " | Lar Bucks: " +
+        larBucks;
+
+}
+
+
+updateSavedCounter();
+
+
+/* ============================================================
+   LAR BUCK REWARD
+   ============================================================ */
+
+function addLarBuck(
+    x,
+    y,
+    amount = 1
+) {
+
+    larBucks += amount;
+
+
+    try {
+
+        localStorage.setItem(
+            "larBucks",
+            larBucks
+        );
+
+    } catch (e) {}
+
+
+    updateSavedCounter();
+
+
+    const popup =
+        document.createElement(
+            "div"
+        );
+
+    popup.className =
+        "larBuckPopup";
+
+    popup.textContent =
+        "+" +
+        amount +
+        " Lar Buck" +
+        (
+            amount === 1
+                ? ""
+                : "s"
+        );
+
+
+    popup.style.left =
+        x + "px";
+
+    popup.style.top =
+        y + "px";
+
+
+    document.body.appendChild(
+        popup
+    );
+
+
+    setTimeout(
+        function() {
+
+            popup.remove();
+
+        },
+        1700
+    );
+
+}
+
+
+/* ============================================================
+   GENERIC REWARD OBJECT
+   ============================================================ */
+
+function rewardObject(
+    object,
+    amount
+) {
+
+    const rect =
+        object.getBoundingClientRect();
+
+
+    addLarBuck(
+        rect.left +
+        rect.width / 2,
+
+        rect.top,
+
+        amount
+    );
+
+
+    object.style.pointerEvents =
+        "none";
+
+
+    object.style.transition =
+        "transform .45s ease, opacity .45s ease";
+
+
+    object.style.transform +=
+        " scale(1.7)";
+
+
+    object.style.opacity =
+        "0";
+
+
+    setTimeout(
+        function() {
+
+            object.remove();
+
+        },
+        500
+    );
+
+}
+
+
+/* ============================================================
+   ARTWORK CHOICE
+   ============================================================ */
+
+function chooseArtwork() {
+
+    if (
+        usedImages.length >=
+        images.length
+    ) {
+
+        usedImages = [];
+
+    }
+
+
+    let available =
+        images.filter(
+            function(image) {
+
+                return !usedImages.includes(
+                    images.indexOf(
+                        image
+                    )
+                );
+
+            }
+        );
+
+
+    if (
+        !available.length
+    ) {
+
+        usedImages = [];
+
+        available =
+            images.slice();
+
+    }
+
+
+    const chosen =
+        available[
+            Math.floor(
+                Math.random() *
+                available.length
+            )
+        ];
+
+
+    usedImages.push(
+        images.indexOf(
+            chosen
+        )
+    );
+
+
+    return chosen;
+
+}
+
+
+/* ============================================================
+   SAVE PAINTING
+   ============================================================ */
+
+function savePainting(
+    image
+) {
+
+    if (
+        !savedPaintings.includes(
+            image
+        )
+    ) {
+
+        savedPaintings.push(
+            image
+        );
+
+
+        /*
+           Deliberately do not persist this collection.
+           It belongs only to the current Niagara visit.
+        */
+
+    }
+
+
+    updateSavedCounter();
+
+}
+
+
+/* ============================================================
+   TITLE
+   ============================================================ */
+
+function getPaintingTitle(
+    image
+) {
+
+    /*
+       If images.js contains an optional
+       imageTitles object, use it.
+    */
+
+    try {
+
+        if (
+            typeof imageTitles !==
+            "undefined" &&
+            imageTitles[image]
+        ) {
+
+            return imageTitles[image];
+
+        }
+
+    } catch (e) {}
+
+
+    /*
+       Otherwise use the filename as the
+       painting title.
+    */
+
+    let name =
+        image
+            .split("/")
+            .pop();
+
+
+    name =
+        name.replace(
+            /\.[^/.]+$/,
+            ""
+        );
+
+
+    name =
+        decodeURIComponent(
+            name
+        );
+
+
+    name =
+        name.replace(
+            /[_-]+/g,
+            " "
+        );
+
+
+    name =
+        name.replace(
+            /\s+/g,
+            " "
+        );
+
+
+    return name.trim();
+
+}
+
+
+function titleIsUnlocked(
+    image
+) {
+
+    return titleUnlocked.includes(
+        image
+    );
+
+}
+
+
+/* ============================================================
+   INSPECTION WINDOW
+   ============================================================ */
+
+function inspectPainting(
+    image,
+    skyPainting = null
+) {
+
+    currentInspectionImage =
+        image;
+
+    currentSkyPainting =
+        skyPainting;
+
+
+    inspectionZoom = 1;
+
+    inspectionOffsetX = 0;
+
+    inspectionOffsetY = 0;
+
+
+    const inspection =
+        document.getElementById(
+            "inspection"
+        );
+
+    const picture =
+        document.getElementById(
+            "inspectionPainting"
+        );
+
+
+    picture.src =
+        image;
+
+
+    picture.style.transform =
+        "scale(1)";
+
+
+    const frame =
+        document.getElementById(
+            "inspectionFrame"
+        );
+
+
+    frame.style.transform =
+        "translate(0px,0px)";
+
+
+    updateTitleButton();
+
+    const rejectButton =
+        document.getElementById(
+            "rejectPainting"
+        );
+
+    /*
+       Any painting currently floating in the sky may be rejected.
+       The button is therefore tied to the actual sky element, not
+       to whether the painting has already been saved.
+    */
+    rejectButton.style.display =
+        currentSkyPainting &&
+        document.body.contains(
+            currentSkyPainting
+        )
+            ? "inline-block"
+            : "none";
+
+
+    inspection.classList.add(
+        "open"
+    );
+
+}
+
+
+function updateTitleButton() {
+
+    const button =
+        document.getElementById(
+            "titleButton"
+        );
+
+    const title =
+        document.getElementById(
+            "paintingTitle"
+        );
+
+
+    if (
+        titleIsUnlocked(
+            currentInspectionImage
+        )
+    ) {
+
+        button.textContent =
+            "TITLE UNLOCKED";
+
+        button.classList.remove(
+            "locked"
+        );
+
+        button.classList.add(
+            "unlocked"
+        );
+
+
+        title.textContent =
+            getPaintingTitle(
+                currentInspectionImage
+            );
+
+        title.style.display =
+            "block";
+
+
+        return;
+
+    }
+
+
+    button.textContent =
+        "TITLE — 20 LAR BUCKS";
+
+    button.classList.add(
+        "locked"
+    );
+
+    button.classList.remove(
+        "unlocked"
+    );
+
+
+    title.style.display =
+        "none";
+
+}
+
+
+function closeInspection() {
+
+    document
+        .getElementById(
+            "inspection"
+        )
+        .classList.remove(
+            "open"
+        );
+
+    currentSkyPainting = null;
+
+    document
+        .getElementById(
+            "rejectPainting"
+        ).style.display =
+        "none";
+
+}
+
+
+document
+    .getElementById(
+        "closeInspection"
+    )
+    .addEventListener(
+        "click",
+        function(e) {
+
+            e.stopPropagation();
+
+            closeInspection();
+
+        }
+    );
+
+
+/* ============================================================
+   REJECT CURRENT SKY PAINTING
+   ============================================================ */
+
+document
+    .getElementById(
+        "rejectPainting"
+    )
+    .addEventListener(
+        "click",
+        function(e) {
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            const image =
+                currentInspectionImage;
+
+            const painting =
+                currentSkyPainting;
+
+            if (!image) {
+                return;
+            }
+
+            savedPaintings =
+                savedPaintings.filter(
+                    function(savedImage) {
+                        return savedImage !== image;
+                    }
+                );
+
+            titleUnlocked =
+                titleUnlocked.filter(
+                    function(savedImage) {
+                        return savedImage !== image;
+                    }
+                );
+
+            try {
+                localStorage.removeItem(
+                    "larryImmortalizedPaintings"
+                );
+
+                localStorage.setItem(
+                    "larryUnlockedTitles",
+                    JSON.stringify(titleUnlocked)
+                );
+
+            } catch (error) {}
+
+            if (painting && document.body.contains(painting)) {
+                painting.remove();
+            }
+
+            updateSavedCounter();
+            closeInspection();
+
+        }
+    );
+
+
+/* ============================================================
+   UNLOCK TITLE
+   ============================================================ */
+
+document
+    .getElementById(
+        "titleButton"
+    )
+    .addEventListener(
+        "click",
+        function(e) {
+
+            e.stopPropagation();
+
+
+            if (
+                !currentInspectionImage
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                titleIsUnlocked(
+                    currentInspectionImage
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            if (
+                larBucks < 20
+            ) {
+
+                const rect =
+                    this.getBoundingClientRect();
+
+
+                addLarBuck(
+                    rect.left +
+                    rect.width / 2,
+                    rect.top,
+                    0
+                );
+
+
+                this.textContent =
+                    "NEED 20 LAR BUCKS";
+
+                setTimeout(
+                    updateTitleButton,
+                    1200
+                );
+
+
+                return;
+
+            }
+
+
+            larBucks -= 20;
+
+
+            try {
+
+                localStorage.setItem(
+                    "larBucks",
+                    larBucks
+                );
+
+            } catch (e) {}
+
+
+            titleUnlocked.push(
+                currentInspectionImage
+            );
+
+
+            try {
+
+                localStorage.setItem(
+                    "larryUnlockedTitles",
+                    JSON.stringify(
+                        titleUnlocked
+                    )
+                );
+
+            } catch (e) {}
+
+
+            updateSavedCounter();
+
+            updateTitleButton();
+
+        }
+    );
+
+
+/* ============================================================
+   INSPECTION ZOOM
+   ============================================================ */
+
+function setInspectionZoom(
+    value
+) {
+
+    inspectionZoom =
+        Math.max(
+            .35,
+            Math.min(
+                4,
+                value
+            )
+        );
+
+
+    document
+        .getElementById(
+            "inspectionPainting"
+        )
+        .style.transform =
+        "scale(" +
+        inspectionZoom +
+        ")";
+
+}
+
+
+document
+    .getElementById(
+        "zoomIn"
+    )
+    .addEventListener(
+        "click",
+        function(e) {
+
+            e.stopPropagation();
+
+            setInspectionZoom(
+                inspectionZoom +
+                .25
+            );
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "zoomOut"
+    )
+    .addEventListener(
+        "click",
+        function(e) {
+
+            e.stopPropagation();
+
+            setInspectionZoom(
+                inspectionZoom -
+                .25
+            );
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "zoomReset"
+    )
+    .addEventListener(
+        "click",
+        function(e) {
+
+            e.stopPropagation();
+
+            inspectionZoom = 1;
+
+            inspectionOffsetX = 0;
+
+            inspectionOffsetY = 0;
+
+
+            document
+                .getElementById(
+                    "inspectionPainting"
+                )
+                .style.transform =
+                "scale(1)";
+
+
+            document
+                .getElementById(
+                    "inspectionFrame"
+                )
+                .style.transform =
+                "translate(0px,0px)";
+
+        }
+    );
+
+
+/*
+   Mouse wheel zoom.
+*/
+
+document
+    .getElementById(
+        "inspectionFrame"
+    )
+    .addEventListener(
+        "wheel",
+        function(e) {
+
+            e.preventDefault();
+
+            e.stopPropagation();
+
+
+            if (
+                e.deltaY < 0
+            ) {
+
+                setInspectionZoom(
+                    inspectionZoom +
+                    .12
+                );
+
+            } else {
+
+                setInspectionZoom(
+                    inspectionZoom -
+                    .12
+                );
+
+            }
+
+        },
+        {
+            passive: false
+        }
+    );
+
+
+/* ============================================================
+   DRAGGABLE INSPECTION FRAME
+   ============================================================ */
+
+const inspectionFrame =
+    document.getElementById(
+        "inspectionFrame"
+    );
+
+
+inspectionFrame.addEventListener(
+    "pointerdown",
+    function(e) {
+
+        if (
+            e.button !== 0
+        ) {
+
+            return;
+
+        }
+
+
+        inspectionDragging =
+            true;
+
+
+        inspectionDragX =
+            e.clientX -
+            inspectionOffsetX;
+
+        inspectionDragY =
+            e.clientY -
+            inspectionOffsetY;
+
+
+        inspectionFrame.classList.add(
+            "dragging"
+        );
+
+
+        inspectionFrame.setPointerCapture(
+            e.pointerId
+        );
+
+
+        e.preventDefault();
+
+    }
+);
+
+
+inspectionFrame.addEventListener(
+    "pointermove",
+    function(e) {
+
+        if (
+            !inspectionDragging
+        ) {
+
+            return;
+
+        }
+
+
+        inspectionOffsetX =
+            e.clientX -
+            inspectionDragX;
+
+        inspectionOffsetY =
+            e.clientY -
+            inspectionDragY;
+
+
+        inspectionFrame.style.transform =
+            "translate(" +
+            inspectionOffsetX +
+            "px," +
+            inspectionOffsetY +
+            "px)";
+
+    }
+);
+
+
+function endInspectionDrag(
+    e
+) {
+
+    if (
+        !inspectionDragging
+    ) {
+
+        return;
+
+    }
+
+
+    inspectionDragging =
+        false;
+
+
+    inspectionFrame.classList.remove(
+        "dragging"
+    );
+
+
+    try {
+
+        inspectionFrame.releasePointerCapture(
+            e.pointerId
+        );
+
+    } catch (error) {}
+
+}
+
+
+inspectionFrame.addEventListener(
+    "pointerup",
+    endInspectionDrag
+);
+
+
+inspectionFrame.addEventListener(
+    "pointercancel",
+    endInspectionDrag
+);
+
+
+/* ============================================================
+   MAKE IMMORTALIZED PAINTING
+   ============================================================ */
+
+function immortalizePainting(
+    painting,
+    image,
+    originX = null,
+    originY = null,
+    originScale = null
+) {
+
+    savePainting(image);
+
+    painting.dataset.approved = "false";
+    painting.dataset.revealed = "false";
+    painting.dataset.rescued = "true";
+    painting.dataset.rescuing = "false";
+    painting.classList.add("immortalized");
+    painting.style.pointerEvents = "auto";
+
+    /* The painting begins exactly where the rope caught it. */
+    const rect = painting.getBoundingClientRect();
+    const startX = originX !== null ? originX : rect.left + rect.width / 2;
+    const startY = originY !== null ? originY : rect.top + rect.height / 2;
+
+    let launchScale = originScale;
+    if (launchScale === null) {
+        try {
+            const matrix = new DOMMatrix(getComputedStyle(painting).transform);
+            launchScale = Math.sqrt(matrix.a * matrix.a + matrix.b * matrix.b) || 1;
+        } catch (err) {
+            launchScale = 1;
+        }
+    }
+
+    /* Final sky position: top strip, safely inside the screen.
+       The path is a slight diagonal from the rope catch point. */
+    const finalWidth = Math.min(67, Math.max(42, window.innerWidth * 0.0315));
+    const finalHeight = finalWidth * 1.25;
+    const halfW = finalWidth / 2 + 10;
+    const halfH = finalHeight / 2 + 10;
+
+    const targetX = Math.max(
+        halfW,
+        Math.min(
+            window.innerWidth - halfW,
+            startX + (Math.random() * 180 - 90)
+        )
+    );
+
+    const topStripMin = halfH + 8;
+    const topStripMax = Math.max(
+        topStripMin,
+        Math.min(window.innerHeight * 0.20, window.innerHeight - halfH - 8)
+    );
+
+    const targetY = topStripMin +
+        Math.random() * Math.max(1, topStripMax - topStripMin);
+
+    painting.style.transition = "none";
+    painting.style.left = startX + "px";
+    painting.style.top = startY + "px";
+    painting.style.transform = "translate(-50%,-50%) scale(" + launchScale + ")";
+    painting.style.opacity = "1";
+
+    if (!painting.querySelector(".halo")) {
+        const halo = document.createElement("div");
+        halo.className = "halo";
+        painting.querySelector(".paintingFrame").appendChild(halo);
+    }
+
+    /* Let the exact rope/click position render before the upward drift. */
+    requestAnimationFrame(function() {
+        if (!document.body.contains(painting)) return;
+
+        painting.style.transition =
+            "left 3s cubic-bezier(.2,.72,.25,1), " +
+            "top 3s cubic-bezier(.2,.72,.25,1), " +
+            "transform 3s cubic-bezier(.2,.72,.25,1)";
+
+        painting.style.left = targetX + "px";
+        painting.style.top = targetY + "px";
+        painting.style.transform = "translate(-50%,-50%) scale(.58)";
+    });
+
+    /* V33: sky paintings are true draggable objects.
+       Their released position becomes the new centre of their wind path. */
+    if (!painting.dataset.skyDragReady) {
+        painting.dataset.skyDragReady = "true";
+        painting.dataset.skyDragging = "false";
+        painting.dataset.skySuppressClick = "false";
+
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let dragCenterX = 0;
+        let dragCenterY = 0;
+        let dragScale = 0.58;
+        let dragMoved = false;
+
+        painting.addEventListener("pointerdown", function(e) {
+            if (painting.dataset.rescued !== "true" || e.button !== 0) return;
+
+            const r = painting.getBoundingClientRect();
+            dragStartX = e.clientX;
+            dragStartY = e.clientY;
+            dragCenterX = r.left + r.width / 2;
+            dragCenterY = r.top + r.height / 2;
+            dragMoved = false;
+
+            try {
+                const matrix = new DOMMatrix(getComputedStyle(painting).transform);
+                dragScale = Math.sqrt(matrix.a * matrix.a + matrix.b * matrix.b) || 0.58;
+            } catch (err) {
+                dragScale = 0.58;
+            }
+
+            painting.dataset.skyDragging = "true";
+            painting.dataset.windPaused = "true";
+            painting.dataset.skySuppressClick = "false";
+            painting.style.transition = "none";
+
+            try { painting.setPointerCapture(e.pointerId); } catch (err) {}
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        painting.addEventListener("pointermove", function(e) {
+            if (painting.dataset.skyDragging !== "true") return;
+
+            const dx = e.clientX - dragStartX;
+            const dy = e.clientY - dragStartY;
+
+            if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+                dragMoved = true;
+            }
+
+            const halfW = painting.getBoundingClientRect().width / 2;
+            const halfH = painting.getBoundingClientRect().height / 2;
+
+            const maxX = Math.max(halfW, window.innerWidth - halfW);
+            const maxY = Math.max(
+                halfH,
+                window.innerHeight * 0.60 - halfH
+            );
+
+            const newCenterX = Math.max(
+                halfW,
+                Math.min(maxX, dragCenterX + dx)
+            );
+
+            const newCenterY = Math.max(
+                halfH,
+                Math.min(maxY, dragCenterY + dy)
+            );
+
+            /* Keep the painting centred on its actual dragged position. */
+            painting.style.left = newCenterX + "px";
+            painting.style.top = newCenterY + "px";
+            painting.style.transform =
+                "translate(-50%,-50%) scale(" + dragScale + ")";
+
+            e.stopPropagation();
+        });
+
+        function finishSkyDrag(e) {
+            if (painting.dataset.skyDragging !== "true") return;
+
+            painting.dataset.skyDragging = "false";
+
+            /*
+               Critical V33 fix:
+               the position at mouse release becomes the centre of the
+               painting's future wind motion. It therefore does NOT snap
+               back to the old position.
+            */
+            /* Freeze the wind base at the exact released position. */
+            if (typeof painting._resetSkyWindBase === "function") {
+                painting._resetSkyWindBase();
+            }
+            painting.dataset.windPaused = "false";
+
+            if (dragMoved) {
+                /* Prevent the synthetic click generated by a drag from
+                   opening the inspection popup. */
+                painting.dataset.skySuppressClick = "true";
+            }
+
+            try { painting.releasePointerCapture(e.pointerId); } catch (err) {}
+
+            /* The painting's existing click handler consumes this flag
+               for the synthetic click produced by a drag. */
+        }
+
+        painting.addEventListener("pointerup", finishSkyDrag);
+        painting.addEventListener("pointercancel", finishSkyDrag);
+    }
+}
+
+
+/* ============================================================
+   ANGEL ICON
+   ============================================================ */
+
+function createAngelIcon(
+    image
+) {
+
+    const angels =
+        document.getElementById(
+            "angels"
+        );
+
+
+    /*
+       Avoid duplicates.
+    */
+
+    if (
+        angels.querySelector(
+            '[data-image="' +
+            CSS.escape(image) +
+            '"]'
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    const angel =
+        document.createElement(
+            "div"
+        );
+
+    angel.className =
+        "angel";
+
+
+    angel.dataset.image =
+        image;
+
+
+    /*
+       ONLY the upper 1/5.
+    */
+
+    angel.style.left =
+        (
+            2 +
+            Math.random() * 94
+        ) + "vw";
+
+
+    angel.style.top =
+        (
+            4 +
+            Math.random() * 12
+        ) + "vh";
+
+
+    const frame =
+        document.createElement(
+            "div"
+        );
+
+    frame.className =
+        "angelFrame";
+
+
+    const img =
+        document.createElement(
+            "img"
+        );
+
+    img.src =
+        image;
+
+
+    const halo =
+        document.createElement(
+            "div"
+        );
+
+    halo.className =
+        "halo";
+
+
+    frame.appendChild(
+        img
+    );
+
+    frame.appendChild(
+        halo
+    );
+
+    angel.appendChild(
+        frame
+    );
+
+    angels.appendChild(
+        angel
+    );
+
+
+    /*
+       Desktop-icon-style dragging.
+    */
+
+    let dragging = false;
+
+    let offsetX = 0;
+
+    let offsetY = 0;
+
+
+    angel.addEventListener(
+        "pointerdown",
+        function(e) {
+
+            if (
+                e.button !== 0
+            ) {
+
+                return;
+
+            }
+
+
+            dragging = true;
+
+
+            const rect =
+                angel.getBoundingClientRect();
+
+
+            offsetX =
+                e.clientX -
+                rect.left;
+
+            offsetY =
+                e.clientY -
+                rect.top;
+
+
+            angel.setPointerCapture(
+                e.pointerId
+            );
+
+
+            e.preventDefault();
+
+        }
+    );
+
+
+    angel.addEventListener(
+        "pointermove",
+        function(e) {
+
+            if (
+                !dragging
+            ) {
+
+                return;
+
+            }
+
+
+            let x =
+                e.clientX -
+                offsetX;
+
+            let y =
+                e.clientY -
+                offsetY;
+
+
+            /*
+               Keep the icon inside the
+               upper 1/5 strip.
+            */
+
+            const maxX =
+                window.innerWidth -
+                angel.offsetWidth;
+
+
+            const maxY =
+                window.innerHeight *
+                .20 -
+                angel.offsetHeight;
+
+
+            x =
+                Math.max(
+                    0,
+                    Math.min(
+                        maxX,
+                        x
+                    )
+                );
+
+
+            y =
+                Math.max(
+                    0,
+                    Math.min(
+                        maxY,
+                        y
+                    )
+                );
+
+
+            angel.style.left =
+                x + "px";
+
+            angel.style.top =
+                y + "px";
+
+        }
+    );
+
+
+    angel.addEventListener(
+        "pointerup",
+        function(e) {
+
+            dragging = false;
+
+            try {
+
+                angel.releasePointerCapture(
+                    e.pointerId
+                );
+
+            } catch (error) {}
+
+        }
+    );
+
+
+    angel.addEventListener(
+        "pointercancel",
+        function(e) {
+
+            dragging = false;
+
+        }
+    );
+
+
+    let angelDownX = 0;
+    let angelDownY = 0;
+
+    angel.addEventListener(
+        "pointerdown",
+        function(e) {
+            if (e.button === 0) {
+                angelDownX = e.clientX;
+                angelDownY = e.clientY;
+            }
+        }
+    );
+
+    angel.addEventListener(
+        "click",
+        function(e) {
+
+            e.stopPropagation();
+
+            const moved =
+                Math.hypot(
+                    e.clientX - angelDownX,
+                    e.clientY - angelDownY
+                );
+
+            if (moved < 8) {
+                addLarBuck(
+                    e.clientX,
+                    e.clientY,
+                    1
+                );
+
+                inspectPainting(
+                    image
+                );
+            }
+        }
+    );
+
+    angel.addEventListener(
+        "dblclick",
+        function(e) {
+
+            e.stopPropagation();
+
+            addLarBuck(
+                e.clientX,
+                e.clientY,
+                1
+            );
+
+            inspectPainting(
+                image
+            );
+
+        }
+    );
+
+}
+
+
+/* ============================================================
+   CLEAR SESSION-ONLY SKY PAINTINGS
+   ============================================================ */
+
+function clearSessionSkyPaintings() {
+
+    /*
+       Floating paintingWrap elements are SESSION-ONLY.
+       Saved artwork is represented by the angel desktop icons.
+
+       Clear every paintingWrap on startup so a cached/reopened
+       Niagara page cannot resurrect old paintings in the sky.
+       New paintingWrap elements are created only by the river
+       sequence after startup cleanup.
+    */
+
+    document
+        .querySelectorAll(
+            ".paintingWrap"
+        )
+        .forEach(
+            function(painting) {
+                painting.remove();
+            }
+        );
+
+    activePaintings = [];
+
+}
+
+
+/* ============================================================
+   ROPE RESCUE
+   ============================================================ */
+
+function ropeRescue(
+    painting,
+    image,
+    clickX = null,
+    clickY = null
+) {
+    if (painting.dataset.rescued === "true") {
+        inspectPainting(image, painting);
+        return;
+    }
+
+    /*
+       V31: FREEZE FIRST.
+       The painting keeps its exact on-screen position and scale.
+       The rope is attached separately to the exact mouse click.
+    */
+    const rect = painting.getBoundingClientRect();
+
+    const frozenCenterX = rect.left + rect.width / 2;
+    const frozenCenterY = rect.top + rect.height / 2;
+
+    let frozenScale = 1;
+    try {
+        const matrix = new DOMMatrix(getComputedStyle(painting).transform);
+        frozenScale = Math.sqrt(matrix.a * matrix.a + matrix.b * matrix.b) || 1;
+    } catch (err) {}
+
+    const catchX =
+        clickX !== null ? clickX : frozenCenterX;
+    const catchY =
+        clickY !== null ? clickY : frozenCenterY;
+
+    painting.style.animation = "none";
+    painting.style.transition = "none";
+    painting.style.left = frozenCenterX + "px";
+    painting.style.top = frozenCenterY + "px";
+    painting.style.transform =
+        "translate(-50%,-50%) scale(" + frozenScale + ")";
+    painting.style.opacity = "1";
+
+    painting.dataset.rescuing = "true";
+    painting.dataset.ropeCatchX = String(catchX);
+    painting.dataset.ropeCatchY = String(catchY);
+    painting.dataset.frozenCenterX = String(frozenCenterX);
+    painting.dataset.frozenCenterY = String(frozenCenterY);
+
+    /* Rope is anchored ONLY to the actual mouse click. */
+    const rope = document.createElement("div");
+    rope.className = "rescueRope";
+
+    const startY = window.innerHeight + 30;
+    rope.style.left = (catchX - 4) + "px";
+    rope.style.top = catchY + "px";
+    rope.style.height = Math.max(0, startY - catchY) + "px";
+
+    const knot = document.createElement("div");
+    knot.className = "ropeKnot";
+    rope.appendChild(knot);
+    document.body.appendChild(rope);
+
+    setTimeout(function() {
+        rope.style.transform = "rotate(-6deg)";
+    }, 700);
+
+    setTimeout(function() {
+        rope.style.transform = "rotate(7deg)";
+    }, 900);
+
+    /*
+       The painting remains frozen throughout the entire rope sequence.
+       Only after the rope has broken do we begin the ascent, starting
+       from the painting's actual frozen centre — NOT the click point.
+    */
+    setTimeout(function() {
+        rope.classList.add("ropeBreaking");
+        createBrokenRopes(catchX, catchY);
+
+        setTimeout(function() {
+            if (!document.body.contains(painting)) return;
+
+            immortalizePainting(
+                painting,
+                image,
+                frozenCenterX,
+                frozenCenterY,
+                frozenScale
+            );
+        }, 700);
+    }, 1150);
+
+    setTimeout(function() {
+        rope.remove();
+    }, 2600);
+}
+
+function createBrokenRopes(
+    x,
+    y
+) {
+
+    const left =
+        document.createElement(
+            "div"
+        );
+
+    left.className =
+        "ropePiece left";
+
+    left.style.left =
+        (x - 4) + "px";
+
+    left.style.top =
+        y + "px";
+
+
+    const right =
+        document.createElement(
+            "div"
+        );
+
+    right.className =
+        "ropePiece right";
+
+    right.style.left =
+        (x + 4) + "px";
+
+    right.style.top =
+        y + "px";
+
+
+    document.body.appendChild(
+        left
+    );
+
+    document.body.appendChild(
+        right
+    );
+
+
+    setTimeout(
+        function() {
+
+            left.remove();
+
+            right.remove();
+
+        },
+        1100
+    );
+
+}
+
+
+/* ============================================================
+   CREATE PAINTING
+   ============================================================ */
+
+function createPainting(
+    image
+) {
+
+    const wrap =
+        document.createElement(
+            "div"
+        );
+
+
+    wrap.className =
+        "paintingWrap";
+    const frame =
+        document.createElement(
+            "div"
+        );
+
+    frame.className =
+        "paintingFrame";
+
+
+    const canvas =
+        document.createElement(
+            "img"
+        );
+
+    canvas.className =
+        "paintingCanvas";
+
+    canvas.src =
+        image;
+
+    canvas.draggable =
+        false;
+
+
+    frame.appendChild(
+        canvas
+    );
+
+    wrap.appendChild(
+        frame
+    );
+
+
+    wrap.dataset.image =
+        image;
+
+    wrap.dataset.revealed = "false";
+
+    wrap.dataset.rescued =
+        "false";
+
+    wrap.dataset.rescuing =
+        "false";
+
+
+    /*
+       Immortalized paintings are independent sky objects.
+       Their click must never fall through to the river
+       generation/rescue system.
+    */
+    wrap.addEventListener(
+        "pointerdown",
+        function(e) {
+            if (
+                wrap.dataset.rescued ===
+                "true"
+            ) {
+                e.stopPropagation();
+            }
+        }
+    );
+
+    wrap.addEventListener(
+        "click",
+        function(e) {
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (wrap.dataset.skySuppressClick === "true") {
+                wrap.dataset.skySuppressClick = "false";
+                return;
+            }
+
+            const rect =
+                wrap.getBoundingClientRect();
+
+            addLarBuck(
+                rect.left +
+                rect.width / 2,
+                rect.top,
+                1
+            );
+
+            if (
+                wrap.dataset.rescued ===
+                "true"
+            ) {
+
+                inspectPainting(
+                    image,
+                    wrap
+                );
+
+                return;
+
+            }
+
+            ropeRescue(
+                wrap,
+                image,
+                e.clientX,
+                e.clientY
+            );
+
+        }
+    );
+
+
+    document.body.appendChild(
+        wrap
+    );
+
+
+    /*
+       Start completely outside
+       the visible screen.
+    */
+
+    wrap.style.left =
+        (
+            112 +
+            Math.random() * 8
+        ) + "vw";
+
+
+    wrap.style.top =
+        (
+            61 +
+            Math.random() * 19
+        ) + "vh";
+
+
+    wrap.style.transform =
+        "translate(-50%,-50%) scale(" +
+        (
+            .10 +
+            Math.random() * .12
+        ) +
+        ")";
+
+
+    wrap.style.opacity =
+        "0";
+
+
+    void wrap.offsetWidth;
+
+
+    return wrap;
+
+}
+
+
+/* ============================================================
+   CARRY PAINTING THROUGH RIVER
+   ============================================================ */
+
+function revealAndCarry(
+    painting,
+    image,
+    delay = 0,
+    generation
+) {
+
+    setTimeout(
+        function() {
+
+            if (
+                generation !==
+                riverGeneration
+            ) {
+
+                painting.remove();
+
+                return;
+
+            }
+
+
+            if (
+                painting.dataset.rescued ===
+                "true" ||
+                painting.dataset.rescuing ===
+                "true"
+            ) {
+
+                return;
+
+            }
+
+
+            /*
+               REVEAL.
+            */
+
+            painting.style.opacity =
+                ".98";
+
+
+            void painting.offsetWidth;
+
+
+            /*
+               FIRST CURRENT
+            */
+
+            painting.style.transition =
+                "left 3.5s linear, " +
+                "top 3.5s ease-in-out, " +
+                "transform 3.5s ease-out";
+
+
+            painting.style.left =
+                (
+                    80 +
+                    Math.random() * 7
+                ) + "vw";
+
+
+            painting.style.top =
+                (
+                    64 +
+                    Math.random() * 10
+                ) + "vh";
+
+
+            painting.style.transform =
+                "translate(-50%,-50%) scale(" +
+                (
+                    .34 +
+                    Math.random() * .12
+                ) +
+                ")";
+
+
+            /*
+               MIDDLE CURRENT
+            */
+
+            setTimeout(
+                function() {
+
+                    if (
+                        generation !==
+                        riverGeneration
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    if (
+                        painting.dataset.rescued ===
+                        "true" ||
+                        painting.dataset.rescuing ===
+                        "true"
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    painting.style.transition =
+                        "left 4.3s linear, " +
+                        "top 4.3s ease-in-out, " +
+                        "transform 4.3s linear";
+
+
+                    painting.style.left =
+                        (
+                            53 +
+                            Math.random() * 8
+                        ) + "vw";
+
+
+                    painting.style.top =
+                        (
+                            69 +
+                            Math.random() * 9
+                        ) + "vh";
+
+
+                    painting.style.transform =
+                        "translate(-50%,-50%) scale(.72)";
+
+
+                },
+                3500
+            );
+
+
+            /*
+               LOWER CURRENT
+            */
+
+            setTimeout(
+                function() {
+
+                    if (
+                        generation !==
+                        riverGeneration
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    if (
+                        painting.dataset.rescued ===
+                        "true" ||
+                        painting.dataset.rescuing ===
+                        "true"
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    painting.style.transition =
+                        "left 4.1s linear, " +
+                        "top 4.1s ease-in-out, " +
+                        "transform 4.1s linear";
+
+
+                    painting.style.left =
+                        (
+                            29 +
+                            Math.random() * 7
+                        ) + "vw";
+
+
+                    painting.style.top =
+                        (
+                            76 +
+                            Math.random() * 8
+                        ) + "vh";
+
+
+                    painting.style.transform =
+                        "translate(-50%,-50%) scale(.53)";
+
+
+                },
+                7800
+            );
+
+
+            /*
+               VERY NEAR LEFT SIDE.
+
+               It travels horizontally to the
+               near-left side while remaining SOLID.
+
+               It does NOT become transparent yet.
+            */
+
+            setTimeout(
+                function() {
+
+                    if (
+                        generation !==
+                        riverGeneration
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    if (
+                        painting.dataset.rescued ===
+                        "true" ||
+                        painting.dataset.rescuing ===
+                        "true"
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    painting.style.transition =
+                        "left 3.2s linear, " +
+                        "top 3.2s ease-in-out, " +
+                        "transform 3.2s linear";
+
+
+                    painting.style.left =
+                        (
+                            7 +
+                            Math.random() * 2
+                        ) + "vw";
+
+
+                    painting.style.top =
+                        (
+                            79 +
+                            Math.random() * 4
+                        ) + "vh";
+
+
+                    painting.style.transform =
+                        "translate(-50%,-50%) scale(.25)";
+
+
+                    /*
+                       IMPORTANT:
+                       opacity stays at .98 here.
+                    */
+
+                    painting.style.opacity =
+                        ".98";
+
+
+                },
+                11900
+            );
+
+            /*
+               LOWER-LEFT EXIT: one continuous diagonal.
+               No sudden vertical drop. Fade only as it reaches
+               the lower-left edge.
+            */
+
+            setTimeout(
+                function() {
+
+                    if (
+                        generation !==
+                        riverGeneration
+                    ) {
+                        return;
+                    }
+
+                    if (
+                        painting.dataset.rescued ===
+                        "true" ||
+                        painting.dataset.rescuing ===
+                        "true"
+                    ) {
+                        return;
+                    }
+
+                    painting.style.transition =
+                        "left 2.8s ease-in-out, " +
+                        "top 2.8s ease-in-out, " +
+                        "opacity 2.8s linear, " +
+                        "transform 2.8s ease-in-out";
+
+                    painting.style.left = "-10vw";
+                    painting.style.top = "104vh";
+                    painting.style.opacity = "0";
+                    painting.style.transform =
+                        "translate(-50%,-50%) scale(.08)";
+
+                },
+                15100
+            );
+
+
+            /*
+               FINAL EXIT.
+            */
+
+            setTimeout(
+                function() {
+
+                    if (
+                        painting.dataset.rescued ===
+                        "true" ||
+                        painting.dataset.rescuing ===
+                        "true"
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    painting.remove();
+
+                },
+                16800
+            );
+
+
+        },
+        delay
+    );
+
+}
+
+
+/* ============================================================
+   START SINGLE PAINTING
+   ============================================================ */
+
+function startPaintingSequence(
+    generation
+) {
+
+    if (
+        generation !==
+        riverGeneration
+    ) {
+
+        return;
+
+    }
+
+
+    paintingNumber++;
+
+
+    const image =
+        chooseArtwork();
+
+
+    const painting =
+        createPainting(
+            image
+        );
+
+
+    activePaintings.push(
+        painting
+    );
+
+
+    revealAndCarry(
+        painting,
+        image,
+        100,
+        generation
+    );
+
+
+    setTimeout(
+        function() {
+
+            startPaintingSequence(
+                generation
+            );
+
+        },
+        4800 +
+        Math.random() * 1100
+    );
+
+
+    if (
+        paintingNumber >=
+        nextGroup
+    ) {
+
+        nextGroup =
+            paintingNumber +
+            7 +
+            Math.floor(
+                Math.random() * 5
+            );
+
+
+        setTimeout(
+            function() {
+
+                sendPaintingGroup(
+                    generation
+                );
+
+            },
+            1200
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   PAINTING GROUP
+   ============================================================ */
+
+function sendPaintingGroup(
+    generation
+) {
+
+    if (
+        generation !==
+        riverGeneration
+    ) {
+
+        return;
+
+    }
+
+
+    const amount =
+        8 +
+        Math.floor(
+            Math.random() * 5
+        );
+
+
+    const group = [];
+
+
+    for (
+        let i = 0;
+        i < amount;
+        i++
+    ) {
+
+        const image =
+            chooseArtwork();
+
+
+        const painting =
+            createPainting(
+                image
+            );
+
+
+        painting.style.top =
+            (
+                58 +
+                Math.random() * 23
+            ) + "vh";
+
+
+        painting.style.left =
+            (
+                112 +
+                Math.random() * 8
+            ) + "vw";
+
+
+        painting.style.zIndex =
+            25 + i;
+
+
+        void painting.offsetWidth;
+
+
+        group.push({
+
+            painting:
+                painting,
+
+            image:
+                image
+
+        });
+
+    }
+
+
+    group.forEach(
+        function(
+            item,
+            index
+        ) {
+
+            revealAndCarry(
+                item.painting,
+                item.image,
+                300 +
+                index * 330,
+                generation
+            );
+
+        }
+    );
+
+
+    setTimeout(
+        function() {
+
+            if (
+                generation ===
+                riverGeneration
+            ) {
+
+                sendTurtle();
+
+            }
+
+        },
+        2500
+    );
+
+}
+
+
+/* ============================================================
+   TURTLE
+   ============================================================ */
+
+function sendTurtle() {
+
+    const turtle =
+        document.getElementById(
+            "turtle"
+        );
+
+
+    turtle.classList.remove(
+        "walking"
+    );
+
+
+    void turtle.offsetWidth;
+
+
+    turtle.classList.add(
+        "walking"
+    );
+
+}
+
+
+/* ============================================================
+   FISH
+   ============================================================ */
+
+function sendFish(
+    isGold = false
+) {
+
+    const fish =
+        document.createElement(
+            "div"
+        );
+
+
+    fish.className =
+        "fish";
+
+
+    if (
+        isGold
+    ) {
+
+        fish.classList.add(
+            "goldFish"
+        );
+
+    }
+
+
+    const body =
+        document.createElement(
+            "div"
+        );
+
+    body.className =
+        "fishBody";
+
+
+    const tail =
+        document.createElement(
+            "div"
+        );
+
+    tail.className =
+        "fishTail";
+
+
+    const eye =
+        document.createElement(
+            "div"
+        );
+
+    eye.className =
+        "fishEye";
+
+
+    fish.appendChild(
+        tail
+    );
+
+    fish.appendChild(
+        body
+    );
+
+    fish.appendChild(
+        eye
+    );
+
+
+    fish.addEventListener(
+        "click",
+        function(e) {
+
+            e.stopPropagation();
+
+
+            rewardObject(
+                fish,
+                isGold
+                    ? 10
+                    : 1
+            );
+
+        }
+    );
+
+
+    fish.style.left =
+        "106vw";
+
+
+    fish.style.top =
+        (
+            67 +
+            Math.random() * 20
+        ) + "vh";
+
+
+    fish.style.transform =
+        "scale(" +
+        (
+            .65 +
+            Math.random() * .55
+        ) +
+        ")";
+
+
+    document.body.appendChild(
+        fish
+    );
+
+
+    void fish.offsetWidth;
+
+
+    setTimeout(
+        function() {
+
+            fish.style.transition =
+                "left 7s linear, " +
+                "top 7s ease-in-out";
+
+
+            fish.style.left =
+                (
+                    25 +
+                    Math.random() * 5
+                ) + "vw";
+
+
+            fish.style.top =
+                (
+                    74 +
+                    Math.random() * 8
+                ) + "vh";
+
+
+            fish.style.opacity =
+                ".9";
+
+        },
+        50
+    );
+
+
+    setTimeout(
+        function() {
+
+            if (!document.body.contains(fish)) {
+                return;
+            }
+
+            /* One continuous diagonal; shrink and fade only near the edge. */
+            const fishRect = fish.getBoundingClientRect();
+            fish.style.transition = "none";
+            fish.style.left = fishRect.left + "px";
+            fish.style.top = fishRect.top + "px";
+            void fish.offsetWidth;
+
+            /* Once the fish reaches the first/lower-left quadrant,
+               the current pulls it over the falls on one continuous
+               slow diagonal. */
+            fish.style.transition =
+                "left 7.8s ease-in-out, " +
+                "top 7.8s ease-in-out, " +
+                "transform 7.8s ease-in-out, " +
+                "opacity 3s linear";
+
+            fish.style.left = "-9vw";
+            fish.style.top = "104vh";
+            fish.style.transform = "scale(.08)";
+
+            setTimeout(function() {
+                if (document.body.contains(fish)) {
+                    fish.style.opacity = "0";
+                }
+            }, 5000);
+
+        },
+        7050
+    );
+
+
+    setTimeout(
+        function() {
+
+            fish.remove();
+
+        },
+        13700
+    );
+
+}
+
+
+/* ============================================================
+   FISH SCHOOL
+   ============================================================ */
+
+function sendFishSchool() {
+
+    const amount =
+        8 +
+        Math.floor(
+            Math.random() * 13
+        );
+
+
+    for (
+        let i = 0;
+        i < amount;
+        i++
+    ) {
+
+        setTimeout(
+            function() {
+
+                sendFish();
+
+            },
+            i * 150
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   GOLD FISH
+   ============================================================ */
+
+function scheduleGoldFish() {
+
+    if (
+        Math.random() < .55
+    ) {
+
+        sendFish(
+            true
+        );
+
+    }
+
+
+    setTimeout(
+        scheduleGoldFish,
+        12000 +
+        Math.random() * 15000
+    );
+
+}
+
+
+setTimeout(
+    scheduleGoldFish,
+    7000
+);
+
+
+/* ============================================================
+   SHARK
+   ============================================================ */
+
+function sendShark() {
+
+    const shark =
+        document.createElement(
+            "div"
+        );
+
+
+    shark.className =
+        "shark";
+
+
+    const body =
+        document.createElement(
+            "div"
+        );
+
+    body.className =
+        "sharkBody";
+
+
+    const tail =
+        document.createElement(
+            "div"
+        );
+
+    tail.className =
+        "sharkTail";
+
+
+    const fin =
+        document.createElement(
+            "div"
+        );
+
+    fin.className =
+        "sharkFin";
+
+
+    const eye =
+        document.createElement(
+            "div"
+        );
+
+    eye.className =
+        "sharkEye";
+
+
+    shark.appendChild(
+        tail
+    );
+
+    shark.appendChild(
+        body
+    );
+
+    shark.appendChild(
+        fin
+    );
+
+    shark.appendChild(
+        eye
+    );
+
+
+    shark.addEventListener(
+        "click",
+        function(e) {
+
+            e.stopPropagation();
+
+            rewardObject(
+                shark,
+                5
+            );
+
+        }
+    );
+
+
+    shark.style.left =
+        "110vw";
+
+
+    shark.style.top =
+        (
+            70 +
+            Math.random() * 17
+        ) + "vh";
+
+
+    shark.style.transform =
+        "scale(" +
+        (
+            .65 +
+            Math.random() * .45
+        ) +
+        ")";
+
+
+    document.body.appendChild(
+        shark
+    );
+
+
+    void shark.offsetWidth;
+
+
+    setTimeout(
+        function() {
+
+            shark.style.transition =
+                "left 10s linear, " +
+                "top 2s ease-in-out";
+
+
+            shark.style.left =
+                "-20vw";
+
+
+            shark.style.top =
+                (
+                    73 +
+                    Math.random() * 12
+                ) + "vh";
+
+
+            shark.style.opacity =
+                ".9";
+
+        },
+        100
+    );
+
+
+    setTimeout(
+        function() {
+
+            shark.remove();
+
+        },
+        10200
+    );
+
+}
+
+
+function scheduleShark() {
+
+    if (
+        Math.random() < .35
+    ) {
+
+        sendShark();
+
+    }
+
+
+    setTimeout(
+        scheduleShark,
+        18000 +
+        Math.random() * 20000
+    );
+
+}
+
+
+setTimeout(
+    scheduleShark,
+    12000
+);
+
+
+/* ============================================================
+   BROWN OCTOPUS
+   ============================================================ */
+
+function sendOctopus() {
+    const octopus = document.createElement("div");
+    octopus.className = "octopus";
+
+    const body = document.createElement("div");
+    body.className = "octopusBody";
+    octopus.appendChild(body);
+
+    const eyeL = document.createElement("div");
+    eyeL.className = "octopusEye left";
+    octopus.appendChild(eyeL);
+
+    const eyeR = document.createElement("div");
+    eyeR.className = "octopusEye right";
+    octopus.appendChild(eyeR);
+
+    for (let i = 1; i <= 7; i++) {
+        const arm = document.createElement("div");
+        arm.className = "octopusTentacle t" + i;
+        octopus.appendChild(arm);
+    }
+
+    octopus.addEventListener("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        flashOctopusClick(e);
+
+        larBucks = 0;
+        try { localStorage.setItem("larBucks", "0"); } catch (error) {}
+        updateSavedCounter();
+
+        octopus.style.transition = "transform .5s ease, opacity .7s ease";
+        octopus.style.transform += " scale(1.5) rotate(12deg)";
+        octopus.style.opacity = "0";
+        setTimeout(function() { octopus.remove(); }, 750);
+    });
+
+    octopus.style.left = "108vw";
+    octopus.style.top = (70 + Math.random() * 14) + "vh";
+    octopus.style.opacity = ".92";
+    document.body.appendChild(octopus);
+    void octopus.offsetWidth;
+
+    setTimeout(function() {
+        if (!document.body.contains(octopus)) return;
+        octopus.style.transition = "left 10s linear, top 10s ease-in-out";
+        octopus.style.left = "25vw";
+        octopus.style.top = "78vh";
+    }, 100);
+
+    setTimeout(function() {
+        if (!document.body.contains(octopus)) return;
+        const r = octopus.getBoundingClientRect();
+        octopus.style.transition = "none";
+        octopus.style.left = r.left + "px";
+        octopus.style.top = r.top + "px";
+        void octopus.offsetWidth;
+        octopus.style.transition = "left 7.5s ease-in-out, top 7.5s ease-in-out, opacity 3s linear, transform 7.5s ease-in-out";
+        octopus.style.left = "-8vw";
+        octopus.style.top = "103vh";
+        octopus.style.transform = "rotate(-35deg) scale(.25)";
+        setTimeout(function() {
+            if (document.body.contains(octopus)) octopus.style.opacity = "0";
+        }, 5000);
+    }, 10100);
+
+    setTimeout(function() { octopus.remove(); }, 18000);
+}
+
+function scheduleOctopus() {
+    if (Math.random() < .65) sendOctopus();
+    setTimeout(scheduleOctopus, 18000 + Math.random() * 14000);
+}
+
+setTimeout(scheduleOctopus, 9000);
+
+
+/* ============================================================
+   PAPER BAGS
+   ============================================================ */
+
+function sendPaperBag() {
+
+    const bag =
+        document.createElement(
+            "div"
+        );
+
+
+    bag.className =
+        "paperBag";
+
+
+    bag.style.opacity = "0.92";
+
+
+    bag.addEventListener(
+        "click",
+        function(e) {
+
+            e.stopPropagation();
+
+            rewardObject(
+                bag,
+                3
+            );
+
+        }
+    );
+
+
+    bag.style.left =
+        "108vw";
+
+
+    bag.style.top =
+        (
+            69 +
+            Math.random() * 18
+        ) + "vh";
+
+
+    bag.style.transform =
+        "rotate(" +
+        (
+            -10 +
+            Math.random() * 20
+        ) +
+        "deg)";
+
+
+    document.body.appendChild(
+        bag
+    );
+
+
+    void bag.offsetWidth;
+
+
+    setTimeout(function() {
+        /* Phase 1: float horizontally with a gentle bob until the
+           object reaches the lower-left quadrant. */
+        bag.style.animation = "larBob 1.7s ease-in-out infinite";
+        bag.style.transition = "left 10s linear";
+        bag.style.left = "25vw";
+    }, 100);
+
+    setTimeout(function() {
+        if (!document.body.contains(bag)) return;
+
+        bag.style.animation = "none";
+        const rect = bag.getBoundingClientRect();
+        bag.style.left = rect.left + "px";
+        bag.style.top = rect.top + "px";
+        void bag.offsetWidth;
+
+        /* Phase 2: only now descend slowly on a diagonal. */
+        bag.style.transition =
+            "left 7.5s ease-in-out, " +
+            "top 7.5s ease-in-out, " +
+            "transform 7.5s ease-in-out";
+        bag.style.left = "-6vw";
+        bag.style.top = "101vh";
+        bag.style.transform =
+            "rotate(" + (-18 + Math.random() * 36) + "deg)";
+
+        /* Fade only during the final fifth of the lower-left approach. */
+        setTimeout(function() {
+            if (!document.body.contains(bag)) return;
+            bag.style.transition = "opacity 2.2s linear";
+            bag.style.opacity = "0";
+        }, 5300);
+    }, 10200);
+
+    setTimeout(function() {
+        bag.remove();
+    }, 18000);
+
+}
+
+
+function schedulePaperBags() {
+
+    sendPaperBag();
+
+
+    setTimeout(
+        schedulePaperBags,
+        5000 +
+        Math.random() * 7000
+    );
+
+}
+
+
+setTimeout(
+    schedulePaperBags,
+    5000
+);
+
+
+/* ============================================================
+   BROWN LAR BUCK TOKENS
+   ============================================================ */
+
+function sendBrownBuck() {
+
+    const buck =
+        document.createElement(
+            "div"
+        );
+
+
+    buck.className =
+        "brownBuck";
+
+
+    buck.style.opacity = "0.92";
+
+
+    buck.textContent =
+        "LAR";
+
+
+    buck.addEventListener(
+        "click",
+        function(e) {
+
+            e.stopPropagation();
+
+            rewardObject(
+                buck,
+                2
+            );
+
+        }
+    );
+
+
+    buck.style.left =
+        "108vw";
+
+
+    buck.style.top =
+        (
+            68 +
+            Math.random() * 20
+        ) + "vh";
+
+
+    buck.style.transform =
+        "rotate(" +
+        (
+            Math.random() * 360
+        ) +
+        "deg)";
+
+
+    document.body.appendChild(
+        buck
+    );
+
+
+    void buck.offsetWidth;
+
+
+    setTimeout(function() {
+        /* Phase 1: horizontal travel with gentle bobbing. */
+        buck.style.animation = "larBob 1.5s ease-in-out infinite";
+        buck.style.transition = "left 9.5s linear";
+        buck.style.left = "25vw";
+    }, 100);
+
+    setTimeout(function() {
+        if (!document.body.contains(buck)) return;
+
+        buck.style.animation = "none";
+        const rect = buck.getBoundingClientRect();
+        buck.style.left = rect.left + "px";
+        buck.style.top = rect.top + "px";
+        void buck.offsetWidth;
+
+        /* Phase 2: slow diagonal descent through the final lower-left fifth. */
+        buck.style.transition =
+            "left 7.2s ease-in-out, " +
+            "top 7.2s ease-in-out, " +
+            "transform 7.2s ease-in-out";
+        buck.style.left = "-6vw";
+        buck.style.top = "101vh";
+        buck.style.transform = "rotate(720deg)";
+
+        setTimeout(function() {
+            if (!document.body.contains(buck)) return;
+            buck.style.transition = "opacity 2.1s linear";
+            buck.style.opacity = "0";
+        }, 5100);
+    }, 9700);
+
+    setTimeout(function() {
+        buck.remove();
+    }, 17400);
+
+}
+
+
+function scheduleBrownBucks() {
+
+    sendBrownBuck();
+
+
+    setTimeout(
+        scheduleBrownBucks,
+        4200 +
+        Math.random() * 6500
+    );
+
+}
+
+
+setTimeout(
+    scheduleBrownBucks,
+    6500
+);
+
+
+/* ============================================================
+   PIKE FINS
+   ============================================================ */
+
+function sendPikeFin() {
+
+    const fin =
+        document.createElement(
+            "div"
+        );
+
+
+    fin.className =
+        "pikeFin";
+
+
+    fin.style.left =
+        (
+            30 +
+            Math.random() * 55
+        ) + "vw";
+
+
+    fin.style.top =
+        (
+            73 +
+            Math.random() * 14
+        ) + "vh";
+
+
+    document.body.appendChild(
+        fin
+    );
+
+
+    setTimeout(
+        function() {
+
+            fin.classList.add(
+                "rising"
+            );
+
+        },
+        50
+    );
+
+
+    setTimeout(
+        function() {
+
+            fin.remove();
+
+        },
+        1900
+    );
+
+}
+
+
+function schedulePike() {
+
+    sendPikeFin();
+
+
+    setTimeout(
+        schedulePike,
+        4500 +
+        Math.random() * 6500
+    );
+
+}
+
+
+setTimeout(
+    schedulePike,
+    3000
+);
+
+
+/* ============================================================
+   SEAGULLS
+   ============================================================ */
+
+function sendSeagull() {
+
+    const gull =
+        document.createElement(
+            "div"
+        );
+
+
+    gull.className =
+        "seagull";
+
+
+    const leftWing =
+        document.createElement(
+            "div"
+        );
+
+    leftWing.className =
+        "seagullWing left";
+
+
+    const rightWing =
+        document.createElement(
+            "div"
+        );
+
+    rightWing.className =
+        "seagullWing right";
+
+
+    gull.appendChild(
+        leftWing
+    );
+
+    gull.appendChild(
+        rightWing
+    );
+
+
+    document.body.appendChild(
+        gull
+    );
+
+
+    gull.addEventListener(
+        "click",
+        function(e) {
+
+            e.stopPropagation();
+
+
+            rewardObject(
+                gull,
+                25
+            );
+
+        }
+    );
+
+
+    setTimeout(
+        function() {
+
+            if (
+                document.body.contains(
+                    gull
+                )
+            ) {
+
+                gull.classList.add(
+                    "swooping"
+                );
+
+            }
+
+        },
+        50
+    );
+
+
+    setTimeout(
+        function() {
+
+            gull.remove();
+
+        },
+        5200
+    );
+
+}
+
+
+function sendSeagullFlock() {
+
+    const amount =
+        8 +
+        Math.floor(
+            Math.random() * 13
+        );
+
+
+    for (
+        let i = 0;
+        i < amount;
+        i++
+    ) {
+
+        setTimeout(
+            function() {
+
+                sendSeagull();
+
+            },
+            i * 170
+        );
+
+    }
+
+}
+
+
+function scheduleSeagulls() {
+
+    if (
+        Math.random() < .65
+    ) {
+
+        sendSeagullFlock();
+
+    } else {
+
+        sendSeagull();
+
+    }
+
+
+    setTimeout(
+        scheduleSeagulls,
+        5000 +
+        Math.random() * 8000
+    );
+
+}
+
+
+/* ============================================================
+   CONTINUOUS FISH
+   ============================================================ */
+
+setInterval(
+    function() {
+
+        if (
+            Math.random() < .55
+        ) {
+
+            sendFishSchool();
+
+        } else {
+
+            sendFish();
+
+        }
+
+    },
+    5600
+);
+
+
+/* ============================================================
+   KEEP FIXED UI THE SAME SIZE DURING CTRL+WHEEL PAGE ZOOM
+   ============================================================ */
+
+const initialDevicePixelRatio =
+    window.devicePixelRatio || 1;
+
+function updateFixedUiScale() {
+
+    const currentDpr =
+        window.devicePixelRatio || 1;
+
+    const scale =
+        Math.max(0.5, Math.min(2,
+            initialDevicePixelRatio / currentDpr
+        ));
+
+    document.documentElement.style.setProperty(
+        "--ui-scale",
+        scale
+    );
+
+}
+
+updateFixedUiScale();
+window.addEventListener("resize", updateFixedUiScale);
+
+
+/* ============================================================
+   LARRY BUTTON
+   ============================================================ */
+
+const larryButton =
+    document.getElementById(
+        "larryButton"
+    );
+
+larryButton.addEventListener(
+    "click",
+    function(e) {
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        window.location.assign(
+            "https://larrysvariety.ca/"
+        );
+
+    }
+);
+
+larryButton.addEventListener(
+    "pointerdown",
+    function(e) {
+        e.stopPropagation();
+    }
+);
+
+
+/* ============================================================
+   START / SESSION RESTORE
+   ============================================================ */
+
+clearSessionSkyPaintings();
+
+window.addEventListener(
+    "pageshow",
+    function() {
+        clearSessionSkyPaintings();
+
+        /*
+           bfcache restoration can retain the old DOM. Clear it again
+           immediately after the page is restored.
+        */
+        setTimeout(
+            clearSessionSkyPaintings,
+            0
+        );
+    }
+);
+
+/*
+   Start a fresh Niagara visit. No saved paintings or angel copies
+   are rebuilt. Only new paintings generated by the river can be
+   rescued into the upper sky during this visit.
+*/
+clearSessionSkyPaintings();
+
+setTimeout(
+    function() {
+        clearSessionSkyPaintings();
+        startPaintingSequence(
+            riverGeneration
+        );
+    },
+    1800
+);
+
+scheduleSeagulls();
+
+
+
+/* ============================================================
+   V28 — BLUR CONTROLS + SKY WIND
+   ============================================================ */
+
+function findCurrentSkyPainting() {
+    if (
+        currentSkyPainting &&
+        document.body.contains(currentSkyPainting)
+    ) {
+        return currentSkyPainting;
+    }
+
+    if (!currentInspectionImage) {
+        return null;
+    }
+
+    const paintings = document.querySelectorAll(
+        '.paintingWrap.immortalized'
+    );
+
+    for (const painting of paintings) {
+        if (painting.dataset.image === currentInspectionImage) {
+            return painting;
+        }
+    }
+
+    return null;
+}
+
+function setPopupBlur(amount, transitionSeconds) {
+    const picture = document.getElementById('inspectionPainting');
+    if (!picture) return;
+
+    picture.classList.remove('popup-deblurred');
+    picture.classList.remove('popup-slow-clear');
+    picture.style.transition =
+        'filter ' + transitionSeconds + 's ease-out, -webkit-filter ' +
+        transitionSeconds + 's ease-out';
+    picture.style.filter = 'blur(' + amount + 'px)';
+    picture.style.webkitFilter = 'blur(' + amount + 'px)';
+}
+
+function startSkyWind(painting) {
+    if (!painting || painting.dataset.windReady === 'true') return;
+
+    painting.dataset.windReady = 'true';
+    painting.classList.add('sky-wind-moving');
+    painting.dataset.windPaused = 'false';
+
+    let baseLeft = parseFloat(painting.style.left) || 0;
+    let baseTop = parseFloat(painting.style.top) || 0;
+    const phase = Math.random() * Math.PI * 2;
+    const sidePhase = Math.random() * Math.PI * 2;
+    const speed = 0.00038 + Math.random() * 0.00020;
+    const sideSpeed = 0.00028 + Math.random() * 0.00016;
+
+    painting._resetSkyWindBase = function() {
+        const r = painting.getBoundingClientRect();
+        baseLeft = r.left + r.width / 2;
+        baseTop = r.top + r.height / 2;
+    };
+
+    function windFrame(now) {
+        if (!document.body.contains(painting)) return;
+
+        if (painting.dataset.windPaused !== 'true' &&
+            painting.dataset.skyDragging !== 'true') {
+            const vertical = Math.sin(now * speed + phase);
+            const horizontal = Math.sin(now * sideSpeed + sidePhase);
+            const scaleWave = 0.91 + 0.16 * ((vertical + 1) / 2);
+
+            painting.style.left = (baseLeft + horizontal * 34) + 'px';
+            painting.style.top = (baseTop + vertical * 12) + 'px';
+            painting.style.transform =
+                'translate(-50%,-50%) scale(' +
+                (0.58 * scaleWave) + ')';
+        }
+
+        requestAnimationFrame(windFrame);
+    }
+
+    requestAnimationFrame(windFrame);
+}
+
+/* Start wind after each rescued painting reaches the sky. */
+const originalImmortalizePainting = immortalizePainting;
+immortalizePainting = function(painting, image, originX = null, originY = null) {
+    originalImmortalizePainting(painting, image, originX, originY);
+
+    setTimeout(function() {
+        if (document.body.contains(painting) &&
+            painting.dataset.rescued === 'true') {
+            const r = painting.getBoundingClientRect();
+            painting.style.left = (r.left + r.width / 2) + 'px';
+            painting.style.top = (r.top + r.height / 2) + 'px';
+            painting.style.transform = 'translate(-50%,-50%) scale(.58)';
+            startSkyWind(painting);
+        }
+    }, 3050);
+};
+
+/* ============================================================
+   LAR STAMP CASINO + SLOW MIST REVEAL
+   ============================================================ */
+const originalInspectPainting = inspectPainting;
+inspectPainting = function(image, skyPainting = null) {
+    originalInspectPainting(image, skyPainting);
+
+    const picture = document.getElementById('inspectionPainting');
+    const deblur = document.getElementById('deblurButton');
+    if (!picture || !deblur) return;
+
+    const target = skyPainting || (typeof findCurrentSkyPainting === 'function'
+        ? findCurrentSkyPainting()
+        : null);
+    const alreadyApproved = !!(target && target.dataset.approved === 'true');
+
+    picture.classList.remove('popup-deblurred');
+    picture.classList.remove('popup-slow-clear');
+    picture.style.transition = 'none';
+
+    if (alreadyApproved) {
+        picture.style.setProperty('filter', 'blur(0px)', 'important');
+        picture.style.setProperty('-webkit-filter', 'blur(0px)', 'important');
+        deblur.textContent = 'REBLUR';
+        deblur.disabled = false;
+        deblur.classList.add('unlocked');
+    } else {
+        picture.style.setProperty('filter', 'blur(26px)', 'important');
+        picture.style.setProperty('-webkit-filter', 'blur(26px)', 'important');
+        void picture.offsetWidth;
+        /* Stay hidden until the visitor actually pays; the payment itself
+           performs the slower reveal below. */
+        picture.style.transition = 'filter 1.8s ease-out, -webkit-filter 1.8s ease-out';
+        deblur.textContent = '3 LAR BUCKS TO DE-BLUR';
+        deblur.disabled = false;
+        deblur.classList.remove('unlocked');
+    }
+};
+
+/* Pay once to reveal the popup; afterwards the same button becomes REBLUR. */
+document.getElementById('deblurButton').addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const target = currentSkyPainting && document.body.contains(currentSkyPainting)
+        ? currentSkyPainting
+        : null;
+
+    if (target && target.dataset.approved === 'true') {
+        const picture = document.getElementById('inspectionPainting');
+        picture.style.transition = 'filter 1.4s ease-in, -webkit-filter 1.4s ease-in';
+        picture.style.setProperty('filter', 'blur(26px)', 'important');
+        picture.style.setProperty('-webkit-filter', 'blur(26px)', 'important');
+        target.dataset.approved = 'false';
+        const skyImage = target.querySelector('.paintingCanvas');
+        if (skyImage) {
+            skyImage.style.transition = 'filter 1.8s ease-in, -webkit-filter 1.8s ease-in';
+            skyImage.style.setProperty('filter', 'blur(3.5px)', 'important');
+            skyImage.style.setProperty('-webkit-filter', 'blur(3.5px)', 'important');
+        }
+        this.textContent = '3 LAR BUCKS TO DE-BLUR';
+        this.classList.remove('unlocked');
+        return;
+    }
+
+    if (!currentInspectionImage) return;
+
+    if (larBucks < 3) {
+        this.textContent = 'NEED 3 LAR BUCKS';
+        setTimeout(() => {
+            const b = document.getElementById('deblurButton');
+            if (b && !b.disabled) b.textContent = '3 LAR BUCKS TO DE-BLUR';
+        }, 1200);
+        return;
+    }
+
+    larBucks -= 3;
+    try { localStorage.setItem('larBucks', larBucks); } catch (error) {}
+    updateSavedCounter();
+
+    const picture = document.getElementById('inspectionPainting');
+    picture.classList.add('popup-deblurred');
+    picture.style.transition = 'filter 1.8s ease-out, -webkit-filter 1.8s ease-out';
+    picture.style.setProperty('filter', 'blur(0px)', 'important');
+    picture.style.setProperty('-webkit-filter', 'blur(0px)', 'important');
+    this.textContent = 'REBLUR';
+    this.disabled = false;
+    this.classList.add('unlocked');
+});
+
+/* “Lawks-A-Mussy--Yes!” slowly clears the matching rescued painting in the sky. */
+document.getElementById('gorgeousButton').addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const skyPainting = findCurrentSkyPainting();
+    const picture = document.getElementById('inspectionPainting');
+
+    if (picture) {
+        picture.style.transition = 'filter 2.8s ease-out, -webkit-filter 2.8s ease-out';
+        picture.style.setProperty('filter', 'blur(0px)', 'important');
+        picture.style.setProperty('-webkit-filter', 'blur(0px)', 'important');
+    }
+
+    if (skyPainting && document.body.contains(skyPainting)) {
+        const skyImage = skyPainting.querySelector('.paintingCanvas');
+        skyPainting.dataset.approved = 'true';
+        if (skyImage) {
+            skyImage.style.transition = 'filter 2.8s ease-out, -webkit-filter 2.8s ease-out';
+            skyImage.style.setProperty('filter', 'blur(0px)', 'important');
+            skyImage.style.setProperty('-webkit-filter', 'blur(0px)', 'important');
+        }
+    }
+
+    this.textContent = 'Lawks-A-Mussy--Yes!';
+    closeInspection();
+});
+
+/* ============================================================
+   V32 OCCASIONAL SEAGULL / DISTANT BIRD FORMATIONS
+   ============================================================ */
+(function() {
+    function makeGull() {
+        const g = document.createElement('div');
+        g.className = 'v32-gull';
+        return g;
+    }
+
+    function upperRightCircle() {
+        const flock = document.createElement('div');
+        flock.className = 'v32-gull-flock';
+
+        const count = 18 + Math.floor(Math.random() * 10);
+        const cx = 50, cy = 50, rx = 43, ry = 38;
+
+        for (let i = 0; i < count; i++) {
+            const g = makeGull();
+            const a = (i / count) * Math.PI * 2;
+            g.style.left = (cx + Math.cos(a) * rx) + '%';
+            g.style.top = (cy + Math.sin(a) * ry) + '%';
+            flock.appendChild(g);
+        }
+
+        document.body.appendChild(flock);
+        flock.animate(
+            [
+                { opacity: 0 },
+                { opacity: .95, offset: .12 },
+                { opacity: .95, offset: .82 },
+                { opacity: 0 }
+            ],
+            { duration: 12000, easing: 'ease-in-out' }
+        );
+
+        let start = null;
+        function orbit(t) {
+            if (!start) start = t;
+            const elapsed = t - start;
+            const turns = elapsed / 12000 * Math.PI * 2;
+
+            [...flock.children].forEach((g, i) => {
+                const a = turns + (i / count) * Math.PI * 2;
+                g.style.left = (cx + Math.cos(a) * rx) + '%';
+                g.style.top = (cy + Math.sin(a) * ry) + '%';
+            });
+
+            if (elapsed < 12000) requestAnimationFrame(orbit);
+            else flock.remove();
+        }
+        requestAnimationFrame(orbit);
+    }
+
+    function infinityFlock() {
+        const flock = document.createElement('div');
+        flock.className = 'v32-infinity-flock';
+
+        const count = 24 + Math.floor(Math.random() * 14);
+        for (let i = 0; i < count; i++) {
+            const g = makeGull();
+            g.style.transform = 'scale(.45)';
+            flock.appendChild(g);
+        }
+
+        document.body.appendChild(flock);
+
+        const start = performance.now();
+        const duration = 10500;
+
+        function fly(now) {
+            const p = Math.min(1, (now - start) / duration);
+            const t = p * Math.PI * 4;
+
+            [...flock.children].forEach((g, i) => {
+                const phase = i * .23;
+                const u = t + phase;
+                const x = 50 + 42 * Math.sin(u);
+                const y = 50 + 32 * Math.sin(u) * Math.cos(u);
+                g.style.left = x + '%';
+                g.style.top = y + '%';
+            });
+
+            flock.style.opacity =
+                p < .12 ? p / .12 :
+                p > .82 ? (1 - p) / .18 : 1;
+
+            if (p < 1) requestAnimationFrame(fly);
+            else flock.remove();
+        }
+        requestAnimationFrame(fly);
+    }
+
+    function scheduleBirds() {
+        if (Math.random() < .42) upperRightCircle();
+        if (Math.random() < .25) infinityFlock();
+
+        const next = 9000 + Math.random() * 18000;
+        setTimeout(scheduleBirds, next);
+    }
+
+    setTimeout(scheduleBirds, 7000);
+})();
+
+
+
+/* V34:
+   The original createPainting() click handler is authoritative for sky
+   paintings.  One click opens the popup.  Drag-release is suppressed only
+   when skySuppressClick is true.  No second click listener is installed. */
+
+</script>
+
+</body>
+</html>
