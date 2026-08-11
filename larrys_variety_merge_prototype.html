@@ -52,6 +52,29 @@
     border-color: #5b8c37;
     box-shadow: 0 0 0 3px #d6efb8, 0 5px 12px rgba(50,30,10,.3);
   }
+  .generator-board {
+    width: min(1120px, 96vw);
+    margin: 0 auto 10px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .mode-button {
+    background: #6b4529;
+    border: 2px solid #4c2f1c;
+    border-radius: 8px;
+    color: white;
+    padding: 7px 12px;
+    font: bold 14px Georgia, serif;
+    cursor: pointer;
+  }
+  .mode-button.upgraded { background: #92702c; }
+  .supply {
+    user-select: none;
+    -webkit-user-drag: none;
+    touch-action: none;
+  }
   .generator img {
     width: 82px;
     height: 82px;
@@ -149,15 +172,21 @@
 </header>
 
 <div id="game">
-  <div class="generators" id="generators"></div>
+  <div class="generator-board">
+    <button class="mode-button" id="generatorMode">Generator 1×</button>
+    <button class="mode-button" id="generatorUpgrade">UP Generator → 2×</button>
+    <button class="mode-button" id="supplyButton">Art Supply</button>
+  </div>
   <div class="board" id="board"></div>
 </div>
 
 <div class="help">
-  <strong>Prototype rule:</strong> Generator 1 starts active and produces the first image repeatedly.
-  Drag two identical levels onto one another to merge them into the next image in the 72-image sequence.
-  When a level reaches 8, Generator 2 unlocks. The remaining generator slots are prepared for the later
-  generator-combination rules. The board has 64 spaces.
+  <strong>Prototype rule:</strong> The generator now lives on the 8×8 board and can be moved.
+  Click it to spill a painting into an empty square immediately around it. At 1× it produces Level 1;
+  use <strong>UP Generator → 2×</strong> to make it produce Level 2 for faster building.
+  Drag two identical paintings together to merge them into the next image. <strong>Art Supply</strong>
+  adds a brush, palette, blank canvas, or easel as a prototype bonus object. The merge sound cycles
+  upward through seven pitches and then starts over.
   <br>
   <button id="reset">Reset prototype</button>
 </div>
@@ -239,15 +268,17 @@ const images = [
 ];
 
 const board = document.getElementById("board");
-const generatorsEl = document.getElementById("generators");
 const statusEl = document.getElementById("status");
 const resetBtn = document.getElementById("reset");
+const generatorModeBtn = document.getElementById("generatorMode");
+const generatorUpgradeBtn = document.getElementById("generatorUpgrade");
+const supplyButton = document.getElementById("supplyButton");
 
 const cells = [];
-const generatorState = Array(8).fill(false);
-generatorState[0] = true;
-
 let nextId = 1;
+let generatorCellIndex = 27;
+let generatorLevel = 1;
+let generatorDragging = false;
 
 function makeBoard() {
   board.innerHTML = "";
@@ -259,7 +290,170 @@ function makeBoard() {
     board.appendChild(cell);
     cells.push(cell);
   }
+  placeGenerator();
 }
+
+function placeGenerator() {
+  const cell = cells[generatorCellIndex];
+  if (!cell) return;
+
+  const gen = document.createElement("div");
+  gen.className = "generator active";
+  gen.id = "boardGenerator";
+  gen.title = "Click to spill paintings; drag to move the generator.";
+
+  const img = document.createElement("img");
+  img.src = images[generatorLevel - 1];
+  img.alt = "Larry generator";
+  img.draggable = false;
+  gen.appendChild(img);
+
+  const label = document.createElement("div");
+  label.className = "gen-label";
+  label.textContent = "GENERATOR " + generatorLevel + "×";
+  gen.appendChild(label);
+
+  gen.addEventListener("pointerdown", startGeneratorDrag);
+  gen.addEventListener("click", () => {
+    if (!generatorDragging) spillFromGenerator();
+  });
+
+  cell.appendChild(gen);
+}
+
+function updateGeneratorDisplay() {
+  const gen = document.getElementById("boardGenerator");
+  if (gen) {
+    gen.querySelector("img").src = images[generatorLevel - 1];
+    gen.querySelector(".gen-label").textContent = "GENERATOR " + generatorLevel + "×";
+  }
+  generatorModeBtn.textContent = "Generator " + generatorLevel + "×";
+  generatorModeBtn.classList.toggle("upgraded", generatorLevel === 2);
+}
+
+function upgradeGenerator() {
+  if (!imagesReady) {
+    statusEl.textContent = "The paintings are still being prepared…";
+    return;
+  }
+  generatorLevel = generatorLevel === 1 ? 2 : 1;
+  updateGeneratorDisplay();
+  statusEl.textContent = generatorLevel === 2
+    ? "Generator UP: it now spills the Level 2 painting for faster building."
+    : "Generator returned to 1×: it now spills the Level 1 painting.";
+}
+
+generatorUpgradeBtn.addEventListener("click", upgradeGenerator);
+generatorModeBtn.addEventListener("click", upgradeGenerator);
+
+function neighbouringCells(index) {
+  const row = Math.floor(index / 8);
+  const col = index % 8;
+  const result = [];
+  for (let dr = -1; dr <= 1; dr++) {
+    for (let dc = -1; dc <= 1; dc++) {
+      if (!dr && !dc) continue;
+      const r = row + dr, c = col + dc;
+      if (r >= 0 && r < 8 && c >= 0 && c < 8) result.push(r * 8 + c);
+    }
+  }
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+function spillFromGenerator() {
+  if (!imagesReady) {
+    statusEl.textContent = "The paintings are still being prepared…";
+    return;
+  }
+  const empty = neighbouringCells(generatorCellIndex)
+    .filter(i => !cells[i].querySelector(".item"));
+  if (!empty.length) {
+    statusEl.textContent = "The squares around the generator are full. Move it or merge some paintings.";
+    return;
+  }
+  const cell = cells[empty[0]];
+  createItem(cell, generatorLevel);
+  playMergeSound(generatorLevel);
+  statusEl.textContent = "Generator " + generatorLevel + "× spilled " +
+    imageName(images[generatorLevel - 1]) + ".";
+}
+
+function startGeneratorDrag(e) {
+  if (e.pointerType === "mouse" && e.button !== 0) return;
+  e.preventDefault();
+  e.stopPropagation();
+
+  const gen = e.currentTarget;
+  const sourceCell = gen.parentElement;
+  const startX = e.clientX, startY = e.clientY;
+  generatorDragging = false;
+
+  const move = ev => {
+    if (Math.abs(ev.clientX - startX) + Math.abs(ev.clientY - startY) > 6) {
+      generatorDragging = true;
+    }
+  };
+
+  const up = ev => {
+    document.removeEventListener("pointermove", move);
+    document.removeEventListener("pointerup", up);
+
+    if (!generatorDragging) return;
+
+    const target = document.elementFromPoint(ev.clientX, ev.clientY)?.closest(".cell");
+    if (target && target !== sourceCell && !target.querySelector(".item")) {
+      sourceCell.innerHTML = "";
+      target.appendChild(gen);
+      generatorCellIndex = Number(target.dataset.index);
+      statusEl.textContent = "Generator moved.";
+    } else {
+      statusEl.textContent = "The generator needs an empty square.";
+    }
+    setTimeout(() => generatorDragging = false, 0);
+  };
+
+  document.addEventListener("pointermove", move, {passive:true});
+  document.addEventListener("pointerup", up, {once:true});
+}
+
+function createSupply(cell) {
+  const supplies = [
+    ["brush", "🖌️"], ["palette", "🎨"], ["canvas", "▣"], ["easel", "🖼️"]
+  ];
+  const [kind, symbol] = supplies[Math.floor(Math.random() * supplies.length)];
+  const item = document.createElement("div");
+  item.className = "item supply";
+  item.dataset.level = "supply";
+  item.textContent = symbol;
+  item.style.fontSize = "clamp(28px, 5vw, 58px)";
+  item.style.display = "flex";
+  item.style.alignItems = "center";
+  item.style.justifyContent = "center";
+  item.style.background = "#f4ead7";
+  item.style.border = "2px solid #9a7651";
+  item.style.cursor = "default";
+  const badge = document.createElement("div");
+  badge.className = "level";
+  badge.textContent = kind;
+  cell.appendChild(item);
+  cell.appendChild(badge);
+}
+
+supplyButton.addEventListener("click", () => {
+  const empty = cells.filter(c =>
+    !c.querySelector(".item") && Number(c.dataset.index) !== generatorCellIndex
+  );
+  if (!empty.length) {
+    statusEl.textContent = "No empty square is available for an art supply.";
+    return;
+  }
+  createSupply(empty[Math.floor(Math.random() * empty.length)]);
+  statusEl.textContent = "Larry's Variety supplied an art-making object.";
+});
 
 function imageName(path) {
   return path.split("/").pop().replace(/\.[^.]+$/, "");
@@ -348,8 +542,8 @@ async function prepareAllImages() {
 
   imagesReady = true;
   statusEl.textContent =
-    "Generator 1 is active. Click it to generate the first painting.";
-  makeGenerators();
+    "Generator 1× is ready. Click it to spill a painting.";
+  updateGeneratorDisplay();
 }
 
 
@@ -371,7 +565,8 @@ function playMergeSound(level) {
     oscillator.type = "sine";
 
     // Slightly higher pitch as the merge level rises.
-    const frequency = 360 + Math.min(level, 30) * 18;
+    const step = (Math.max(1, level) - 1) % 7;
+    const frequency = 220 * Math.pow(2, step / 12);
     oscillator.frequency.setValueAtTime(frequency, now);
     oscillator.frequency.exponentialRampToValueAtTime(
       frequency * 1.45, now + 0.10
@@ -547,12 +742,7 @@ function endDrag(e) {
     " → Level " + newLevel +
     " (" + imageName(images[newLevel - 1]) + ")";
 
-  // Prototype rule: Level 8 unlocks Generator 2.
-  if (newLevel === 8 && !generatorState[1]) {
-    generatorState[1] = true;
-    makeGenerators();
-    statusEl.textContent += " — Generator 2 unlocked.";
-  }
+  // The single generator remains on the board; its UP control is independent of the merge chain.
 }
 
 function cancelDrag() {
@@ -560,16 +750,15 @@ function cancelDrag() {
 }
 
 resetBtn.addEventListener("click", () => {
-  generatorState.fill(false);
-  generatorState[0] = true;
   nextId = 1;
+  generatorLevel = 1;
+  generatorCellIndex = 27;
   makeBoard();
-  makeGenerators();
-  statusEl.textContent = "Generator 1 is active. Click it to generate the first painting.";
+  updateGeneratorDisplay();
+  statusEl.textContent = "Generator 1× is ready. Click it to spill a painting.";
 });
 
 makeBoard();
-makeGenerators();
 prepareAllImages();
 </script>
 </body>
