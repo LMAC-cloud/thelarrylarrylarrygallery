@@ -319,7 +319,7 @@ function createItem(cell, level) {
   img.className = "item";
   img.src = images[level - 1];
   img.alt = "Level " + level;
-  img.draggable = true;
+  img.draggable = false;
   img.dataset.level = level;
   img.dataset.id = nextId++;
 
@@ -330,78 +330,158 @@ function createItem(cell, level) {
   cell.appendChild(img);
   cell.appendChild(badge);
 
-  img.addEventListener("dragstart", e => {
-    e.dataTransfer.setData("text/plain", img.dataset.id);
-    e.dataTransfer.effectAllowed = "move";
-  });
-
-  img.addEventListener("dragend", () => {
-    document.querySelectorAll(".cell").forEach(c => c.style.outline = "");
-  });
+  // Pointer-based dragging works more reliably than browser HTML5
+  // drag-and-drop for images, especially on touch-enabled Windows devices.
+  img.addEventListener("pointerdown", startDrag);
 }
 
-cells.forEach(cell => {
-  cell.addEventListener("dragover", e => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
-    cell.style.outline = "3px solid rgba(255,255,255,.75)";
-  });
+let dragging = null;
 
-  cell.addEventListener("dragleave", () => {
-    cell.style.outline = "";
-  });
+function startDrag(e) {
+  if (e.button !== 0) return;
+  e.preventDefault();
 
-  cell.addEventListener("drop", e => {
-    e.preventDefault();
-    cell.style.outline = "";
+  const source = e.currentTarget;
+  const sourceCell = source.parentElement;
+  const rect = source.getBoundingClientRect();
 
-    const id = e.dataTransfer.getData("text/plain");
-    const source = document.querySelector('.item[data-id="' + id + '"]');
-    if (!source) return;
+  dragging = {
+    source,
+    sourceCell,
+    level: Number(source.dataset.level),
+    offsetX: e.clientX - rect.left,
+    offsetY: e.clientY - rect.top,
+    clone: source.cloneNode(true)
+  };
 
-    const sourceCell = source.parentElement;
-    const target = cell.querySelector(".item");
+  dragging.clone.style.position = "fixed";
+  dragging.clone.style.width = rect.width + "px";
+  dragging.clone.style.height = rect.height + "px";
+  dragging.clone.style.left = (e.clientX - dragging.offsetX) + "px";
+  dragging.clone.style.top = (e.clientY - dragging.offsetY) + "px";
+  dragging.clone.style.zIndex = "9999";
+  dragging.clone.style.pointerEvents = "none";
+  dragging.clone.style.opacity = "0.85";
+  dragging.clone.style.cursor = "grabbing";
+  document.body.appendChild(dragging.clone);
 
-    if (!target) {
-      cell.appendChild(source);
-      const badge = sourceCell.querySelector(".level");
-      if (badge) cell.appendChild(badge);
-      return;
-    }
+  source.style.opacity = "0.25";
+  source.setPointerCapture(e.pointerId);
+  source.addEventListener("pointermove", dragMove);
+  source.addEventListener("pointerup", endDrag);
+  source.addEventListener("pointercancel", cancelDrag);
+}
 
-    const a = Number(source.dataset.level);
-    const b = Number(target.dataset.level);
+function dragMove(e) {
+  if (!dragging) return;
 
-    if (a !== b) {
-      statusEl.textContent = "Only two identical levels can merge.";
-      return;
-    }
+  dragging.clone.style.left =
+    (e.clientX - dragging.offsetX) + "px";
+  dragging.clone.style.top =
+    (e.clientY - dragging.offsetY) + "px";
 
-    if (a >= images.length) {
-      statusEl.textContent = "This is the final painting in the 72-image sequence.";
-      return;
-    }
+  document.querySelectorAll(".cell").forEach(c => c.style.outline = "");
 
-    // Remove both old items.
+  const target = document.elementFromPoint(e.clientX, e.clientY)?.closest(".cell");
+  if (target) {
+    target.style.outline = "3px solid rgba(255,255,255,.9)";
+  }
+}
+
+function endDrag(e) {
+  if (!dragging) return;
+
+  const source = dragging.source;
+  const sourceCell = dragging.sourceCell;
+  const level = dragging.level;
+
+  const target = document.elementFromPoint(e.clientX, e.clientY)?.closest(".cell");
+
+  source.releasePointerCapture?.(e.pointerId);
+  source.removeEventListener("pointermove", dragMove);
+  source.removeEventListener("pointerup", endDrag);
+  source.removeEventListener("pointercancel", cancelDrag);
+
+  document.querySelectorAll(".cell").forEach(c => c.style.outline = "");
+
+  if (!target || target === sourceCell) {
+    source.style.opacity = "1";
+    dragging.clone.remove();
+    dragging = null;
+    return;
+  }
+
+  const targetItem = target.querySelector(".item");
+
+  // Empty square: move the painting there.
+  if (!targetItem) {
+    const badge = sourceCell.querySelector(".level");
     sourceCell.innerHTML = "";
-    cell.innerHTML = "";
+    target.appendChild(source);
+    if (badge) target.appendChild(badge);
 
-    // The next painting in the 72-image sequence is created.
-    createItem(cell, a + 1);
+    source.style.opacity = "1";
+    dragging.clone.remove();
+    dragging = null;
+    statusEl.textContent = "Painting moved.";
+    return;
+  }
 
-    statusEl.textContent =
-      "Merge: Level " + a + " + Level " + a +
-      " → Level " + (a + 1) +
-      " (" + imageName(images[a]) + ")";
+  const targetLevel = Number(targetItem.dataset.level);
 
-    // Prototype unlock: reaching Level 8 activates Generator 2.
-    if (a + 1 === 8 && !generatorState[1]) {
-      generatorState[1] = true;
-      makeGenerators();
-      statusEl.textContent += " — Generator 2 unlocked.";
-    }
-  });
-});
+  // Different levels cannot merge.
+  if (level !== targetLevel) {
+    source.style.opacity = "1";
+    dragging.clone.remove();
+    dragging = null;
+    statusEl.textContent = "Only two identical levels can merge.";
+    return;
+  }
+
+  // Merge.
+  if (level >= images.length) {
+    source.style.opacity = "1";
+    dragging.clone.remove();
+    dragging = null;
+    statusEl.textContent = "This is the final painting in the 72-image sequence.";
+    return;
+  }
+
+  sourceCell.innerHTML = "";
+  target.innerHTML = "";
+  createItem(target, level + 1);
+
+  source.style.opacity = "1";
+  dragging.clone.remove();
+  dragging = null;
+
+  statusEl.textContent =
+    "Merge: Level " + level + " + Level " + level +
+    " → Level " + (level + 1) +
+    " (" + imageName(images[level]) + ")";
+
+  if (level + 1 === 8 && !generatorState[1]) {
+    generatorState[1] = true;
+    makeGenerators();
+    statusEl.textContent += " — Generator 2 unlocked.";
+  }
+}
+
+function cancelDrag(e) {
+  if (!dragging) return;
+
+  const source = dragging.source;
+  source.releasePointerCapture?.(e.pointerId);
+  source.removeEventListener("pointermove", dragMove);
+  source.removeEventListener("pointerup", endDrag);
+  source.removeEventListener("pointercancel", cancelDrag);
+  source.style.opacity = "1";
+  dragging.clone.remove();
+  dragging = null;
+
+  document.querySelectorAll(".cell").forEach(c => c.style.outline = "");
+}
+
 
 resetBtn.addEventListener("click", () => {
   generatorState.fill(false);
