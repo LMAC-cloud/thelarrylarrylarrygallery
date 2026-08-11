@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Larry's L.A.R.R.Y. Stamp Collection</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { width:100%; height:100%; margin:0; overflow:hidden; }
+  body {
+    font-family: Georgia, "Times New Roman", serif;
+    color:#fff;
+    background:#111;
+    user-select:none;
+  }
+  body::before {
+    content:"";
+    position:fixed; top:50%; left:50%;
+    width:300vmax; height:300vmax;
+    background:repeating-conic-gradient(from 0deg,#000 0deg 10deg,#fff 10deg 20deg);
+    transform:translate(-50%,-50%) rotate(0deg);
+    z-index:-10;
+    animation:spinSpiral 5s linear infinite;
+  }
+  @keyframes spinSpiral {
+    from { transform:translate(-50%,-50%) rotate(0deg); }
+    to { transform:translate(-50%,-50%) rotate(360deg); }
+  }
+  #app {
+    width:min(1500px, 96vw);
+    height:100vh;
+    margin:auto;
+    display:grid;
+    grid-template-columns:minmax(0, 1fr) 260px;
+    grid-template-rows:120px minmax(0,1fr);
+    gap:12px;
+    padding:12px;
+  }
+  #header {
+    grid-column:1 / -1;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  #wasteMailbox {
+    position:absolute;
+    top:6px;
+    width:min(560px, 60vw);
+    height:88px;
+    border-radius:18px 18px 28px 28px;
+    background:linear-gradient(#c52222,#8f0f0f);
+    border:5px solid #4c0808;
+    box-shadow:0 10px 0 rgba(0,0,0,.45), inset 0 5px 0 rgba(255,255,255,.18);
+    cursor:ew-resize;
+    z-index:20;
+    transition:left .05s linear;
+  }
+  #wasteText {
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family:Impact, Haettenschweiler, "Arial Black", sans-serif;
+    font-size:clamp(25px,3vw,44px);
+    letter-spacing:.18em;
+    color:#fff;
+    text-shadow:3px 3px 0 #3c0505;
+    pointer-events:none;
+  }
+  #heldStamp {
+    position:absolute;
+    left:50%;
+    bottom:-50px;
+    width:68px;
+    height:68px;
+    transform:translateX(-50%);
+    border-radius:50%;
+    border:4px solid #f4e6c5;
+    box-shadow:0 5px 0 rgba(0,0,0,.45), 0 0 0 2px #5a351d;
+    overflow:hidden;
+    background:#f1e2bd;
+    z-index:25;
+    pointer-events:none;
+  }
+  #heldStamp img {
+    width:100%; height:100%; object-fit:cover; display:block;
+  }
+  #heldStamp .heldNum {
+    position:absolute; left:4px; top:4px;
+    background:rgba(255,255,255,.9);
+    color:#2d1a0c;
+    font:bold 12px Arial;
+    padding:2px 4px;
+    border-radius:4px;
+  }
+  #mailFlag {
+    position:absolute; right:18px; top:-42px;
+    width:9px; height:45px; background:#4b0909;
+    pointer-events:none;
+  }
+  #mailFlag::after {
+    content:""; position:absolute; top:0; left:0;
+    width:35px; height:20px; background:#f2c14e;
+    border:3px solid #4b0909;
+  }
+  #gamePanel {
+    position:relative;
+    min-width:0; min-height:0;
+    border-radius:24px;
+    background:rgba(15,15,15,.80);
+    border:4px solid #ddd;
+    box-shadow:0 12px 30px rgba(0,0,0,.55);
+    overflow:hidden;
+  }
+  #gameCanvas { width:100%; height:100%; display:block; cursor:crosshair; }
+  #side {
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .panel {
+    background:rgba(15,15,15,.90);
+    border:3px solid #ddd;
+    border-radius:18px;
+    box-shadow:0 8px 20px rgba(0,0,0,.45);
+    padding:12px;
+  }
+  #title {
+    font-weight:bold;
+    font-size:21px;
+    text-align:center;
+    line-height:1.05;
+  }
+  #subtitle {
+    text-align:center;
+    font-style:italic;
+    font-size:14px;
+    margin-top:4px;
+  }
+  #stats {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:10px;
+  }
+  .stat {
+    background:#f4ead7;
+    color:#2a170e;
+    border-radius:10px;
+    padding:8px;
+    text-align:center;
+    font-weight:bold;
+  }
+  .stat b { display:block; font-size:20px; }
+  #doubleBtn {
+    width:100%;
+    border:3px solid #5b350e;
+    border-radius:14px;
+    background:linear-gradient(#f3c85b,#b87813);
+    color:#241404;
+    font-weight:bold;
+    padding:11px 8px;
+    cursor:pointer;
+    box-shadow:0 5px 0 #6e410c;
+    font-size:16px;
+  }
+  #doubleBtn:active { transform:translateY(4px); box-shadow:0 1px 0 #6e410c; }
+  #doubleBtn:disabled { opacity:.45; cursor:not-allowed; }
+  #boardControls {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+  }
+  .smallBtn {
+    border:2px solid #5b350e;
+    border-radius:10px;
+    background:#efe0bd;
+    color:#2a170e;
+    font-weight:bold;
+    padding:8px 5px;
+    cursor:pointer;
+  }
+  .smallBtn:hover { filter:brightness(1.08); }
+  .smallBtn:active { transform:translateY(2px); }
+  .pageNav {
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    gap:5px;
+    align-items:center;
+    margin-bottom:7px;
+  }
+  .pageNav button { padding:5px 4px; }
+  #pageStatus { font:bold 12px Arial; text-align:center; }
+  #book {
+    flex:1;
+    min-height:0;
+    overflow:auto;
+    background:#e7d5ae;
+    color:#2d1a0c;
+    border:8px solid #6b3f1d;
+    border-radius:12px;
+    padding:9px;
+    box-shadow:inset 0 0 0 2px #3b210e;
+  }
+  #bookTitle {
+    text-align:center; font-weight:bold; font-size:16px;
+    margin-bottom:8px;
+  }
+  #slots {
+    display:grid; grid-template-columns:1fr 1fr;
+    gap:7px;
+  }
+  .slot {
+    aspect-ratio:1.05;
+    border:2px dashed #8a6a40;
+    background:#f5ead0;
+    position:relative;
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+  .slot img { width:100%; height:100%; object-fit:cover; opacity:.18; }
+  .slot.collected { border:2px solid #b07a19; box-shadow:0 0 12px #d99a2b; }
+  .slot.collected img { opacity:1; }
+  .slot span {
+    position:absolute; left:4px; top:2px; background:rgba(255,255,255,.8);
+    padding:1px 4px; font:bold 11px Arial; border-radius:4px;
+  }
+  #message {
+    position:absolute; left:50%; top:50%;
+    transform:translate(-50%,-50%);
+    padding:15px 22px;
+    background:rgba(0,0,0,.82);
+    border:3px solid #fff;
+    border-radius:16px;
+    font-size:24px; text-align:center;
+    opacity:0; pointer-events:none;
+    transition:opacity .2s;
+    z-index:30;
+  }
+  #message.show { opacity:1; }
+  #hint { font-size:12px; line-height:1.3; text-align:center; }
+  @media (max-width:900px) {
+    #app { grid-template-columns:1fr; grid-template-rows:105px minmax(0,1fr) 310px; }
+    #header { grid-column:1; }
+    #side { display:grid; grid-template-columns:1fr 1fr; }
+    #book { grid-column:1 / -1; }
+    #wasteMailbox { width:65vw; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="header">
+    <div id="wasteMailbox" aria-label="L.A.R.R.Y. mailbox">
+      <div id="mailFlag"></div>
+      <div id="wasteText">L.A.R.R.Y.</div>
+      <div id="heldStamp"><img id="heldStampImg" alt="Current stamp"><span class="heldNum" id="heldNum">01</span></div>
+    </div>
+  </div>
+
+  <main id="gamePanel">
+    <canvas id="gameCanvas"></canvas>
+    <div id="message"></div>
+  </main>
+
+  <aside id="side">
+    <section class="panel">
+      <div id="title">LARRY'S STAMP COLLECTION</div>
+      <div id="subtitle">WHY NOT COLLECT 'EM ALL?</div>
+      <div id="stats">
+        <div class="stat">LAR-BUCKS<b id="bucks">10</b></div>
+        <div class="stat">COLLECTED<b id="count">0/72</b></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <button id="doubleBtn">2 LAR-BUCKS — ×2 SPEED</button>
+      <div id="boardControls">
+        <button class="smallBtn" id="clearBtn">CLEAR — KEEP TOP 4</button>
+        <button class="smallBtn" id="dropBtn">DROP ONCE</button>
+      </div>
+      <div id="hint">Move the L.A.R.R.Y. mailbox to aim. Click or hold it to fire. The stamp shown beneath the mailbox is the one you will drop.</div>
+    </section>
+
+    <section id="book">
+      <div class="pageNav">
+        <button class="smallBtn" id="prevPage">‹ BACK</button>
+        <div id="pageStatus">PAGE <span id="pageNo">1</span></div>
+        <button class="smallBtn" id="nextPage">NEXT ›</button>
+      </div>
+      <div id="slots"></div>
+    </section>
+  </aside>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
+<script>
+const images = [
+  "images/LMAC-ArquaneTheQuietTeenPoet.jpg",
+  "images/LMAC-AstropopEffect.jpg",
+  "images/LMAC-AtGulliversMuseumOfAbstractArt.jpg",
+  "images/LMAC-AylaDream.jpg",
+  "images/LMAC-BarthesDilnsby.jpg",
+  "images/LMAC-BeautifulConversations.jpg",
+  "images/LMAC-BeBopASaurus.jpg",
+  "images/LMAC-Blondie.jpg",
+  "images/LMAC-BumblebeeVsOptimusPrime.jpg",
+  "images/LMAC-ButSiddharthaWasLookingBeyondThePresent.jpg",
+  "images/LMAC-BuzzardZilla.jpg",
+  "images/LMAC-CallTheArtWorldAndInformThemOfThisArt.jpg",
+  "images/LMAC-CanyonCross.jpg",
+  "images/LMAC-CasparFreidric1800.jpg",
+  "images/LMAC-Contentment.jpg",
+  "images/LMAC-CrusoesBadger.jpg",
+  "images/LMAC-CrusoesWizard.jpg",
+  "images/LMAC-DarkHorsewoman.jpg",
+  "images/LMAC-DesertCivilizationDance.jpg",
+  "images/LMAC-DiamondMineLakeshore.jpg",
+  "images/LMAC-DinosaurSpirit.jpg",
+  "images/LMAC-DinosourFossil.jpg",
+  "images/LMAC-DreamingWoman.jpg",
+  "images/LMAC-EvilCabins.jpg",
+  "images/LMAC-Gooseland.jpg",
+  "images/LMAC-HelloThereEve.jpg",
+  "images/LMAC-HistoryBook.jpg",
+  "images/LMAC-HolidaySnapOfMyMerman.jpg",
+  "images/LMAC-HowYouReallyFeltAtTheTime.jpg",
+  "images/LMAC-Hulot.jpg",
+  "images/LMAC-IcarusIcarus.jpg",
+  "images/LMAC-IDon'tTrustLaoTsuNoMore.jpg",
+  "images/LMAC-IndianaJonesJr.jpg",
+  "images/LMAC-IndianaJr.jpg",
+  "images/LMAC-InThunder.jpg",
+  "images/LMAC-JoseKandontske.jpg",
+  "images/LMAC-Journey'sJourney.jpg",
+  "images/LMAC-LarkaVayYourHairdresser.jpg",
+  "images/LMAC-LenoresHappyDay.jpg",
+  "images/LMAC-LordStitchToothe.jpg",
+  "images/LMAC-MarmouxltTheTrainedFrenchThing.jpg",
+  "images/LMAC-MobySquid.jpg",
+  "images/LMAC-MysticValley.jpg",
+  "images/LMAC-NewNewCanadianArt.jpg",
+  "images/LMAC-PinballChing.jpg",
+  "images/LMAC-PlacesThatHaveBeen.jpg",
+  "images/LMAC-Respect.jpg",
+  "images/LMAC-RobinsonLand.jpg",
+  "images/LMAC-RoncesvallesJazzRacket.jpg",
+  "images/LMAC-SacredSanctuary.jpg",
+  "images/LMAC-SandpiperFlats.jpg",
+  "images/LMAC-TheApproachingSeaDragon.jpg",
+  "images/LMAC-TheBirdEmpress.jpg",
+  "images/LMAC-TheCarnivalGhostsVacation.jpg",
+  "images/LMAC-TheCavemansTV.jpg",
+  "images/LMAC-TheDreamOfSleep.jpg",
+  "images/LMAC-TheElectricFox.jpg",
+  "images/LMAC-TheEmbarrasingAirportIncident.jpg",
+  "images/LMAC-TheGoyaOfMay.jpg",
+  "images/LMAC-TheHoneyBee.jpg",
+  "images/LMAC-TheMonkey'sLunch.jpg",
+  "images/LMAC-TheMustardSeedPrincipleAlien.jpg",
+  "images/LMAC-TheSeaGoat.jpg",
+  "images/LMAC-TheSlap.jpg",
+  "images/LMAC-TheSupposedToBeUnpretentiousSage.jpg",
+  "images/LMAC-TheWeepyMakeupSaleslady.jpg",
+  "images/LMAC-TimeFreeScape.jpg",
+  "images/LMAC-ToTheCaveOfSomethingSpecific.jpg",
+  "images/LMAC-TumbleWeet.jpg",
+  "images/LMAC-VantageShift.jpg",
+  "images/LMAC-WatershipNow.jpg",
+  "images/LMAC-WhySilenceIsGolden.jpg"
+];
+
+const {
+  Engine, Render, Runner, Bodies, Body, Composite, Events, Vector
+} = Matter;
+
+const canvas = document.getElementById('gameCanvas');
+const panel = document.getElementById('gamePanel');
+const mailbox = document.getElementById('wasteMailbox');
+const heldStampImg = document.getElementById('heldStampImg');
+const heldNum = document.getElementById('heldNum');
+const clearBtn = document.getElementById('clearBtn');
+const dropBtn = document.getElementById('dropBtn');
+const prevPageBtn = document.getElementById('prevPage');
+const nextPageBtn = document.getElementById('nextPage');
+const message = document.getElementById('message');
+const bucksEl = document.getElementById('bucks');
+const countEl = document.getElementById('count');
+const slotsEl = document.getElementById('slots');
+const pageNoEl = document.getElementById('pageNo');
+const doubleBtn = document.getElementById('doubleBtn');
+
+const engine = Engine.create();
+engine.gravity.y = 1.05;
+const world = engine.world;
+const runner = Runner.create();
+
+let W = 900, H = 700;
+let wallLeft, wallRight, floor, bookShelf;
+let stamps = [];
+let nextId = 1;
+let bucks = 10;
+let collected = new Set();
+let pageStart = 0;
+let doubleMode = false;
+let dropLock = false;
+let mailboxX = 0.5;
+let draggingMailbox = false;
+let firing = false;
+let fireTimer = null;
+let lastDropTime = 0;
+let nextDropTier = 1;
+const DROP_COOLDOWN = 260;
+const FIRE_INTERVAL = 300;
+
+const imgs = images.map(src => {
+  const im = new Image();
+  im.src = src;
+  return im;
+});
+
+function resize() {
+  const rect = panel.getBoundingClientRect();
+  W = Math.max(500, rect.width);
+  H = Math.max(450, rect.height);
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = Math.round(W*dpr);
+  canvas.height = Math.round(H*dpr);
+  canvas.style.width = W+'px';
+  canvas.style.height = H+'px';
+  canvas.getContext('2d').setTransform(dpr,0,0,dpr,0,0);
+
+  // Rebuild only the static boundaries when the browser size changes.
+  // The falling stamps themselves remain in the physics world.
+  if (wallLeft) {
+    Composite.remove(world,[wallLeft,wallRight,floor,bookShelf]);
+    makeWorld();
+  }
+  positionMailbox();
+}
+
+function makeWorld() {
+  wallLeft = Bodies.rectangle(28,H/2,56,H,{isStatic:true,label:'wall'});
+  wallRight = Bodies.rectangle(W-28,H/2,56,H,{isStatic:true,label:'wall'});
+  floor = Bodies.rectangle(W/2,H-18,W,36,{isStatic:true,label:'floor'});
+  // A broad "book" shelf at the bottom leaves a generous collection chamber above it.
+  bookShelf = Bodies.rectangle(W/2,H-145,W-80,18,{isStatic:true,label:'bookShelf'});
+  Composite.add(world,[wallLeft,wallRight,floor,bookShelf]);
+}
+
+function stampRadius(tier) {
+  // Exponential growth, with a practical ceiling so the later stamps
+  // remain playable inside the large chamber.
+  return Math.min(135, 48 * Math.pow(1.075, tier-1));
+}
+
+function createStamp(tier, x, y) {
+  const r = stampRadius(tier);
+  const body = Bodies.circle(x,y,r,{
+    restitution:0.18,
+    friction:0.42,
+    frictionStatic:0.7,
+    density:0.0018,
+    label:'stamp'
+  });
+  body.plugin = {
+    tier,
+    image: imgs[tier-1],
+    radius:r,
+    born:performance.now(),
+    merged:false
+  };
+  stamps.push(body);
+  Composite.add(world,body);
+  return body;
+}
+
+function chooseNextTier() {
+  const maxTier = Math.max(1, Math.min(8, Math.max(...stamps.map(s=>s.plugin?.tier||1),1)));
+  const roll = Math.random();
+  if (roll < 0.62) return 1;
+  if (roll < 0.86) return Math.min(2, maxTier);
+  if (roll < 0.96) return Math.min(3, maxTier);
+  return 1 + Math.floor(Math.random() * maxTier);
+}
+
+function updateHeldStamp() {
+  const tier = Math.max(1, Math.min(images.length, nextDropTier));
+  heldStampImg.src = images[tier-1];
+  heldNum.textContent = String(tier).padStart(2,'0');
+  heldStampImg.alt = `Stamp ${tier}`;
+}
+
+function dropStamp() {
+  const now = performance.now();
+  if (now-lastDropTime < DROP_COOLDOWN) return;
+  lastDropTime = now;
+
+  const x = Math.max(75, Math.min(W-75, mailboxX*W));
+  const tier = nextDropTier;
+
+  createStamp(tier, x, 112);
+  nextDropTier = chooseNextTier();
+  updateHeldStamp();
+
+  if (doubleMode) {
+    setTimeout(() => {
+      const x2 = Math.max(75, Math.min(W-75, x + (Math.random()<.5 ? -22 : 22)));
+      createStamp(tier, x2, 112);
+    }, 90);
+    doubleMode = false;
+    updateDoubleButton();
+  }
+}
+function tryMerge(a,b) {
+  if (!a.plugin || !b.plugin || a.plugin.merged || b.plugin.merged) return;
+  if (a.plugin.tier !== b.plugin.tier) return;
+
+  const tier = a.plugin.tier;
+  a.plugin.merged = true; b.plugin.merged = true;
+
+  const x = (a.position.x+b.position.x)/2;
+  const y = (a.position.y+b.position.y)/2;
+  Composite.remove(world,a); Composite.remove(world,b);
+  stamps = stamps.filter(s=>s!==a && s!==b);
+
+  // The two matching stamps have now "collected" that artwork.
+  collectTier(tier);
+
+  if (tier < images.length) {
+    setTimeout(()=> {
+      const n = createStamp(tier+1, x, y);
+      Body.setVelocity(n, {x:0,y:-2});
+    }, 30);
+  }
+}
+
+Events.on(engine,'collisionStart', event => {
+  for (const pair of event.pairs) {
+    const a=pair.bodyA, b=pair.bodyB;
+    if (a.label==='stamp' && b.label==='stamp') tryMerge(a,b);
+  }
+});
+
+function collectTier(tier) {
+  if (tier < 1 || tier > images.length || collected.has(tier)) return;
+  collected.add(tier);
+  updateBook();
+
+  const wasLastOnPage = currentPageTiers().every(t => collected.has(t));
+  showMessage(`COLLECTED #${tier}`, 650);
+
+  if (wasLastOnPage) {
+    setTimeout(()=> {
+      if (pageStart+7 < images.length) {
+        pageStart += 7;
+        updateBook();
+        showMessage('NEXT 7 STAMPS', 850);
+      } else {
+        showMessage("ALL 72 COLLECTED!", 1600);
+      }
+    }, 720);
+  }
+  countEl.textContent = `${collected.size}/${images.length}`;
+}
+
+function currentPageTiers() {
+  const arr=[];
+  for(let i=pageStart;i<Math.min(pageStart+7,images.length);i++) arr.push(i+1);
+  return arr;
+}
+
+function updateBook() {
+  pageNoEl.textContent = Math.floor(pageStart/7)+1;
+  slotsEl.innerHTML='';
+  currentPageTiers().forEach(tier=> {
+    const slot=document.createElement('div');
+    slot.className='slot'+(collected.has(tier)?' collected':'');
+    const im=document.createElement('img');
+    im.src=images[tier-1];
+    im.alt=`Stamp ${tier}`;
+    const num=document.createElement('span');
+    num.textContent=String(tier).padStart(2,'0');
+    slot.appendChild(im); slot.appendChild(num);
+    slotsEl.appendChild(slot);
+  });
+  countEl.textContent = `${collected.size}/${images.length}`;
+  prevPageBtn.disabled = pageStart === 0;
+  nextPageBtn.disabled = pageStart + 7 >= images.length;
+}
+function showMessage(text, ms=700) {
+  message.textContent=text;
+  message.classList.add('show');
+  clearTimeout(showMessage.timer);
+  showMessage.timer=setTimeout(()=>message.classList.remove('show'),ms);
+}
+
+function updateDoubleButton() {
+  doubleBtn.disabled = bucks < 2 || doubleMode;
+  doubleBtn.textContent = doubleMode ? '×2 ACTIVE — NEXT DROP' : '2 LAR-BUCKS — ×2 SPEED';
+}
+
+doubleBtn.addEventListener('click',()=> {
+  if (bucks < 2 || doubleMode) return;
+  bucks -= 2;
+  bucksEl.textContent=bucks;
+  doubleMode=true;
+  updateDoubleButton();
+});
+
+function clearBoardKeepTopFour() {
+  const live = stamps.filter(s => s && s.plugin);
+  if (!live.length) return;
+  const sorted = [...live].sort((a,b) => (b.plugin.tier||1) - (a.plugin.tier||1));
+  const keep = new Set(sorted.slice(0,4));
+  for (const b of live) {
+    if (!keep.has(b)) Composite.remove(world,b);
+  }
+  stamps = stamps.filter(b => keep.has(b));
+  showMessage(`CLEARED — KEPT TOP ${Math.min(4,live.length)}`, 900);
+}
+
+function startFiring() {
+  if (firing) return;
+  firing = true;
+  dropStamp();
+  fireTimer = setInterval(dropStamp, FIRE_INTERVAL);
+}
+
+function stopFiring() {
+  firing = false;
+  if (fireTimer) {
+    clearInterval(fireTimer);
+    fireTimer = null;
+  }
+}
+
+function goToPage(start) {
+  const maxStart = Math.max(0, Math.floor((images.length-1)/7)*7);
+  pageStart = Math.max(0, Math.min(maxStart, start));
+  updateBook();
+}
+
+function positionMailbox() {
+  const header=document.getElementById('header');
+  const hw=header.clientWidth;
+  const mw=mailbox.offsetWidth;
+  const left=Math.max(0,Math.min(hw-mw, mailboxX*hw-mw/2));
+  mailbox.style.left=left+'px';
+}
+
+function setMailboxFromClientX(clientX) {
+  const header=document.getElementById('header');
+  const rect=header.getBoundingClientRect();
+  mailboxX=Math.max(.08,Math.min(.92,(clientX-rect.left)/rect.width));
+  positionMailbox();
+}
+
+mailbox.addEventListener('pointerdown',e=> {
+  draggingMailbox=true;
+  mailbox.setPointerCapture(e.pointerId);
+  setMailboxFromClientX(e.clientX);
+  startFiring();
+});
+mailbox.addEventListener('pointermove',e=> {
+  if(draggingMailbox) setMailboxFromClientX(e.clientX);
+});
+mailbox.addEventListener('pointerup',e=> {
+  draggingMailbox=false;
+  stopFiring();
+});
+mailbox.addEventListener('pointercancel',e=> {
+  draggingMailbox=false;
+  stopFiring();
+});
+
+dropBtn.addEventListener('click', dropStamp);
+clearBtn.addEventListener('click', clearBoardKeepTopFour);
+prevPageBtn.addEventListener('click',()=>goToPage(pageStart-7));
+nextPageBtn.addEventListener('click',()=>goToPage(pageStart+7));
+window.addEventListener('keydown',e=> {
+  if(e.code==='Space') {
+    e.preventDefault();
+    if (!firing) startFiring();
+  }
+  if(e.code==='ArrowLeft') {
+    mailboxX=Math.max(.08,mailboxX-.035); positionMailbox();
+  }
+  if(e.code==='ArrowRight') {
+    mailboxX=Math.min(.92,mailboxX+.035); positionMailbox();
+  }
+});
+window.addEventListener('keyup',e=> {
+  if(e.code==='Space') {
+    e.preventDefault();
+    stopFiring();
+  }
+});
+function draw() {
+  const ctx=canvas.getContext('2d');
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,W,H);
+
+  // Subtle inner chamber gradient.
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,'rgba(255,255,255,.05)');
+  g.addColorStop(1,'rgba(0,0,0,.12)');
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+
+  // The bottom of the chamber is the responsive stamp-collection book.
+  const bookY = H-140;
+  ctx.fillStyle='rgba(231,213,174,.98)';
+  ctx.fillRect(45,bookY,W-90,128);
+  ctx.strokeStyle='#6b3f1d';
+  ctx.lineWidth=5;
+  ctx.strokeRect(45,bookY,W-90,128);
+  ctx.fillStyle='#3b210e';
+  ctx.font='bold 18px Georgia';
+  ctx.textAlign='center';
+  ctx.fillText(`STAMP COLLECTION BOOK — PAGE ${Math.floor(pageStart/7)+1}`,W/2,bookY+24);
+
+  const pageTiers = currentPageTiers();
+  const gap = 8;
+  const innerX = 58;
+  const innerW = W-116;
+  const slotW = (innerW - gap*(pageTiers.length-1)) / Math.max(1,pageTiers.length);
+  const slotY = bookY+36;
+  const slotH = 78;
+
+  pageTiers.forEach((tier,i)=>{
+    const x = innerX + i*(slotW+gap);
+    ctx.fillStyle = collected.has(tier) ? '#f8edcf' : '#c9b58b';
+    ctx.fillRect(x,slotY,slotW,slotH);
+    ctx.strokeStyle = collected.has(tier) ? '#b07a19' : '#8a6a40';
+    ctx.lineWidth = collected.has(tier) ? 3 : 2;
+    ctx.strokeRect(x,slotY,slotW,slotH);
+
+    const im=imgs[tier-1];
+    if(im && im.complete && im.naturalWidth){
+      ctx.save();
+      ctx.globalAlpha = collected.has(tier) ? 1 : .22;
+      ctx.drawImage(im,x+3,slotY+3,slotW-6,slotH-6);
+      ctx.restore();
+    }
+    ctx.fillStyle='rgba(255,255,255,.82)';
+    ctx.fillRect(x+3,slotY+3,27,18);
+    ctx.fillStyle='#3b210e';
+    ctx.font='bold 12px Arial';
+    ctx.textAlign='left';
+    ctx.fillText(String(tier).padStart(2,'0'),x+7,slotY+16);
+  });
+
+  for(const b of stamps) {
+    if(!b.position || !b.plugin) continue;
+    const r=b.plugin.radius;
+    ctx.save();
+    ctx.translate(b.position.x,b.position.y);
+    ctx.rotate(b.angle||0);
+
+    // stamp paper + dark outline
+    ctx.beginPath();
+    ctx.arc(0,0,r+4,0,Math.PI*2);
+    ctx.fillStyle='#f1e2bd';
+    ctx.fill();
+    ctx.lineWidth=3;
+    ctx.strokeStyle='#5a351d';
+    ctx.stroke();
+
+    const im=b.plugin.image;
+    if(im && im.complete && im.naturalWidth) {
+      ctx.save();
+      ctx.beginPath(); ctx.arc(0,0,r-3,0,Math.PI*2); ctx.clip();
+      ctx.drawImage(im,-r+3,-r+3,(r-3)*2,(r-3)*2);
+      ctx.restore();
+    } else {
+      ctx.fillStyle='#d8c49a';
+      ctx.beginPath(); ctx.arc(0,0,r-3,0,Math.PI*2); ctx.fill();
+    }
+
+    // Tier number makes it immediately clear which token is which.
+    ctx.fillStyle='rgba(255,255,255,.88)';
+    ctx.fillRect(-r+5,-r+5,30,20);
+    ctx.fillStyle='#2d1a0c';
+    ctx.font='bold 12px Arial';
+    ctx.textAlign='left';
+    ctx.fillText(String(b.plugin.tier).padStart(2,'0'),-r+9,-r+0);
+
+    // perforated-looking dots
+    ctx.strokeStyle='rgba(60,30,10,.5)';
+    ctx.lineWidth=2;
+    for(let k=0;k<12;k++) {
+      const a=k*Math.PI*2/12;
+      ctx.beginPath();
+      ctx.arc(Math.cos(a)*(r+1),Math.sin(a)*(r+1),1.4,0,Math.PI*2);
+      ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+  requestAnimationFrame(draw);
+}
+
+function animateMailbox() {
+  positionMailbox();
+  requestAnimationFrame(animateMailbox);
+}
+
+makeWorld();
+resize();
+updateBook();
+updateDoubleButton();
+updateHeldStamp();
+window.addEventListener('resize',resize);
+Runner.run(runner,engine);
+draw();
+animateMailbox();
+</script>
+</body>
+</html>
