@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Larry's Variety — Merge Prototype</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Georgia, "Times New Roman", serif;
+    background: #d8c5a8;
+    color: #3b2a1d;
+    overflow: auto;
+  }
+  header {
+    text-align: center;
+    padding: 16px 10px 8px;
+  }
+  h1 { margin: 0 0 4px; font-size: 28px; }
+  #status { min-height: 24px; font-size: 16px; }
+  #game {
+    width: min(1120px, 96vw);
+    margin: 0 auto 24px;
+  }
+  .generators {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .generator {
+    min-height: 112px;
+    border: 3px solid #9a7651;
+    border-radius: 12px;
+    background: #efe0c5;
+    box-shadow: 0 4px 8px rgba(50,30,10,.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  .generator.locked {
+    opacity: .35;
+    cursor: default;
+    background: #b9aa94;
+  }
+  .generator.active {
+    border-color: #5b8c37;
+    box-shadow: 0 0 0 3px #d6efb8, 0 5px 12px rgba(50,30,10,.3);
+  }
+  .generator img {
+    width: 82px;
+    height: 82px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  .gen-label {
+    position: absolute;
+    bottom: 2px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    background: rgba(255,248,230,.88);
+    font-size: 12px;
+    padding: 2px;
+  }
+  .board {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 6px;
+    padding: 10px;
+    background: #9ba8b9;
+    border: 4px solid #69798c;
+    border-radius: 14px;
+    box-shadow: inset 0 0 14px rgba(0,0,0,.18), 0 6px 14px rgba(50,30,10,.25);
+  }
+  .cell {
+    aspect-ratio: 1;
+    min-width: 0;
+    border-radius: 8px;
+    background: rgba(220,228,235,.42);
+    border: 1px solid rgba(255,255,255,.24);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .item {
+    width: 92%;
+    height: 92%;
+    object-fit: cover;
+    border-radius: 7px;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-drag: none;
+    box-shadow: 0 3px 6px rgba(0,0,0,.28);
+  }
+  .item:active { cursor: grabbing; }
+  .level {
+    position: absolute;
+    top: 3px;
+    right: 4px;
+    background: rgba(35,25,18,.78);
+    color: white;
+    border-radius: 10px;
+    padding: 1px 5px;
+    font: bold 11px Arial, sans-serif;
+    pointer-events: none;
+  }
+  .help {
+    width: min(900px, 94vw);
+    margin: 12px auto 30px;
+    background: rgba(255,248,232,.78);
+    border: 1px solid #b49570;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+    line-height: 1.45;
+  }
+  button {
+    border: 0;
+    border-radius: 8px;
+    padding: 8px 14px;
+    background: #6b4529;
+    color: white;
+    font: inherit;
+    cursor: pointer;
+    margin: 4px;
+  }
+  @media (max-width: 700px) {
+    .generators { gap: 3px; }
+    .generator { min-height: 72px; }
+    .generator img { width: 54px; height: 54px; }
+    .gen-label { font-size: 8px; }
+    .board { gap: 3px; padding: 5px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Larry's Variety — Merge Prototype</h1>
+  <div id="status">Generator 1 is active. Click it to generate the first painting.</div>
+</header>
+
+<div id="game">
+  <div class="generators" id="generators"></div>
+  <div class="board" id="board"></div>
+</div>
+
+<div class="help">
+  <strong>Prototype rule:</strong> Generator 1 starts active and produces the first image repeatedly.
+  Drag two identical levels onto one another to merge them into the next image in the 72-image sequence.
+  When a level reaches 8, Generator 2 unlocks. The remaining generator slots are prepared for the later
+  generator-combination rules. The board has 64 spaces.
+  <br>
+  <button id="reset">Reset prototype</button>
+</div>
+
+<script>
+const images = [
+    "images/LMAC-ArquaneTheQuietTeenPoet.jpg",
+    "images/LMAC-AstropopEffect.jpg",
+    "images/LMAC-AtGulliversMuseumOfAbstractArt.jpg",
+    "images/LMAC-AylaDream.jpg",
+    "images/LMAC-BarthesDilnsby.jpg",
+    "images/LMAC-BeautifulConversations.jpg",
+    "images/LMAC-BeBopASaurus.jpg",
+    "images/LMAC-Blondie.jpg",
+    "images/LMAC-BumblebeeVsOptimusPrime.jpg",
+    "images/LMAC-ButSiddharthaWasLookingBeyondThePresent.jpg",
+    "images/LMAC-BuzzardZilla.jpg",
+    "images/LMAC-CallTheArtWorldAndInformThemOfThisArt.jpg",
+    "images/LMAC-CanyonCross.jpg",
+    "images/LMAC-CasparFreidric1800.jpg",
+    "images/LMAC-Contentment.jpg",
+    "images/LMAC-CrusoesBadger.jpg",
+    "images/LMAC-CrusoesWizard.jpg",
+    "images/LMAC-DarkHorsewoman.jpg",
+    "images/LMAC-DesertCivilizationDance.jpg",
+    "images/LMAC-DiamondMineLakeshore.jpg",
+    "images/LMAC-DinosaurSpirit.jpg",
+    "images/LMAC-DinosourFossil.jpg",
+    "images/LMAC-DreamingWoman.jpg",
+    "images/LMAC-EvilCabins.jpg",
+    "images/LMAC-Gooseland.jpg",
+    "images/LMAC-HelloThereEve.jpg",
+    "images/LMAC-HistoryBook.jpg",
+    "images/LMAC-HolidaySnapOfMyMerman.jpg",
+    "images/LMAC-HowYouReallyFeltAtTheTime.jpg",
+    "images/LMAC-Hulot.jpg",
+    "images/LMAC-IcarusIcarus.jpg",
+    "images/LMAC-IDon'tTrustLaoTsuNoMore.jpg",
+    "images/LMAC-IndianaJonesJr.jpg",
+    "images/LMAC-IndianaJr.jpg",
+    "images/LMAC-InThunder.jpg",
+    "images/LMAC-JoseKandontske.jpg",
+    "images/LMAC-Journey'sJourney.jpg",
+    "images/LMAC-LarkaVayYourHairdresser.jpg",
+    "images/LMAC-LenoresHappyDay.jpg",
+    "images/LMAC-LordStitchToothe.jpg",
+    "images/LMAC-MarmouxltTheTrainedFrenchThing.jpg",
+    "images/LMAC-MobySquid.jpg",
+    "images/LMAC-MysticValley.jpg",
+    "images/LMAC-NewNewCanadianArt.jpg",
+    "images/LMAC-PinballChing.jpg",
+    "images/LMAC-PlacesThatHaveBeen.jpg",
+    "images/LMAC-Respect.jpg",
+    "images/LMAC-RobinsonLand.jpg",
+    "images/LMAC-RoncesvallesJazzRacket.jpg",
+    "images/LMAC-SacredSanctuary.jpg",
+    "images/LMAC-SandpiperFlats.jpg",
+    "images/LMAC-TheApproachingSeaDragon.jpg",
+    "images/LMAC-TheBirdEmpress.jpg",
+    "images/LMAC-TheCarnivalGhostsVacation.jpg",
+    "images/LMAC-TheCavemansTV.jpg",
+    "images/LMAC-TheDreamOfSleep.jpg",
+    "images/LMAC-TheElectricFox.jpg",
+    "images/LMAC-TheEmbarrasingAirportIncident.jpg",
+    "images/LMAC-TheGoyaOfMay.jpg",
+    "images/LMAC-TheHoneyBee.jpg",
+    "images/LMAC-TheMonkey'sLunch.jpg",
+    "images/LMAC-TheMustardSeedPrincipleAlien.jpg",
+    "images/LMAC-TheSeaGoat.jpg",
+    "images/LMAC-TheSlap.jpg",
+    "images/LMAC-TheSupposedToBeUnpretentiousSage.jpg",
+    "images/LMAC-TheWeepyMakeupSaleslady.jpg",
+    "images/LMAC-TimeFreeScape.jpg",
+    "images/LMAC-ToTheCaveOfSomethingSpecific.jpg",
+    "images/LMAC-TumbleWeet.jpg",
+    "images/LMAC-VantageShift.jpg",
+    "images/LMAC-WatershipNow.jpg",
+    "images/LMAC-WhySilenceIsGolden.jpg"
+];
+
+const board = document.getElementById("board");
+const generatorsEl = document.getElementById("generators");
+const statusEl = document.getElementById("status");
+const resetBtn = document.getElementById("reset");
+
+const cells = [];
+const generatorState = Array(8).fill(false);
+generatorState[0] = true;
+
+let nextId = 1;
+
+function makeBoard() {
+  board.innerHTML = "";
+  cells.length = 0;
+  for (let i = 0; i < 64; i++) {
+    const cell = document.createElement("div");
+    cell.className = "cell";
+    cell.dataset.index = i;
+    board.appendChild(cell);
+    cells.push(cell);
+  }
+}
+
+function imageName(path) {
+  return path.split("/").pop().replace(/\.[^.]+$/, "");
+}
+
+function makeGenerators() {
+  generatorsEl.innerHTML = "";
+  for (let i = 0; i < 8; i++) {
+    const gen = document.createElement("div");
+    gen.className = "generator" + (generatorState[i] ? " active" : " locked");
+    gen.dataset.generator = i;
+
+    if (generatorState[i]) {
+      const img = document.createElement("img");
+      img.src = images[Math.min(i, images.length - 1)];
+      img.alt = "Generator " + (i + 1);
+      gen.appendChild(img);
+      gen.title = "Click to generate";
+      gen.addEventListener("click", () => generateFrom(i));
+    } else {
+      gen.textContent = "LOCKED";
+    }
+
+    const label = document.createElement("div");
+    label.className = "gen-label";
+    label.textContent = "Generator " + (i + 1);
+    gen.appendChild(label);
+    generatorsEl.appendChild(gen);
+  }
+}
+
+function firstEmptyCell() {
+  return cells.find(c => !c.querySelector(".item"));
+}
+
+function generateFrom(generatorNumber) {
+  if (!generatorState[generatorNumber]) return;
+
+  const cell = firstEmptyCell();
+  if (!cell) {
+    statusEl.textContent = "The 64-space board is full.";
+    return;
+  }
+
+  // Generator 1 produces Level 1 / image 1.
+  // Later generators currently produce their corresponding base level.
+  const level = generatorNumber + 1;
+  createItem(cell, level);
+
+  statusEl.textContent =
+    "Generator " + (generatorNumber + 1) +
+    " produced " + imageName(images[level - 1]) + ".";
+}
+
+function createItem(cell, level) {
+  if (level < 1 || level > images.length) return;
+
+  const img = document.createElement("img");
+  img.className = "item";
+  img.src = images[level - 1];
+  img.alt = "Level " + level;
+  img.draggable = true;
+  img.dataset.level = level;
+  img.dataset.id = nextId++;
+
+  const badge = document.createElement("div");
+  badge.className = "level";
+  badge.textContent = level;
+
+  cell.appendChild(img);
+  cell.appendChild(badge);
+
+  img.addEventListener("dragstart", e => {
+    e.dataTransfer.setData("text/plain", img.dataset.id);
+    e.dataTransfer.effectAllowed = "move";
+  });
+
+  img.addEventListener("dragend", () => {
+    document.querySelectorAll(".cell").forEach(c => c.style.outline = "");
+  });
+}
+
+cells.forEach(cell => {
+  cell.addEventListener("dragover", e => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    cell.style.outline = "3px solid rgba(255,255,255,.75)";
+  });
+
+  cell.addEventListener("dragleave", () => {
+    cell.style.outline = "";
+  });
+
+  cell.addEventListener("drop", e => {
+    e.preventDefault();
+    cell.style.outline = "";
+
+    const id = e.dataTransfer.getData("text/plain");
+    const source = document.querySelector('.item[data-id="' + id + '"]');
+    if (!source) return;
+
+    const sourceCell = source.parentElement;
+    const target = cell.querySelector(".item");
+
+    if (!target) {
+      cell.appendChild(source);
+      const badge = sourceCell.querySelector(".level");
+      if (badge) cell.appendChild(badge);
+      return;
+    }
+
+    const a = Number(source.dataset.level);
+    const b = Number(target.dataset.level);
+
+    if (a !== b) {
+      statusEl.textContent = "Only two identical levels can merge.";
+      return;
+    }
+
+    if (a >= images.length) {
+      statusEl.textContent = "This is the final painting in the 72-image sequence.";
+      return;
+    }
+
+    // Remove both old items.
+    sourceCell.innerHTML = "";
+    cell.innerHTML = "";
+
+    // The next painting in the 72-image sequence is created.
+    createItem(cell, a + 1);
+
+    statusEl.textContent =
+      "Merge: Level " + a + " + Level " + a +
+      " → Level " + (a + 1) +
+      " (" + imageName(images[a]) + ")";
+
+    // Prototype unlock: reaching Level 8 activates Generator 2.
+    if (a + 1 === 8 && !generatorState[1]) {
+      generatorState[1] = true;
+      makeGenerators();
+      statusEl.textContent += " — Generator 2 unlocked.";
+    }
+  });
+});
+
+resetBtn.addEventListener("click", () => {
+  generatorState.fill(false);
+  generatorState[0] = true;
+  nextId = 1;
+  makeBoard();
+  makeGenerators();
+  statusEl.textContent = "Generator 1 is active. Click it to generate the first painting.";
+});
+
+makeBoard();
+makeGenerators();
+</script>
+</body>
+</html>
