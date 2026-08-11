@@ -3,192 +3,85 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Larry's Variety — Merge Prototype</title>
+<title>Larry's Variety — Stamp Merge Game</title>
 <style>
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    min-height: 100vh;
-    font-family: Georgia, "Times New Roman", serif;
-    background: #d8c5a8;
-    color: #3b2a1d;
-    overflow: auto;
-  }
-  header {
-    text-align: center;
-    padding: 16px 10px 8px;
-  }
-  h1 { margin: 0 0 4px; font-size: 28px; }
-  #status { min-height: 24px; font-size: 16px; }
-  #game {
-    width: min(1120px, 96vw);
-    margin: 0 auto 24px;
-  }
-  .generators {
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    gap: 8px;
-    margin-bottom: 12px;
-  }
-  .generator {
-    min-height: 112px;
-    border: 3px solid #9a7651;
-    border-radius: 12px;
-    background: #efe0c5;
-    box-shadow: 0 4px 8px rgba(50,30,10,.25);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    cursor: pointer;
-    overflow: hidden;
-  }
-  .generator.locked {
-    opacity: .35;
-    cursor: default;
-    background: #b9aa94;
-  }
-  .generator.active {
-    border-color: #5b8c37;
-    box-shadow: 0 0 0 3px #d6efb8, 0 5px 12px rgba(50,30,10,.3);
-  }
-  .generator-board {
-    width: min(1120px, 96vw);
-    margin: 0 auto 10px;
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .mode-button {
-    background: #6b4529;
-    border: 2px solid #4c2f1c;
-    border-radius: 8px;
-    color: white;
-    padding: 7px 12px;
-    font: bold 14px Georgia, serif;
-    cursor: pointer;
-  }
-  .mode-button.upgraded { background: #92702c; }
-  .supply {
-    user-select: none;
-    -webkit-user-drag: none;
-    touch-action: none;
-  }
-  .generator img {
-    width: 82px;
-    height: 82px;
-    object-fit: cover;
-    border-radius: 8px;
-  }
-  .gen-label {
-    position: absolute;
-    bottom: 2px;
-    left: 0;
-    right: 0;
-    text-align: center;
-    background: rgba(255,248,230,.88);
-    font-size: 12px;
-    padding: 2px;
-  }
-  .board {
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    gap: 6px;
-    padding: 10px;
-    background: #9ba8b9;
-    border: 4px solid #69798c;
-    border-radius: 14px;
-    box-shadow: inset 0 0 14px rgba(0,0,0,.18), 0 6px 14px rgba(50,30,10,.25);
-  }
-  .cell {
-    aspect-ratio: 1;
-    min-width: 0;
-    border-radius: 8px;
-    background: rgba(220,228,235,.42);
-    border: 1px solid rgba(255,255,255,.24);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-  }
-  .item {
-    width: 92%;
-    height: 92%;
-    object-fit: cover;
-    border-radius: 7px;
-    cursor: grab;
-    user-select: none;
-    -webkit-user-drag: none;
-    box-shadow: 0 3px 6px rgba(0,0,0,.28);
-  }
-  .item:active { cursor: grabbing; }
-  .item { touch-action: none; }
-
-  .level {
-    position: absolute;
-    top: 3px;
-    right: 4px;
-    background: rgba(35,25,18,.78);
-    color: white;
-    border-radius: 10px;
-    padding: 1px 5px;
-    font: bold 11px Arial, sans-serif;
-    pointer-events: none;
-  }
-  .help {
-    width: min(900px, 94vw);
-    margin: 12px auto 30px;
-    background: rgba(255,248,232,.78);
-    border: 1px solid #b49570;
-    border-radius: 10px;
-    padding: 10px 14px;
-    font-size: 14px;
-    line-height: 1.45;
-  }
-  button {
-    border: 0;
-    border-radius: 8px;
-    padding: 8px 14px;
-    background: #6b4529;
-    color: white;
-    font: inherit;
-    cursor: pointer;
-    margin: 4px;
-  }
-  @media (max-width: 700px) {
-    .generators { gap: 3px; }
-    .generator { min-height: 72px; }
-    .generator img { width: 54px; height: 54px; }
-    .gen-label { font-size: 8px; }
-    .board { gap: 3px; padding: 5px; }
-  }
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:#d8c5a8;color:#3b2a1d;font-family:Georgia,"Times New Roman",serif}
+header{text-align:center;padding:12px 8px 6px}
+h1{margin:0 0 3px;font-size:26px}
+#status{min-height:23px;font-size:15px}
+.layout{width:min(1380px,98vw);margin:auto;display:grid;grid-template-columns:minmax(0,1fr) 235px;gap:12px;align-items:start}
+.main{min-width:0}
+.controls{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin:4px 0 9px}
+button{border:2px solid #57371f;border-radius:8px;background:#6b4529;color:#fff;padding:7px 11px;font:bold 14px Georgia,serif;cursor:pointer}
+button:hover{filter:brightness(1.08)}
+button:disabled{opacity:.45;cursor:default}
+.board{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;padding:8px;background:#8f9cab;border:4px solid #68788a;border-radius:14px;box-shadow:inset 0 0 14px rgba(0,0,0,.18),0 5px 12px rgba(50,30,10,.25)}
+.cell{aspect-ratio:1;border-radius:7px;background:rgba(225,231,235,.4);border:1px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;position:relative;min-width:0}
+.item{width:92%;height:92%;object-fit:cover;user-select:none;-webkit-user-drag:none;touch-action:none;cursor:grab;box-shadow:0 3px 6px rgba(0,0,0,.25)}
+.item:active{cursor:grabbing}
+.stamp{width:90%;height:90%;padding:5px;background:white;border:3px solid white;outline:1px solid #b5a58e;box-shadow:0 2px 5px rgba(0,0,0,.3);object-fit:cover}
+.stamp-number{position:absolute;right:6px;bottom:4px;background:white;border:1px solid #8b7962;border-radius:3px;padding:1px 4px;font:bold 11px Arial,sans-serif;z-index:2}
+.generator{width:94%;height:94%;border:3px solid #9a7651;border-radius:11px;background:#efe0c5;box-shadow:0 4px 8px rgba(50,30,10,.25);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;touch-action:none;cursor:grab}
+.generator img{width:80%;height:80%;object-fit:cover;border-radius:8px;pointer-events:none}
+.gen-label{position:absolute;bottom:2px;left:0;right:0;text-align:center;background:rgba(255,248,230,.9);font-size:11px;padding:2px}
+.mailbox{font-size:43px;width:90%;height:90%;display:flex;align-items:center;justify-content:center;background:#a73b28;border:4px solid #7a291c;border-radius:7px;box-shadow:inset 0 0 7px rgba(0,0,0,.25);cursor:default}
+.letter{width:88%;height:72%;background:#fff8e8;border:2px solid #a88e6c;border-radius:4px;box-shadow:0 3px 6px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;font-size:28px;position:relative}
+.letter:after{content:"✉";font-size:34px}
+.supply{display:flex;align-items:center;justify-content:center;background:#f4ead7!important;border:2px solid #9a7651!important;object-fit:contain!important;font-size:clamp(26px,4vw,54px)!important}
+.panel{background:rgba(255,248,232,.9);border:2px solid #b49570;border-radius:11px;padding:10px;box-shadow:0 4px 10px rgba(50,30,10,.2)}
+.panel h2{font-size:18px;margin:0 0 8px}
+.money{font-size:20px;font-weight:bold;margin-bottom:9px}
+.order{background:#f8f0df;border:1px solid #b79d79;border-radius:8px;padding:8px;margin-bottom:8px}
+.order.done{opacity:.55}
+.order-title{font-weight:bold;margin-bottom:5px}
+.order-row{display:flex;justify-content:space-between;font-size:13px;padding:2px 0}
+.order-slots{display:flex;gap:3px;flex-wrap:wrap;margin:6px 0}
+.order-slot{width:27px;height:27px;border:1px dashed #8d795d;background:white;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:10px}
+.shop-item{border-top:1px solid #c9b99f;padding:8px 0;font-size:13px}
+.small{font-size:12px;line-height:1.35}
+.help{width:min(1100px,96vw);margin:10px auto 25px;background:rgba(255,248,232,.8);border:1px solid #b49570;border-radius:9px;padding:9px 12px;font-size:13px;line-height:1.4}
+#musicStatus{font-size:12px;margin-top:6px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.panel{order:-1}.board{gap:3px;padding:5px}}
 </style>
 </head>
 <body>
 <header>
-  <h1>Larry's Variety — Merge Prototype</h1>
-  <div id="status">Generator 1 is active. Click it to generate the first painting.</div>
+<h1>Larry's Variety — Stamp Merge Game</h1>
+<div id="status">Preparing the first paintings…</div>
 </header>
 
-<div id="game">
-  <div class="generator-board">
-    <button class="mode-button" id="generatorMode">Generator 1×</button>
-    <button class="mode-button" id="generatorUpgrade">UP Generator → 2×</button>
-    <button class="mode-button" id="supplyButton">Art Supply</button>
-  </div>
-  <div class="board" id="board"></div>
+<div class="layout">
+<div class="main">
+<div class="controls">
+<button id="generatorMode">Generator 1×</button>
+<button id="doubleBonus" disabled>2× Bonus</button>
+<button id="supplyButton">Art Supply</button>
+<button id="musicButton">Background Sound</button>
+<button id="reset">Reset</button>
+</div>
+<div class="board" id="board"></div>
+</div>
+
+<aside class="panel">
+<h2>STAMP ORDERS</h2>
+<div class="money">Lar Bank: <span id="money">0</span> LAR</div>
+<div id="orders"></div>
+<h2>Lar Products</h2>
+<div class="shop-item"><strong>Double-Turn Pack</strong><br>10 extra 2× generator clicks.<br><button data-buy="10">Buy — 25 LAR</button></div>
+<div class="shop-item"><strong>Big Double Pack</strong><br>20 extra 2× generator clicks.<br><button data-buy="20">Buy — 60 LAR</button></div>
+<div class="shop-item"><strong>Triple Burst</strong><br>10 clicks produce Level 3.<br><button data-buy="triple">Buy — 120 LAR</button></div>
+<div id="musicStatus">Background music: off</div>
+</aside>
 </div>
 
 <div class="help">
-  <strong>Prototype rule:</strong> The generator now lives on the 8×8 board and can be moved.
-  Click it to spill a painting into an empty square immediately around it. At 1× it produces Level 1;
-  use <strong>UP Generator → 2×</strong> to make it produce Level 2 for faster building.
-  Drag two identical paintings together to merge them into the next image. <strong>Art Supply</strong>
-  adds a brush, palette, blank canvas, or easel as a prototype bonus object. The merge sound cycles
-  upward through seven pitches and then starts over.
-  <br>
-  <button id="reset">Reset prototype</button>
+<strong>Current rules:</strong> The generator is movable. Click it to spill a stamp into a nearby empty square.
+Two matching stamps merge into the next numbered stamp. At Level 4, a temporary 2× bonus becomes available.
+At Level 7, the generator produces a letter. Drag the Level-7 stamp onto the letter to mail it and begin a new
+series. When the next series reaches Level 7, its return letter becomes a second generator. The two generators
+are independent. The mailbox permanently destroys anything deliberately dropped onto it, except a required Level-7
+stamp, which mails the series. Orders on the right reward LAR when their requested stamps are placed in their slots.
 </div>
 
 <script>
@@ -266,543 +159,239 @@ const images = [
     "images/LMAC-WatershipNow.jpg",
     "images/LMAC-WhySilenceIsGolden.jpg"
 ];
+const board=document.getElementById("board"),statusEl=document.getElementById("status");
+const generatorMode=document.getElementById("generatorMode"),doubleBonus=document.getElementById("doubleBonus");
+const supplyButton=document.getElementById("supplyButton"),musicButton=document.getElementById("musicButton");
+const resetBtn=document.getElementById("reset"),moneyEl=document.getElementById("money"),ordersEl=document.getElementById("orders");
+const cells=[]; let nextId=1, money=0, activeSeries=1, secondGenerator=false, generatorDrag=null;
+const generators={1:{cell:27,level:1,boost:0,unlocked:true},2:{cell:28,level:1,boost:0,unlocked:false}};
+let series7Letters={1:false,2:false};
+let audioContext=null, music=null;
 
-const board = document.getElementById("board");
-const statusEl = document.getElementById("status");
-const resetBtn = document.getElementById("reset");
-const generatorModeBtn = document.getElementById("generatorMode");
-const generatorUpgradeBtn = document.getElementById("generatorUpgrade");
-const supplyButton = document.getElementById("supplyButton");
+const decodedImages=new Array(images.length);
+let imagesReady=false;
 
-const cells = [];
-let nextId = 1;
-let generatorCellIndex = 27;
-let generatorLevel = 1;
-let generatorDragging = false;
-let suppressGeneratorClick = false;
-
-function makeBoard() {
-  board.innerHTML = "";
-  cells.length = 0;
-  for (let i = 0; i < 64; i++) {
-    const cell = document.createElement("div");
-    cell.className = "cell";
-    cell.dataset.index = i;
-    board.appendChild(cell);
-    cells.push(cell);
-  }
-  placeGenerator();
+async function prepareImages(){
+  statusEl.textContent="Loading paintings in the background…";
+  await Promise.all(images.map(async(src,i)=>{
+    const im=new Image(); im.src=src;
+    try{await im.decode()}catch(e){if(!im.complete)await new Promise(r=>{im.onload=r;im.onerror=r})}
+    decodedImages[i]=im;
+  }));
+  imagesReady=true;
+  statusEl.textContent="Generator 1× is ready.";
+  render();
 }
-
-function placeGenerator() {
-  const cell = cells[generatorCellIndex];
-  if (!cell) return;
-
-  const gen = document.createElement("div");
-  gen.className = "generator active";
-  gen.id = "boardGenerator";
-  gen.title = "Click to spill paintings; drag to move the generator.";
-
-  const img = document.createElement("img");
-  img.src = images[generatorLevel - 1];
-  img.alt = "Larry generator";
-  img.draggable = false;
-  gen.appendChild(img);
-
-  const label = document.createElement("div");
-  label.className = "gen-label";
-  label.textContent = "GENERATOR " + generatorLevel + "×";
-  gen.appendChild(label);
-
-  gen.addEventListener("pointerdown", startGeneratorDrag);
-  gen.addEventListener("click", () => {
-    if (suppressGeneratorClick) {
-      suppressGeneratorClick = false;
-      return;
-    }
-    if (!generatorDragging) spillFromGenerator();
+function imageName(src){return src.split("/").pop().replace(/\.[^.]+$/,"")}
+function playMergeSound(level){
+  try{
+    if(!audioContext)audioContext=new(window.AudioContext||window.webkitAudioContext)();
+    if(audioContext.state==="suspended")audioContext.resume();
+    const now=audioContext.currentTime,osc=audioContext.createOscillator(),gain=audioContext.createGain();
+    const step=(Math.max(1,level)-1)%7;
+    const f=220*Math.pow(2,step/12);
+    osc.type="sine";osc.frequency.setValueAtTime(f,now);osc.frequency.exponentialRampToValueAtTime(f*1.45,now+.1);
+    gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(.15,now+.012);gain.gain.exponentialRampToValueAtTime(.0001,now+.16);
+    osc.connect(gain);gain.connect(audioContext.destination);osc.start(now);osc.stop(now+.17);
+  }catch(e){}
+}
+function makeBoard(){
+  board.innerHTML="";cells.length=0;
+  for(let i=0;i<64;i++){const c=document.createElement("div");c.className="cell";c.dataset.index=i;board.appendChild(c);cells.push(c)}
+  render();
+}
+function emptyCells(exclude=[]){return cells.filter(c=>!c.querySelector(".item,.generator")&&!exclude.includes(+c.dataset.index))}
+function neighbours(index){
+  const r=Math.floor(index/8),col=index%8,a=[];
+  for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){if(!dr&&!dc)continue;const rr=r+dr,cc=col+dc;if(rr>=0&&rr<8&&cc>=0&&cc<8)a.push(rr*8+cc)}
+  return a.sort(()=>Math.random()-.5);
+}
+function createStamp(cell,level){
+  if(level<1||level>images.length)return;
+  const img=document.createElement("img");img.className="item stamp";img.src=decodedImages[level-1]?.src||images[level-1];img.dataset.level=level;img.dataset.id=nextId++;img.draggable=false;
+  const n=document.createElement("div");n.className="stamp-number";n.textContent=level;
+  cell.append(img,n);img.addEventListener("pointerdown",startItemDrag);
+}
+function createLetter(cell,series){
+  const l=document.createElement("div");l.className="letter item";l.dataset.level="letter";l.dataset.series=series;l.dataset.id=nextId++;l.title="Letter — drag the Level 7 stamp here";
+  cell.appendChild(l);l.addEventListener("pointerdown",startItemDrag);
+}
+function createSupply(cell){
+  const choices=[["brush","🖌️"],["palette","🎨"],["canvas","▣"],["easel","🖼️"]];
+  const [kind,symbol]=choices[Math.floor(Math.random()*choices.length)];
+  const x=document.createElement("div");x.className="item supply";x.dataset.level="supply";x.dataset.supply=kind;x.textContent=symbol;x.dataset.id=nextId++;
+  const b=document.createElement("div");b.className="stamp-number";b.textContent=kind;cell.append(x,b);
+}
+function createMailbox(cell){
+  const m=document.createElement("div");m.className="mailbox";m.textContent="📮";m.dataset.level="mailbox";m.title="Mailbox — discard items forever";
+  cell.appendChild(m);
+}
+function createGenerator(cell,which){
+  const g=generators[which],d=document.createElement("div");d.className="generator";d.dataset.generator=which;
+  const im=document.createElement("img");im.src=images[Math.max(0,g.level-1)];d.appendChild(im);
+  const lab=document.createElement("div");lab.className="gen-label";lab.textContent="GENERATOR "+which+"×";d.appendChild(lab);
+  cell.appendChild(d);d.addEventListener("pointerdown",e=>startGeneratorDrag(e,which));
+  d.addEventListener("click",e=>{if(!d.dataset.moved)spill(which)});
+}
+function render(){
+  if(!cells.length)return;
+  cells.forEach(c=>{if(!c.querySelector(".generator")){ /* preserve items */ }});
+  Object.entries(generators).forEach(([k,g])=>{
+    const old=document.querySelector('.generator[data-generator="'+k+'"]');
+    if(old)old.remove();
+    if(g.unlocked&&cells[g.cell]&&!cells[g.cell].querySelector(".item"))createGenerator(cells[g.cell],+k);
   });
-
-  cell.appendChild(gen);
+  updateControls();renderOrders();
 }
-
-function updateGeneratorDisplay() {
-  const gen = document.getElementById("boardGenerator");
-  if (gen) {
-    gen.querySelector("img").src = images[generatorLevel - 1];
-    gen.querySelector(".gen-label").textContent = "GENERATOR " + generatorLevel + "×";
-  }
-  generatorModeBtn.textContent = "Generator " + generatorLevel + "×";
-  generatorModeBtn.classList.toggle("upgraded", generatorLevel === 2);
+function updateControls(){
+  const g=generators[1];generatorMode.textContent="Generator 1×"+(g.boost>0?" ("+g.boost+")":"");
+  doubleBonus.disabled=!imagesReady;
+  doubleBonus.textContent=g.boost>0?"2× Active ("+g.boost+" left)":"UP Generator → 2×";
 }
-
-function upgradeGenerator() {
-  generatorLevel = generatorLevel === 1 ? 2 : 1;
-  updateGeneratorDisplay();
-  statusEl.textContent = generatorLevel === 2
-    ? "Generator UP: it now spills the Level 2 painting for faster building."
-    : "Generator returned to 1×: it now spills the Level 1 painting.";
-}
-
-generatorUpgradeBtn.addEventListener("click", upgradeGenerator);
-generatorModeBtn.addEventListener("click", upgradeGenerator);
-
-function neighbouringCells(index) {
-  const row = Math.floor(index / 8);
-  const col = index % 8;
-  const result = [];
-  for (let dr = -1; dr <= 1; dr++) {
-    for (let dc = -1; dc <= 1; dc++) {
-      if (!dr && !dc) continue;
-      const r = row + dr, c = col + dc;
-      if (r >= 0 && r < 8 && c >= 0 && c < 8) result.push(r * 8 + c);
-    }
-  }
-  for (let i = result.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [result[i], result[j]] = [result[j], result[i]];
-  }
-  return result;
-}
-
-function spillFromGenerator() {
-  const empty = neighbouringCells(generatorCellIndex)
-    .filter(i => !cells[i].querySelector(".item"));
-  if (!empty.length) {
-    statusEl.textContent = "The squares around the generator are full. Move it or merge some paintings.";
-    return;
-  }
-  const cell = cells[empty[0]];
-  createItem(cell, generatorLevel);
-  playMergeSound(generatorLevel);
-  statusEl.textContent = "Generator " + generatorLevel + "× spilled " +
-    imageName(images[generatorLevel - 1]) + ".";
-}
-
-function startGeneratorDrag(e) {
-  if (e.pointerType === "mouse" && e.button !== 0) return;
-
-  e.preventDefault();
-  e.stopPropagation();
-
-  const gen = e.currentTarget;
-  const sourceCell = gen.parentElement;
-  const rect = gen.getBoundingClientRect();
-  const startX = e.clientX;
-  const startY = e.clientY;
-
-  let moved = false;
-  let ghost = null;
-
-  const move = ev => {
-    ev.preventDefault();
-
-    if (!moved) {
-      if (Math.abs(ev.clientX - startX) + Math.abs(ev.clientY - startY) < 6) return;
-
-      moved = true;
-      generatorDragging = true;
-
-      ghost = gen.cloneNode(true);
-      ghost.style.position = "fixed";
-      ghost.style.left = rect.left + "px";
-      ghost.style.top = rect.top + "px";
-      ghost.style.width = rect.width + "px";
-      ghost.style.height = rect.height + "px";
-      ghost.style.zIndex = "99999";
-      ghost.style.pointerEvents = "none";
-      ghost.style.opacity = "0.85";
-      document.body.appendChild(ghost);
-
-      gen.style.opacity = "0.25";
-    }
-
-    ghost.style.left =
-      (ev.clientX - rect.width / 2) + "px";
-    ghost.style.top =
-      (ev.clientY - rect.height / 2) + "px";
-
-    document.querySelectorAll(".cell").forEach(c => c.style.outline = "");
-
-    const target =
-      document.elementFromPoint(ev.clientX, ev.clientY)?.closest(".cell");
-
-    if (target) {
-      target.style.outline = "3px solid rgba(255,255,255,.9)";
-    }
+function startGeneratorDrag(e,which){
+  if(e.pointerType==="mouse"&&e.button!==0)return;e.preventDefault();e.stopPropagation();
+  const g=generators[which],el=e.currentTarget,from=el.parentElement;let moved=false;
+  const move=ev=>{if(Math.abs(ev.clientX-e.clientX)+Math.abs(ev.clientY-e.clientY)>6)moved=true};
+  const up=ev=>{
+    document.removeEventListener("pointermove",move);
+    document.removeEventListener("pointerup",up);
+    if(!moved){el.dataset.moved="";setTimeout(()=>delete el.dataset.moved,30);return}
+    const target=document.elementFromPoint(ev.clientX,ev.clientY)?.closest(".cell");
+    if(target&&!target.querySelector(".item,.generator")){from.innerHTML="";target.appendChild(el);g.cell=+target.dataset.index;statusEl.textContent="Generator "+which+" moved.";el.dataset.moved="1";setTimeout(()=>delete el.dataset.moved,30)}
+    else statusEl.textContent="The generator needs an empty square.";
   };
-
-  const up = ev => {
-    document.removeEventListener("pointermove", move);
-    document.removeEventListener("pointerup", up);
-
-    document.querySelectorAll(".cell").forEach(c => c.style.outline = "");
-
-    if (!moved) {
-      // It was a click, not a drag. The normal click handler will fire.
+  document.addEventListener("pointermove",move,{passive:true});document.addEventListener("pointerup",up,{once:true});
+}
+function spill(which){
+  if(!imagesReady)return;
+  const g=generators[which],near=neighbours(g.cell).filter(i=>!cells[i].querySelector(".item,.generator"));
+  if(!near.length){statusEl.textContent="No empty square surrounds Generator "+which+".";return}
+  let level=g.level;
+  if(g.boost>0){level=Math.min(72,level+1);g.boost--}
+  const dest=cells[near[0]];
+  createStamp(dest,level);playMergeSound(level);
+  statusEl.textContent="Generator "+which+" spilled stamp "+level+".";
+  if(level===7&&!series7Letters[which]){
+    const letterSpot=near.find(i=>!cells[i].querySelector(".item,.generator")) ?? emptyCells([g.cell])[0]?.dataset.index;
+    if(letterSpot!==undefined){createLetter(cells[+letterSpot],which);series7Letters[which]=true;statusEl.textContent+=" A letter has appeared."}
+  }
+  updateControls();
+}
+function startItemDrag(e){
+  if(e.pointerType==="mouse"&&e.button!==0)return;e.preventDefault();e.stopPropagation();
+  const source=e.currentTarget,from=source.parentElement,rect=source.getBoundingClientRect(),level=source.dataset.level;
+  const ghost=source.cloneNode(true);ghost.style.position="fixed";ghost.style.width=rect.width+"px";ghost.style.height=rect.height+"px";ghost.style.left=rect.left+"px";ghost.style.top=rect.top+"px";ghost.style.zIndex=99999;ghost.style.pointerEvents="none";ghost.style.opacity=.86;document.body.appendChild(ghost);
+  source.style.opacity=.2;
+  const move=ev=>{ghost.style.left=(ev.clientX-rect.width/2)+"px";ghost.style.top=(ev.clientY-rect.height/2)+"px";cells.forEach(c=>c.style.outline="");const t=document.elementFromPoint(ev.clientX,ev.clientY)?.closest(".cell");if(t)t.style.outline="3px solid rgba(255,255,255,.9)"};
+  const up=ev=>{
+    document.removeEventListener("pointermove",move);document.removeEventListener("pointerup",up);cells.forEach(c=>c.style.outline="");
+    source.style.opacity=1;ghost.remove();
+    const target=document.elementFromPoint(ev.clientX,ev.clientY)?.closest(".cell");
+    if(!target||target===from)return;
+    const ti=target.querySelector(".item,.generator");
+    if(target.querySelector(".generator"))return;
+    if(target.querySelector(".mailbox")){from.innerHTML="";statusEl.textContent="Item discarded in the mailbox.";return}
+    if(target.querySelector(".letter")){
+      const letter=target.querySelector(".letter");
+      if(level==="7"&&+letter.dataset.series===activeSeries){from.innerHTML="";target.innerHTML="";completeSeries(+letter.dataset.series);return}
+      statusEl.textContent="Only the Level 7 stamp can mail this letter.";return;
+    }
+    if(!ti){const badge=from.querySelector(".stamp-number");from.innerHTML="";target.appendChild(source);if(badge)target.appendChild(badge);return}
+    const a=+level,b=+ti.dataset.level;if(Number.isFinite(a)&&a===b){
+      if(a>=72){statusEl.textContent="The sequence has reached the last supplied painting.";return}
+      from.innerHTML="";target.innerHTML="";createStamp(target,a+1);playMergeSound(a+1);statusEl.textContent="Merge: "+a+" + "+a+" → "+(a+1);
+      if(a+1===4&&!secondGenerator){doubleBonus.disabled=false;doubleBonus.textContent="UP Generator → 2×";statusEl.textContent+=" — 2× bonus unlocked."}
       return;
     }
-
-    suppressGeneratorClick = true;
-
-    const target =
-      document.elementFromPoint(ev.clientX, ev.clientY)?.closest(".cell");
-
-    if (target && target !== sourceCell && !target.querySelector(".item")) {
-      sourceCell.innerHTML = "";
-      target.appendChild(gen);
-      generatorCellIndex = Number(target.dataset.index);
-      statusEl.textContent = "Generator moved.";
-    } else {
-      gen.style.opacity = "1";
-      statusEl.textContent = "The generator needs an empty square.";
-    }
-
-    if (ghost) ghost.remove();
-    gen.style.opacity = "1";
-
-    setTimeout(() => {
-      generatorDragging = false;
-    }, 0);
+    statusEl.textContent="Only two matching stamps can merge.";
   };
-
-  document.addEventListener("pointermove", move, { passive: false });
-  document.addEventListener("pointerup", up, { once: true });
+  document.addEventListener("pointermove",move,{passive:true});document.addEventListener("pointerup",up,{once:true});
 }
-
-function createSupply(cell) {
-  const supplies = [
-    ["brush", "🖌️"], ["palette", "🎨"], ["canvas", "▣"], ["easel", "🖼️"]
+function completeSeries(series){
+  activeSeries++;
+  if(series===1){
+    generators[1].level=1;generators[1].boost=0;series7Letters[1]=false;
+    statusEl.textContent="STAMP SERIES 1 mailed. Build the next series to earn its return letter.";
+  }else if(series===2){
+    secondGenerator=true;generators[2].unlocked=true;generators[2].level=1;generators[2].boost=0;series7Letters[2]=false;
+    const spot=emptyCells([generators[1].cell])[0];if(spot){generators[2].cell=+spot.dataset.index;createGenerator(spot,2)}
+    statusEl.textContent="Return letter opened: Generator 2 is now yours. Its stamps do not mix with Generator 1.";
+  }
+  render();
+}
+function makeOrders(){
+  const templates=[
+    {req:[[2,3],[3,2]],reward:35},
+    {req:[[1,5],[4,1]],reward:45},
+    {req:[[2,2],[5,2]],reward:75}
   ];
-  const [kind, symbol] = supplies[Math.floor(Math.random() * supplies.length)];
-  const item = document.createElement("div");
-  item.className = "item supply";
-  item.dataset.level = "supply";
-  item.textContent = symbol;
-  item.style.fontSize = "clamp(28px, 5vw, 58px)";
-  item.style.display = "flex";
-  item.style.alignItems = "center";
-  item.style.justifyContent = "center";
-  item.style.background = "#f4ead7";
-  item.style.border = "2px solid #9a7651";
-  item.style.cursor = "default";
-  const badge = document.createElement("div");
-  badge.className = "level";
-  badge.textContent = kind;
-  cell.appendChild(item);
-  cell.appendChild(badge);
+  return templates.map((o,i)=>({...o,id:i,filled:[]}));
 }
-
-supplyButton.addEventListener("click", () => {
-  const empty = cells.filter(c =>
-    !c.querySelector(".item") && Number(c.dataset.index) !== generatorCellIndex
-  );
-  if (!empty.length) {
-    statusEl.textContent = "No empty square is available for an art supply.";
-    return;
-  }
-  createSupply(empty[Math.floor(Math.random() * empty.length)]);
-  statusEl.textContent = "Larry's Variety supplied an art-making object.";
-});
-
-function imageName(path) {
-  return path.split("/").pop().replace(/\.[^.]+$/, "");
-}
-
-function makeGenerators() {
-  generatorsEl.innerHTML = "";
-  for (let i = 0; i < 8; i++) {
-    const gen = document.createElement("div");
-    const available = generatorState[i] && imagesReady;
-    gen.className = "generator" + (available ? " active" : " locked");
-    gen.dataset.generator = i;
-
-    if (generatorState[i] && imagesReady) {
-      const img = document.createElement("img");
-      img.src = images[Math.min(i, images.length - 1)];
-      img.alt = "Generator " + (i + 1);
-      gen.appendChild(img);
-      gen.title = "Click to generate";
-      gen.addEventListener("click", () => generateFrom(i));
-    } else {
-      gen.textContent = "LOCKED";
-    }
-
-    const label = document.createElement("div");
-    label.className = "gen-label";
-    label.textContent = "Generator " + (i + 1);
-    gen.appendChild(label);
-    generatorsEl.appendChild(gen);
-  }
-}
-
-function firstEmptyCell() {
-  return cells.find(c => !c.querySelector(".item"));
-}
-
-function generateFrom(generatorNumber) {
-  if (!generatorState[generatorNumber]) return;
-
-  if (!imagesReady) {
-    statusEl.textContent = "The paintings are still being prepared…";
-    return;
-  }
-
-  const cell = firstEmptyCell();
-  if (!cell) {
-    statusEl.textContent = "The 64-space board is full.";
-    return;
-  }
-
-  // Generator 1 produces Level 1 / image 1.
-  // Later generators currently produce their corresponding base level.
-  const level = generatorNumber + 1;
-  createItem(cell, level);
-
-  statusEl.textContent =
-    "Generator " + (generatorNumber + 1) +
-    " produced " + imageName(images[level - 1]) + ".";
-}
-
-// Fully preload AND decode all 72 paintings before the game starts.
-// This prevents the "first time this painting appears" delay.
-const decodedImages = new Array(images.length);
-let imagesReady = false;
-
-function prepareAllImages() {
-  // Prepare in the background. The game does NOT wait for all 72 images.
-  // This keeps the generator immediately playable.
-  imagesReady = true;
-  statusEl.textContent =
-    "Generator 1× is ready. The 72 paintings are loading in the background.";
-
-  images.forEach((src, i) => {
-    const img = new Image();
-    img.src = src;
-    decodedImages[i] = img;
-
-    // Ask the browser to decode when possible, but never block the game.
-    if (img.decode) {
-      img.decode().catch(() => {});
-    }
+let orders=makeOrders();
+function renderOrders(){
+  ordersEl.innerHTML="";
+  orders.forEach(o=>{
+    const div=document.createElement("div");div.className="order"+(o.done?" done":"");
+    div.innerHTML='<div class="order-title">Order '+(o.id+1)+' — '+o.reward+' LAR</div>';
+    o.req.forEach(([lvl,count])=>{
+      const row=document.createElement("div");row.className="order-row";row.innerHTML="<span>Stamp "+lvl+"</span><strong>"+count+" needed</strong>";div.appendChild(row)
+    });
+    const slots=document.createElement("div");slots.className="order-slots";
+    const total=o.req.reduce((n,x)=>n+x[1],0);
+    for(let i=0;i<total;i++){const q=document.createElement("div");q.className="order-slot";q.textContent="";slots.appendChild(q)}
+    div.appendChild(slots);
+    if(!o.done){const b=document.createElement("button");b.textContent="Open order tray";b.onclick=()=>statusEl.textContent="Drag the requested numbered stamps into this order. The order tray is represented by its slots.";div.appendChild(b)}
+    ordersEl.appendChild(div);
   });
-
-  updateGeneratorDisplay();
+  moneyEl.textContent=money;
 }
-
-// A short merge sound generated locally with Web Audio.
-// No external sound file is required.
-let audioContext = null;
-
-function playMergeSound(level) {
-  try {
-    if (!audioContext) {
-      audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    }
-    if (audioContext.state === "suspended") audioContext.resume();
-
-    const now = audioContext.currentTime;
-    const oscillator = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-
-    oscillator.type = "sine";
-
-    // Slightly higher pitch as the merge level rises.
-    const step = (Math.max(1, level) - 1) % 7;
-    const frequency = 220 * Math.pow(2, step / 12);
-    oscillator.frequency.setValueAtTime(frequency, now);
-    oscillator.frequency.exponentialRampToValueAtTime(
-      frequency * 1.45, now + 0.10
-    );
-
-    gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(0.16, now + 0.012);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
-
-    oscillator.connect(gain);
-    gain.connect(audioContext.destination);
-
-    oscillator.start(now);
-    oscillator.stop(now + 0.17);
-  } catch (err) {
-    // Sound is optional; the merge itself must never fail because audio is unavailable.
+function addToOrder(stampLevel){
+  for(const o of orders){
+    if(o.done)continue;
+    const need=o.req.reduce((n,[l,c])=>n+(l===stampLevel?c:0),0);
+    const have=o.filled.filter(x=>x===stampLevel).length;
+    if(have<need){o.filled.push(stampLevel);checkOrder(o);return true}
   }
+  return false;
 }
-
-function createItem(cell, level) {
-  if (level < 1 || level > images.length) return;
-
-  const img = document.createElement("img");
-  img.className = "item";
-  const prepared = decodedImages[level - 1];
-  img.src = prepared ? prepared.src : images[level - 1];
-  img.alt = "Level " + level;
-  img.draggable = false;
-  img.dataset.level = level;
-  img.dataset.id = nextId++;
-
-  const badge = document.createElement("div");
-  badge.className = "level";
-  badge.textContent = level;
-
-  cell.appendChild(img);
-  cell.appendChild(badge);
-
-  img.addEventListener("pointerdown", startDrag);
+function checkOrder(o){
+  const counts={};o.filled.forEach(x=>counts[x]=(counts[x]||0)+1);
+  const complete=o.req.every(([l,c])=>(counts[l]||0)>=c);
+  if(complete){o.done=true;money+=o.reward;statusEl.textContent="Stamp order complete: +"+o.reward+" LAR.";renderOrders()}
 }
+document.addEventListener("pointerdown",()=>{if(audioContext&&audioContext.state==="suspended")audioContext.resume()},{once:false});
 
-let dragging = null;
-
-function startDrag(e) {
-  if (e.pointerType === "mouse" && e.button !== 0) return;
-  e.preventDefault();
-  e.stopPropagation();
-
-  const source = e.currentTarget;
-  const sourceCell = source.parentElement;
-  const rect = source.getBoundingClientRect();
-
-  dragging = {
-    source,
-    sourceCell,
-    level: Number(source.dataset.level),
-    offsetX: e.clientX - rect.left,
-    offsetY: e.clientY - rect.top,
-    clone: source.cloneNode(true)
-  };
-
-  const ghost = dragging.clone;
-  ghost.style.position = "fixed";
-  ghost.style.width = rect.width + "px";
-  ghost.style.height = rect.height + "px";
-  ghost.style.left = (e.clientX - dragging.offsetX) + "px";
-  ghost.style.top = (e.clientY - dragging.offsetY) + "px";
-  ghost.style.zIndex = "99999";
-  ghost.style.pointerEvents = "none";
-  ghost.style.opacity = "0.9";
-  ghost.style.margin = "0";
-  document.body.appendChild(ghost);
-
-  source.style.opacity = "0.25";
-
-  document.addEventListener("pointermove", dragMove, { passive: false });
-  document.addEventListener("pointerup", endDrag, { once: true });
-  document.addEventListener("pointercancel", cancelDrag, { once: true });
-}
-
-function dragMove(e) {
-  if (!dragging) return;
-  e.preventDefault();
-
-  dragging.clone.style.left =
-    (e.clientX - dragging.offsetX) + "px";
-  dragging.clone.style.top =
-    (e.clientY - dragging.offsetY) + "px";
-
-  document.querySelectorAll(".cell").forEach(c => c.style.outline = "");
-
-  const target = document.elementFromPoint(e.clientX, e.clientY)?.closest(".cell");
-  if (target) {
-    target.style.outline = "3px solid rgba(255,255,255,.9)";
-  }
-}
-
-function cleanUpDrag() {
-  if (!dragging) return;
-
-  document.removeEventListener("pointermove", dragMove);
-  document.querySelectorAll(".cell").forEach(c => c.style.outline = "");
-
-  dragging.source.style.opacity = "1";
-
-  if (dragging.clone && dragging.clone.parentNode) {
-    dragging.clone.remove();
-  }
-
-  dragging = null;
-}
-
-function endDrag(e) {
-  if (!dragging) return;
-  e.preventDefault();
-
-  const source = dragging.source;
-  const sourceCell = dragging.sourceCell;
-  const level = dragging.level;
-
-  const target =
-    document.elementFromPoint(e.clientX, e.clientY)?.closest(".cell");
-
-  if (!target || target === sourceCell) {
-    cleanUpDrag();
-    return;
-  }
-
-  const targetItem = target.querySelector(".item");
-
-  // Drop on an empty square.
-  if (!targetItem) {
-    const badge = sourceCell.querySelector(".level");
-    sourceCell.innerHTML = "";
-    target.appendChild(source);
-    if (badge) target.appendChild(badge);
-
-    cleanUpDrag();
-    statusEl.textContent = "Painting moved.";
-    return;
-  }
-
-  const targetLevel = Number(targetItem.dataset.level);
-
-  // Different levels do not merge.
-  if (level !== targetLevel) {
-    cleanUpDrag();
-    statusEl.textContent = "Only two identical levels can merge.";
-    return;
-  }
-
-  // Merge into the next painting.
-  if (level >= images.length) {
-    cleanUpDrag();
-    statusEl.textContent =
-      "This is the final painting in the 72-image sequence.";
-    return;
-  }
-
-  // Replace the two old pieces immediately.
-  // The next image has already been preloaded, so it should appear without
-  // waiting for a fresh network request.
-  sourceCell.innerHTML = "";
-  target.innerHTML = "";
-  createItem(target, level + 1);
-
-  const newLevel = level + 1;
-  playMergeSound(newLevel);
-  cleanUpDrag();
-
-  statusEl.textContent =
-    "Merge: Level " + level + " + Level " + level +
-    " → Level " + newLevel +
-    " (" + imageName(images[newLevel - 1]) + ")";
-
-  // The single generator remains on the board; its UP control is independent of the merge chain.
-}
-
-function cancelDrag() {
-  cleanUpDrag();
-}
-
-resetBtn.addEventListener("click", () => {
-  nextId = 1;
-  generatorLevel = 1;
-  generatorCellIndex = 27;
-  makeBoard();
-  updateGeneratorDisplay();
-  statusEl.textContent = "Generator 1× is ready. Click it to spill a painting.";
+doubleBonus.addEventListener("click",()=>{
+  if(generators[1].boost>0)return;
+  generators[1].boost=10;doubleBonus.textContent="2× Active (10 left)";statusEl.textContent="2× bonus active for 10 generator spills.";updateControls()
 });
+generatorMode.addEventListener("click",()=>{
+  if(generators[1].boost===0){generators[1].boost=10;statusEl.textContent="2× bonus active for 10 generator spills.";updateControls()}
+});
+supplyButton.addEventListener("click",()=>{
+  const e=emptyCells(Object.values(generators).filter(g=>g.unlocked).map(g=>g.cell));if(!e.length)return;
+  createSupply(e[Math.floor(Math.random()*e.length)]);statusEl.textContent="Art supply generated."
+});
+document.querySelectorAll("[data-buy]").forEach(b=>b.addEventListener("click",()=>{
+  const what=b.dataset.buy,price=what==="10"?25:what==="20"?60:120;
+  if(money<price){statusEl.textContent="Not enough LAR in the bank.";return}
+  money-=price;
+  if(what==="triple"){generators[1].boost=0;generators[1].level=3;statusEl.textContent="Triple Burst purchased: Generator 1 now produces Level 3."}
+  else{generators[1].boost+=+what;statusEl.textContent=what+" extra double turns purchased."}
+  renderOrders();updateControls()
+}));
 
-makeBoard();
-prepareAllImages();
+let musicOn=false;
+musicButton.addEventListener("click",()=>{
+  if(!music){
+    music=new Audio("larry-background.mp3");music.loop=true;music.volume=.22;
+    music.play().then(()=>{musicOn=true;musicButton.textContent="Stop Background Sound";document.getElementById("musicStatus").textContent="Background music: on"}).catch(()=>{document.getElementById("musicStatus").textContent="Add larry-background.mp3 beside this HTML file, then click again."});
+  }else if(musicOn){music.pause();musicOn=false;musicButton.textContent="Background Sound";document.getElementById("musicStatus").textContent="Background music: off"}
+  else{music.play();musicOn=true;musicButton.textContent="Stop Background Sound";document.getElementById("musicStatus").textContent="Background music: on"}
+});
+resetBtn.addEventListener("click",()=>location.reload());
+
+makeBoard();renderOrders();prepareImages();
 </script>
 </body>
 </html>
