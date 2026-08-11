@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Larry's L.A.R.R.Y. Stamp Collection — v12</title>
+<title>Larry's L.A.R.R.Y. Stamp Collection — v13</title>
 <style>
   * { box-sizing: border-box; }
   html, body { width:100%; height:100%; margin:0; overflow:hidden; }
@@ -31,7 +31,7 @@
     height:100vh;
     margin:auto;
     display:grid;
-    grid-template-columns:minmax(0, 1fr) 260px;
+    grid-template-columns:320px minmax(0, 1fr);
     grid-template-rows:120px minmax(0,1fr);
     gap:12px;
     padding:12px;
@@ -45,22 +45,22 @@
   }
   #wasteMailbox {
     position:absolute;
-    top:30px;
-    width:min(310px, 44vw);
-    height:80px;
+    top:38px;
+    width:min(300px, 40vw);
+    height:72px;
     border-radius:18px 18px 28px 28px;
     background:linear-gradient(#c52222,#8f0f0f);
     border:5px solid #4c0808;
     box-shadow:0 10px 0 rgba(0,0,0,.45), inset 0 5px 0 rgba(255,255,255,.18);
     cursor:grab;
     z-index:20;
-    transition:left .05s linear;
+    transition:none; touch-action:none;
   }
   #wasteText {
     position:absolute; inset:0;
     display:flex; align-items:center; justify-content:center;
     font-family:Impact, Haettenschweiler, "Arial Black", sans-serif;
-    font-size:clamp(22px,2.4vw,34px);
+    font-size:clamp(21px,2.2vw,31px);
     letter-spacing:.18em;
     color:#fff;
     text-shadow:3px 3px 0 #3c0505;
@@ -69,9 +69,10 @@
   #heldStamp {
     position:absolute;
     left:50%;
-    bottom:-72px;
-    width:104px;
-    height:104px;
+    top:68px;
+    bottom:auto;
+    width:88px;
+    height:88px;
     transform:translateX(-50%);
     border-radius:50%;
     border:4px solid #f4e6c5;
@@ -88,7 +89,7 @@
     position:absolute; left:4px; top:4px;
     background:rgba(255,255,255,.95);
     color:#2d1a0c;
-    font:bold 14px Arial;
+    font:bold 12px Arial;
     padding:3px 5px;
     border-radius:4px;
     border:1px solid #6b3f1d;
@@ -104,6 +105,7 @@
     border:3px solid #4b0909;
   }
   #gamePanel {
+    grid-column:2; grid-row:2;
     position:relative;
     min-width:0; min-height:0;
     border-radius:24px;
@@ -114,6 +116,7 @@
   }
   #gameCanvas { width:100%; height:100%; display:block; cursor:none; }
   #side {
+    grid-column:1; grid-row:2;
     min-height:0;
     display:flex;
     flex-direction:column;
@@ -159,29 +162,30 @@
     background:#f4ead7;
     color:#2a170e;
     border-radius:10px;
-    padding:8px;
+    padding:5px 4px;
     text-align:center;
     font-weight:bold;
   }
-  .stat b { display:block; font-size:20px; }
+  .stat b { display:block; font-size:16px; }
   #doubleBtn {
     width:100%;
-    border:3px solid #5b350e;
+    border:2px solid #5b350e;
     border-radius:14px;
     background:linear-gradient(#f3c85b,#b87813);
     color:#241404;
     font-weight:bold;
-    padding:11px 8px;
+    padding:7px 4px;
     cursor:pointer;
     box-shadow:0 5px 0 #6e410c;
-    font-size:16px;
+    font-size:13px;
   }
   #doubleBtn:active { transform:translateY(4px); box-shadow:0 1px 0 #6e410c; }
   #doubleBtn:disabled { opacity:.45; cursor:not-allowed; }
   #boardControls {
     display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:7px;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:5px;
+    margin-top:7px;
   }
   .smallBtn {
     border:2px solid #5b350e;
@@ -189,7 +193,7 @@
     background:#efe0bd;
     color:#2a170e;
     font-weight:bold;
-    padding:8px 5px;
+    padding:7px 3px;
     cursor:pointer;
   }
   .smallBtn:hover { filter:brightness(1.08); }
@@ -206,12 +210,12 @@
   #book {
     flex:1;
     min-height:0;
-    overflow:auto;
+    overflow:hidden;
     background:#e7d5ae;
     color:#2d1a0c;
     border:8px solid #6b3f1d;
     border-radius:12px;
-    padding:9px;
+    padding:7px;
     box-shadow:inset 0 0 0 2px #3b210e;
   }
   #bookTitle {
@@ -220,10 +224,10 @@
   }
   #slots {
     display:grid; grid-template-columns:1fr 1fr;
-    gap:7px;
+    gap:5px;
   }
   .slot {
-    min-height:92px;
+    min-height:72px;
     border:2px dashed #8a6a40;
     background:#f5ead0;
     position:relative;
@@ -257,7 +261,7 @@
     position:absolute; left:6px; right:42px; bottom:6px;
     z-index:3; padding:2px 4px; border-radius:3px;
     background:rgba(25,15,8,.82); color:#fff3d0;
-    font:700 8px/1.05 Georgia,serif;
+    font:700 7px/1.05 Georgia,serif;
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     pointer-events:none;
   }
@@ -301,11 +305,11 @@
   #larBusButton {
     display:block; width:100%; margin-top:10px;
     box-sizing:border-box; text-decoration:none; text-align:center;
-    border:4px solid #4b2a16; border-radius:13px;
+    border:2px solid #4b2a16; border-radius:999px;
     background:linear-gradient(#9a5b2e,#6d391b);
-    color:#fff3d0; font:bold 17px Georgia,serif;
-    padding:10px 12px; cursor:pointer;
-    box-shadow:inset 0 2px rgba(255,255,255,.22), 0 4px 0 #3a2111;
+    color:#fff3d0; font:bold 12px Georgia,serif;
+    padding:5px 12px; cursor:pointer;
+    box-shadow:inset 0 1px rgba(255,255,255,.22), 0 2px 0 #3a2111;
   }
   #larBusButton:hover { filter:brightness(1.08); }
   #larBusButton:active { transform:translateY(2px); box-shadow:inset 0 2px rgba(255,255,255,.18), 0 2px 0 #3a2111; }
@@ -364,7 +368,8 @@
   @media (max-width:900px) {
     #app { grid-template-columns:1fr; grid-template-rows:105px minmax(0,1fr) 310px; }
     #header { grid-column:1; }
-    #side { display:grid; grid-template-columns:1fr 1fr; }
+    #gamePanel { grid-column:1; grid-row:2; }
+    #side { grid-column:1; grid-row:3; display:grid; grid-template-columns:1fr 1fr; }
     #book { grid-column:1 / -1; }
     #wasteMailbox { width:48vw; }
   }
@@ -409,7 +414,7 @@
       <button id="doubleBtn">AUTO LARRY — START</button>
       <div id="boardControls">
         <button class="smallBtn" id="inspectBtn">INSPECT LAR STAMPS</button>
-        <button class="smallBtn" id="dropBtn">DROP ONCE</button>
+        <button class="smallBtn" id="dropBtn">LAR DROP</button>
       </div>
       <div id="hint">Move the L.A.R.R.Y. mailbox to aim, then click once to drop. AUTO LARRY can drop for you. Drag a stamp through the pile and onto a matching stamp to merge it.</div>
       <a id="larBusButton" href="index.html" title="Return to the LAR BUS">🚌 LAR BUS — RETURN</a>
@@ -1097,24 +1102,25 @@ function setMailboxFromClientX(clientX) {
 }
 
 let mailboxMoved=false;
+let mailboxDownX=0;
 mailbox.addEventListener('pointerdown',e=> {
-  // A simple click must NOT reposition the mailbox. The player aims first,
-  // then clicks it to drop. Repositioning only begins once the pointer moves.
+  // Exact aiming: a click drops without changing position; movement drags
+  // the mailbox directly with the pointer. No CSS transition adds lag.
   draggingMailbox=true;
   mailboxMoved=false;
+  mailboxDownX=e.clientX;
   mailbox.setPointerCapture(e.pointerId);
+  e.preventDefault();
 });
-let mailboxDownX=0;
-mailbox.addEventListener('pointerdown',e=> { mailboxDownX=e.clientX; });
 mailbox.addEventListener('pointermove',e=> {
-  if(draggingMailbox && Math.abs(e.clientX-mailboxDownX)>3) {
-    mailboxMoved=true;
-    setMailboxFromClientX(e.clientX);
-  }
+  if(!draggingMailbox) return;
+  if(Math.abs(e.clientX-mailboxDownX)>1) mailboxMoved=true;
+  if(mailboxMoved) setMailboxFromClientX(e.clientX);
 });
 mailbox.addEventListener('pointerup',e=> {
   if(!draggingMailbox) return;
   draggingMailbox=false;
+  try { mailbox.releasePointerCapture(e.pointerId); } catch(_) {}
   if(!mailboxMoved) dropStamp();
 });
 mailbox.addEventListener('pointercancel',e=> {
