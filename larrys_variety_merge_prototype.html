@@ -7,174 +7,12 @@
 <style>
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;color:#3b2a1d;font-family:Georgia,"Times New Roman",serif;
-background:#b52b22;
-background-image:linear-gradient(90deg,rgba(130,20,15,.55),rgba(181,43,34,.18) 13%,rgba(181,43,34,.18) 87%,rgba(130,20,15,.55));
-}
-body:before{content:"";position:fixed;inset:0;z-index:-1;opacity:.18;
-background-image:linear-gradient(45deg,#000 25%,transparent 25%,transparent 75%,#000 75%),
-linear-gradient(45deg,#000 25%,transparent 25%,transparent 75%,#000 75%);
-background-position:0 0,14px 14px;background-size:28px 28px;}
-header{text-align:center;padding:12px 8px 6px}
-h1{margin:0 0 3px;font-size:26px}
-#status{min-height:23px;font-size:15px}
-.layout{width:min(1460px,96vw);margin:18px auto;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start}
-.main{min-width:0;background:#f2e3c5;border:5px solid #6c3b20;border-radius:15px;padding:10px;box-shadow:0 7px 18px rgba(0,0,0,.38)}
-.controls{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin:4px 0 9px}
-button{border:2px solid #57371f;border-radius:8px;background:#6b4529;color:#fff;padding:7px 11px;font:bold 14px Georgia,serif;cursor:pointer}
-button:hover{filter:brightness(1.08)}
-button:disabled{opacity:.45;cursor:default}
-.board{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;padding:10px;background:linear-gradient(#9ba8b3,#7e8c98);border:5px solid #667481;border-radius:16px;box-shadow:inset 0 0 18px rgba(0,0,0,.22),0 7px 15px rgba(50,30,10,.28)}
-.cell{aspect-ratio:1;border-radius:8px;background:rgba(225,231,235,.28);border:2px solid rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;position:relative;min-width:0;transition:outline .08s}
-.item{width:92%;height:92%;object-fit:cover;user-select:none;-webkit-user-drag:none;touch-action:none;cursor:grab;box-shadow:0 3px 6px rgba(0,0,0,.25)}
-.item:active{cursor:grabbing}
-.stamp{width:90%;height:90%;padding:5px;background:white;border:3px solid white;outline:1px solid #b5a58e;box-shadow:0 2px 5px rgba(0,0,0,.3);object-fit:cover}
-.stamp-number{position:absolute;right:6px;bottom:4px;background:white;border:1px solid #8b7962;border-radius:3px;padding:1px 4px;font:bold 11px Arial,sans-serif;z-index:2}
-.generator{width:88%;height:88%;border:3px solid #70441f;border-radius:10px 10px 15px 15px;background:linear-gradient(160deg,#a96835,#7d4824 62%,#5f351c);box-shadow:0 5px 10px rgba(40,20,5,.35),inset 0 0 12px rgba(255,220,160,.18);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;touch-action:none;cursor:grab;transform:rotate(-1deg)}
-.generator img{display:none}
-.gen-label{position:absolute;inset:8px 5px 7px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#f4dfbd;text-shadow:1px 1px 2px #3f2110;font:bold 13px Georgia,serif;letter-spacing:1px;line-height:1.1}.gen-label:after{content:"♬  muted postal horn  ♬";font-size:10px;letter-spacing:0;margin-top:7px;opacity:.9}
-.mailbox{font-size:36px;width:88%;height:88%;display:flex;align-items:center;justify-content:center;background:linear-gradient(#d34a32,#8f2018);border:4px solid #6c2117;border-radius:10px 10px 8px 8px;box-shadow:inset 0 0 9px rgba(0,0,0,.3),0 4px 8px rgba(50,20,10,.3);cursor:default;position:relative}.mailbox:before{content:"✉";position:absolute;top:13px;font-size:31px;color:#fff1dc}.mailbox:after{content:"MAIL";position:absolute;bottom:10px;font:bold 14px Georgia,serif;color:#fff1dc;letter-spacing:1px}
-.letter{width:88%;height:72%;background:#fff8e8;border:2px solid #a88e6c;border-radius:4px;box-shadow:0 3px 6px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;font-size:28px;position:relative}
-.letter:after{content:"✉";font-size:34px}
-.supply{display:flex;align-items:center;justify-content:center;background:#f4ead7!important;border:2px solid #9a7651!important;object-fit:contain!important;font-size:clamp(26px,4vw,54px)!important}
-.panel{background:rgba(255,248,232,.96);border:2px solid #b49570;border-radius:11px;padding:10px;box-shadow:0 4px 10px rgba(50,30,10,.2)}
-.panel h2{font-size:18px;margin:0 0 8px}
-.money{font-size:20px;font-weight:bold;margin-bottom:9px}
-.order{background:#f8f0df;border:1px solid #b79d79;border-radius:8px;padding:8px;margin-bottom:8px}
-.order.done{opacity:.55}
-.order-title{font-weight:bold;margin-bottom:5px}
-.order-row{display:flex;justify-content:space-between;font-size:13px;padding:2px 0}
-.order-slots{display:flex;gap:3px;flex-wrap:wrap;margin:6px 0}
-.order-slot{width:29px;height:29px;border:1px dashed #8d795d;background:white;border-radius:3px;display:flex;align-items:center;justify-content:center;font:bold 12px Arial,sans-serif;color:#4a3a2a}.order-slot.filled{background:#e5efd9;border-color:#718c58;color:#3f7a35}
-.shop-item{border-top:1px solid #c9b99f;padding:8px 0;font-size:13px}
-.small{font-size:12px;line-height:1.35}
-.help{width:min(1100px,96vw);margin:10px auto 25px;background:rgba(255,248,232,.8);border:1px solid #b49570;border-radius:9px;padding:9px 12px;font-size:13px;line-height:1.4}
-#musicStatus{font-size:12px;margin-top:6px}
-@media(max-width:900px){.layout{grid-template-columns:1fr}.panel{order:-1}.board{gap:3px;padding:5px}}
-</style>
-</head>
-<body>
-<header>
-<h1>Larry's Variety — Stamp Merge Game</h1>
-<div id="status">Preparing the Tristero postal generator…</div>
-</header>
-
-<div class="layout">
-<div class="main">
-<div class="controls">
-<button id="supplyButton">Art Supply</button>
-<button id="musicButton">Background Sound</button><button id="reset">Reset</button>
-</div>
-<div class="board" id="board"></div>
-</div>
-
-<aside class="panel">
-<h2>STAMP ORDERS</h2>
-<div class="money">Lar Bank: <span id="money">0</span> LAR</div>
-<div id="orders"></div>
-
-<div id="musicStatus">Background music: off</div>
-</aside>
-</div>
-
-<div class="help">
-<strong>Current rules:</strong> The brown Tristero postal bag is the secret UP generator: click it and it always produces a stamp one level higher than its current level.
-Merge matching stamps to climb the collection. Every stamp makes a pickup sound when you lift it; a successful merge makes the merge sound, and the generator makes a postal pop.
-Drag a requested stamp onto the red MAIL box. The mailbox sends it to the order that needs it, and the matching requirement on the right becomes a green check.
-There are always three live orders. Completing one immediately brings in a new, randomly selected order with a different mix of simple and harder requests and LAR rewards.
-
-<script>
-const images = [
-    "images/LMAC-ArquaneTheQuietTeenPoet.jpg",
-    "images/LMAC-AstropopEffect.jpg",
-    "images/LMAC-AtGulliversMuseumOfAbstractArt.jpg",
-    "images/LMAC-AylaDream.jpg",
-    "images/LMAC-BarthesDilnsby.jpg",
-    "images/LMAC-BeautifulConversations.jpg",
-    "images/LMAC-BeBopASaurus.jpg",
-    "images/LMAC-Blondie.jpg",
-    "images/LMAC-BumblebeeVsOptimusPrime.jpg",
-    "images/LMAC-ButSiddharthaWasLookingBeyondThePresent.jpg",
-    "images/LMAC-BuzzardZilla.jpg",
-    "images/LMAC-CallTheArtWorldAndInformThemOfThisArt.jpg",
-    "images/LMAC-CanyonCross.jpg",
-    "images/LMAC-CasparFreidric1800.jpg",
-    "images/LMAC-Contentment.jpg",
-    "images/LMAC-CrusoesBadger.jpg",
-    "images/LMAC-CrusoesWizard.jpg",
-    "images/LMAC-DarkHorsewoman.jpg",
-    "images/LMAC-DesertCivilizationDance.jpg",
-    "images/LMAC-DiamondMineLakeshore.jpg",
-    "images/LMAC-DinosaurSpirit.jpg",
-    "images/LMAC-DinosourFossil.jpg",
-    "images/LMAC-DreamingWoman.jpg",
-    "images/LMAC-EvilCabins.jpg",
-    "images/LMAC-Gooseland.jpg",
-    "images/LMAC-HelloThereEve.jpg",
-    "images/LMAC-HistoryBook.jpg",
-    "images/LMAC-HolidaySnapOfMyMerman.jpg",
-    "images/LMAC-HowYouReallyFeltAtTheTime.jpg",
-    "images/LMAC-Hulot.jpg",
-    "images/LMAC-IcarusIcarus.jpg",
-    "images/LMAC-IDon'tTrustLaoTsuNoMore.jpg",
-    "images/LMAC-IndianaJonesJr.jpg",
-    "images/LMAC-IndianaJr.jpg",
-    "images/LMAC-InThunder.jpg",
-    "images/LMAC-JoseKandontske.jpg",
-    "images/LMAC-Journey'sJourney.jpg",
-    "images/LMAC-LarkaVayYourHairdresser.jpg",
-    "images/LMAC-LenoresHappyDay.jpg",
-    "images/LMAC-LordStitchToothe.jpg",
-    "images/LMAC-MarmouxltTheTrainedFrenchThing.jpg",
-    "images/LMAC-MobySquid.jpg",
-    "images/LMAC-MysticValley.jpg",
-    "images/LMAC-NewNewCanadianArt.jpg",
-    "images/LMAC-PinballChing.jpg",
-    "images/LMAC-PlacesThatHaveBeen.jpg",
-    "images/LMAC-Respect.jpg",
-    "images/LMAC-RobinsonLand.jpg",
-    "images/LMAC-RoncesvallesJazzRacket.jpg",
-    "images/LMAC-SacredSanctuary.jpg",
-    "images/LMAC-SandpiperFlats.jpg",
-    "images/LMAC-TheApproachingSeaDragon.jpg",
-    "images/LMAC-TheBirdEmpress.jpg",
-    "images/LMAC-TheCarnivalGhostsVacation.jpg",
-    "images/LMAC-TheCavemansTV.jpg",
-    "images/LMAC-TheDreamOfSleep.jpg",
-    "images/LMAC-TheElectricFox.jpg",
-    "images/LMAC-TheEmbarrasingAirportIncident.jpg",
-    "images/LMAC-TheGoyaOfMay.jpg",
-    "images/LMAC-TheHoneyBee.jpg",
-    "images/LMAC-TheMonkey'sLunch.jpg",
-    "images/LMAC-TheMustardSeedPrincipleAlien.jpg",
-    "images/LMAC-TheSeaGoat.jpg",
-    "images/LMAC-TheSlap.jpg",
-    "images/LMAC-TheSupposedToBeUnpretentiousSage.jpg",
-    "images/LMAC-TheWeepyMakeupSaleslady.jpg",
-    "images/LMAC-TimeFreeScape.jpg",
-    "images/LMAC-ToTheCaveOfSomethingSpecific.jpg",
-    "images/LMAC-TumbleWeet.jpg",
-    "images/LMAC-VantageShift.jpg",
-    "images/LMAC-WatershipNow.jpg",
-    "images/LMAC-WhySilenceIsGolden.jpg"
-];
-const board=document.getElementById("board"),statusEl=document.getElementById("status");
-const musicButton=document.getElementById("musicButton");
-const resetBtn=document.getElementById("reset"),moneyEl=document.getElementById("money"),ordersEl=document.getElementById("orders");
-const cells=[]; let nextId=1, money=0, activeSeries=1, secondGenerator=false, generatorDrag=null;
-const generators={1:{cell:27,level:1,unlocked:true},2:{cell:28,level:1,unlocked:false}};
-let series7Letters={1:false,2:false};
-let audioContext=null, music=null;
-
-const decodedImages=new Array(images.length);
-let imagesReady=false;
-
-function prepareImages(){
-  // Do not block the game on decoding every painting. The browser loads paintings as needed.
-  imagesReady=true;
-  decodedImages.length=images.length;
-  statusEl.textContent="Tristero generator is ready.";
-  render();
-}
+background-color:#fff;
+background-image:
+linear-gradient(90deg,#a92121 0 14%,transparent 14% 86%,#a92121 86% 100%),
+repeating-conic-gradient(#fff 0 25%,#111 0 50%);
+background-size:100% 100%,48px 48px;
+background-attachment:fixed,fixed;}
 function imageName(src){return src.split("/").pop().replace(/\.[^.]+$/,"")}
 function playPickupSound(){
   try{
@@ -223,7 +61,11 @@ function playMergeSound(level){
 }
 function makeBoard(){
   board.innerHTML="";cells.length=0;
-  for(let i=0;i<64;i++){const c=document.createElement("div");c.className="cell";c.dataset.index=i;board.appendChild(c);cells.push(c)}
+  for(let i=0;i<64;i++){
+    const c=document.createElement("div");c.className="cell";c.dataset.index=i;
+    board.appendChild(c);cells.push(c);
+  }
+  createMailbox(cells[62]);
   render();
 }
 function emptyCells(exclude=[]){return cells.filter(c=>!c.querySelector(".item,.generator")&&!exclude.includes(+c.dataset.index))}
@@ -255,7 +97,7 @@ function createMailbox(cell){
 function createGenerator(cell,which){
   const g=generators[which],d=document.createElement("div");d.className="generator";d.dataset.generator=which;d.setAttribute("aria-label","Tristero postal generator");
   const im=document.createElement("img");im.alt="";d.appendChild(im);
-  const lab=document.createElement("div");lab.className="gen-label";lab.textContent="GENERATOR "+which+"×";d.appendChild(lab);
+  d.setAttribute("aria-label","Tristero postal-horn stamp");
   cell.appendChild(d);d.addEventListener("pointerdown",e=>startGeneratorDrag(e,which));
   d.addEventListener("click",e=>{if(!d.dataset.moved){playGeneratorPop();spill(which)}});
 }
@@ -288,11 +130,11 @@ function spill(which){
   if(!imagesReady)return;
   const g=generators[which],near=neighbours(g.cell).filter(i=>!cells[i].querySelector(".item,.generator"));
   if(!near.length){statusEl.textContent="No empty square surrounds Generator "+which+".";return}
-  let level=g.level;
-  level=Math.min(images.length,g.level+1);
+  const level=Math.min(images.length,g.level+1);
   const dest=cells[near[0]];
-  createStamp(dest,level);playMergeSound(level);
-  statusEl.textContent="Generator "+which+" spilled stamp "+level+".";
+  createStamp(dest,level);
+  playMergeSound(level);
+  statusEl.textContent="A new postal stamp appeared.";
   if(level===7&&!series7Letters[which]){
     const letterSpot=near.find(i=>!cells[i].querySelector(".item,.generator")) ?? emptyCells([g.cell])[0]?.dataset.index;
     if(letterSpot!==undefined){createLetter(cells[+letterSpot],which);series7Letters[which]=true;statusEl.textContent+=" A letter has appeared."}
@@ -358,6 +200,10 @@ function startItemDrag(e){
     const target=hit?.closest(".cell");
     if(!target||target===from)return;
     if(target.querySelector(".generator"))return;
+    if(target.querySelector(".mailbox")){
+      deliverToMailbox(source,from,level);
+      return;
+    }
 
     if(target.querySelector(".mailbox")){
       deliverToMailbox(source,from,level);
