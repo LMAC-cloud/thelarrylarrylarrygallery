@@ -100,6 +100,8 @@
     box-shadow: 0 3px 6px rgba(0,0,0,.28);
   }
   .item:active { cursor: grabbing; }
+  .item { touch-action: none; }
+
   .level {
     position: absolute;
     top: 3px;
@@ -330,16 +332,15 @@ function createItem(cell, level) {
   cell.appendChild(img);
   cell.appendChild(badge);
 
-  // Pointer-based dragging works more reliably than browser HTML5
-  // drag-and-drop for images, especially on touch-enabled Windows devices.
   img.addEventListener("pointerdown", startDrag);
 }
 
 let dragging = null;
 
 function startDrag(e) {
-  if (e.button !== 0) return;
+  if (e.pointerType === "mouse" && e.button !== 0) return;
   e.preventDefault();
+  e.stopPropagation();
 
   const source = e.currentTarget;
   const sourceCell = source.parentElement;
@@ -354,26 +355,28 @@ function startDrag(e) {
     clone: source.cloneNode(true)
   };
 
-  dragging.clone.style.position = "fixed";
-  dragging.clone.style.width = rect.width + "px";
-  dragging.clone.style.height = rect.height + "px";
-  dragging.clone.style.left = (e.clientX - dragging.offsetX) + "px";
-  dragging.clone.style.top = (e.clientY - dragging.offsetY) + "px";
-  dragging.clone.style.zIndex = "9999";
-  dragging.clone.style.pointerEvents = "none";
-  dragging.clone.style.opacity = "0.85";
-  dragging.clone.style.cursor = "grabbing";
-  document.body.appendChild(dragging.clone);
+  const ghost = dragging.clone;
+  ghost.style.position = "fixed";
+  ghost.style.width = rect.width + "px";
+  ghost.style.height = rect.height + "px";
+  ghost.style.left = (e.clientX - dragging.offsetX) + "px";
+  ghost.style.top = (e.clientY - dragging.offsetY) + "px";
+  ghost.style.zIndex = "99999";
+  ghost.style.pointerEvents = "none";
+  ghost.style.opacity = "0.9";
+  ghost.style.margin = "0";
+  document.body.appendChild(ghost);
 
   source.style.opacity = "0.25";
-  source.setPointerCapture(e.pointerId);
-  source.addEventListener("pointermove", dragMove);
-  source.addEventListener("pointerup", endDrag);
-  source.addEventListener("pointercancel", cancelDrag);
+
+  document.addEventListener("pointermove", dragMove, { passive: false });
+  document.addEventListener("pointerup", endDrag, { once: true });
+  document.addEventListener("pointercancel", cancelDrag, { once: true });
 }
 
 function dragMove(e) {
   if (!dragging) return;
+  e.preventDefault();
 
   dragging.clone.style.left =
     (e.clientX - dragging.offsetX) + "px";
@@ -388,62 +391,65 @@ function dragMove(e) {
   }
 }
 
+function cleanUpDrag() {
+  if (!dragging) return;
+
+  document.removeEventListener("pointermove", dragMove);
+  document.querySelectorAll(".cell").forEach(c => c.style.outline = "");
+
+  dragging.source.style.opacity = "1";
+
+  if (dragging.clone && dragging.clone.parentNode) {
+    dragging.clone.remove();
+  }
+
+  dragging = null;
+}
+
 function endDrag(e) {
   if (!dragging) return;
+  e.preventDefault();
 
   const source = dragging.source;
   const sourceCell = dragging.sourceCell;
   const level = dragging.level;
 
-  const target = document.elementFromPoint(e.clientX, e.clientY)?.closest(".cell");
-
-  source.releasePointerCapture?.(e.pointerId);
-  source.removeEventListener("pointermove", dragMove);
-  source.removeEventListener("pointerup", endDrag);
-  source.removeEventListener("pointercancel", cancelDrag);
-
-  document.querySelectorAll(".cell").forEach(c => c.style.outline = "");
+  const target =
+    document.elementFromPoint(e.clientX, e.clientY)?.closest(".cell");
 
   if (!target || target === sourceCell) {
-    source.style.opacity = "1";
-    dragging.clone.remove();
-    dragging = null;
+    cleanUpDrag();
     return;
   }
 
   const targetItem = target.querySelector(".item");
 
-  // Empty square: move the painting there.
+  // Drop on an empty square.
   if (!targetItem) {
     const badge = sourceCell.querySelector(".level");
     sourceCell.innerHTML = "";
     target.appendChild(source);
     if (badge) target.appendChild(badge);
 
-    source.style.opacity = "1";
-    dragging.clone.remove();
-    dragging = null;
+    cleanUpDrag();
     statusEl.textContent = "Painting moved.";
     return;
   }
 
   const targetLevel = Number(targetItem.dataset.level);
 
-  // Different levels cannot merge.
+  // Different levels do not merge.
   if (level !== targetLevel) {
-    source.style.opacity = "1";
-    dragging.clone.remove();
-    dragging = null;
+    cleanUpDrag();
     statusEl.textContent = "Only two identical levels can merge.";
     return;
   }
 
-  // Merge.
+  // Merge into the next painting.
   if (level >= images.length) {
-    source.style.opacity = "1";
-    dragging.clone.remove();
-    dragging = null;
-    statusEl.textContent = "This is the final painting in the 72-image sequence.";
+    cleanUpDrag();
+    statusEl.textContent =
+      "This is the final painting in the 72-image sequence.";
     return;
   }
 
@@ -451,37 +457,25 @@ function endDrag(e) {
   target.innerHTML = "";
   createItem(target, level + 1);
 
-  source.style.opacity = "1";
-  dragging.clone.remove();
-  dragging = null;
+  const newLevel = level + 1;
+  cleanUpDrag();
 
   statusEl.textContent =
     "Merge: Level " + level + " + Level " + level +
-    " → Level " + (level + 1) +
-    " (" + imageName(images[level]) + ")";
+    " → Level " + newLevel +
+    " (" + imageName(images[newLevel - 1]) + ")";
 
-  if (level + 1 === 8 && !generatorState[1]) {
+  // Prototype rule: Level 8 unlocks Generator 2.
+  if (newLevel === 8 && !generatorState[1]) {
     generatorState[1] = true;
     makeGenerators();
     statusEl.textContent += " — Generator 2 unlocked.";
   }
 }
 
-function cancelDrag(e) {
-  if (!dragging) return;
-
-  const source = dragging.source;
-  source.releasePointerCapture?.(e.pointerId);
-  source.removeEventListener("pointermove", dragMove);
-  source.removeEventListener("pointerup", endDrag);
-  source.removeEventListener("pointercancel", cancelDrag);
-  source.style.opacity = "1";
-  dragging.clone.remove();
-  dragging = null;
-
-  document.querySelectorAll(".cell").forEach(c => c.style.outline = "");
+function cancelDrag() {
+  cleanUpDrag();
 }
-
 
 resetBtn.addEventListener("click", () => {
   generatorState.fill(false);
