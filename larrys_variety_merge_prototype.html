@@ -314,6 +314,52 @@ function generateFrom(generatorNumber) {
     " produced " + imageName(images[level - 1]) + ".";
 }
 
+// Preload all 72 paintings so a merge can replace the two old pieces immediately.
+const preloadedImages = [];
+images.forEach((src, i) => {
+  const image = new Image();
+  image.src = src;
+  preloadedImages[i] = image;
+});
+
+// A short merge sound generated locally with Web Audio.
+// No external sound file is required.
+let audioContext = null;
+
+function playMergeSound(level) {
+  try {
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioContext.state === "suspended") audioContext.resume();
+
+    const now = audioContext.currentTime;
+    const oscillator = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+
+    oscillator.type = "sine";
+
+    // Slightly higher pitch as the merge level rises.
+    const frequency = 360 + Math.min(level, 30) * 18;
+    oscillator.frequency.setValueAtTime(frequency, now);
+    oscillator.frequency.exponentialRampToValueAtTime(
+      frequency * 1.45, now + 0.10
+    );
+
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.16, now + 0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+
+    oscillator.connect(gain);
+    gain.connect(audioContext.destination);
+
+    oscillator.start(now);
+    oscillator.stop(now + 0.17);
+  } catch (err) {
+    // Sound is optional; the merge itself must never fail because audio is unavailable.
+  }
+}
+
 function createItem(cell, level) {
   if (level < 1 || level > images.length) return;
 
@@ -453,11 +499,15 @@ function endDrag(e) {
     return;
   }
 
+  // Replace the two old pieces immediately.
+  // The next image has already been preloaded, so it should appear without
+  // waiting for a fresh network request.
   sourceCell.innerHTML = "";
   target.innerHTML = "";
   createItem(target, level + 1);
 
   const newLevel = level + 1;
+  playMergeSound(newLevel);
   cleanUpDrag();
 
   statusEl.textContent =
