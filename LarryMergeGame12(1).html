@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Larry's Variety — Stamp Merge Game</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;color:#3b2a1d;font-family:Georgia,"Times New Roman",serif;
+background-color:#fff;
+background-image:
+linear-gradient(90deg,#a92121 0 14%,transparent 14% 86%,#a92121 86% 100%),
+repeating-conic-gradient(#fff 0 25%,#111 0 50%);
+background-size:100% 100%,48px 48px;
+background-attachment:fixed,fixed;}
+function imageName(src){return src.split("/").pop().replace(/\.[^.]+$/,"")}
+function playPickupSound(){
+  try{
+    if(!audioContext)audioContext=new(window.AudioContext||window.webkitAudioContext)();
+    if(audioContext.state==="suspended")audioContext.resume();
+    const now=audioContext.currentTime;
+    const osc=audioContext.createOscillator(),gain=audioContext.createGain();
+    osc.type="triangle";
+    osc.frequency.setValueAtTime(330,now);
+    osc.frequency.exponentialRampToValueAtTime(520,now+.07);
+    gain.gain.setValueAtTime(.0001,now);
+    gain.gain.exponentialRampToValueAtTime(.11,now+.008);
+    gain.gain.exponentialRampToValueAtTime(.0001,now+.10);
+    osc.connect(gain);gain.connect(audioContext.destination);
+    osc.start(now);osc.stop(now+.11);
+  }catch(e){}
+}
+function playGeneratorPop(){
+  try{
+    if(!audioContext)audioContext=new(window.AudioContext||window.webkitAudioContext)();
+    if(audioContext.state==="suspended")audioContext.resume();
+    const now=audioContext.currentTime;
+    const osc=audioContext.createOscillator(),gain=audioContext.createGain();
+    osc.type="sine";
+    osc.frequency.setValueAtTime(150,now);
+    osc.frequency.exponentialRampToValueAtTime(55,now+.16);
+    gain.gain.setValueAtTime(.0001,now);
+    gain.gain.exponentialRampToValueAtTime(.22,now+.01);
+    gain.gain.exponentialRampToValueAtTime(.0001,now+.18);
+    osc.connect(gain);gain.connect(audioContext.destination);
+    osc.start(now);osc.stop(now+.19);
+  }catch(e){}
+}
+
+function playMergeSound(level){
+  try{
+    if(!audioContext)audioContext=new(window.AudioContext||window.webkitAudioContext)();
+    if(audioContext.state==="suspended")audioContext.resume();
+    const now=audioContext.currentTime,osc=audioContext.createOscillator(),gain=audioContext.createGain();
+    const step=(Math.max(1,level)-1)%7;
+    const f=220*Math.pow(2,step/12);
+    osc.type="sine";osc.frequency.setValueAtTime(f,now);osc.frequency.exponentialRampToValueAtTime(f*1.45,now+.1);
+    gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(.15,now+.012);gain.gain.exponentialRampToValueAtTime(.0001,now+.16);
+    osc.connect(gain);gain.connect(audioContext.destination);osc.start(now);osc.stop(now+.17);
+  }catch(e){}
+}
+function makeBoard(){
+  board.innerHTML="";cells.length=0;
+  for(let i=0;i<64;i++){
+    const c=document.createElement("div");c.className="cell";c.dataset.index=i;
+    board.appendChild(c);cells.push(c);
+  }
+  createMailbox(cells[62]);
+  render();
+}
+function emptyCells(exclude=[]){return cells.filter(c=>!c.querySelector(".item,.generator")&&!exclude.includes(+c.dataset.index))}
+function neighbours(index){
+  const r=Math.floor(index/8),col=index%8,a=[];
+  for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){if(!dr&&!dc)continue;const rr=r+dr,cc=col+dc;if(rr>=0&&rr<8&&cc>=0&&cc<8)a.push(rr*8+cc)}
+  return a.sort(()=>Math.random()-.5);
+}
+function createStamp(cell,level){
+  if(level<1||level>images.length)return;
+  const img=document.createElement("img");img.className="item stamp";img.src=images[level-1];img.dataset.level=level;img.dataset.id=nextId++;img.draggable=false;
+  const n=document.createElement("div");n.className="stamp-number";n.textContent=level;
+  cell.append(img,n);img.addEventListener("pointerdown",startItemDrag);
+}
+function createLetter(cell,series){
+  const l=document.createElement("div");l.className="letter item";l.dataset.level="letter";l.dataset.series=series;l.dataset.id=nextId++;l.title="Letter — drag the Level 7 stamp here";
+  cell.appendChild(l);l.addEventListener("pointerdown",startItemDrag);
+}
+function createSupply(cell){
+  const choices=[["brush","🖌️"],["palette","🎨"],["canvas","▣"],["easel","🖼️"]];
+  const [kind,symbol]=choices[Math.floor(Math.random()*choices.length)];
+  const x=document.createElement("div");x.className="item supply";x.dataset.level="supply";x.dataset.supply=kind;x.textContent=symbol;x.dataset.id=nextId++;
+  const b=document.createElement("div");b.className="stamp-number";b.textContent=kind;cell.append(x,b);
+}
+function createMailbox(cell){
+  const m=document.createElement("div");m.className="mailbox";m.textContent="📮";m.dataset.level="mailbox";m.title="Mailbox — discard items forever";
+  cell.appendChild(m);
+}
+function createGenerator(cell,which){
+  const g=generators[which],d=document.createElement("div");d.className="generator";d.dataset.generator=which;d.setAttribute("aria-label","Tristero postal generator");
+  const im=document.createElement("img");im.alt="";d.appendChild(im);
+  d.setAttribute("aria-label","Tristero postal-horn stamp");
+  cell.appendChild(d);d.addEventListener("pointerdown",e=>startGeneratorDrag(e,which));
+  d.addEventListener("click",e=>{if(!d.dataset.moved){playGeneratorPop();spill(which)}});
+}
+function render(){
+  if(!cells.length)return;
+  cells.forEach(c=>{if(!c.querySelector(".generator")){ /* preserve items */ }});
+  Object.entries(generators).forEach(([k,g])=>{
+    const old=document.querySelector('.generator[data-generator="'+k+'"]');
+    if(old)old.remove();
+    if(g.unlocked&&cells[g.cell]&&!cells[g.cell].querySelector(".item"))createGenerator(cells[g.cell],+k);
+  });
+  renderOrders();
+}
+function updateControls(){}
+function startGeneratorDrag(e,which){
+  if(e.pointerType==="mouse"&&e.button!==0)return;e.preventDefault();e.stopPropagation();
+  const g=generators[which],el=e.currentTarget,from=el.parentElement;let moved=false;
+  const move=ev=>{if(Math.abs(ev.clientX-e.clientX)+Math.abs(ev.clientY-e.clientY)>6)moved=true};
+  const up=ev=>{
+    document.removeEventListener("pointermove",move);
+    document.removeEventListener("pointerup",up);
+    if(!moved){el.dataset.moved="";setTimeout(()=>delete el.dataset.moved,30);return}
+    const target=document.elementFromPoint(ev.clientX,ev.clientY)?.closest(".cell");
+    if(target&&!target.querySelector(".item,.generator")){from.innerHTML="";target.appendChild(el);g.cell=+target.dataset.index;statusEl.textContent="Generator "+which+" moved.";el.dataset.moved="1";setTimeout(()=>delete el.dataset.moved,30)}
+    else statusEl.textContent="The generator needs an empty square.";
+  };
+  document.addEventListener("pointermove",move,{passive:true});document.addEventListener("pointerup",up,{once:true});
+}
+function spill(which){
+  if(!imagesReady)return;
+  const g=generators[which],near=neighbours(g.cell).filter(i=>!cells[i].querySelector(".item,.generator"));
+  if(!near.length){statusEl.textContent="No empty square surrounds Generator "+which+".";return}
+  const level=Math.min(images.length,g.level+1);
+  const dest=cells[near[0]];
+  createStamp(dest,level);
+  playMergeSound(level);
+  statusEl.textContent="A new postal stamp appeared.";
+  if(level===7&&!series7Letters[which]){
+    const letterSpot=near.find(i=>!cells[i].querySelector(".item,.generator")) ?? emptyCells([g.cell])[0]?.dataset.index;
+    if(letterSpot!==undefined){createLetter(cells[+letterSpot],which);series7Letters[which]=true;statusEl.textContent+=" A letter has appeared."}
+  }
+  
+}
+function startItemDrag(e){
+  if(e.pointerType==="mouse"&&e.button!==0)return;
+  e.preventDefault();
+  e.stopPropagation();
+  playPickupSound();
+
+  const source=e.currentTarget;
+  const from=source.parentElement;
+  const rect=source.getBoundingClientRect();
+  const level=source.dataset.level;
+  let dragging=false;
+
+  const ghost=source.cloneNode(true);
+  ghost.style.position="fixed";
+  ghost.style.width=rect.width+"px";
+  ghost.style.height=rect.height+"px";
+  ghost.style.left=rect.left+"px";
+  ghost.style.top=rect.top+"px";
+  ghost.style.zIndex="99999";
+  ghost.style.pointerEvents="none";
+  ghost.style.opacity=".88";
+  ghost.style.margin="0";
+  document.body.appendChild(ghost);
+  source.style.opacity=".22";
+
+  const move=ev=>{
+    dragging=true;
+    ghost.style.left=(ev.clientX-rect.width/2)+"px";
+    ghost.style.top=(ev.clientY-rect.height/2)+"px";
+
+    document.querySelectorAll(".cell,.mailbox,.order").forEach(el=>el.style.outline="");
+    const hit=document.elementFromPoint(ev.clientX,ev.clientY);
+    const mailbox=hit?.closest(".mailbox");
+    const order=hit?.closest(".order");
+    const cell=hit?.closest(".cell");
+    if(mailbox)mailbox.style.outline="4px solid rgba(255,245,190,.95)";
+    else if(order)order.style.outline="3px solid rgba(255,245,190,.95)";
+    else if(cell)cell.style.outline="3px solid rgba(255,255,255,.9)";
+  };
+
+  const finish=ev=>{
+    document.removeEventListener("pointermove",move);
+    document.removeEventListener("pointerup",finish);
+    document.querySelectorAll(".cell,.mailbox,.order").forEach(el=>el.style.outline="");
+    source.style.opacity="1";
+    ghost.remove();
+
+    if(!dragging)return;
+
+    const hit=document.elementFromPoint(ev.clientX,ev.clientY);
+    const mailbox=hit?.closest(".mailbox");
+    if(mailbox){
+      deliverToMailbox(source,from,level);
+      return;
+    }
+
+    const target=hit?.closest(".cell");
+    if(!target||target===from)return;
+    if(target.querySelector(".generator"))return;
+    if(target.querySelector(".mailbox")){
+      deliverToMailbox(source,from,level);
+      return;
+    }
+
+    if(target.querySelector(".mailbox")){
+      deliverToMailbox(source,from,level);
+      return;
+    }
+
+    if(target.querySelector(".letter")){
+      const letter=target.querySelector(".letter");
+      if(level==="7"&&+letter.dataset.series===activeSeries){
+        from.innerHTML="";
+        target.innerHTML="";
+        completeSeries(+letter.dataset.series);
+        return;
+      }
+      statusEl.textContent="Only the Level 7 stamp can mail this letter.";
+      return;
+    }
+
+    const other=target.querySelector(".item");
+    if(!other){
+      const badge=from.querySelector(".stamp-number");
+      from.innerHTML="";
+      target.appendChild(source);
+      if(badge)target.appendChild(badge);
+      return;
+    }
+
+    const a=+level,b=+other.dataset.level;
+    if(Number.isFinite(a)&&a===b){
+      if(a>=images.length){
+        statusEl.textContent="The sequence has reached the last supplied painting.";
+        return;
+      }
+      from.innerHTML="";
+      target.innerHTML="";
+      createStamp(target,a+1);
+      playMergeSound(a+1);
+      statusEl.textContent="Merge: "+a+" + "+a+" → "+(a+1);
+      if(a+1===4&&!secondGenerator){
+        statusEl.textContent+=" — the next Tristero generator click will continue the UP effect.";
+      }
+      return;
+    }
+
+    statusEl.textContent="Only two matching stamps can merge.";
+  };
+
+  document.addEventListener("pointermove",move,{passive:true});
+  document.addEventListener("pointerup",finish,{once:true});
+}
+
+function deliverToMailbox(source,from,level){
+  const stampLevel=+level;
+  if(!Number.isFinite(stampLevel)){
+    statusEl.textContent="Only numbered stamps can be mailed.";
+    return;
+  }
+
+  // The first unfinished order that needs this stamp receives it.
+  let chosen=null;
+  for(const o of orders){
+    if(o.done)continue;
+    const need=o.req.reduce((n,[l,c])=>n+(l===stampLevel?c:0),0);
+    const have=o.filled.filter(x=>x===stampLevel).length;
+    if(need>have){chosen=o;break;}
+  }
+
+  if(!chosen){
+    statusEl.textContent="That stamp is not needed by any current order.";
+    return;
+    return;
+  }
+
+  from.innerHTML="";
+  chosen.filled.push(stampLevel);
+  checkOrder(chosen);
+  renderOrders();
+
+  if(!chosen.done){
+    statusEl.textContent="Stamp "+stampLevel+" mailed to Order "+(chosen.id+1)+".";
+  }
+}
+function completeSeries(series){
+  activeSeries++;
+  if(series===1){
+    generators[1].level=1;series7Letters[1]=false;
+    statusEl.textContent="STAMP SERIES 1 mailed. Build the next series to earn its return letter.";
+  }else if(series===2){
+    secondGenerator=true;generators[2].unlocked=true;generators[2].level=1;series7Letters[2]=false;
+    const spot=emptyCells([generators[1].cell])[0];if(spot){generators[2].cell=+spot.dataset.index;createGenerator(spot,2)}
+    statusEl.textContent="Return letter opened: Generator 2 is now yours. Its stamps do not mix with Generator 1.";
+  }
+  render();
+}
+let nextOrderId=1;
+function makeOrder(){
+  const patterns=[
+    {req:[[1,2],[2,1]],reward:25},
+    {req:[[2,2],[3,1]],reward:30},
+    {req:[[1,3],[4,1]],reward:40},
+    {req:[[2,2],[5,1]],reward:50},
+    {req:[[3,2],[4,2]],reward:65},
+    {req:[[1,2],[3,2],[6,1]],reward:75},
+    {req:[[2,3],[4,2],[7,1]],reward:90},
+    {req:[[3,2],[5,2],[8,1]],reward:110},
+    {req:[[1,3],[4,2],[8,1]],reward:120},
+    {req:[[2,2],[6,2],[9,1]],reward:140},
+    {req:[[4,2],[7,2],[10,1]],reward:165},
+    {req:[[1,4],[5,2],[10,1]],reward:180},
+    {req:[[3,3],[6,2],[12,1]],reward:210},
+    {req:[[2,3],[8,2],[14,1]],reward:240},
+    {req:[[5,2],[10,2],[16,1]],reward:275}
+  ];
+  const p=patterns[Math.floor(Math.random()*patterns.length)];
+  return {req:p.req.map(x=>[x[0],x[1]]),reward:p.reward,id:nextOrderId++,filled:[]};
+}
+function makeOrders(){
+  return [makeOrder(),makeOrder(),makeOrder()];
+}
+let orders=makeOrders();
+function renderOrders(){
+  ordersEl.innerHTML="";
+  orders.forEach(o=>{
+    const div=document.createElement("div");div.className="order";div.dataset.orderId=o.id;
+    div.innerHTML='<div class="order-title">Order '+(o.id+1)+' — '+o.reward+' LAR</div>';
+    o.req.forEach(([lvl,count])=>{
+      const row=document.createElement("div");row.className="order-row";row.innerHTML="<span>Stamp "+lvl+"</span><strong>"+count+" needed</strong>";div.appendChild(row)
+    });
+    const slots=document.createElement("div");slots.className="order-slots";
+    const total=o.req.reduce((n,x)=>n+x[1],0);
+    let slotIndex=0;
+    o.req.forEach(([lvl,count])=>{
+      for(let j=0;j<count;j++){
+        const q=document.createElement("div");q.className="order-slot";
+        q.textContent=lvl;
+        if(o.filled[slotIndex]!==undefined){q.classList.add("filled");q.textContent="✓";}
+        q.title="Stamp "+lvl+(o.filled[slotIndex]!==undefined?" — received":" — requested");
+        slots.appendChild(q);
+        slotIndex++;
+      }
+    });
+    div.appendChild(slots);
+    ordersEl.appendChild(div);
+  });
+  moneyEl.textContent=money;
+}
+function addToOrder(stampLevel){
+  for(const o of orders){
+    if(o.done)continue;
+    const need=o.req.reduce((n,[l,c])=>n+(l===stampLevel?c:0),0);
+    const have=o.filled.filter(x=>x===stampLevel).length;
+    if(have<need){o.filled.push(stampLevel);checkOrder(o);return true}
+  }
+  return false;
+}
+function checkOrder(o){
+  const counts={};o.filled.forEach(x=>counts[x]=(counts[x]||0)+1);
+  const complete=o.req.every(([l,c])=>(counts[l]||0)>=c);
+  if(complete){
+    o.done=true;
+    money+=o.reward;
+    statusEl.textContent="Stamp order complete: +"+o.reward+" LAR.";
+    setTimeout(()=>{
+      const pos=orders.findIndex(x=>x.id===o.id);
+      if(pos!==-1)orders.splice(pos,1,makeOrder());
+      renderOrders();
+    },500);
+  }
+}
+document.addEventListener("pointerdown",()=>{if(audioContext&&audioContext.state==="suspended")audioContext.resume()},{once:false});
+
+
+let musicOn=false;
+musicButton.addEventListener("click",()=>{
+  if(!music){
+    music=new Audio("larry-background.mp3");music.loop=true;music.volume=.22;
+    music.play().then(()=>{musicOn=true;musicButton.textContent="Stop Background Sound";document.getElementById("musicStatus").textContent="Background music: on"}).catch(()=>{document.getElementById("musicStatus").textContent="Add larry-background.mp3 beside this HTML file, then click again."});
+  }else if(musicOn){music.pause();musicOn=false;musicButton.textContent="Background Sound";document.getElementById("musicStatus").textContent="Background music: off"}
+  else{music.play();musicOn=true;musicButton.textContent="Stop Background Sound";document.getElementById("musicStatus").textContent="Background music: on"}
+});
+resetBtn.addEventListener("click",()=>location.reload());
+
+makeBoard();renderOrders();prepareImages();
+</script>
+</body>
+</html>
