@@ -874,7 +874,7 @@ figure {
    ============================================================ */
 
 #puzzleBox {
-    width: min(1080px, 96vw);
+    width: min(820px, 90vw);
     margin: 20px auto;
     background: #eee;
     color: black;
@@ -882,7 +882,7 @@ figure {
     box-shadow:
         0 0 30px white,
         0 0 70px black;
-    padding: 20px;
+    padding: 14px;
     box-sizing: border-box;
 }
 
@@ -891,20 +891,20 @@ figure {
    ============================================================ */
 
 #puzzleTitle {
-    font-size: 28px;
+    font-size: 22px;
     font-weight: 900;
     margin-bottom: 8px;
 }
 
 #puzzleMessage {
-    font-size: 24px;
+    font-size: 19px;
     font-weight: 900;
     color: red;
     margin: 10px 0;
 }
 
 #puzzleInstruction {
-    font-size: 17px;
+    font-size: 14px;
     font-weight: bold;
     margin-bottom: 10px;
 }
@@ -1386,11 +1386,13 @@ figure {
    LAR KNOWLEDGE BOOTH — SECRET LAR CASINO ENTRANCE
    ============================================================ */
 #larKnowledgeBooth{
+    display:none;
     position:fixed;
-    left:24px;
-    bottom:115px;
-    width:96px;
-    height:112px;
+    right:7vw;
+    top:50%;
+    transform:translateY(-50%);
+    width:230px;
+    height:230px;
     z-index:6500;
     cursor:pointer;
     user-select:none;
@@ -1398,10 +1400,10 @@ figure {
 }
 #larKnowledgeBooth .boothBody{
     position:absolute;
-    left:18px;
-    right:18px;
-    bottom:0;
-    height:78px;
+    left:24px;
+    right:24px;
+    bottom:18px;
+    height:170px;
     background:
       linear-gradient(145deg,#3a2115,#744522 52%,#29170e);
     border:5px solid #111;
@@ -1410,10 +1412,10 @@ figure {
 }
 #larKnowledgeBooth .boothRoof{
     position:absolute;
-    left:10px;
-    right:10px;
-    top:18px;
-    height:15px;
+    left:18px;
+    right:18px;
+    top:28px;
+    height:22px;
     background:#111;
     border:3px solid #ddd;
     transform:skewX(-12deg);
@@ -1422,12 +1424,12 @@ figure {
 #larKnowledgeBooth .boothQuestion{
     position:absolute;
     left:50%;
-    top:31px;
+    top:50px;
     transform:translateX(-50%);
     z-index:4;
     color:white;
     font-family:Georgia,serif;
-    font-size:54px;
+    font-size:104px;
     line-height:1;
     font-weight:900;
     text-shadow:
@@ -1438,12 +1440,12 @@ figure {
 }
 #larKnowledgeBooth .boothSign{
     position:absolute;
-    left:25px;
-    right:25px;
-    bottom:8px;
+    left:35px;
+    right:35px;
+    bottom:34px;
     z-index:5;
     color:#fff7b0;
-    font-size:8px;
+    font-size:14px;
     font-weight:1000;
     letter-spacing:1px;
     text-align:center;
@@ -1451,7 +1453,7 @@ figure {
 }
 #larKnowledgeBooth .neonFilaments{
     position:absolute;
-    inset:-42px;
+    inset:-75px;
     pointer-events:none;
     overflow:visible;
 }
@@ -1477,6 +1479,23 @@ figure {
 #larKnowledgeBooth .neonFilaments i:nth-child(8){color:#ff4fd8;transform:rotate(248deg);animation-delay:-.45s}
 #larKnowledgeBooth .neonFilaments i:nth-child(9){color:#00eaff;transform:rotate(286deg);animation-delay:-.3s}
 #larKnowledgeBooth .neonFilaments i:nth-child(10){color:#ffe600;transform:rotate(322deg);animation-delay:-.6s}
+
+#larKnowledgeBooth .neonFilaments i:nth-child(11){color:#ff3131;transform:rotate(12deg) scale(.72)}
+#larKnowledgeBooth .neonFilaments i:nth-child(12){color:#00eaff;transform:rotate(51deg) scale(.82);animation-delay:-.3s}
+#larKnowledgeBooth .neonFilaments i:nth-child(13){color:#b85cff;transform:rotate(88deg) scale(.68);animation-delay:-.5s}
+#larKnowledgeBooth .neonFilaments i:nth-child(14){color:#38ff6b;transform:rotate(126deg) scale(.78);animation-delay:-.2s}
+#larKnowledgeBooth .neonFilaments i:nth-child(15){color:#ffe600;transform:rotate(154deg) scale(.9);animation-delay:-.45s}
+#larKnowledgeBooth .neonFilaments i:nth-child(16){color:#ff4fd8;transform:rotate(193deg) scale(.7);animation-delay:-.15s}
+#larKnowledgeBooth .neonFilaments i:nth-child(17){color:#477dff;transform:rotate(226deg) scale(.8);animation-delay:-.55s}
+#larKnowledgeBooth .neonFilaments i:nth-child(18){color:#ff9d00;transform:rotate(263deg) scale(.72);animation-delay:-.35s}
+#larKnowledgeBooth .neonFilaments i:nth-child(19){color:#00eaff;transform:rotate(301deg) scale(.9);animation-delay:-.65s}
+#larKnowledgeBooth .neonFilaments i:nth-child(20){color:#ffe600;transform:rotate(338deg) scale(.76);animation-delay:-.25s}
+#larKnowledgeBooth .neonFilaments i:nth-child(21){color:#38ff6b;transform:rotate(30deg) scale(.55);animation-delay:-.4s}
+#larKnowledgeBooth .neonFilaments i:nth-child(22){color:#ff39ff;transform:rotate(118deg) scale(.58);animation-delay:-.6s}
+#larKnowledgeBooth .neonFilaments i:nth-child(23){color:#00eaff;transform:rotate(184deg) scale(.62);animation-delay:-.05s}
+#larKnowledgeBooth .neonFilaments i:nth-child(24){color:#ff3131;transform:rotate(246deg) scale(.56);animation-delay:-.5s}
+#larKnowledgeBooth .neonFilaments i:nth-child(25){color:#ffe600;transform:rotate(318deg) scale(.6);animation-delay:-.32s}
+#larKnowledgeBooth .neonFilaments i:nth-child(26){color:#b85cff;transform:rotate(357deg) scale(.66);animation-delay:-.7s}
 @keyframes larBoothElectric{
     from{height:72px;opacity:.42;filter:brightness(.8)}
     to{height:112px;opacity:1;filter:brightness(1.7)}
@@ -1606,21 +1625,47 @@ figure {
     padding:4px 8px;
 }
 @media(max-width:600px){
-    #larKnowledgeBooth{left:10px;bottom:92px;transform:scale(.85);transform-origin:bottom left}
+    #larKnowledgeBooth{right:50%;top:50%;transform:translate(50%,-50%) scale(.78);transform-origin:center}
 }
+
+
+#larAmbientElectricity{display:none;position:fixed;inset:0;z-index:5400;pointer-events:none;overflow:hidden}
+#larAmbientElectricity i{position:absolute;width:2px;height:70px;transform-origin:50% 0;background:linear-gradient(to bottom,rgba(255,255,255,.95),currentColor,transparent);box-shadow:0 0 4px currentColor,0 0 11px currentColor;opacity:.8;animation:larAmbientZap .7s steps(6,end) infinite alternate}
+@keyframes larAmbientZap{0%{opacity:.25;height:35px}50%{opacity:1}100%{opacity:.35;height:110px}}
+#larSeagulls{display:none;position:fixed;inset:0;z-index:5350;pointer-events:none;overflow:hidden}
+.larSeagull{position:absolute;color:#fff;font-size:28px;font-weight:900;text-shadow:0 2px 4px #000,0 0 7px #fff;animation:larGullFly linear infinite}
+@keyframes larGullFly{from{transform:translateX(-12vw) translateY(0) scale(.7)}25%{transform:translateX(30vw) translateY(-25px) scale(1)}50%{transform:translateX(55vw) translateY(18px) scale(.85)}75%{transform:translateX(80vw) translateY(-30px) scale(1.05)}to{transform:translateX(115vw) translateY(8px) scale(.75)}}
 
 </style>
 </head>
 
 <body>
 
+<div id="larAmbientElectricity">
+  <i style="left:6%;top:18%;color:#00eaff;transform:rotate(22deg)"></i><i style="left:14%;top:61%;color:#ff39ff;transform:rotate(-28deg);animation-delay:-.2s"></i>
+  <i style="left:24%;top:12%;color:#ffe600;transform:rotate(41deg);animation-delay:-.4s"></i><i style="left:31%;top:73%;color:#38ff6b;transform:rotate(-55deg);animation-delay:-.1s"></i>
+  <i style="left:42%;top:22%;color:#ff3131;transform:rotate(30deg);animation-delay:-.35s"></i><i style="left:51%;top:68%;color:#477dff;transform:rotate(-38deg);animation-delay:-.55s"></i>
+  <i style="left:62%;top:11%;color:#ff9d00;transform:rotate(47deg);animation-delay:-.15s"></i><i style="left:72%;top:57%;color:#00eaff;transform:rotate(-25deg);animation-delay:-.45s"></i>
+  <i style="left:83%;top:17%;color:#b85cff;transform:rotate(35deg);animation-delay:-.3s"></i><i style="left:91%;top:72%;color:#ffe600;transform:rotate(-44deg);animation-delay:-.6s"></i>
+  <i style="left:18%;top:34%;color:#38ff6b;transform:rotate(66deg);animation-delay:-.25s"></i><i style="left:76%;top:31%;color:#ff4fd8;transform:rotate(-62deg);animation-delay:-.5s"></i>
+</div>
+<div id="larSeagulls">
+  <span class="larSeagull" style="top:12%;animation-duration:13s;animation-delay:-3s">⌁</span>
+  <span class="larSeagull" style="top:25%;font-size:22px;animation-duration:17s;animation-delay:-9s">⌁</span>
+  <span class="larSeagull" style="top:43%;font-size:34px;animation-duration:11s;animation-delay:-6s">⌁</span>
+  <span class="larSeagull" style="top:58%;font-size:20px;animation-duration:15s;animation-delay:-12s">⌁</span>
+  <span class="larSeagull" style="top:75%;font-size:30px;animation-duration:19s;animation-delay:-4s">⌁</span>
+</div>
+
+
 <!-- ============================================================
      LAR KNOWLEDGE BOOTH — SECRET LAR CASINO ROUTE
      ============================================================ -->
 <div id="larKnowledgeBooth" title="A question of some importance">
   <div class="neonFilaments">
-    <i></i><i></i><i></i><i></i><i></i>
-    <i></i><i></i><i></i><i></i><i></i>
+    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    <i></i><i></i><i></i><i></i><i></i><i></i>
   </div>
   <div class="boothRoof"></div>
   <div class="boothBody"></div>
@@ -2036,7 +2081,7 @@ function createPrizeGalleryItem() {
 
     const card = document.createElement("div");
     card.className = "prize-gallery-card";
-    card.textContent = "YOU HAVE WON A PRIZE!";
+    card.textContent = "YOU MIGHT WIN A PRIZE";
 
     item.appendChild(card);
 
@@ -2049,6 +2094,17 @@ function createPrizeGalleryItem() {
 }
 
 prizeGalleryItem = createPrizeGalleryItem();
+  function updatePrizeGalleryMessage() {
+      if(!prizeGalleryItem) return;
+      const card=prizeGalleryItem.querySelector(".prize-gallery-card");
+      if(!card) return;
+      const need=Math.max(0,20-larBucks);
+      card.textContent = need>0
+        ? "YOU MIGHT WIN A PRIZE\n\nEARN "+need+" MORE LAR-BUCK"+(need===1?"":"S")+" AND YOU WILL WIN A PRIZE!"
+        : "YOU WILL WIN A PRIZE\n\nLARRY HAS NO FURTHER COMMENT.";
+      card.style.whiteSpace="pre-line";
+  }
+
 
 
 /* ============================================================
@@ -2937,15 +2993,14 @@ niagaraPortalButton.addEventListener(
 let larBucks = 0;
 
 function addLarBucks(amount) {
-
-    larBucks += amount;
-
-    larBucksDisplay.textContent = larBucks;
-
-    if(larBucks >= 20) {
-        showNiagaraPrizeSlot();
-    }
-}
+      larBucks += amount;
+      larBucksDisplay.textContent = larBucks;
+      updatePrizeGalleryMessage();
+      if(larBucks >= 20) {
+         showNiagaraPrizeSlot();
+         updatePrizeGalleryMessage();
+      }
+  }
 
 
 /* ============================================================
@@ -2959,6 +3014,18 @@ let solvedPieces = 0;
 const repairPositions = [1, 4, 7];
 
 let puzzleMode = "art";
+  let firstPuzzleCompleted = false;
+  function revealLarKnowledgeBooth(){
+      if(firstPuzzleCompleted) return;
+      firstPuzzleCompleted=true;
+      const booth=document.getElementById("larKnowledgeBooth");
+      const electricity=document.getElementById("larAmbientElectricity");
+      const gulls=document.getElementById("larSeagulls");
+      if(booth) booth.style.display="block";
+      if(electricity) electricity.style.display="block";
+      if(gulls) gulls.style.display="block";
+  }
+
 
 
 /* ============================================================
@@ -3710,6 +3777,8 @@ function puzzleSolved() {
         return;
     }
 
+    revealLarKnowledgeBooth();
+
 
     /* ============================================================
        NORMAL ART PUZZLE COMPLETION
@@ -4217,8 +4286,8 @@ setTimeout(function() {
       b.addEventListener("click",()=>{
         answers.style.display="none";
         result.textContent =
-          "CORRECT. ALL THREE ANSWERS HAVE BEEN ACCEPTED BY LARRY'S DEPARTMENT OF ACCEPTABLE ANSWERS. " +
-          "YOU HAVE EARNED ACCESS TO THE LAR CASINO.";
+          "YOUR ANSWER HAS BEEN RECORDED. LARRY'S DEPARTMENT WILL NOT COMMENT ON WHETHER YOU ARE CORRECT. " +
+          "A DOOR HAS, HOWEVER, BECOME AVAILABLE.";
         result.style.display="block";
         casino.style.display="block";
       });
