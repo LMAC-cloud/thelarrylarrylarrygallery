@@ -1381,10 +1381,264 @@ figure {
    thumbnails use viewport-relative sizing so they shrink as the page is
    enlarged, while fixed-position alerts remain anchored to the viewport.
 */
+
+/* ============================================================
+   LAR KNOWLEDGE BOOTH — SECRET LAR CASINO ENTRANCE
+   ============================================================ */
+#larKnowledgeBooth{
+    position:fixed;
+    left:24px;
+    bottom:115px;
+    width:96px;
+    height:112px;
+    z-index:6500;
+    cursor:pointer;
+    user-select:none;
+    filter:drop-shadow(0 0 7px rgba(0,255,255,.45));
+}
+#larKnowledgeBooth .boothBody{
+    position:absolute;
+    left:18px;
+    right:18px;
+    bottom:0;
+    height:78px;
+    background:
+      linear-gradient(145deg,#3a2115,#744522 52%,#29170e);
+    border:5px solid #111;
+    border-radius:7px 7px 3px 3px;
+    box-shadow:0 7px 15px rgba(0,0,0,.8),inset 0 0 14px rgba(255,255,255,.12);
+}
+#larKnowledgeBooth .boothRoof{
+    position:absolute;
+    left:10px;
+    right:10px;
+    top:18px;
+    height:15px;
+    background:#111;
+    border:3px solid #ddd;
+    transform:skewX(-12deg);
+    z-index:2;
+}
+#larKnowledgeBooth .boothQuestion{
+    position:absolute;
+    left:50%;
+    top:31px;
+    transform:translateX(-50%);
+    z-index:4;
+    color:white;
+    font-family:Georgia,serif;
+    font-size:54px;
+    line-height:1;
+    font-weight:900;
+    text-shadow:
+      0 0 4px #fff,
+      0 0 10px #00eaff,
+      0 0 22px #ff39ff,
+      2px 2px 0 #111;
+}
+#larKnowledgeBooth .boothSign{
+    position:absolute;
+    left:25px;
+    right:25px;
+    bottom:8px;
+    z-index:5;
+    color:#fff7b0;
+    font-size:8px;
+    font-weight:1000;
+    letter-spacing:1px;
+    text-align:center;
+    text-shadow:0 0 5px #fff,0 0 10px #ffcf00;
+}
+#larKnowledgeBooth .neonFilaments{
+    position:absolute;
+    inset:-42px;
+    pointer-events:none;
+    overflow:visible;
+}
+#larKnowledgeBooth .neonFilaments i{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:2px;
+    height:96px;
+    transform-origin:50% 0;
+    opacity:.9;
+    background:linear-gradient(to bottom,rgba(255,255,255,.95),currentColor 18%,transparent 100%);
+    box-shadow:0 0 4px currentColor,0 0 9px currentColor;
+    animation:larBoothElectric .85s steps(7,end) infinite alternate;
+}
+#larKnowledgeBooth .neonFilaments i:nth-child(1){color:#ff3131;transform:rotate(8deg)}
+#larKnowledgeBooth .neonFilaments i:nth-child(2){color:#ff9d00;transform:rotate(35deg);animation-delay:-.2s}
+#larKnowledgeBooth .neonFilaments i:nth-child(3){color:#ffe600;transform:rotate(68deg);animation-delay:-.4s}
+#larKnowledgeBooth .neonFilaments i:nth-child(4){color:#38ff6b;transform:rotate(102deg);animation-delay:-.1s}
+#larKnowledgeBooth .neonFilaments i:nth-child(5){color:#00eaff;transform:rotate(137deg);animation-delay:-.35s}
+#larKnowledgeBooth .neonFilaments i:nth-child(6){color:#477dff;transform:rotate(171deg);animation-delay:-.55s}
+#larKnowledgeBooth .neonFilaments i:nth-child(7){color:#b85cff;transform:rotate(210deg);animation-delay:-.15s}
+#larKnowledgeBooth .neonFilaments i:nth-child(8){color:#ff4fd8;transform:rotate(248deg);animation-delay:-.45s}
+#larKnowledgeBooth .neonFilaments i:nth-child(9){color:#00eaff;transform:rotate(286deg);animation-delay:-.3s}
+#larKnowledgeBooth .neonFilaments i:nth-child(10){color:#ffe600;transform:rotate(322deg);animation-delay:-.6s}
+@keyframes larBoothElectric{
+    from{height:72px;opacity:.42;filter:brightness(.8)}
+    to{height:112px;opacity:1;filter:brightness(1.7)}
+}
+#larKnowledgeBooth:hover .neonFilaments i{
+    animation-duration:.42s;
+}
+#larKnowledgeOverlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:16000;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,.78);
+    padding:20px;
+    box-sizing:border-box;
+}
+#larKnowledgeBox{
+    position:relative;
+    width:min(600px,92vw);
+    background:#16110d;
+    color:white;
+    border:8px solid #6e4322;
+    outline:3px solid #fff;
+    box-shadow:
+      0 0 18px #00eaff,
+      0 0 45px #ff39ff,
+      0 0 90px rgba(255,255,255,.35),
+      0 25px 80px #000;
+    padding:30px;
+    text-align:center;
+    box-sizing:border-box;
+}
+#larKnowledgeBox::before{
+    content:"";
+    position:absolute;
+    inset:-18px;
+    pointer-events:none;
+    background:
+      repeating-conic-gradient(
+        from 8deg,
+        transparent 0 8deg,
+        rgba(0,234,255,.7) 8deg 8.8deg,
+        transparent 8.8deg 18deg,
+        rgba(255,79,216,.7) 18deg 18.8deg,
+        transparent 18.8deg 30deg
+      );
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+    mask-composite:exclude;
+    padding:7px;
+    animation:larQuestionElectric .9s linear infinite;
+}
+@keyframes larQuestionElectric{
+    to{transform:rotate(360deg)}
+}
+#larKnowledgeTitle{
+    position:relative;
+    z-index:2;
+    color:#fff5a8;
+    font-size:clamp(24px,5vw,42px);
+    font-weight:1000;
+    text-shadow:0 0 8px #fff,0 0 20px #00eaff,3px 3px 0 #000;
+    margin:0 0 16px;
+}
+#larKnowledgeQuestion{
+    position:relative;
+    z-index:2;
+    font-size:clamp(20px,4vw,31px);
+    font-weight:1000;
+    margin:12px 0 18px;
+}
+#larKnowledgeAnswers{
+    position:relative;
+    z-index:2;
+    display:grid;
+    gap:10px;
+}
+.larAnswer{
+    border:4px solid #111;
+    background:#8a572e;
+    color:white;
+    padding:13px 15px;
+    font-size:clamp(15px,2.4vw,21px);
+    font-weight:1000;
+    cursor:pointer;
+    box-shadow:0 4px 0 #000,0 0 12px rgba(255,255,255,.18);
+}
+.larAnswer:hover{
+    background:#b7783b;
+    box-shadow:0 0 12px #fff,0 0 30px #00eaff,0 4px 0 #000;
+}
+#larKnowledgeResult{
+    position:relative;
+    z-index:2;
+    display:none;
+    margin-top:20px;
+    font-size:clamp(16px,2.7vw,23px);
+    line-height:1.35;
+    font-weight:1000;
+}
+#larCasinoButton{
+    position:relative;
+    z-index:2;
+    display:none;
+    margin:18px auto 0;
+    border:5px solid #111;
+    background:#ffe45c;
+    color:#111;
+    padding:14px 22px;
+    font-size:clamp(16px,2.8vw,23px);
+    font-weight:1000;
+    cursor:pointer;
+    box-shadow:0 5px 0 #000,0 0 18px #ffe600;
+}
+#larKnowledgeClose{
+    position:absolute;
+    top:7px;
+    right:10px;
+    z-index:3;
+    border:2px solid #fff;
+    background:#250b0b;
+    color:#fff;
+    font-weight:1000;
+    cursor:pointer;
+    padding:4px 8px;
+}
+@media(max-width:600px){
+    #larKnowledgeBooth{left:10px;bottom:92px;transform:scale(.85);transform-origin:bottom left}
+}
+
 </style>
 </head>
 
 <body>
+
+<!-- ============================================================
+     LAR KNOWLEDGE BOOTH — SECRET LAR CASINO ROUTE
+     ============================================================ -->
+<div id="larKnowledgeBooth" title="A question of some importance">
+  <div class="neonFilaments">
+    <i></i><i></i><i></i><i></i><i></i>
+    <i></i><i></i><i></i><i></i><i></i>
+  </div>
+  <div class="boothRoof"></div>
+  <div class="boothBody"></div>
+  <div class="boothQuestion">?</div>
+  <div class="boothSign">LAR KNOWLEDGE</div>
+</div>
+
+<div id="larKnowledgeOverlay">
+  <div id="larKnowledgeBox">
+    <button id="larKnowledgeClose">X</button>
+    <div id="larKnowledgeTitle">LARRY'S KNOWLEDGE TEST</div>
+    <div id="larKnowledgeQuestion">WHAT IS LARRY'S NAME?</div>
+    <div id="larKnowledgeAnswers"></div>
+    <div id="larKnowledgeResult"></div>
+    <button id="larCasinoButton">TAKE ME TO THE LAR CASINO</button>
+  </div>
+</div>
+
 
 <!-- ============================================================
      NIAGARA PRIZE — RANDOMLY CHOOSES ONE OF FOUR EXPERIENCES
@@ -3911,6 +4165,77 @@ setTimeout(function() {
 
 }, 2500);
 
+</script>
+
+
+<script>
+/* ============================================================
+   SECRET LAR KNOWLEDGE BOOTH
+   Every answer is technically acceptable.
+   ============================================================ */
+(function(){
+  const booth = document.getElementById("larKnowledgeBooth");
+  const overlay = document.getElementById("larKnowledgeOverlay");
+  const answers = document.getElementById("larKnowledgeAnswers");
+  const result = document.getElementById("larKnowledgeResult");
+  const casino = document.getElementById("larCasinoButton");
+  const close = document.getElementById("larKnowledgeClose");
+
+  const answerPool = [
+    "A. Larry.",
+    "B. The person generally referred to as Larry.",
+    "C. The individual responsible for the Variety.",
+    "D. Probably Larry.",
+    "E. Larry, according to several witnesses.",
+    "F. The fellow whose name is Larry.",
+    "G. Larry, unless something has changed.",
+    "H. The owner of an unreasonable number of things.",
+    "I. The person on the receipt.",
+    "J. A man answering to Larry.",
+    "K. Larry. This was not expected to be difficult.",
+    "L. The one who keeps being called Larry."
+  ];
+
+  function shuffle(a){
+    for(let i=a.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+
+  function openBooth(){
+    result.style.display="none";
+    casino.style.display="none";
+    answers.style.display="grid";
+    answers.innerHTML="";
+    const chosen=shuffle(answerPool.slice()).slice(0,3);
+    chosen.forEach(text=>{
+      const b=document.createElement("button");
+      b.className="larAnswer";
+      b.textContent=text;
+      b.addEventListener("click",()=>{
+        answers.style.display="none";
+        result.textContent =
+          "CORRECT. ALL THREE ANSWERS HAVE BEEN ACCEPTED BY LARRY'S DEPARTMENT OF ACCEPTABLE ANSWERS. " +
+          "YOU HAVE EARNED ACCESS TO THE LAR CASINO.";
+        result.style.display="block";
+        casino.style.display="block";
+      });
+      answers.appendChild(b);
+    });
+    overlay.style.display="flex";
+  }
+
+  booth.addEventListener("click",openBooth);
+  close.addEventListener("click",()=>overlay.style.display="none");
+  overlay.addEventListener("click",e=>{
+    if(e.target===overlay) overlay.style.display="none";
+  });
+  casino.addEventListener("click",()=>{
+    window.location.href="niagara34larcasino.html";
+  });
+})();
 </script>
 
 </body>
