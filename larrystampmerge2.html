@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Larry's L.A.R.R.Y. Stamp Collection</title>
+<title>Larry's L.A.R.R.Y. Stamp Collection — v13</title>
 <style>
   * { box-sizing: border-box; }
   html, body { width:100%; height:100%; margin:0; overflow:hidden; }
@@ -31,7 +31,7 @@
     height:100vh;
     margin:auto;
     display:grid;
-    grid-template-columns:minmax(0, 1fr) 260px;
+    grid-template-columns:320px minmax(0, 1fr);
     grid-template-rows:120px minmax(0,1fr);
     gap:12px;
     padding:12px;
@@ -45,22 +45,22 @@
   }
   #wasteMailbox {
     position:absolute;
-    top:6px;
-    width:min(560px, 60vw);
-    height:88px;
+    top:38px;
+    width:min(300px, 40vw);
+    height:72px;
     border-radius:18px 18px 28px 28px;
     background:linear-gradient(#c52222,#8f0f0f);
     border:5px solid #4c0808;
     box-shadow:0 10px 0 rgba(0,0,0,.45), inset 0 5px 0 rgba(255,255,255,.18);
-    cursor:ew-resize;
+    cursor:grab;
     z-index:20;
-    transition:left .05s linear;
+    transition:none; touch-action:none;
   }
   #wasteText {
     position:absolute; inset:0;
     display:flex; align-items:center; justify-content:center;
     font-family:Impact, Haettenschweiler, "Arial Black", sans-serif;
-    font-size:clamp(25px,3vw,44px);
+    font-size:clamp(21px,2.2vw,31px);
     letter-spacing:.18em;
     color:#fff;
     text-shadow:3px 3px 0 #3c0505;
@@ -69,9 +69,10 @@
   #heldStamp {
     position:absolute;
     left:50%;
-    bottom:-50px;
-    width:68px;
-    height:68px;
+    top:68px;
+    bottom:auto;
+    width:88px;
+    height:88px;
     transform:translateX(-50%);
     border-radius:50%;
     border:4px solid #f4e6c5;
@@ -86,11 +87,12 @@
   }
   #heldStamp .heldNum {
     position:absolute; left:4px; top:4px;
-    background:rgba(255,255,255,.9);
+    background:rgba(255,255,255,.95);
     color:#2d1a0c;
     font:bold 12px Arial;
-    padding:2px 4px;
+    padding:3px 5px;
     border-radius:4px;
+    border:1px solid #6b3f1d;
   }
   #mailFlag {
     position:absolute; right:18px; top:-42px;
@@ -103,6 +105,7 @@
     border:3px solid #4b0909;
   }
   #gamePanel {
+    grid-column:2; grid-row:2;
     position:relative;
     min-width:0; min-height:0;
     border-radius:24px;
@@ -111,8 +114,9 @@
     box-shadow:0 12px 30px rgba(0,0,0,.55);
     overflow:hidden;
   }
-  #gameCanvas { width:100%; height:100%; display:block; cursor:crosshair; }
+  #gameCanvas { width:100%; height:100%; display:block; cursor:none; }
   #side {
+    grid-column:1; grid-row:2;
     min-height:0;
     display:flex;
     flex-direction:column;
@@ -137,6 +141,17 @@
     font-size:14px;
     margin-top:4px;
   }
+  #levelBadge {
+    margin:8px auto 0;
+    width:max-content;
+    padding:5px 12px;
+    border-radius:999px;
+    background:#f4ead7;
+    color:#2a170e;
+    border:2px solid #6b3f1d;
+    font:bold 13px Arial;
+    letter-spacing:.08em;
+  }
   #stats {
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -147,29 +162,30 @@
     background:#f4ead7;
     color:#2a170e;
     border-radius:10px;
-    padding:8px;
+    padding:5px 4px;
     text-align:center;
     font-weight:bold;
   }
-  .stat b { display:block; font-size:20px; }
+  .stat b { display:block; font-size:16px; }
   #doubleBtn {
     width:100%;
-    border:3px solid #5b350e;
+    border:2px solid #5b350e;
     border-radius:14px;
     background:linear-gradient(#f3c85b,#b87813);
     color:#241404;
     font-weight:bold;
-    padding:11px 8px;
+    padding:7px 4px;
     cursor:pointer;
     box-shadow:0 5px 0 #6e410c;
-    font-size:16px;
+    font-size:13px;
   }
   #doubleBtn:active { transform:translateY(4px); box-shadow:0 1px 0 #6e410c; }
   #doubleBtn:disabled { opacity:.45; cursor:not-allowed; }
   #boardControls {
     display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:7px;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:5px;
+    margin-top:7px;
   }
   .smallBtn {
     border:2px solid #5b350e;
@@ -177,7 +193,7 @@
     background:#efe0bd;
     color:#2a170e;
     font-weight:bold;
-    padding:8px 5px;
+    padding:7px 3px;
     cursor:pointer;
   }
   .smallBtn:hover { filter:brightness(1.08); }
@@ -194,12 +210,12 @@
   #book {
     flex:1;
     min-height:0;
-    overflow:auto;
+    overflow:hidden;
     background:#e7d5ae;
     color:#2d1a0c;
     border:8px solid #6b3f1d;
     border-radius:12px;
-    padding:9px;
+    padding:7px;
     box-shadow:inset 0 0 0 2px #3b210e;
   }
   #bookTitle {
@@ -208,23 +224,103 @@
   }
   #slots {
     display:grid; grid-template-columns:1fr 1fr;
-    gap:7px;
+    gap:5px;
   }
   .slot {
-    aspect-ratio:1.05;
+    min-height:72px;
     border:2px dashed #8a6a40;
     background:#f5ead0;
     position:relative;
-    display:flex; align-items:center; justify-content:center;
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 32px;
+    gap:5px;
+    align-items:center;
+    padding:5px;
     overflow:hidden;
+    cursor:pointer;
   }
-  .slot img { width:100%; height:100%; object-fit:cover; opacity:.18; }
+  .slot img { width:100%; height:78px; object-fit:cover; opacity:.18; border:2px solid #8a6a40; }
   .slot.collected { border:2px solid #b07a19; box-shadow:0 0 12px #d99a2b; }
   .slot.collected img { opacity:1; }
   .slot span {
-    position:absolute; left:4px; top:2px; background:rgba(255,255,255,.8);
-    padding:1px 4px; font:bold 11px Arial; border-radius:4px;
+    position:static;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:28px;
+    height:24px;
+    background:#fff;
+    color:#2d1a0c;
+    padding:2px 3px;
+    font:bold 12px Arial;
+    border-radius:4px;
+    border:1px solid #6b3f1d;
   }
+  .slot img.lockedStamp { filter:blur(5px) grayscale(65%); opacity:.45; }
+  .slotTitle {
+    position:absolute; left:6px; right:42px; bottom:6px;
+    z-index:3; padding:2px 4px; border-radius:3px;
+    background:rgba(25,15,8,.82); color:#fff3d0;
+    font:700 7px/1.05 Georgia,serif;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    pointer-events:none;
+  }
+  .slot:hover { filter:brightness(1.06); }
+
+  #stampModal {
+    position:fixed; inset:0; background:rgba(0,0,0,.72);
+    display:none; align-items:center; justify-content:center; z-index:200;
+  }
+  #stampModal.show { display:flex; }
+  #stampModalCard {
+    width:min(520px,86vw); max-height:88vh; overflow:auto;
+    background:#e7d5ae; color:#2d1a0c;
+    border:8px solid #6b3f1d; border-radius:18px; padding:18px;
+    text-align:center; box-shadow:0 16px 45px rgba(0,0,0,.65);
+  }
+  #stampModalCard img {
+    width:min(360px,72vw); height:min(360px,55vh); object-fit:cover;
+    border:5px solid #f4e6c5; box-shadow:0 0 0 3px #5a351d;
+  }
+  #stampModalTitle { font-size:24px; font-weight:bold; margin:12px 0 4px; }
+  #stampModalNumber { font:bold 14px Arial; margin-bottom:10px; }
+  #stampModalClose {
+    border:2px solid #5b350e; border-radius:10px; background:#efe0bd;
+    color:#2a170e; font-weight:bold; padding:9px 18px; cursor:pointer;
+  }
+  #stampModalNav {
+    display:flex; align-items:center; justify-content:center; gap:18px;
+    margin:12px 0 14px;
+    font:bold 14px Georgia,serif;
+  }
+  #stampModalNav button {
+    width:46px; height:38px;
+    border:3px solid #6b3f1d; border-radius:10px;
+    background:#f4e6c5; color:#2d1a0c;
+    font:bold 28px Georgia,serif; line-height:1;
+    cursor:pointer;
+    box-shadow:0 3px 0 #5a351d;
+  }
+  #stampModalNav button:active { transform:translateY(2px); box-shadow:0 1px 0 #5a351d; }
+  #larBusButton {
+    display:block; width:100%; margin-top:10px;
+    box-sizing:border-box; text-decoration:none; text-align:center;
+    border:2px solid #4b2a16; border-radius:999px;
+    background:linear-gradient(#9a5b2e,#6d391b);
+    color:#fff3d0; font:bold 12px Georgia,serif;
+    padding:5px 12px; cursor:pointer;
+    box-shadow:inset 0 1px rgba(255,255,255,.22), 0 2px 0 #3a2111;
+  }
+  #larBusButton:hover { filter:brightness(1.08); }
+  #larBusButton:active { transform:translateY(2px); box-shadow:inset 0 2px rgba(255,255,255,.18), 0 2px 0 #3a2111; }
+  #postalCursor {
+    position:fixed; width:26px; height:26px; pointer-events:none; z-index:100;
+    transform:translate(-4px,-4px); display:none;
+    filter:drop-shadow(1px 2px 1px rgba(0,0,0,.65));
+  }
+  #postalCursor svg { width:100%; height:100%; overflow:visible; }
+  #postalCursor path { fill:none; stroke:#f4e6c5; stroke-width:4; stroke-linecap:round; stroke-linejoin:round; }
+  #gamePanel:hover #postalCursor { display:block; }
   #message {
     position:absolute; left:50%; top:50%;
     transform:translate(-50%,-50%);
@@ -238,13 +334,44 @@
     z-index:30;
   }
   #message.show { opacity:1; }
+  #levelCelebration {
+    position:absolute; inset:0; display:none; align-items:center; justify-content:center;
+    z-index:80; pointer-events:none; overflow:hidden;
+    background:rgba(0,0,0,.16);
+  }
+  #levelCelebration.show { display:flex; }
+  #celebrationCard {
+    position:relative; z-index:3; width:min(620px,82%);
+    padding:24px 30px; text-align:center;
+    background:rgba(25,8,8,.94); color:#fff;
+    border:5px solid #f4d36a; border-radius:22px;
+    box-shadow:0 0 0 4px #6b3f1d, 0 14px 40px rgba(0,0,0,.65);
+    font-family:Georgia,serif;
+  }
+  #celebrationTitle { font-size:clamp(25px,3.2vw,42px); font-weight:bold; line-height:1.08; }
+  #celebrationSub { margin-top:9px; font-size:18px; font-weight:bold; }
+  .confetti { position:absolute; width:9px; height:18px; top:-30px; opacity:.95; animation:confettiFall var(--dur) linear infinite; transform:rotate(var(--rot)); }
+  @keyframes confettiFall { to { transform:translate3d(var(--dx),110vh,0) rotate(720deg); } }
+  .firework { position:absolute; width:14px; height:14px; border-radius:50%; left:var(--x); top:var(--y); background:#fff; box-shadow:0 0 16px 6px rgba(255,255,255,.95); animation:fireworkPop 1.5s ease-out infinite; }
+  .firework::before {
+    content:""; position:absolute; inset:-64px; border-radius:50%;
+    background:
+      radial-gradient(circle, transparent 0 7px, rgba(255,255,255,.98) 8px 10px, transparent 11px 22px,
+      rgba(244,211,106,.95) 23px 27px, transparent 28px 42px,
+      rgba(255,90,90,.85) 43px 46px, transparent 47px),
+      repeating-conic-gradient(from 0deg, rgba(255,255,255,.95) 0 3deg, transparent 3deg 18deg);
+    -webkit-mask:radial-gradient(circle, transparent 0 10px, #000 11px 66px, transparent 67px);
+    mask:radial-gradient(circle, transparent 0 10px, #000 11px 66px, transparent 67px);
+  }
+  @keyframes fireworkPop { 0%,100% { transform:scale(.15); opacity:.2; } 35% { transform:scale(1); opacity:1; } 70% { transform:scale(1.1); opacity:.8; } }
   #hint { font-size:12px; line-height:1.3; text-align:center; }
   @media (max-width:900px) {
     #app { grid-template-columns:1fr; grid-template-rows:105px minmax(0,1fr) 310px; }
     #header { grid-column:1; }
-    #side { display:grid; grid-template-columns:1fr 1fr; }
+    #gamePanel { grid-column:1; grid-row:2; }
+    #side { grid-column:1; grid-row:3; display:grid; grid-template-columns:1fr 1fr; }
     #book { grid-column:1 / -1; }
-    #wasteMailbox { width:65vw; }
+    #wasteMailbox { width:48vw; }
   }
 </style>
 </head>
@@ -260,13 +387,23 @@
 
   <main id="gamePanel">
     <canvas id="gameCanvas"></canvas>
+    <div id="postalCursor" aria-hidden="true">
+      <svg viewBox="0 0 64 64"><path d="M9 34h17c4 0 7-3 7-7s-3-7-7-7H15c-3 0-5 2-5 5s2 5 5 5h12"/><path d="M33 27h9c7 0 12 5 12 12v6H39"/><path d="M39 45v10"/><path d="M47 45v10"/></svg>
+    </div>
     <div id="message"></div>
+    <div id="levelCelebration" aria-hidden="true">
+      <div id="celebrationCard">
+        <div id="celebrationTitle">LARRY IS PROUD OF YOU!</div>
+        <div id="celebrationSub">NEXT TRY THESE!</div>
+      </div>
+    </div>
   </main>
 
   <aside id="side">
     <section class="panel">
       <div id="title">LARRY'S STAMP COLLECTION</div>
       <div id="subtitle">WHY NOT COLLECT 'EM ALL?</div>
+      <div id="levelBadge">LAR LEVEL 1</div>
       <div id="stats">
         <div class="stat">LAR-BUCKS<b id="bucks">10</b></div>
         <div class="stat">COLLECTED<b id="count">0/72</b></div>
@@ -274,12 +411,13 @@
     </section>
 
     <section class="panel">
-      <button id="doubleBtn">2 LAR-BUCKS — ×2 SPEED</button>
+      <button id="doubleBtn">AUTO LARRY — START</button>
       <div id="boardControls">
-        <button class="smallBtn" id="clearBtn">CLEAR — KEEP TOP 4</button>
-        <button class="smallBtn" id="dropBtn">DROP ONCE</button>
+        <button class="smallBtn" id="inspectBtn">INSPECT LAR STAMPS</button>
+        <button class="smallBtn" id="dropBtn">LAR DROP</button>
       </div>
-      <div id="hint">Move the L.A.R.R.Y. mailbox to aim. Click or hold it to fire. The stamp shown beneath the mailbox is the one you will drop.</div>
+      <div id="hint">Move the L.A.R.R.Y. mailbox to aim, then click once to drop. AUTO LARRY can drop for you. Drag a stamp through the pile and onto a matching stamp to merge it.</div>
+      <a id="larBusButton" href="index.html" title="Return to the LAR BUS">🚌 LAR BUS — RETURN</a>
     </section>
 
     <section id="book">
@@ -288,9 +426,23 @@
         <div id="pageStatus">PAGE <span id="pageNo">1</span></div>
         <button class="smallBtn" id="nextPage">NEXT ›</button>
       </div>
+      <div id="bookTitle">YOUR NEW LAR STAMPS!!!</div>
       <div id="slots"></div>
     </section>
   </aside>
+</div>
+<div id="stampModal" aria-hidden="true">
+  <div id="stampModalCard">
+    <img id="stampModalImg" alt="Stamp artwork">
+    <div id="stampModalTitle"></div>
+    <div id="stampModalNumber"></div>
+    <div id="stampModalNav">
+      <button id="stampPrev" aria-label="Previous stamp">‹</button>
+      <span>1–72</span>
+      <button id="stampNext" aria-label="Next stamp">›</button>
+    </div>
+    <button id="stampModalClose">CLOSE</button>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
@@ -371,7 +523,7 @@ const images = [
 ];
 
 const {
-  Engine, Render, Runner, Bodies, Body, Composite, Events, Vector
+  Engine, Render, Runner, Bodies, Body, Composite, Events, Vector, Mouse, MouseConstraint
 } = Matter;
 
 const canvas = document.getElementById('gameCanvas');
@@ -379,7 +531,7 @@ const panel = document.getElementById('gamePanel');
 const mailbox = document.getElementById('wasteMailbox');
 const heldStampImg = document.getElementById('heldStampImg');
 const heldNum = document.getElementById('heldNum');
-const clearBtn = document.getElementById('clearBtn');
+const inspectBtn = document.getElementById('inspectBtn');
 const dropBtn = document.getElementById('dropBtn');
 const prevPageBtn = document.getElementById('prevPage');
 const nextPageBtn = document.getElementById('nextPage');
@@ -389,9 +541,19 @@ const countEl = document.getElementById('count');
 const slotsEl = document.getElementById('slots');
 const pageNoEl = document.getElementById('pageNo');
 const doubleBtn = document.getElementById('doubleBtn');
+const stampModal = document.getElementById('stampModal');
+const stampModalImg = document.getElementById('stampModalImg');
+const stampModalTitle = document.getElementById('stampModalTitle');
+const stampModalNumber = document.getElementById('stampModalNumber');
+const stampModalClose = document.getElementById('stampModalClose');
+const stampPrev = document.getElementById('stampPrev');
+const stampNext = document.getElementById('stampNext');
+let modalTier = 1;
+const levelBadge = document.getElementById('levelBadge');
+const levelCelebration = document.getElementById('levelCelebration');
 
 const engine = Engine.create();
-engine.gravity.y = 1.05;
+engine.gravity.y = 1.38;
 const world = engine.world;
 const runner = Runner.create();
 
@@ -402,16 +564,29 @@ let nextId = 1;
 let bucks = 10;
 let collected = new Set();
 let pageStart = 0;
+let generatorStart = 0;
 let doubleMode = false;
+let autoLarry = false;
+let autoTimer = null;
+let autoWaitingBody = null;
 let dropLock = false;
 let mailboxX = 0.5;
 let draggingMailbox = false;
-let firing = false;
-let fireTimer = null;
 let lastDropTime = 0;
-let nextDropTier = 1;
+let unlockedTier = 1;
+let levelNumber = 1;
+const larryLevelMessages = [
+  'LARRY IS PROUD OF YOU!',
+  'LARRY SAYS: THAT WAS BRILLIANT!',
+  'LARRY IS IMPRESSED! KEEP COLLECTING!',
+  'LARRY SAYS: YOU ARE ON A ROLL!',
+  'LARRY IS DELIGHTED! ANOTHER LEVEL!',
+  'LARRY SAYS: MAGNIFICENT STAMP WORK!',
+  'LARRY IS THRILLED! NEXT BATCH AWAITS!'
+];
+let mouseConstraint;
+let cursorX = 0, cursorY = 0;
 const DROP_COOLDOWN = 260;
-const FIRE_INTERVAL = 300;
 
 const imgs = images.map(src => {
   const im = new Image();
@@ -448,10 +623,16 @@ function makeWorld() {
   Composite.add(world,[wallLeft,wallRight,floor,bookShelf]);
 }
 
+function localTier(tier) {
+  return ((tier - 1) % 7) + 1;
+}
+
 function stampRadius(tier) {
-  // Exponential growth, with a practical ceiling so the later stamps
-  // remain playable inside the large chamber.
-  return Math.min(135, 48 * Math.pow(1.075, tier-1));
+  // Each seven-stamp series resets to the size of Stamp 1.
+  // Stamps 1-6 grow only a little from one level to the next;
+  // Stamp 7 is the one deliberately large final stamp.
+  const sizes = [54, 59, 64, 69, 74, 79, 112];
+  return sizes[localTier(tier)-1];
 }
 
 function createStamp(tier, x, y) {
@@ -468,72 +649,210 @@ function createStamp(tier, x, y) {
     image: imgs[tier-1],
     radius:r,
     born:performance.now(),
-    merged:false
+    merged:false,
+    autoSpawned:false
   };
   stamps.push(body);
   Composite.add(world,body);
+  Body.setVelocity(body, {x:0, y:2.6});
+
+  // A stamp registers in YOUR NEW LAR STAMPS the first time it is actually
+  // seen on the board. This includes a newly created stamp produced by a merge.
+  // The physical stamp remains in the pile; collection is only the book record.
+  setTimeout(() => collectTier(tier), 0);
+
   return body;
 }
 
 function chooseNextTier() {
-  const maxTier = Math.max(1, Math.min(8, Math.max(...stamps.map(s=>s.plugin?.tier||1),1)));
-  const roll = Math.random();
-  if (roll < 0.62) return 1;
-  if (roll < 0.86) return Math.min(2, maxTier);
-  if (roll < 0.96) return Math.min(3, maxTier);
-  return 1 + Math.floor(Math.random() * maxTier);
+  // L.A.R.R.Y. chooses randomly from the stamps that have been unlocked.
+  // Stamp 1 is common, stamp 2 is common once unlocked, and stamp 3
+  // appears occasionally. Later stamps are not randomly pulled from
+  // ahead of the player's progress.
+  const first = generatorStart + 1;
+  const maxUnlocked = Math.min(unlockedTier, generatorStart + 7, images.length);
+  const available = [];
+  for (let tier = first; tier <= Math.min(maxUnlocked, first + 2); tier++) {
+    available.push(tier);
+  }
+  if (available.length === 1) return available[0];
+  if (available.length === 2) return Math.random() < 0.68 ? available[0] : available[1];
+
+  const r = Math.random();
+  if (r < 0.65) return available[0];
+  if (r < 0.95) return available[1];
+  return available[2];
 }
 
+
 function updateHeldStamp() {
-  const tier = Math.max(1, Math.min(images.length, nextDropTier));
+  const tier = chooseNextTier();
+  heldStampImg.dataset.tier = tier;
   heldStampImg.src = images[tier-1];
   heldNum.textContent = String(tier).padStart(2,'0');
   heldStampImg.alt = `Stamp ${tier}`;
 }
 
-function dropStamp() {
+
+let audioCtx;
+function sound(type) {
+  try {
+    audioCtx ||= new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    const now = audioCtx.currentTime;
+    if (type === 'drop') {
+      o.type='triangle'; o.frequency.setValueAtTime(280,now); o.frequency.exponentialRampToValueAtTime(120,now+.11);
+      g.gain.setValueAtTime(.0001,now); g.gain.exponentialRampToValueAtTime(.10,now+.01); g.gain.exponentialRampToValueAtTime(.0001,now+.13);
+      o.connect(g).connect(audioCtx.destination); o.start(now); o.stop(now+.14);
+    } else if (type === 'merge') {
+      o.type='sine'; o.frequency.setValueAtTime(330,now); o.frequency.exponentialRampToValueAtTime(660,now+.16);
+      g.gain.setValueAtTime(.0001,now); g.gain.exponentialRampToValueAtTime(.16,now+.01); g.gain.exponentialRampToValueAtTime(.0001,now+.2);
+      o.connect(g).connect(audioCtx.destination); o.start(now); o.stop(now+.21);
+    } else if (type === 'pop') {
+      o.type='square'; o.frequency.setValueAtTime(150,now); o.frequency.exponentialRampToValueAtTime(70,now+.08);
+      g.gain.setValueAtTime(.0001,now); g.gain.exponentialRampToValueAtTime(.09,now+.005); g.gain.exponentialRampToValueAtTime(.0001,now+.09);
+      o.connect(g).connect(audioCtx.destination); o.start(now); o.stop(now+.1);
+    }
+  } catch(e) {}
+}
+
+function getDropOrigin() {
+  const panelRect = panel.getBoundingClientRect();
+  const heldRect = document.getElementById('heldStamp').getBoundingClientRect();
+  const x = Math.max(50, Math.min(W-50, heldRect.left + heldRect.width/2 - panelRect.left));
+  // Start the physical stamp immediately below the visible stamp hanging
+  // from the mailbox, so the player can see exactly where it will fall.
+  const y = Math.max(22, Math.min(110, heldRect.bottom - panelRect.top + 8));
+  return {x, y};
+}
+
+function updateLevelBadge() {
+  levelBadge.textContent = `LAR LEVEL ${levelNumber}`;
+}
+
+function launchCelebration(nextStart) {
+  const messageIndex = Math.max(0, (levelNumber - 1) % larryLevelMessages.length);
+  document.getElementById('celebrationTitle').textContent = larryLevelMessages[messageIndex];
+  document.getElementById('celebrationSub').textContent = `NEXT TRY THESE! — LAR LEVEL ${levelNumber + 1}`;
+  levelCelebration.querySelectorAll('.confetti, .firework').forEach(el => el.remove());
+
+  // A much fuller celebration: lots of falling confetti plus many fireworks.
+  for (let i=0; i<120; i++) {
+    const c=document.createElement('span');
+    c.className='confetti';
+    c.style.left=(Math.random()*100)+'%';
+    c.style.setProperty('--dx', ((Math.random()-.5)*180)+'px');
+    c.style.setProperty('--dur', (2.0+Math.random()*2.2)+'s');
+    c.style.setProperty('--rot', (Math.random()*360)+'deg');
+    c.style.background=['#f4d36a','#fff','#d13a2f','#6eb6ff','#7ac77a'][i%5];
+    c.style.animationDelay=(-Math.random()*2.8)+'s';
+    levelCelebration.appendChild(c);
+  }
+
+  for (let i=0; i<16; i++) {
+    const f = document.createElement('span');
+    f.className = 'firework';
+    f.style.left = (8 + Math.random()*84) + '%';
+    f.style.top = (8 + Math.random()*46) + '%';
+    f.style.animationDelay = (-Math.random()*1.4) + 's';
+    f.style.animationDuration = (1.15 + Math.random()*.75) + 's';
+    levelCelebration.appendChild(f);
+  }
+
+  levelCelebration.classList.add('show');
+  levelCelebration.setAttribute('aria-hidden','false');
+  clearTimeout(launchCelebration.timer);
+  launchCelebration.timer=setTimeout(()=>{
+    generatorStart=nextStart;
+    levelNumber=Math.floor(generatorStart/7)+1;
+    unlockedTier=generatorStart+1;
+    pageStart=generatorStart;
+    updateLevelBadge();
+    updateHeldStamp();
+    updateBook();
+    levelCelebration.classList.remove('show');
+    levelCelebration.setAttribute('aria-hidden','true');
+    showMessage(`LAR LEVEL ${levelNumber}`,900);
+  },1800);
+}
+
+function dropStamp(isAuto = false) {
   const now = performance.now();
-  if (now-lastDropTime < DROP_COOLDOWN) return;
+  if (now-lastDropTime < DROP_COOLDOWN) return false;
   lastDropTime = now;
 
-  const x = Math.max(75, Math.min(W-75, mailboxX*W));
-  const tier = nextDropTier;
+  const origin = getDropOrigin();
+  const x = origin.x;
+  const y = origin.y;
+  const tier = Number(heldStampImg.dataset.tier) || chooseNextTier();
 
-  createStamp(tier, x, 112);
-  nextDropTier = chooseNextTier();
+  const body = createStamp(tier, x, y);
+  body.plugin.autoSpawned = isAuto;
+  sound('drop');
   updateHeldStamp();
-
-  if (doubleMode) {
-    setTimeout(() => {
-      const x2 = Math.max(75, Math.min(W-75, x + (Math.random()<.5 ? -22 : 22)));
-      createStamp(tier, x2, 112);
-    }, 90);
-    doubleMode = false;
-    updateDoubleButton();
-  }
+  return body;
 }
+
+function popBody(body) {
+  if (!body || !body.plugin || body.plugin.popped) return;
+  body.plugin.popped = true;
+  const x = body.position.x, y = body.position.y, r = body.plugin.radius;
+  Composite.remove(world, body);
+  stamps = stamps.filter(s => s !== body);
+  mergeBursts.push({x, y, r:Math.max(16,r*.45), life:1, pop:true});
+  sound('pop');
+}
+
 function tryMerge(a,b) {
-  if (!a.plugin || !b.plugin || a.plugin.merged || b.plugin.merged) return;
+  if (!a.plugin || !b.plugin || a.plugin.merged || b.plugin.merged || a.plugin.popped || b.plugin.popped) return;
+
+  // When a new level begins, a newly introduced stamp pops an older-level
+  // stamp on contact. This clears the previous seven naturally rather than
+  // leaving the old level permanently in the field.
+  const activeStart = generatorStart + 1;
+  const aNew = a.plugin.tier >= activeStart;
+  const bNew = b.plugin.tier >= activeStart;
+  if (aNew !== bNew) {
+    popBody(aNew ? b : a);
+    return;
+  }
+
   if (a.plugin.tier !== b.plugin.tier) return;
 
   const tier = a.plugin.tier;
-  a.plugin.merged = true; b.plugin.merged = true;
+  const nextTier = tier + 1;
+  const groupEnd = Math.min(generatorStart + 7, images.length);
+
+  a.plugin.merged = true;
+  b.plugin.merged = true;
 
   const x = (a.position.x+b.position.x)/2;
   const y = (a.position.y+b.position.y)/2;
-  Composite.remove(world,a); Composite.remove(world,b);
+
+  Composite.remove(world,a);
+  Composite.remove(world,b);
   stamps = stamps.filter(s=>s!==a && s!==b);
 
-  // The two matching stamps have now "collected" that artwork.
-  collectTier(tier);
+  sound('merge');
 
-  if (tier < images.length) {
-    setTimeout(()=> {
-      const n = createStamp(tier+1, x, y);
-      Body.setVelocity(n, {x:0,y:-2});
-    }, 30);
+  if (nextTier <= groupEnd) {
+    const mergedResult = createStamp(nextTier, x, y);
+    if (nextTier > unlockedTier) unlockedTier = nextTier;
+    updateHeldStamp();
+    if (autoWaitingBody === a || autoWaitingBody === b) autoWaitingBody = mergedResult;
   }
+
+  flashMerge(x, y, stampRadius(tier));
 }
+
+function flashMerge(x, y, r) {
+  const burst = {x, y, r:Math.max(18, r*.55), life:1};
+  mergeBursts.push(burst);
+}
+
+const mergeBursts = [];
 
 Events.on(engine,'collisionStart', event => {
   for (const pair of event.pairs) {
@@ -542,24 +861,92 @@ Events.on(engine,'collisionStart', event => {
   }
 });
 
+const MAX_UPWARD_BOUNCE = 5.5;
+const MAX_SIDE_SPEED = 10;
+Events.on(engine,'afterUpdate', () => {
+  // While a stamp is being carried, it passes behind the pile. The instant
+  // its edge touches a matching stamp, it merges without waiting for release.
+  for (const dragged of stamps) {
+    if (!dragged || !dragged.plugin || !dragged.plugin.dragging || dragged.plugin.merged || dragged.plugin.popped) continue;
+    for (const other of stamps) {
+      if (!other || other === dragged || !other.plugin || other.plugin.dragging || other.plugin.merged || other.plugin.popped) continue;
+      if (other.plugin.tier !== dragged.plugin.tier) continue;
+      const dx = dragged.position.x - other.position.x;
+      const dy = dragged.position.y - other.position.y;
+      if (Math.hypot(dx,dy) <= dragged.plugin.radius + other.plugin.radius + 2) {
+        tryMerge(dragged, other);
+        break;
+      }
+    }
+  }
+
+  for (const b of stamps) {
+    if (!b || !b.plugin || b.plugin.dragging || b.plugin.popped) continue;
+    let vx = Math.max(-MAX_SIDE_SPEED, Math.min(MAX_SIDE_SPEED, b.velocity.x));
+    let vy = b.velocity.y;
+    if (vy < -MAX_UPWARD_BOUNCE) vy = -MAX_UPWARD_BOUNCE;
+    Body.setVelocity(b, {x:vx, y:vy});
+    if (b.position.y < 75) {
+      Body.setPosition(b, {x:b.position.x, y:75});
+      if (b.velocity.y < 0) Body.setVelocity(b, {x:b.velocity.x, y:0});
+    }
+  }
+});
+
 function collectTier(tier) {
   if (tier < 1 || tier > images.length || collected.has(tier)) return;
+
+  // Only the currently active seven-stamp series can trigger
+  // generator advancement. Older collection-book pages remain
+  // browsable but cannot move the generator backwards.
+  const activeStart = generatorStart + 1;
+  const activeEnd = Math.min(generatorStart + 7, images.length);
+  const isActiveTier = tier >= activeStart && tier <= activeEnd;
+
   collected.add(tier);
   updateBook();
+  showMessage(`COLLECTED #${String(tier).padStart(2,'0')}`, 650);
 
-  const wasLastOnPage = currentPageTiers().every(t => collected.has(t));
-  showMessage(`COLLECTED #${tier}`, 650);
+  // Completing the current seven means that the seventh stamp has been
+  // achieved. The resulting #7 remains on the board; the generator simply
+  // resets to the first stamp of the next seven after a short pause.
+  const completedCurrentSet = tier === activeEnd && isActiveTier;
 
-  if (wasLastOnPage) {
-    setTimeout(()=> {
-      if (pageStart+7 < images.length) {
-        pageStart += 7;
-        updateBook();
-        showMessage('NEXT 7 STAMPS', 850);
-      } else {
-        showMessage("ALL 72 COLLECTED!", 1600);
+  if (completedCurrentSet) {
+    const nextStart = generatorStart + 7;
+    if (nextStart < images.length) {
+      launchCelebration(nextStart);
+    } else {
+      levelCelebration.querySelectorAll('.confetti, .firework').forEach(el => el.remove());
+      for (let i=0; i<140; i++) {
+        const c=document.createElement('span');
+        c.className='confetti';
+        c.style.left=(Math.random()*100)+'%';
+        c.style.setProperty('--dx', ((Math.random()-.5)*220)+'px');
+        c.style.setProperty('--dur', (1.8+Math.random()*2.6)+'s');
+        c.style.setProperty('--rot', (Math.random()*360)+'deg');
+        c.style.background=['#f4d36a','#fff','#d13a2f','#6eb6ff','#7ac77a'][i%5];
+        c.style.animationDelay=(-Math.random()*2.5)+'s';
+        levelCelebration.appendChild(c);
       }
-    }, 720);
+      for (let i=0; i<20; i++) {
+        const f=document.createElement('span');
+        f.className='firework';
+        f.style.left=(5+Math.random()*90)+'%';
+        f.style.top=(6+Math.random()*48)+'%';
+        f.style.animationDelay=(-Math.random()*1.5)+'s';
+        f.style.animationDuration=(1.1+Math.random()*.8)+'s';
+        levelCelebration.appendChild(f);
+      }
+      document.getElementById('celebrationTitle').textContent='LARRY IS PROUD OF YOU! YOU DID IT!';
+      document.getElementById('celebrationSub').textContent='ALL 72 LAR STAMPS COLLECTED — YOU RECEIVE 1000 LAR-BUCKS!';
+      bucks += 1000;
+      bucksEl.textContent = bucks;
+      stopAutoLarry();
+      updateDoubleButton();
+      levelCelebration.classList.add('show');
+      levelCelebration.setAttribute('aria-hidden','false');
+    }
   }
   countEl.textContent = `${collected.size}/${images.length}`;
 }
@@ -570,18 +957,53 @@ function currentPageTiers() {
   return arr;
 }
 
+function titleFromPath(path) {
+  const file = path.split('/').pop().replace(/\.[^.]+$/, '');
+  return file
+    .replace(/^LMAC-/, '')
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
+    .replace(/_/g,' ');
+}
+
+function openStampModal(tier) {
+  modalTier = Math.max(1, Math.min(images.length, Number(tier) || 1));
+  updateStampModal();
+  stampModal.classList.add('show');
+  stampModal.setAttribute('aria-hidden','false');
+}
+
+function updateStampModal() {
+  stampModalImg.src = images[modalTier-1];
+  stampModalTitle.textContent = titleFromPath(images[modalTier-1]);
+  stampModalNumber.textContent = `LAR STAMP #${String(modalTier).padStart(2,'0')} OF ${images.length}`;
+}
+
+function closeStampModal() {
+  stampModal.classList.remove('show');
+  stampModal.setAttribute('aria-hidden','true');
+}
+
 function updateBook() {
   pageNoEl.textContent = Math.floor(pageStart/7)+1;
   slotsEl.innerHTML='';
   currentPageTiers().forEach(tier=> {
-    const slot=document.createElement('div');
+    const slot=document.createElement('button');
+    slot.type='button';
     slot.className='slot'+(collected.has(tier)?' collected':'');
     const im=document.createElement('img');
     im.src=images[tier-1];
     im.alt=`Stamp ${tier}`;
+    if (!collected.has(tier)) im.classList.add('lockedStamp');
+    const title=document.createElement('small');
+    title.className='slotTitle';
+    title.textContent=titleFromPath(images[tier-1]);
     const num=document.createElement('span');
     num.textContent=String(tier).padStart(2,'0');
-    slot.appendChild(im); slot.appendChild(num);
+    slot.appendChild(im);
+    slot.appendChild(title);
+    slot.appendChild(num);
+    slot.addEventListener('click',()=>openStampModal(tier));
     slotsEl.appendChild(slot);
   });
   countEl.textContent = `${collected.size}/${images.length}`;
@@ -596,16 +1018,53 @@ function showMessage(text, ms=700) {
 }
 
 function updateDoubleButton() {
-  doubleBtn.disabled = bucks < 2 || doubleMode;
-  doubleBtn.textContent = doubleMode ? '×2 ACTIVE — NEXT DROP' : '2 LAR-BUCKS — ×2 SPEED';
+  doubleBtn.disabled = false;
+  doubleBtn.textContent = autoLarry ? 'AUTO LARRY — STOP' : 'AUTO LARRY — START';
+  doubleBtn.setAttribute('aria-pressed', autoLarry ? 'true' : 'false');
+}
+
+function stopAutoLarry() {
+  autoLarry = false;
+  autoWaitingBody = null;
+  if (autoTimer) {
+    clearInterval(autoTimer);
+    autoTimer = null;
+  }
+  updateDoubleButton();
+}
+
+function startAutoLarry() {
+  if (autoLarry) return;
+  autoLarry = true;
+  autoWaitingBody = null;
+  updateDoubleButton();
+  autoTimer = setInterval(() => {
+    if (!autoLarry || levelCelebration.classList.contains('show')) return;
+
+    // Wait until the previous automatic drop has settled in the lower-middle.
+    if (autoWaitingBody && stamps.includes(autoWaitingBody) && autoWaitingBody.plugin && !autoWaitingBody.plugin.popped) {
+      const b = autoWaitingBody;
+      const settled = b.position.y > H - 250 &&
+        Math.abs(b.position.x - W/2) < W * 0.40 &&
+        Math.abs(b.velocity.y) < 1.8 &&
+        Math.abs(b.velocity.x) < 1.8;
+      if (!settled) return;
+    } else {
+      autoWaitingBody = null;
+      // If the field isn't empty, wait for a lower central piece to settle.
+      if (stamps.some(b => b.plugin && b.position.y > H - 250 &&
+          Math.abs(b.position.x - W/2) < W * 0.40 &&
+          (Math.abs(b.velocity.y) >= 1.8 || Math.abs(b.velocity.x) >= 1.8))) return;
+    }
+
+    const dropped = dropStamp(true);
+    if (dropped) autoWaitingBody = dropped;
+  }, 120);
 }
 
 doubleBtn.addEventListener('click',()=> {
-  if (bucks < 2 || doubleMode) return;
-  bucks -= 2;
-  bucksEl.textContent=bucks;
-  doubleMode=true;
-  updateDoubleButton();
+  if (autoLarry) stopAutoLarry();
+  else startAutoLarry();
 });
 
 function clearBoardKeepTopFour() {
@@ -617,22 +1076,8 @@ function clearBoardKeepTopFour() {
     if (!keep.has(b)) Composite.remove(world,b);
   }
   stamps = stamps.filter(b => keep.has(b));
-  showMessage(`CLEARED — KEPT TOP ${Math.min(4,live.length)}`, 900);
-}
-
-function startFiring() {
-  if (firing) return;
-  firing = true;
-  dropStamp();
-  fireTimer = setInterval(dropStamp, FIRE_INTERVAL);
-}
-
-function stopFiring() {
-  firing = false;
-  if (fireTimer) {
-    clearInterval(fireTimer);
-    fireTimer = null;
-  }
+  showMessage(`POP! — KEPT TOP ${Math.min(4,live.length)}`, 900);
+  sound('merge');
 }
 
 function goToPage(start) {
@@ -656,46 +1101,133 @@ function setMailboxFromClientX(clientX) {
   positionMailbox();
 }
 
+let mailboxMoved=false;
+let mailboxDownX=0;
 mailbox.addEventListener('pointerdown',e=> {
+  // Exact aiming: a click drops without changing position; movement drags
+  // the mailbox directly with the pointer. No CSS transition adds lag.
   draggingMailbox=true;
+  mailboxMoved=false;
+  mailboxDownX=e.clientX;
   mailbox.setPointerCapture(e.pointerId);
-  setMailboxFromClientX(e.clientX);
-  startFiring();
+  e.preventDefault();
 });
 mailbox.addEventListener('pointermove',e=> {
-  if(draggingMailbox) setMailboxFromClientX(e.clientX);
+  if(!draggingMailbox) return;
+  if(Math.abs(e.clientX-mailboxDownX)>1) mailboxMoved=true;
+  if(mailboxMoved) setMailboxFromClientX(e.clientX);
 });
 mailbox.addEventListener('pointerup',e=> {
+  if(!draggingMailbox) return;
   draggingMailbox=false;
-  stopFiring();
+  try { mailbox.releasePointerCapture(e.pointerId); } catch(_) {}
+  if(!mailboxMoved) dropStamp();
 });
 mailbox.addEventListener('pointercancel',e=> {
   draggingMailbox=false;
-  stopFiring();
+  mailboxMoved=false;
 });
 
 dropBtn.addEventListener('click', dropStamp);
-clearBtn.addEventListener('click', clearBoardKeepTopFour);
+inspectBtn.addEventListener('click', () => openStampModal(pageStart + 1));
 prevPageBtn.addEventListener('click',()=>goToPage(pageStart-7));
 nextPageBtn.addEventListener('click',()=>goToPage(pageStart+7));
-window.addEventListener('keydown',e=> {
-  if(e.code==='Space') {
+stampModalClose.addEventListener('click', closeStampModal);
+stampPrev.addEventListener('click', () => {
+  modalTier = modalTier <= 1 ? images.length : modalTier - 1;
+  updateStampModal();
+});
+stampNext.addEventListener('click', () => {
+  modalTier = modalTier >= images.length ? 1 : modalTier + 1;
+  updateStampModal();
+});
+stampModal.addEventListener('click', e => { if (e.target === stampModal) closeStampModal(); });
+window.addEventListener('keydown', e => {
+  if (e.code === 'Escape') closeStampModal();
+  if (stampModal.classList.contains('show') && e.code === 'ArrowLeft') {
     e.preventDefault();
-    if (!firing) startFiring();
+    modalTier = modalTier <= 1 ? images.length : modalTier - 1;
+    updateStampModal();
+  }
+  if (stampModal.classList.contains('show') && e.code === 'ArrowRight') {
+    e.preventDefault();
+    modalTier = modalTier >= images.length ? 1 : modalTier + 1;
+    updateStampModal();
+  }
+});
+
+window.addEventListener('keydown',e=> {
+  if(e.code==='Space' && !e.repeat) {
+    e.preventDefault();
+    dropStamp();
   }
   if(e.code==='ArrowLeft') {
-    mailboxX=Math.max(.08,mailboxX-.035); positionMailbox();
+    mailboxX=Math.max(.08,mailboxX-.035);
+    positionMailbox();
   }
   if(e.code==='ArrowRight') {
-    mailboxX=Math.min(.92,mailboxX+.035); positionMailbox();
+    mailboxX=Math.min(.92,mailboxX+.035);
+    positionMailbox();
   }
 });
-window.addEventListener('keyup',e=> {
-  if(e.code==='Space') {
-    e.preventDefault();
-    stopFiring();
-  }
+
+function setupDragging() {
+  if (mouseConstraint) Composite.remove(world, mouseConstraint);
+  const mouse = Mouse.create(canvas);
+  mouseConstraint = MouseConstraint.create(engine, {
+    mouse,
+    constraint: { stiffness: 1, render: { visible: false } }
+  });
+  Composite.add(world, mouseConstraint);
+
+  Events.on(mouseConstraint, 'startdrag', event => {
+    const body = event.body;
+    if (!body || body.label !== 'stamp' || !body.plugin) return;
+    body.plugin.dragging = true;
+    body.plugin.savedMask = body.collisionFilter.mask;
+    body.plugin.savedCategory = body.collisionFilter.category;
+    body.collisionFilter.mask = 0;
+    Body.setVelocity(body, {x:0,y:0});
+    body.angularVelocity = 0;
+  });
+
+  Events.on(mouseConstraint, 'enddrag', event => {
+    const body = event.body;
+    if (!body || body.label !== 'stamp' || !body.plugin) return;
+    body.plugin.dragging = false;
+    body.collisionFilter.mask = body.plugin.savedMask ?? 0xFFFFFFFF;
+    body.collisionFilter.category = body.plugin.savedCategory ?? 0x0001;
+
+    // A dragged stamp merges only when the player has deliberately carried
+    // it into a matching stamp. Nonmatching stamps are ignored.
+    if (!body.plugin.merged && !body.plugin.popped) {
+      let target = null;
+      let best = Infinity;
+      for (const other of stamps) {
+        if (other === body || !other.plugin || other.plugin.merged || other.plugin.popped) continue;
+        if (other.plugin.tier !== body.plugin.tier) continue;
+        const dx = body.position.x - other.position.x;
+        const dy = body.position.y - other.position.y;
+        const d = Math.hypot(dx,dy);
+        const limit = body.plugin.radius + other.plugin.radius + 4;
+        if (d <= limit && d < best) { best=d; target=other; }
+      }
+      if (target) tryMerge(body,target);
+    }
+    Body.setVelocity(body, {x:0,y:0});
+    body.angularVelocity = 0;
+  });
+}
+
+canvas.addEventListener('mouseenter', e => { document.getElementById('postalCursor').style.display='block'; });
+canvas.addEventListener('mouseleave', e => { document.getElementById('postalCursor').style.display='none'; });
+canvas.addEventListener('mousemove', e => {
+  const r = canvas.getBoundingClientRect();
+  cursorX = e.clientX; cursorY = e.clientY;
+  const c = document.getElementById('postalCursor');
+  c.style.left = e.clientX + 'px'; c.style.top = e.clientY + 'px';
 });
+
 function draw() {
   const ctx=canvas.getContext('2d');
   const dpr=Math.min(window.devicePixelRatio||1,2);
@@ -718,7 +1250,7 @@ function draw() {
   ctx.fillStyle='#3b210e';
   ctx.font='bold 18px Georgia';
   ctx.textAlign='center';
-  ctx.fillText(`STAMP COLLECTION BOOK — PAGE ${Math.floor(pageStart/7)+1}`,W/2,bookY+24);
+  ctx.fillText(`YOUR NEW LAR STAMPS!!! — PAGE ${Math.floor(pageStart/7)+1}`,W/2,bookY+24);
 
   const pageTiers = currentPageTiers();
   const gap = 8;
@@ -737,21 +1269,30 @@ function draw() {
     ctx.strokeRect(x,slotY,slotW,slotH);
 
     const im=imgs[tier-1];
+    const numBoxW = Math.min(30, slotW*.24);
+    const imageW = slotW-numBoxW-5;
     if(im && im.complete && im.naturalWidth){
       ctx.save();
       ctx.globalAlpha = collected.has(tier) ? 1 : .22;
-      ctx.drawImage(im,x+3,slotY+3,slotW-6,slotH-6);
+      ctx.drawImage(im,x+3,slotY+3,imageW-6,slotH-6);
       ctx.restore();
     }
-    ctx.fillStyle='rgba(255,255,255,.82)';
-    ctx.fillRect(x+3,slotY+3,27,18);
+    ctx.fillStyle='#fff';
+    ctx.fillRect(x+slotW-numBoxW-2,slotY+slotH/2-12,numBoxW,24);
+    ctx.strokeStyle='#6b3f1d';
+    ctx.lineWidth=1;
+    ctx.strokeRect(x+slotW-numBoxW-2,slotY+slotH/2-12,numBoxW,24);
     ctx.fillStyle='#3b210e';
     ctx.font='bold 12px Arial';
-    ctx.textAlign='left';
-    ctx.fillText(String(tier).padStart(2,'0'),x+7,slotY+16);
+    ctx.textAlign='center';
+    ctx.fillText(String(tier).padStart(2,'0'),x+slotW-numBoxW/2-2,slotY+slotH/2+4);
   });
 
-  for(const b of stamps) {
+  const drawOrder = [
+    ...stamps.filter(b => b && b.plugin && b.plugin.dragging),
+    ...stamps.filter(b => b && b.plugin && !b.plugin.dragging)
+  ];
+  for(const b of drawOrder) {
     if(!b.position || !b.plugin) continue;
     const r=b.plugin.radius;
     ctx.save();
@@ -778,13 +1319,19 @@ function draw() {
       ctx.beginPath(); ctx.arc(0,0,r-3,0,Math.PI*2); ctx.fill();
     }
 
-    // Tier number makes it immediately clear which token is which.
-    ctx.fillStyle='rgba(255,255,255,.88)';
-    ctx.fillRect(-r+5,-r+5,30,20);
+    // Tier number sits in a separate little white box BESIDE the bubble.
+    const boxW = 30, boxH = 22;
+    const boxX = r - 2;
+    const boxY = -boxH/2;
+    ctx.fillStyle='#fff';
+    ctx.fillRect(boxX,boxY,boxW,boxH);
+    ctx.strokeStyle='#6b3f1d';
+    ctx.lineWidth=2;
+    ctx.strokeRect(boxX,boxY,boxW,boxH);
     ctx.fillStyle='#2d1a0c';
     ctx.font='bold 12px Arial';
-    ctx.textAlign='left';
-    ctx.fillText(String(b.plugin.tier).padStart(2,'0'),-r+9,-r+0);
+    ctx.textAlign='center';
+    ctx.fillText(String(b.plugin.tier).padStart(2,'0'),boxX+boxW/2,boxY+15);
 
     // perforated-looking dots
     ctx.strokeStyle='rgba(60,30,10,.5)';
@@ -798,6 +1345,20 @@ function draw() {
 
     ctx.restore();
   }
+  for (let i = mergeBursts.length - 1; i >= 0; i--) {
+    const q = mergeBursts[i];
+    q.life -= 0.055;
+    q.r += 3.5;
+    if (q.life <= 0) { mergeBursts.splice(i,1); continue; }
+    ctx.save();
+    ctx.globalAlpha = q.life;
+    ctx.strokeStyle = '#fff4b8';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(q.x,q.y,q.r,0,Math.PI*2);
+    ctx.stroke();
+    ctx.restore();
+  }
   requestAnimationFrame(draw);
 }
 
@@ -808,6 +1369,11 @@ function animateMailbox() {
 
 makeWorld();
 resize();
+setupDragging();
+generatorStart = 0;
+levelNumber = 1;
+unlockedTier = generatorStart + 1;
+updateLevelBadge();
 updateBook();
 updateDoubleButton();
 updateHeldStamp();
