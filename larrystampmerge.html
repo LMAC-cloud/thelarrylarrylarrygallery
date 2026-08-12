@@ -45,7 +45,7 @@
   }
   #wasteMailbox {
     position:absolute;
-    top:30px;
+    top:6px;
     width:min(310px, 44vw);
     height:80px;
     border-radius:18px 18px 28px 28px;
@@ -366,12 +366,12 @@
     </section>
 
     <section class="panel">
-      <button id="doubleBtn">AUTO LARRY — START</button>
+      <button id="doubleBtn">2 LAR-BUCKS — ×2 SPEED</button>
       <div id="boardControls">
         <button class="smallBtn" id="clearBtn">CLEAR — POP LAST 7 / KEEP 4</button>
         <button class="smallBtn" id="dropBtn">DROP ONCE</button>
       </div>
-      <div id="hint">Move the L.A.R.R.Y. mailbox to aim, then click once to drop. AUTO LARRY can drop for you. Drag a stamp through the pile and onto a matching stamp to merge it.</div>
+      <div id="hint">Move the L.A.R.R.Y. mailbox to aim, then click once to drop. Drag stamps directly onto matching stamps to merge them. The stamp shown beneath the mailbox is the one you will drop.</div>
     </section>
 
     <section id="book">
@@ -512,8 +512,6 @@ let collected = new Set();
 let pageStart = 0;
 let generatorStart = 0;
 let doubleMode = false;
-let autoLarry = false;
-let autoTimer = null;
 let dropLock = false;
 let mailboxX = 0.5;
 let draggingMailbox = false;
@@ -653,10 +651,6 @@ function sound(type) {
       o.type='sine'; o.frequency.setValueAtTime(330,now); o.frequency.exponentialRampToValueAtTime(660,now+.16);
       g.gain.setValueAtTime(.0001,now); g.gain.exponentialRampToValueAtTime(.16,now+.01); g.gain.exponentialRampToValueAtTime(.0001,now+.2);
       o.connect(g).connect(audioCtx.destination); o.start(now); o.stop(now+.21);
-    } else if (type === 'pop') {
-      o.type='square'; o.frequency.setValueAtTime(150,now); o.frequency.exponentialRampToValueAtTime(70,now+.08);
-      g.gain.setValueAtTime(.0001,now); g.gain.exponentialRampToValueAtTime(.09,now+.005); g.gain.exponentialRampToValueAtTime(.0001,now+.09);
-      o.connect(g).connect(audioCtx.destination); o.start(now); o.stop(now+.1);
     }
   } catch(e) {}
 }
@@ -710,7 +704,7 @@ function launchCelebration(nextStart) {
 
 function dropStamp() {
   const now = performance.now();
-  if (now-lastDropTime < DROP_COOLDOWN) return false;
+  if (now-lastDropTime < DROP_COOLDOWN) return;
   lastDropTime = now;
 
   const origin = getDropOrigin();
@@ -720,34 +714,24 @@ function dropStamp() {
 
   createStamp(tier, x, y);
   sound('drop');
-  updateHeldStamp();
-  return true;
-}
 
-function popBody(body) {
-  if (!body || !body.plugin || body.plugin.popped) return;
-  body.plugin.popped = true;
-  const x = body.position.x, y = body.position.y, r = body.plugin.radius;
-  Composite.remove(world, body);
-  stamps = stamps.filter(s => s !== body);
-  mergeBursts.push({x, y, r:Math.max(16,r*.45), life:1, pop:true});
-  sound('pop');
+  // Choose another stamp only after this drop. The new choice is still
+  // restricted to the currently unlocked first 1-3 tiers.
+  updateHeldStamp();
+
+  if (doubleMode) {
+    setTimeout(() => {
+      const x2 = Math.max(50, Math.min(W-50, x + (Math.random()<.5 ? -22 : 22)));
+      createStamp(tier, x2, y);
+      sound('drop');
+    }, 90);
+    doubleMode = false;
+    updateDoubleButton();
+  }
 }
 
 function tryMerge(a,b) {
-  if (!a.plugin || !b.plugin || a.plugin.merged || b.plugin.merged || a.plugin.popped || b.plugin.popped) return;
-
-  // When a new level begins, a newly introduced stamp pops an older-level
-  // stamp on contact. This clears the previous seven naturally rather than
-  // leaving the old level permanently in the field.
-  const activeStart = generatorStart + 1;
-  const aNew = a.plugin.tier >= activeStart;
-  const bNew = b.plugin.tier >= activeStart;
-  if (aNew !== bNew) {
-    popBody(aNew ? b : a);
-    return;
-  }
-
+  if (!a.plugin || !b.plugin || a.plugin.merged || b.plugin.merged) return;
   if (a.plugin.tier !== b.plugin.tier) return;
 
   const tier = a.plugin.tier;
@@ -766,9 +750,14 @@ function tryMerge(a,b) {
 
   sound('merge');
 
+  // Two matching stamps become a NEW stamp that remains physically
+  // on the floor/pile. This is the crucial Suika behaviour: the result
+  // does not disappear, so stamps above it can land on and merge with it.
   if (nextTier <= groupEnd) {
     createStamp(nextTier, x, y);
-    if (nextTier > unlockedTier) unlockedTier = nextTier;
+    if (nextTier > unlockedTier) {
+      unlockedTier = nextTier;
+    }
     updateHeldStamp();
   }
 
@@ -786,22 +775,6 @@ Events.on(engine,'collisionStart', event => {
   for (const pair of event.pairs) {
     const a=pair.bodyA, b=pair.bodyB;
     if (a.label==='stamp' && b.label==='stamp') tryMerge(a,b);
-  }
-});
-
-const MAX_UPWARD_BOUNCE = 5.5;
-const MAX_SIDE_SPEED = 10;
-Events.on(engine,'afterUpdate', () => {
-  for (const b of stamps) {
-    if (!b || !b.plugin || b.plugin.dragging || b.plugin.popped) continue;
-    let vx = Math.max(-MAX_SIDE_SPEED, Math.min(MAX_SIDE_SPEED, b.velocity.x));
-    let vy = b.velocity.y;
-    if (vy < -MAX_UPWARD_BOUNCE) vy = -MAX_UPWARD_BOUNCE;
-    Body.setVelocity(b, {x:vx, y:vy});
-    if (b.position.y < 75) {
-      Body.setPosition(b, {x:b.position.x, y:75});
-      if (b.velocity.y < 0) Body.setVelocity(b, {x:b.velocity.x, y:0});
-    }
   }
 });
 
@@ -834,7 +807,6 @@ function collectTier(tier) {
       document.getElementById('celebrationSub').textContent='ALL 72 LAR STAMPS COLLECTED — YOU RECEIVE 1000 LAR-BUCKS!';
       bucks += 1000;
       bucksEl.textContent = bucks;
-      stopAutoLarry();
       updateDoubleButton();
       levelCelebration.classList.add('show');
       levelCelebration.setAttribute('aria-hidden','false');
@@ -900,34 +872,16 @@ function showMessage(text, ms=700) {
 }
 
 function updateDoubleButton() {
-  doubleBtn.disabled = false;
-  doubleBtn.textContent = autoLarry ? 'AUTO LARRY — STOP' : 'AUTO LARRY — START';
-  doubleBtn.setAttribute('aria-pressed', autoLarry ? 'true' : 'false');
-}
-
-function stopAutoLarry() {
-  autoLarry = false;
-  if (autoTimer) {
-    clearInterval(autoTimer);
-    autoTimer = null;
-  }
-  updateDoubleButton();
-}
-
-function startAutoLarry() {
-  if (autoLarry) return;
-  autoLarry = true;
-  updateDoubleButton();
-  autoTimer = setInterval(() => {
-    if (!autoLarry) return;
-    if (levelCelebration.classList.contains('show')) return;
-    dropStamp();
-  }, 360);
+  doubleBtn.disabled = bucks < 2 || doubleMode;
+  doubleBtn.textContent = doubleMode ? '×2 ACTIVE — NEXT DROP' : '2 LAR-BUCKS — ×2 SPEED';
 }
 
 doubleBtn.addEventListener('click',()=> {
-  if (autoLarry) stopAutoLarry();
-  else startAutoLarry();
+  if (bucks < 2 || doubleMode) return;
+  bucks -= 2;
+  bucksEl.textContent=bucks;
+  doubleMode=true;
+  updateDoubleButton();
 });
 
 function clearBoardKeepTopFour() {
@@ -1018,47 +972,9 @@ function setupDragging() {
   const mouse = Mouse.create(canvas);
   mouseConstraint = MouseConstraint.create(engine, {
     mouse,
-    constraint: { stiffness: 1, render: { visible: false } }
+    constraint: { stiffness: 0.18, render: { visible: false } }
   });
   Composite.add(world, mouseConstraint);
-
-  Events.on(mouseConstraint, 'startdrag', event => {
-    const body = event.body;
-    if (!body || body.label !== 'stamp' || !body.plugin) return;
-    body.plugin.dragging = true;
-    body.plugin.savedMask = body.collisionFilter.mask;
-    body.plugin.savedCategory = body.collisionFilter.category;
-    body.collisionFilter.mask = 0;
-    Body.setVelocity(body, {x:0,y:0});
-    body.angularVelocity = 0;
-  });
-
-  Events.on(mouseConstraint, 'enddrag', event => {
-    const body = event.body;
-    if (!body || body.label !== 'stamp' || !body.plugin) return;
-    body.plugin.dragging = false;
-    body.collisionFilter.mask = body.plugin.savedMask ?? 0xFFFFFFFF;
-    body.collisionFilter.category = body.plugin.savedCategory ?? 0x0001;
-
-    // A dragged stamp merges only when the player has deliberately carried
-    // it into a matching stamp. Nonmatching stamps are ignored.
-    if (!body.plugin.merged && !body.plugin.popped) {
-      let target = null;
-      let best = Infinity;
-      for (const other of stamps) {
-        if (other === body || !other.plugin || other.plugin.merged || other.plugin.popped) continue;
-        if (other.plugin.tier !== body.plugin.tier) continue;
-        const dx = body.position.x - other.position.x;
-        const dy = body.position.y - other.position.y;
-        const d = Math.hypot(dx,dy);
-        const limit = body.plugin.radius + other.plugin.radius + 4;
-        if (d <= limit && d < best) { best=d; target=other; }
-      }
-      if (target) tryMerge(body,target);
-    }
-    Body.setVelocity(body, {x:0,y:0});
-    body.angularVelocity = 0;
-  });
 }
 
 canvas.addEventListener('mouseenter', e => { document.getElementById('postalCursor').style.display='block'; });
