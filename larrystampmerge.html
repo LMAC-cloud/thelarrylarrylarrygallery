@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Larry's L.A.R.R.Y. Stamp Collection — v17</title>
+<title>Larry's L.A.R.R.Y. Stamp Collection — v14</title>
 <style>
   * { box-sizing: border-box; }
   html, body { width:100%; height:100%; margin:0; overflow:hidden; }
@@ -31,7 +31,7 @@
     height:100vh;
     margin:auto;
     display:grid;
-    grid-template-columns:minmax(0, 1fr) 320px;
+    grid-template-columns:320px minmax(0, 1fr);
     grid-template-rows:120px minmax(0,1fr);
     gap:12px;
     padding:12px;
@@ -105,7 +105,7 @@
     border:3px solid #4b0909;
   }
   #gamePanel {
-    grid-column:1; grid-row:2;
+    grid-column:2; grid-row:2;
     position:relative;
     min-width:0; min-height:0;
     border-radius:24px;
@@ -116,7 +116,7 @@
   }
   #gameCanvas { width:100%; height:100%; display:block; cursor:none; }
   #side {
-    grid-column:2; grid-row:2;
+    grid-column:1; grid-row:2;
     min-height:0;
     display:flex;
     flex-direction:column;
@@ -213,7 +213,7 @@
     border-color:#355c35; color:#142414;
   }
   #tankBtn { font-size:11px; padding-left:2px; padding-right:2px; }
-  .modalLocked { filter:blur(8px) grayscale(100%); opacity:.48; }
+  .modalLocked { filter:blur(4px) grayscale(100%); opacity:.55; }
 
   #book {
     display:none;
@@ -333,12 +333,12 @@
   #larBusButton:hover { filter:brightness(1.08); }
   #larBusButton:active { transform:translateY(2px); box-shadow:inset 0 2px rgba(255,255,255,.18), 0 2px 0 #3a2111; }
   #postalCursor {
-    position:fixed; width:28px; height:32px; pointer-events:none; z-index:100;
-    transform:translate(-5px,-5px); display:none;
-    color:#050505;
-    font:900 28px/30px "Segoe UI Symbol","Arial Unicode MS",Arial,sans-serif;
-    text-shadow:1px 2px 1px rgba(255,255,255,.55);
+    position:fixed; width:26px; height:26px; pointer-events:none; z-index:100;
+    transform:translate(-4px,-4px); display:none;
+    filter:drop-shadow(1px 2px 1px rgba(0,0,0,.65));
   }
+  #postalCursor svg { width:100%; height:100%; overflow:visible; }
+  #postalCursor path { fill:none; stroke:#f4e6c5; stroke-width:4; stroke-linecap:round; stroke-linejoin:round; }
   #gamePanel:hover #postalCursor { display:block; }
   #message {
     position:absolute; left:50%; top:50%;
@@ -406,7 +406,9 @@
 
   <main id="gamePanel">
     <canvas id="gameCanvas"></canvas>
-    <div id="postalCursor" aria-hidden="true">☝</div>
+    <div id="postalCursor" aria-hidden="true">
+      <svg viewBox="0 0 64 64"><path d="M9 34h17c4 0 7-3 7-7s-3-7-7-7H15c-3 0-5 2-5 5s2 5 5 5h12"/><path d="M33 27h9c7 0 12 5 12 12v6H39"/><path d="M39 45v10"/><path d="M47 45v10"/></svg>
+    </div>
     <div id="message"></div>
     <div id="levelCelebration" aria-hidden="true">
       <div id="celebrationCard">
@@ -438,6 +440,16 @@
       <a id="larBusButton" href="index.html" title="Return to the LAR BUS">🚌 LAR BUS — RETURN</a>
     </section>
 
+    <section id="book">
+      <button id="bookClose" type="button">CLOSE</button>
+      <div class="pageNav">
+        <button class="smallBtn" id="prevPage">‹ BACK</button>
+        <div id="pageStatus">PAGE <span id="pageNo">1</span></div>
+        <button class="smallBtn" id="nextPage">NEXT ›</button>
+      </div>
+      <div id="bookTitle">YOUR NEW LAR STAMPS!!!</div>
+      <div id="slots"></div>
+    </section>
   </aside>
 </div>
 <div id="stampModal" aria-hidden="true">
@@ -447,7 +459,7 @@
     <div id="stampModalNumber"></div>
     <div id="stampModalNav">
       <button id="stampPrev" aria-label="Previous stamp">‹</button>
-      <span aria-hidden="true"></span>
+      <span>1–72</span>
       <button id="stampNext" aria-label="Next stamp">›</button>
     </div>
     <button id="stampModalClose">CLOSE</button>
@@ -532,7 +544,7 @@ const images = [
 ];
 
 const {
-  Engine, Render, Runner, Bodies, Body, Composite, Events
+  Engine, Render, Runner, Bodies, Body, Composite, Events, Vector, Mouse, MouseConstraint
 } = Matter;
 
 const canvas = document.getElementById('gameCanvas');
@@ -543,6 +555,9 @@ const heldNum = document.getElementById('heldNum');
 const bookBtn = document.getElementById('bookBtn');
 const dropBtn = document.getElementById('dropBtn');
 const tankBtn = document.getElementById('tankBtn');
+const bookClose = document.getElementById('bookClose');
+const prevPageBtn = document.getElementById('prevPage');
+const nextPageBtn = document.getElementById('nextPage');
 const message = document.getElementById('message');
 const bucksEl = document.getElementById('bucks');
 const countEl = document.getElementById('count');
@@ -593,6 +608,7 @@ const larryLevelMessages = [
   'LARRY SAYS: MAGNIFICENT STAMP WORK!',
   'LARRY IS THRILLED! NEXT BATCH AWAITS!'
 ];
+let mouseConstraint;
 let cursorX = 0, cursorY = 0;
 const DROP_COOLDOWN = 260;
 
@@ -780,11 +796,6 @@ function launchCelebration(nextStart) {
     updateLevelBadge();
     updateHeldStamp();
     updateBook();
-
-    // Forget the completed level's last body so AUTO LARRY can resume
-    // immediately with the first stamp of the new level.
-    autoWaitingBody = null;
-
     levelCelebration.classList.remove('show');
     levelCelebration.setAttribute('aria-hidden','true');
     showMessage(`LAR LEVEL ${levelNumber}`,900);
@@ -814,7 +825,7 @@ function fillLarTank() {
     Body.setVelocity(b,{x:0,y:0});
     Body.setAngularVelocity(b,0);
   });
-  showMessage(`LAR TANK — ROUND ${Math.floor(generatorStart/7)+1} FILLED`,1200);
+  showMessage('LAR TANK FILLED — DRAG TO MERGE',1200);
 }
 function toggleTankMode() {
   tankMode=!tankMode;
@@ -942,35 +953,6 @@ Events.on(engine,'afterUpdate', () => {
   }
 });
 
-
-function clearTankForNextRound() {
-  // Tank mode advances silently when its seventh stamp appears.
-  // There is no congratulations intermission between tank rounds.
-  for (const b of [...stamps]) {
-    if (b && b.plugin) Composite.remove(world, b);
-  }
-  stamps = [];
-
-  const nextStart = generatorStart + 7;
-  if (nextStart >= images.length) {
-    tankMode = false;
-    tankBtn.classList.remove('active');
-    tankBtn.textContent = 'LAR TANK';
-    showMessage('ALL 72 LAR STAMPS REACHED', 1400);
-    return;
-  }
-
-  generatorStart = nextStart;
-  levelNumber = Math.floor(generatorStart / 7) + 1;
-  unlockedTier = generatorStart + 1;
-  pageStart = generatorStart;
-  updateLevelBadge();
-  updateHeldStamp();
-  updateBook();
-
-  fillLarTank();
-}
-
 function collectTier(tier) {
   if (tier < 1 || tier > images.length || collected.has(tier)) return;
 
@@ -992,16 +974,7 @@ function collectTier(tier) {
 
   if (completedCurrentSet) {
     const nextStart = generatorStart + 7;
-
-    if (tankMode) {
-      if (nextStart < images.length) {
-        clearTankForNextRound();
-      } else {
-        tankMode = false;
-        tankBtn.classList.remove('active');
-        tankBtn.textContent = 'LAR TANK';
-      }
-    } else if (nextStart < images.length) {
+    if (nextStart < images.length) {
       launchCelebration(nextStart);
     } else {
       levelCelebration.querySelectorAll('.confetti, .firework').forEach(el => el.remove());
@@ -1073,9 +1046,30 @@ function closeStampModal() {
 }
 
 function updateBook() {
-  // BOOK OF LAR STAMPS is now the popup itself; there is no stretched
-  // sidebar book page to rebuild.
-  if (countEl) countEl.textContent = `${collected.size}/${images.length}`;
+  pageNoEl.textContent = Math.floor(pageStart/7)+1;
+  slotsEl.innerHTML='';
+  currentPageTiers().forEach(tier=> {
+    const slot=document.createElement('button');
+    slot.type='button';
+    slot.className='slot'+(collected.has(tier)?' collected':'');
+    const im=document.createElement('img');
+    im.src=images[tier-1];
+    im.alt=`Stamp ${tier}`;
+    if (!collected.has(tier)) im.classList.add('lockedStamp');
+    const title=document.createElement('small');
+    title.className='slotTitle';
+    title.textContent=titleFromPath(images[tier-1]);
+    const num=document.createElement('span');
+    num.textContent=String(tier).padStart(2,'0');
+    slot.appendChild(im);
+    slot.appendChild(title);
+    slot.appendChild(num);
+    slot.addEventListener('click',()=>openStampModal(tier));
+    slotsEl.appendChild(slot);
+  });
+  countEl.textContent = `${collected.size}/${images.length}`;
+  prevPageBtn.disabled = pageStart === 0;
+  nextPageBtn.disabled = pageStart + 7 >= images.length;
 }
 function showMessage(text, ms=700) {
   message.textContent=text;
@@ -1204,8 +1198,14 @@ mailbox.addEventListener('pointercancel',e=> {
 dropBtn.addEventListener('click', dropStamp);
 tankBtn.addEventListener('click', toggleTankMode);
 bookBtn.addEventListener('click', ()=>{
-  openStampModal(Math.min(generatorStart + 1, images.length));
+  document.getElementById('book').classList.add('open');
+  updateBook();
 });
+bookClose.addEventListener('click', ()=>{
+  document.getElementById('book').classList.remove('open');
+});
+prevPageBtn.addEventListener('click',()=>goToPage(pageStart-7));
+nextPageBtn.addEventListener('click',()=>goToPage(pageStart+7));
 stampModalClose.addEventListener('click', closeStampModal);
 stampPrev.addEventListener('click', () => {
   modalTier = modalTier <= 1 ? images.length : modalTier - 1;
@@ -1245,143 +1245,51 @@ window.addEventListener('keydown',e=> {
   }
 });
 
-
-let directDragBody = null;
-let directDragPointerId = null;
-
-function canvasPointFromEvent(e) {
-  const rect = canvas.getBoundingClientRect();
-  return {
-    x: (e.clientX - rect.left) * (W / rect.width),
-    y: (e.clientY - rect.top) * (H / rect.height)
-  };
-}
-
-function findStampForGrab(x, y) {
-  let best = null;
-  let bestD = Infinity;
-  for (const b of stamps) {
-    if (!b || !b.plugin || b.plugin.popped || b.plugin.merged) continue;
-    const d = Math.hypot(x - b.position.x, y - b.position.y);
-    const limit = b.plugin.radius + 18;
-    if (d <= limit && d < bestD) {
-      best = b;
-      bestD = d;
-    }
-  }
-  return best;
-}
-
-function beginDirectStampDrag(body, e) {
-  directDragBody = body;
-  directDragPointerId = e.pointerId;
-  body.plugin.dragging = true;
-  body.plugin.savedMask = body.collisionFilter.mask;
-  body.plugin.savedCategory = body.collisionFilter.category;
-  body.collisionFilter.mask = 0;
-  Body.setVelocity(body, {x:0,y:0});
-  body.angularVelocity = 0;
-  canvas.setPointerCapture(e.pointerId);
-}
-
-function moveDirectStampDrag(e) {
-  if (!directDragBody || directDragPointerId !== e.pointerId) return;
-  const body = directDragBody;
-
-  if (!stamps.includes(body) || body.plugin.merged || body.plugin.popped) {
-    endDirectStampDrag(e, true);
-    return;
-  }
-
-  const p = canvasPointFromEvent(e);
-  Body.setPosition(body, {x:p.x, y:p.y});
-  Body.setVelocity(body, {x:0,y:0});
-  body.angularVelocity = 0;
-}
-
-function finishStampMergeIfTouching(body) {
-  if (!body || !body.plugin || body.plugin.merged || body.plugin.popped) return;
-
-  let target = null;
-  let best = Infinity;
-
-  for (const other of stamps) {
-    if (other === body || !other.plugin || other.plugin.merged || other.plugin.popped) continue;
-    if (other.plugin.tier !== body.plugin.tier) continue;
-
-    const d = Math.hypot(
-      body.position.x - other.position.x,
-      body.position.y - other.position.y
-    );
-    const limit = body.plugin.radius + other.plugin.radius + 4;
-
-    if (d <= limit && d < best) {
-      best = d;
-      target = other;
-    }
-  }
-
-  if (target) tryMerge(body, target);
-}
-
-function endDirectStampDrag(e, cancelled=false) {
-  const body = directDragBody;
-  if (!body) return;
-
-  directDragBody = null;
-  directDragPointerId = null;
-
-  if (!stamps.includes(body) || body.plugin.merged || body.plugin.popped) {
-    try { canvas.releasePointerCapture(e.pointerId); } catch(_) {}
-    return;
-  }
-
-  body.plugin.dragging = false;
-  body.collisionFilter.mask = body.plugin.savedMask ?? 0xFFFFFFFF;
-  body.collisionFilter.category = body.plugin.savedCategory ?? 0x0001;
-
-  if (!cancelled) finishStampMergeIfTouching(body);
-
-  Body.setVelocity(body, {x:0,y:0});
-  body.angularVelocity = 0;
-
-  try { canvas.releasePointerCapture(e.pointerId); } catch(_) {}
-}
-
 function setupDragging() {
-  // Direct pointer dragging replaces Matter's spring-like mouse dragging.
-  // A bubble can be grabbed anywhere within 18px of its visible edge and
-  // follows the pointer directly until the player releases it.
-  if (mouseConstraint) {
-    Composite.remove(world, mouseConstraint);
-    mouseConstraint = null;
-  }
+  if (mouseConstraint) Composite.remove(world, mouseConstraint);
+  const mouse = Mouse.create(canvas);
+  mouseConstraint = MouseConstraint.create(engine, {
+    mouse,
+    constraint: { stiffness: 1, render: { visible: false } }
+  });
+  Composite.add(world, mouseConstraint);
 
-  canvas.addEventListener('pointerdown', e => {
-    if (e.button !== 0 || stampModal.classList.contains('show')) return;
-
-    const p = canvasPointFromEvent(e);
-    const body = findStampForGrab(p.x, p.y);
-    if (!body) return;
-
-    e.preventDefault();
-    beginDirectStampDrag(body, e);
+  Events.on(mouseConstraint, 'startdrag', event => {
+    const body = event.body;
+    if (!body || body.label !== 'stamp' || !body.plugin) return;
+    body.plugin.dragging = true;
+    body.plugin.savedMask = body.collisionFilter.mask;
+    body.plugin.savedCategory = body.collisionFilter.category;
+    body.collisionFilter.mask = 0;
+    Body.setVelocity(body, {x:0,y:0});
+    body.angularVelocity = 0;
   });
 
-  canvas.addEventListener('pointermove', e => {
-    moveDirectStampDrag(e);
-  });
+  Events.on(mouseConstraint, 'enddrag', event => {
+    const body = event.body;
+    if (!body || body.label !== 'stamp' || !body.plugin) return;
+    body.plugin.dragging = false;
+    body.collisionFilter.mask = body.plugin.savedMask ?? 0xFFFFFFFF;
+    body.collisionFilter.category = body.plugin.savedCategory ?? 0x0001;
 
-  canvas.addEventListener('pointerup', e => {
-    if (directDragPointerId === e.pointerId) {
-      endDirectStampDrag(e, false);
+    // A dragged stamp merges only when the player has deliberately carried
+    // it into a matching stamp. Nonmatching stamps are ignored.
+    if (!body.plugin.merged && !body.plugin.popped) {
+      let target = null;
+      let best = Infinity;
+      for (const other of stamps) {
+        if (other === body || !other.plugin || other.plugin.merged || other.plugin.popped) continue;
+        if (other.plugin.tier !== body.plugin.tier) continue;
+        const dx = body.position.x - other.position.x;
+        const dy = body.position.y - other.position.y;
+        const d = Math.hypot(dx,dy);
+        const limit = body.plugin.radius + other.plugin.radius + 4;
+        if (d <= limit && d < best) { best=d; target=other; }
+      }
+      if (target) tryMerge(body,target);
     }
-  });
-
-  canvas.addEventListener('pointercancel', e => {
-    if (directDragPointerId === e.pointerId) {
-      endDirectStampDrag(e, true);
-    }
+    Body.setVelocity(body, {x:0,y:0});
+    body.angularVelocity = 0;
   });
 }
 
@@ -1431,7 +1339,7 @@ function draw() {
 
   pageTiers.forEach((tier,i)=>{
     const x = innerX + i*(slotW+gap);
-    ctx.fillStyle = collected.has(tier) ? '#f8edcf' : '#b8b8b8';
+    ctx.fillStyle = collected.has(tier) ? '#f8edcf' : '#c9b58b';
     ctx.fillRect(x,slotY,slotW,slotH);
     ctx.strokeStyle = collected.has(tier) ? '#b07a19' : '#8a6a40';
     ctx.lineWidth = collected.has(tier) ? 3 : 2;
@@ -1446,7 +1354,7 @@ function draw() {
         ctx.globalAlpha = 1;
       } else {
         ctx.globalAlpha = .42;
-        ctx.filter = 'grayscale(100%) blur(7px)';
+        ctx.filter = 'grayscale(100%) blur(4px)';
       }
       ctx.drawImage(im,x+3,slotY+3,imageW-6,slotH-6);
       ctx.filter = 'none';
@@ -1474,31 +1382,29 @@ function draw() {
     ctx.translate(b.position.x,b.position.y);
     ctx.rotate(b.angle||0);
 
-    // LAR "planet": artwork runs all the way to the circular edge.
-    // No taupe paper ring and no brown outline. The image is cropped from
-    // its centre and slightly zoomed so white paper borders are kept outside
-    // the visible circle whenever possible.
-    const im=b.plugin.image;
-    ctx.save();
+    // stamp paper + dark outline
     ctx.beginPath();
-    ctx.arc(0,0,r,0,Math.PI*2);
-    ctx.clip();
+    ctx.arc(0,0,r+4,0,Math.PI*2);
+    ctx.fillStyle='#f1e2bd';
+    ctx.fill();
+    ctx.lineWidth=3;
+    ctx.strokeStyle='#5a351d';
+    ctx.stroke();
 
+    const im=b.plugin.image;
     if(im && im.complete && im.naturalWidth) {
-      const iw=im.naturalWidth, ih=im.naturalHeight;
-      const diameter=r*2;
-      const cover=Math.max(diameter/iw, diameter/ih) * 1.14;
-      const dw=iw*cover, dh=ih*cover;
-      ctx.drawImage(im, -dw/2, -dh/2, dw, dh);
+      ctx.save();
+      ctx.beginPath(); ctx.arc(0,0,r-3,0,Math.PI*2); ctx.clip();
+      ctx.drawImage(im,-r+3,-r+3,(r-3)*2,(r-3)*2);
+      ctx.restore();
     } else {
       ctx.fillStyle='#d8c49a';
-      ctx.fillRect(-r,-r,r*2,r*2);
+      ctx.beginPath(); ctx.arc(0,0,r-3,0,Math.PI*2); ctx.fill();
     }
-    ctx.restore();
 
     // Tier number sits in a separate little white box BESIDE the bubble.
     const boxW = 30, boxH = 22;
-    const boxX = r + 2;
+    const boxX = r - 2;
     const boxY = -boxH/2;
     ctx.fillStyle='#fff';
     ctx.fillRect(boxX,boxY,boxW,boxH);
