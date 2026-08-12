@@ -1,0 +1,6145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Larry's Variety — LMAC</title>
+
+<style>
+
+/* ============================================================
+   BASIC PAGE
+   ============================================================ */
+
+body {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    color: white;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* ============================================================
+   SPINNING BLACK & WHITE BACKGROUND
+   ============================================================ */
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 300vmax;
+    height: 300vmax;
+    background: repeating-conic-gradient(
+        from 0deg,
+        #000 0deg 10deg,
+        #fff 10deg 20deg
+    );
+    transform: translate(-50%, -50%) rotate(0deg);
+    z-index: -10;
+    animation: spinSpiral 5s linear infinite;
+}
+
+@keyframes spinSpiral {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* ============================================================
+   TITLE
+   ============================================================ */
+
+h1 {
+    color: white;
+    font-size: 42px;
+    text-shadow: 2px 2px 4px black, 0 0 15px black;
+    margin: 30px 0 20px 0;
+}
+
+/* ============================================================
+   GALLERY WIND / MOVING ORDER
+   ============================================================ */
+
+@keyframes galleryWind {
+    0%   { transform: translate3d(0, 0, 0); }
+    20%  { transform: translate3d(var(--wind-a), var(--wind-y-a), 0); }
+    50%  { transform: translate3d(var(--wind-b), var(--wind-y-b), 0); }
+    78%  { transform: translate3d(var(--wind-c), var(--wind-y-c), 0); }
+    100% { transform: translate3d(0, 0, 0); }
+}
+
+.excerpt-figure {
+    will-change: transform;
+}
+
+.excerpt-figure.gallery-moving {
+    animation-name: galleryWind;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+
+.prize-gallery-item {
+    display: inline-block;
+    margin: 15px;
+    text-align: center;
+    position: relative;
+    width: min(18vw, 300px);
+    min-width: 150px;
+    vertical-align: top;
+    cursor: pointer;
+    will-change: transform;
+}
+
+.prize-gallery-card {
+    height: min(18vw, 300px);
+    min-height: 150px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+    background:
+        repeating-conic-gradient(
+            from 0deg,
+            #fff200 0deg 12deg,
+            #ff2b00 12deg 24deg
+        );
+    border: 15px solid #111;
+    box-shadow:
+        0 0 20px black,
+        0 0 45px #ffe600,
+        0 20px 30px rgba(0,0,0,0.9);
+    color: #111;
+    font-size: clamp(18px, 2.2vw, 32px);
+    font-weight: 1000;
+    line-height: 1.05;
+    text-shadow: 2px 2px 0 white;
+    animation: prizeFlash 0.65s infinite alternate;
+}
+
+.prize-gallery-item:hover .prize-gallery-card {
+    box-shadow:
+        0 0 20px white,
+        0 0 50px #ffe600,
+        0 0 90px white,
+        0 20px 35px rgba(0,0,0,0.9);
+}
+
+@keyframes prizeFlash {
+    from { filter: brightness(1); }
+    to   { filter: brightness(1.35); }
+}
+
+/* ============================================================
+   NIAGARA BUS SELECTION ROOM
+   ============================================================ */
+
+#busSelectionOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 12000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    background:
+        radial-gradient(circle at center,
+            rgba(255,255,255,.12),
+            rgba(0,0,0,.94) 65%);
+}
+
+#busSelectionBox {
+    width: min(1180px, 96vw);
+    max-height: 94vh;
+    overflow: auto;
+    box-sizing: border-box;
+    background: #111;
+    border: 10px solid #d7bd70;
+    box-shadow:
+        0 0 0 5px #fff,
+        0 0 45px #ffd700,
+        0 25px 80px black;
+    padding: 22px;
+    text-align: center;
+}
+
+#busSelectionTitle {
+    color: #ffeaa0;
+    font-size: clamp(24px, 4vw, 48px);
+    font-weight: 1000;
+    text-shadow:
+        0 0 8px #fff,
+        0 0 20px #ffcf00,
+        3px 3px 0 black;
+    margin-bottom: 8px;
+}
+
+#busSelectionInstruction {
+    color: white;
+    font-size: clamp(14px, 2vw, 21px);
+    margin-bottom: 18px;
+}
+
+#busChoices {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    align-items: stretch;
+}
+
+.busChoice {
+    min-width: 0;
+    background: #050505;
+    border: 4px solid #333;
+    padding: 10px;
+    cursor: pointer;
+    color: white;
+    box-shadow:
+        inset 0 0 20px black,
+        0 8px 18px rgba(0,0,0,.8);
+    transition:
+        transform .18s ease,
+        border-color .18s ease,
+        box-shadow .18s ease;
+}
+
+.busChoice:hover {
+    transform: translateY(-7px) scale(1.02);
+    border-color: #ffe27a;
+    box-shadow:
+        inset 0 0 20px black,
+        0 0 22px #ffe27a,
+        0 12px 28px black;
+}
+
+.busChoice.wrong {
+    animation: busWrong .45s ease-in-out 2;
+    border-color: #ff2222;
+}
+
+.busChoice.right {
+    border-color: #fff2a8;
+    box-shadow:
+        inset 0 0 20px black,
+        0 0 35px #ffd400,
+        0 0 80px rgba(255,220,0,.65);
+}
+
+@keyframes busWrong {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-12px) rotate(-1deg); }
+    75% { transform: translateX(12px) rotate(1deg); }
+}
+
+.busPictureWindow {
+    height: 180px;
+    background:
+        radial-gradient(circle at 50% 35%, #28303a, #050505 68%);
+    border: 5px solid #222;
+    box-shadow:
+        inset 0 0 25px black,
+        0 0 12px black;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.busPictureWindow::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(
+            125deg,
+            transparent 0 43%,
+            rgba(255,255,255,.13) 44%,
+            transparent 48% 100%
+        );
+    pointer-events: none;
+}
+
+.busGraphic {
+    position: absolute;
+    left: 7%;
+    right: 7%;
+    bottom: 30px;
+    height: 88px;
+}
+
+.busBody {
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    bottom: 20px;
+    height: 54px;
+    border-radius: 16px 20px 9px 9px;
+    background: linear-gradient(#f8df72, #8d5d12);
+    border: 4px solid #151515;
+    box-shadow: 0 8px 8px rgba(0,0,0,.7);
+}
+
+.busBody.second {
+    background: linear-gradient(#bcbcbc, #5a5a5a);
+}
+
+.busBody.third {
+    background: linear-gradient(#b56f39, #4a2415);
+}
+
+.busBody.fourth {
+    background: linear-gradient(#6f4b2e, #23150d);
+    border-radius: 8px 8px 4px 4px;
+}
+
+.busRoof {
+    position: absolute;
+    left: 15%;
+    right: 18%;
+    top: -14px;
+    height: 22px;
+    border-radius: 14px 14px 0 0;
+    background: #d9bd5a;
+    border: 4px solid #151515;
+}
+
+.busWindow {
+    position: absolute;
+    top: 8px;
+    width: 17%;
+    height: 22px;
+    background: #07121c;
+    border: 2px solid #ddd;
+}
+
+.busWindow.w1 { left: 13%; }
+.busWindow.w2 { left: 35%; }
+.busWindow.w3 { left: 57%; }
+
+.busWheel {
+    position: absolute;
+    width: 27px;
+    height: 27px;
+    bottom: 2px;
+    border-radius: 50%;
+    background: #050505;
+    border: 5px solid #777;
+    box-shadow: 0 0 0 2px black;
+}
+
+.busWheel.left { left: 16%; }
+.busWheel.right { right: 16%; }
+
+.busLuggage {
+    position: absolute;
+    right: 1%;
+    bottom: 44px;
+    width: 28px;
+    height: 22px;
+    background: #aa1717;
+    border: 3px solid #111;
+    transform: rotate(-8deg);
+}
+
+.busBadge {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 1000;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 3px black;
+    pointer-events: none;
+}
+
+.trikeGraphic .trikeBody {
+    position: absolute;
+    left: 18%;
+    right: 16%;
+    bottom: 28px;
+    height: 32px;
+    background: #76502f;
+    border: 4px solid #111;
+    border-radius: 6px 15px 8px 8px;
+}
+
+.trikeGraphic .oldMan {
+    position: absolute;
+    left: 43%;
+    bottom: 57px;
+    width: 28px;
+    height: 35px;
+    border-radius: 45% 45% 30% 30%;
+    background: #aaa;
+    border: 3px solid #111;
+}
+
+.trikeGraphic .oldMan::after {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: -11px;
+    width: 20px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ddd;
+    border: 2px solid #111;
+}
+
+.trikeWheel {
+    position: absolute;
+    width: 31px;
+    height: 31px;
+    bottom: 1px;
+    border-radius: 50%;
+    background: #111;
+    border: 5px solid #777;
+}
+
+.trikeWheel.one { left: 12%; }
+.trikeWheel.two { right: 12%; }
+.trikeWheel.three {
+    left: 48%;
+    width: 23px;
+    height: 23px;
+}
+
+.busName {
+    color: #ffe98a;
+    font-size: 17px;
+    font-weight: 1000;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.busDescription {
+    color: #ddd;
+    font-size: 12px;
+    line-height: 1.25;
+    min-height: 58px;
+}
+
+.busStatus {
+    margin-top: 8px;
+    min-height: 20px;
+    color: #ff8a8a;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+#busChancePanel {
+    display: none;
+    margin-top: 18px;
+    padding: 14px;
+    border: 3px dashed #ffe16b;
+    background: #171717;
+    color: white;
+}
+
+#busChancePanel .chanceTitle {
+    color: #ffef99;
+    font-weight: 1000;
+    margin-bottom: 10px;
+}
+
+.busMoneyButton,
+#busCloseButton,
+#niagaraPortalButton {
+    border: 4px solid #111;
+    padding: 11px 15px;
+    margin: 5px;
+    font-weight: 1000;
+    cursor: pointer;
+    box-shadow:
+        0 4px 0 #000,
+        0 0 15px rgba(255,220,90,.45);
+}
+
+.busMoneyButton {
+    background: #ffe36b;
+    color: #111;
+}
+
+#busCloseButton {
+    background: #ddd;
+    color: #111;
+}
+
+#niagaraPortal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 13000;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(circle,
+            rgba(255,255,255,.28),
+            rgba(0,0,0,.92) 60%);
+}
+
+#niagaraPortalBox {
+    width: min(720px, 92vw);
+    background: #111;
+    color: white;
+    border: 12px solid #d9bd67;
+    outline: 5px solid white;
+    padding: 28px;
+    text-align: center;
+    box-shadow:
+        0 0 40px #ffd000,
+        0 0 100px rgba(255,210,0,.6),
+        0 25px 80px black;
+}
+
+#niagaraPortalBox h2 {
+    color: #fff1a3;
+    font-size: clamp(28px, 5vw, 54px);
+    margin: 0 0 10px;
+    text-shadow:
+        0 0 10px white,
+        0 0 25px #ffd000;
+}
+
+#niagaraPortalBox p {
+    font-size: 18px;
+    line-height: 1.4;
+}
+
+#niagaraPortalButton {
+    background: #ffe16b;
+    color: #111;
+    font-size: 20px;
+}
+
+#tinyLarryNotices {
+    position: fixed;
+    inset: 0;
+    z-index: 11000;
+    pointer-events: none;
+}
+
+.tinyLarryNotice {
+    position: absolute;
+    width: 235px;
+    min-height: 118px;
+    box-sizing: border-box;
+    padding: 8px;
+    background: #fff;
+    color: #111;
+    border: 4px solid #111;
+    box-shadow:
+        0 0 12px black,
+        0 5px 12px rgba(0,0,0,.75);
+    font-size: 16px;
+    line-height: 1.15;
+    font-weight: 900;
+    animation:
+        tinyNoticeIn .28s ease-out,
+        tinyNoticeOut .9s ease-in 7.5s forwards;
+}
+
+.tinyLarryNotice strong {
+    display: block;
+    color: #c40000;
+    font-size: 14px;
+    margin-bottom: 3px;
+}
+
+@keyframes tinyNoticeIn {
+    from { opacity: 0; transform: scale(.35) rotate(-7deg); }
+    to   { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+@keyframes tinyNoticeOut {
+    to { opacity: 0; transform: scale(.2) rotate(10deg); }
+}
+
+@media (max-width: 800px) {
+    #busChoices {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .busPictureWindow {
+        height: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    #busChoices {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================================
+   GALLERY
+   ============================================================ */
+
+
+.excerpt-figure {
+    display: inline-block;
+    margin: 15px;
+    text-align: center;
+    position: relative;
+}
+
+.excerpt-figure img {
+    /*
+       Keep the gallery paintings thumbnail-like at every browser zoom.
+       Because Ctrl+mouse-wheel browser zoom changes the CSS viewport,
+       using vw lets the individual paintings shrink as the page is enlarged
+       instead of becoming enormous.
+    */
+    height: clamp(95px, 18vw, 300px);
+    width: auto;
+    display: block;
+    margin: 0 auto;
+    border: 15px solid black;
+    border-radius: 3px;
+    box-shadow:
+        0 0 20px black,
+        0 0 40px black,
+        0 0 60px rgba(0,0,0,0.8),
+        0 20px 30px rgba(0,0,0,0.9);
+    animation:
+        smokyPulse 4s ease-in-out infinite,
+        floatingShadow 6s ease-in-out infinite;
+    transition: box-shadow 0.25s ease;
+    cursor: pointer;
+}
+
+@keyframes smokyPulse {
+    0% {
+        box-shadow:
+            0 0 20px black,
+            0 0 40px black,
+            0 0 60px rgba(0,0,0,0.8),
+            0 20px 30px rgba(0,0,0,0.9);
+    }
+
+    50% {
+        box-shadow:
+            0 0 30px black,
+            0 0 60px black,
+            0 0 80px rgba(0,0,0,0.9),
+            0 25px 35px rgba(0,0,0,1);
+    }
+
+    100% {
+        box-shadow:
+            0 0 20px black,
+            0 0 40px black,
+            0 0 60px rgba(0,0,0,0.8),
+            0 20px 30px rgba(0,0,0,0.9);
+    }
+}
+
+@keyframes floatingShadow {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+.excerpt-figure:hover img {
+    box-shadow:
+        0 0 10px white,
+        0 0 25px white,
+        0 0 50px white,
+        0 0 90px rgba(255,255,255,0.8),
+        0 20px 35px rgba(0,0,0,0.9);
+}
+
+.excerpt-figure figcaption {
+    text-align: center;
+    width: 100%;
+    padding-top: 8px;
+    font-size: 15px;
+    font-weight: 1000;
+    letter-spacing: .02em;
+    color: #fff;
+    background: linear-gradient(90deg,#ff3030,#ff9d00,#ffe600,#35ef68,#00dfff,#5078ff,#b85cff,#ff39d6,#ff3030);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: larRainbowTitle 7s linear infinite;
+    text-shadow: 0 0 2px rgba(0,0,0,.95),0 0 7px rgba(255,255,255,.72);
+    filter: drop-shadow(0 1px 1px #000) drop-shadow(0 0 5px rgba(255,255,255,.45));
+    transition: transform .2s ease, filter .2s ease;
+}
+@keyframes larRainbowTitle{
+    0%{background-position:0% 50%}
+    100%{background-position:300% 50%}
+}
+.excerpt-figure:hover figcaption {
+    transform:scale(1.08);
+    filter: drop-shadow(0 0 3px #fff) drop-shadow(0 0 10px #fff) drop-shadow(0 0 20px rgba(255,255,255,.95));
+}
+
+figure {
+    margin: 20px;
+}
+
+/* ============================================================
+   LAR-BUCK COUNTER
+   ============================================================ */
+
+#larBuckCounter {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 5000;
+    background: #fff4b0;
+    color: #3b2100;
+    border: 4px solid #6b3d00;
+    padding: 8px 14px;
+    font-weight: bold;
+    box-shadow:
+        0 0 10px black,
+        0 4px 10px rgba(0,0,0,0.6);
+    transform: rotate(-2deg);
+}
+
+/* ============================================================
+   SHOP ALERT
+   ============================================================ */
+
+#customerAlert {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 5000;
+    background: #ffef00;
+    color: black;
+    border: 4px solid red;
+    padding: 7px 10px;
+    font-size: 12px;
+    line-height: 1.15;
+    max-width: 210px;
+    text-align: center;
+    font-weight: 900;
+    box-shadow: 0 0 20px black;
+    animation: alertPulse 0.8s infinite alternate;
+    transform-origin: top right;
+}
+
+@keyframes alertPulse {
+    from { box-shadow: 0 0 20px black; }
+    to   { box-shadow: 0 0 28px black; }
+}
+
+/* ============================================================
+   BROWN PAPER BAG
+   ============================================================ */
+
+#paperBag {
+    display: none;
+    position: fixed;
+    bottom: 18px;
+    left: 18px;
+    z-index: 8000;
+    width: 58px;
+    height: 68px;
+    background: linear-gradient(
+        90deg,
+        #8f5d2d,
+        #c28a4b,
+        #9a642f
+    );
+    border: 3px solid #603817;
+    border-radius: 4px 4px 10px 10px;
+    box-shadow:
+        0 0 12px black,
+        0 8px 15px rgba(0,0,0,0.8);
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 9px;
+    color: #27170a;
+    padding-top: 7px;
+}
+
+#paperBag::before {
+    content: "";
+    position: absolute;
+    top: -13px;
+    left: 11px;
+    width: 32px;
+    height: 17px;
+    border: 4px solid #603817;
+    border-bottom: none;
+    border-radius: 50% 50% 0 0;
+}
+
+/* ============================================================
+   SECRET EXIT SIGN
+   ============================================================ */
+
+#exitSign {
+    display: none;
+    position: fixed;
+    bottom: 28px;
+    left: 91px;
+    z-index: 8001;
+    background: #180000;
+    color: #ff2020;
+    border: 2px solid #7a0000;
+    padding: 4px 9px;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    cursor: pointer;
+    box-shadow:
+        0 0 4px red,
+        0 0 10px red,
+        inset 0 0 5px #400000;
+    text-shadow:
+        0 0 4px red,
+        0 0 9px red;
+    animation: neonFlicker 2.8s infinite;
+}
+
+@keyframes neonFlicker {
+    0%, 88%, 92%, 100% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 0.45;
+    }
+}
+
+/* ============================================================
+   ARTWORK WINDOW
+   ============================================================ */
+
+#floatingArtwork {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    top: 50%;
+    left: 50%;
+    width: auto;
+    height: auto;
+    max-width: none;
+    max-height: none;
+    border: 15px solid black;
+    box-shadow:
+        0 0 20px black,
+        0 0 40px black,
+        0 0 70px rgba(0,0,0,0.9),
+        0 25px 50px rgba(0,0,0,0.9);
+    cursor: grab;
+    user-select: none;
+    -webkit-user-drag: none;
+    transform-origin: center center;
+}
+
+#floatingArtwork.dragging {
+    cursor: grabbing;
+}
+
+/* ============================================================
+   REPAIR PAINTING PUZZLE — SIMPLE 9-SQUARE VERSION
+   ============================================================ */
+
+#puzzleOverlay {
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:2000;
+    background:rgba(0,0,0,.93);
+    overflow:auto;
+    padding:22px;
+    box-sizing:border-box;
+}
+
+#puzzleBox {
+    container-type:inline-size;
+    width:min(560px,58vw);
+    min-width:360px;
+    min-width:520px;
+    max-width:95vw;
+    min-height:420px;
+    max-height:94vh;
+    margin:2vh auto;
+    resize:both;
+    overflow:auto;
+    box-sizing:border-box;
+    background:#eee;
+    color:#111;
+    border:8px solid #111;
+    box-shadow:0 0 30px white,0 0 70px black;
+    padding:16px;
+}
+
+#puzzleTitle {
+    font-size:clamp(20px,2.3vw,30px);
+    font-weight:900;
+    margin-bottom:6px;
+}
+#puzzleMessage {
+    font-size:clamp(16px,1.8vw,22px);
+    font-weight:900;
+    color:#8b0000;
+    margin:7px 0;
+}
+#puzzleInstruction {
+    font-size:clamp(12px,1.25vw,16px);
+    font-weight:bold;
+    margin-bottom:7px;
+}
+#puzzleTimer {
+    font-size:clamp(22px,2.5vw,34px);
+    font-weight:900;
+    color:#8b0000;
+    margin:4px;
+}
+
+#classicPuzzleStage {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(150px,22%);
+    gap:14px;
+    align-items:start;
+    width:100%;
+}
+
+#puzzleBoard {
+    width:clamp(220px,38cqw,760px);
+    max-width:100%;
+    aspect-ratio:1/1;
+    margin:8px auto;
+    position:relative;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    grid-template-rows:repeat(3,1fr);
+    background:#fff;
+    border:4px solid #333;
+    box-shadow:0 0 15px #111,inset 0 0 0 2px #fff;
+    overflow:visible;
+    box-sizing:border-box;
+    touch-action:none;
+}
+
+.squarePuzzleSlot {
+    position:relative;
+    box-sizing:border-box;
+    background:#fafafa;
+    border:2px dashed #555;
+    overflow:visible;
+}
+
+.squarePuzzleSlot.filled {
+    border:1px solid #222;
+    background:#fff;
+}
+
+.squarePuzzleSlot .squarePiece {
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+}
+
+.squarePuzzleGuide {
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#777;
+    font-size:clamp(10px,1vw,14px);
+    font-weight:900;
+    letter-spacing:.4px;
+    pointer-events:none;
+    background:
+        linear-gradient(135deg,rgba(0,0,0,.035) 25%,transparent 25%) 0 0/14px 14px;
+}
+
+.squarePiece {
+    background-repeat:no-repeat;
+    background-size:300% 300%;
+    border:2px solid #222;
+    box-sizing:border-box;
+    cursor:grab;
+    user-select:none;
+    -webkit-user-drag:none;
+    touch-action:none;
+    transition:filter .12s ease,transform .12s ease;
+    z-index:20;
+}
+
+.squarePiece.dragging {
+    position:fixed !important;
+    z-index:60000 !important;
+    cursor:grabbing;
+    transform:scale(1.04);
+    filter:drop-shadow(0 8px 14px rgba(0,0,0,.65));
+    transition:none;
+}
+
+.squarePiece.placed {
+    cursor:default;
+    pointer-events:none;
+    z-index:10;
+    transform:none;
+    filter:none;
+}
+
+#pieceTrayTitle {
+    font-weight:1000;
+    font-size:15px;
+    margin:5px 0 7px;
+    text-align:center;
+}
+
+#pieceTray {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+    width:100%;
+    margin:0;
+    padding:10px;
+    background:#222;
+    border:5px solid #555;
+    box-sizing:border-box;
+    min-height:250px;
+}
+
+.squareTraySlot {
+    aspect-ratio:1/1;
+    background:#555;
+    border:2px solid #aaa;
+    position:relative;
+    overflow:visible;
+    box-sizing:border-box;
+}
+
+.squareTraySlot::after {
+    content:"";
+    position:absolute;
+    inset:4px;
+    border:1px dashed rgba(255,255,255,.3);
+    pointer-events:none;
+}
+
+#pieceTray .squarePiece {
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+}
+
+#pieceTray .squarePiece:hover {
+    transform:scale(1.035);
+}
+
+
+/* ============================================================
+   COMPLETED PAINTING — FULL IMAGE + ORNATE FRAME
+   ============================================================ */
+
+
+18% {
+        transform:translate(-35%,-52%) rotate(-2deg) scale(1.04);
+    }
+    100% {
+        opacity:0;
+        transform:translate(-145vw,-58%) rotate(-18deg) scale(.7);
+    }
+}
+
+
+/* Final reward sign: visible briefly, then flies completely away. */
+#larryCongratulations.rewardFlyAway {
+    animation: larryRewardFlyAway 1.65s cubic-bezier(.15,.72,.18,1) forwards !important;
+    pointer-events:none !important;
+}
+
+@keyframes larryRewardFlyAway {
+    0% {
+        opacity:1;
+        transform:translate(0,0) rotate(0deg) scale(1);
+    }
+    12% {
+        opacity:1;
+        transform:translate(2vw,-1vh) rotate(-1deg) scale(1.02);
+    }
+    100% {
+        opacity:0;
+        transform:translate(-140vw,-8vh) rotate(-14deg) scale(.72);
+    }
+}
+
+
+/* FINAL PAINTING STATE: the painting is the only visible content
+   remaining inside the puzzle overlay after the reward sign leaves. */
+#completedPaintingDisplay.finalOnly::after {
+    display:none !important;
+}
+
+
+/* ============================================================
+   FINAL PAINTING ONLY
+   No repair department box, no instructions, no dark overlay,
+   no scrollbar. The original spiral page remains visible behind it.
+   ============================================================ */
+
+#puzzleOverlay.finalPaintingOverlay {
+    background:transparent !important;
+    padding:0 !important;
+    overflow:hidden !important;
+}
+
+#puzzleOverlay.finalPaintingOverlay #puzzleBox {
+    width:100vw !important;
+    min-width:0 !important;
+    max-width:none !important;
+    min-height:100vh !important;
+    max-height:100vh !important;
+    height:100vh !important;
+    margin:0 !important;
+    padding:0 !important;
+    border:0 !important;
+    box-shadow:none !important;
+    background:transparent !important;
+    overflow:hidden !important;
+    resize:none !important;
+}
+
+#puzzleBox.finalPaintingOnly #puzzleTitle,
+#puzzleBox.finalPaintingOnly #puzzleMessage,
+#puzzleBox.finalPaintingOnly #puzzleInstruction,
+#puzzleBox.finalPaintingOnly #puzzleTimer,
+#puzzleBox.finalPaintingOnly #classicPuzzleStage,
+#puzzleBox.finalPaintingOnly #puzzleCancel,
+#puzzleBox.finalPaintingOnly #pieceTrayTitle,
+#puzzleBox.finalPaintingOnly #larryCongratulations {
+    display:none !important;
+}
+
+#puzzleBox.finalPaintingOnly #completedPaintingDisplay {
+    display:block !important;
+    position:absolute !important;
+    left:50% !important;
+    top:50% !important;
+    transform:translate(-50%,-50%) !important;
+    width:auto !important;
+    max-width:94vw !important;
+    height:auto !important;
+    max-height:94vh !important;
+    margin:0 !important;
+    overflow:visible !important;
+    background:transparent !important;
+    cursor:pointer;
+}
+
+#puzzleBox.finalPaintingOnly #completedPaintingImage {
+    display:block !important;
+    width:auto !important;
+    max-width:94vw !important;
+    height:auto !important;
+    max-height:94vh !important;
+    object-fit:contain !important;
+}
+
+#puzzleBox.finalPaintingOnly #completedPaintingDisplay::after {
+    display:none !important;
+}
+
+#completedPaintingDisplay {
+    display:none;
+    position:relative;
+    width:min(88%,760px);
+    margin:4px auto 24px;
+    padding:clamp(22px,4vw,70px);
+    box-sizing:border-box;
+    background:
+      linear-gradient(135deg,
+        #3b1d0c 0%,
+        #9a5b20 9%,
+        #d5a85a 17%,
+        #5a2e10 25%,
+        #b8782c 38%,
+        #3a1b0a 50%,
+        #c9974c 63%,
+        #55290d 75%,
+        #d1a055 88%,
+        #351807 100%);
+    border:clamp(7px,1vw,14px) solid #2b1608;
+    box-shadow:
+      0 0 0 clamp(3px,.45vw,7px) #d8b269,
+      0 0 0 clamp(8px,1vw,16px) #4a250e,
+      inset 0 0 0 clamp(3px,.4vw,6px) #e0b86d,
+      inset 0 0 0 clamp(9px,1vw,16px) #4b250e,
+      0 18px 40px rgba(0,0,0,.75),
+      0 0 35px rgba(255,220,140,.5);
+    cursor:pointer;
+    z-index:100;
+}
+
+#completedPaintingDisplay::before {
+    content:"";
+    position:absolute;
+    inset:clamp(7px,1vw,14px);
+    border:clamp(2px,.35vw,5px) solid #e6c477;
+    box-shadow:
+      inset 0 0 0 clamp(2px,.3vw,4px) #3a1b09,
+      0 0 0 2px #1d0d04;
+    pointer-events:none;
+    z-index:2;
+}
+
+#completedPaintingDisplay::after {
+    content:"CLICK THE COMPLETED PAINTING";
+    position:absolute;
+    left:50%;
+    bottom:-18px;
+    transform:translateX(-50%);
+    padding:6px 11px;
+    background:#111;
+    color:#fff;
+    border:2px solid #fff;
+    font-size:11px;
+    font-weight:900;
+    letter-spacing:.7px;
+    white-space:nowrap;
+    z-index:5;
+    pointer-events:none;
+}
+
+#completedPaintingImage {
+    display:block;
+    width:100%;
+    height:auto;
+    max-height:58vh;
+    object-fit:contain;
+    background:#fff;
+    box-shadow:0 3px 14px rgba(0,0,0,.8);
+    position:relative;
+    z-index:1;
+}
+
+#completedPaintingDisplay.completedFlash {
+    animation:completedFrameFlash .8s ease-in-out 0s 5;
+}
+
+@keyframes completedFrameFlash {
+    0%,100% { filter:brightness(1); transform:scale(1); }
+    50% { filter:brightness(1.65); transform:scale(1.015); }
+}
+
+#puzzleBoard.puzzleComplete {
+    cursor:pointer;
+    box-shadow:
+        0 0 20px #fff,
+        0 0 55px #ffe600,
+        0 0 100px rgba(255,255,255,.7);
+    animation:completedPuzzleFlash .7s ease-in-out 0s 4;
+}
+
+@keyframes completedPuzzleFlash {
+    0%,100% { filter:brightness(1); }
+    50% { filter:brightness(1.8); }
+}
+
+#puzzleBoard.puzzleComplete::after {
+    content:"CLICK THE COMPLETED PAINTING";
+    position:absolute;
+    left:50%;
+    bottom:-34px;
+    transform:translateX(-50%);
+    z-index:100;
+    padding:7px 12px;
+    white-space:nowrap;
+    background:rgba(0,0,0,.88);
+    color:#fff;
+    border:2px solid #fff;
+    font-size:12px;
+    font-weight:900;
+    letter-spacing:.7px;
+    pointer-events:none;
+    text-shadow:0 0 8px #fff;
+}
+
+#puzzleCancel {
+    background:#111;
+    color:#fff;
+    border:3px solid #777;
+    padding:10px 18px;
+    font-weight:900;
+    cursor:pointer;
+    margin-top:8px;
+}
+#puzzleCancel:hover { background:#6b0000; }
+
+@media(max-width:700px){
+    #puzzleBox{
+        min-width:0;
+        width:94vw;
+        resize:none;
+    }
+    #classicPuzzleStage{
+        grid-template-columns:1fr;
+    }
+    #pieceTray{
+        grid-template-columns:repeat(3,1fr);
+        min-height:0;
+    }
+}
+
+/* ============================================================
+   CANCEL / LEAVE BROKEN
+   ============================================================ */
+
+#puzzleCancel {
+    background: #111;
+    color: white;
+    border: 3px solid #777;
+    padding: 10px 18px;
+    font-weight: 900;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+#puzzleCancel:hover {
+    background: #6b0000;
+}
+
+/* ============================================================
+   PUZZLE SHAKE
+   ============================================================ */
+
+@keyframes shake {
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-7px);
+    }
+
+    50% {
+        transform: translateX(7px);
+    }
+
+    75% {
+        transform: translateX(-5px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* ============================================================
+   CONDESCENDING SUCCESS MESSAGE
+   ============================================================ */
+
+#larryCongratulations {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(-2deg);
+    z-index: 7500;
+    width: min(620px, 85vw);
+    background: #fff;
+    color: #111;
+    border: 8px solid #111;
+    box-shadow:
+        0 0 25px white,
+        0 0 70px black;
+    padding: 25px;
+    font-weight: 900;
+    text-align: center;
+}
+
+#larryCongratulations .big {
+    color: red;
+    font-size: 34px;
+    margin-bottom: 15px;
+}
+
+#larryCongratulations .small {
+    font-size: 18px;
+    line-height: 1.55;
+}
+
+/* ============================================================
+   QUALITY SEAL
+   ============================================================ */
+
+#qualitySeal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-5deg);
+    z-index: 7400;
+    background: white;
+    color: black;
+    border: 12px double #c59b00;
+    padding: 30px 45px;
+    font-size: 32px;
+    font-weight: 900;
+    text-align: center;
+    box-shadow:
+        0 0 30px gold,
+        0 0 80px black;
+    animation: sealAppear 0.8s ease-out;
+}
+
+@keyframes sealAppear {
+    from {
+        transform:
+            translate(-50%, -50%)
+            rotate(-5deg)
+            scale(0.1);
+    }
+
+    to {
+        transform:
+            translate(-50%, -50%)
+            rotate(-5deg)
+            scale(1);
+    }
+}
+
+/* ============================================================
+   WELLINGTON BRAND WEDDING CONFETTI AD
+   ============================================================ */
+
+#wellingtonAd {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 16%;
+    transform: translateX(-50%) rotate(-2deg);
+    z-index: 8500;
+    background: #fff;
+    color: #111;
+    border: 6px solid #111;
+    width: min(360px, 80vw);
+    padding: 15px;
+    box-shadow:
+        0 0 20px black,
+        0 0 40px rgba(255,255,255,0.8);
+    font-family: Georgia, serif;
+    animation: weddingAdIn 0.3s ease-out;
+}
+
+#wellingtonAd .brand {
+    font-size: 25px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+#wellingtonAd .wedding {
+    color: #8b0000;
+    font-size: 29px;
+    font-weight: 900;
+    margin-top: 4px;
+}
+
+#wellingtonAd .tagline {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    margin-top: 8px;
+    font-weight: bold;
+}
+
+@keyframes weddingAdIn {
+    from {
+        transform:
+            translateX(-50%)
+            rotate(-2deg)
+            scale(0.1);
+        opacity: 0;
+    }
+
+    to {
+        transform:
+            translateX(-50%)
+            rotate(-2deg)
+            scale(1);
+        opacity: 1;
+    }
+}
+
+/* ============================================================
+   SALES POPUPS
+   ============================================================ */
+
+#salesContainer {
+    position: fixed;
+    inset: 0;
+    z-index: 6000;
+    pointer-events: none;
+}
+
+.salesPopup {
+    position: absolute;
+    width: 260px;
+    background: #fff;
+    color: black;
+    border: 5px solid #111;
+    box-shadow:
+        0 0 20px black,
+        0 8px 20px rgba(0,0,0,0.8);
+    padding: 14px;
+    font-weight: bold;
+    pointer-events: none;
+    animation:
+        popupIn 0.2s ease-out,
+        popupOut 0.5s ease-in 2.8s forwards;
+}
+
+.salesPopup strong {
+    display: block;
+    color: red;
+    font-size: 18px;
+    margin-bottom: 6px;
+}
+
+@keyframes popupIn {
+    from {
+        opacity: 0;
+        transform: scale(0.4) rotate(-8deg);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+@keyframes popupOut {
+    to {
+        opacity: 0;
+        transform: scale(0.2) rotate(12deg);
+    }
+}
+
+/* ============================================================
+   CONFETTI
+   Mostly white hole-punch circles, with occasional
+   old paper scraps containing blue notebook lines.
+   ============================================================ */
+
+.confetti {
+    position: fixed;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    z-index: 7000;
+    pointer-events: none;
+    animation:
+        confettiFall 3.5s linear forwards;
+}
+
+.confetti.notebook {
+    border-radius: 2px;
+    width: 15px;
+    height: 11px;
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            #f3eee3 0px,
+            #f3eee3 3px,
+            #668fc4 3px,
+            #668fc4 4px
+        );
+    border: 1px solid #8c806c;
+}
+
+.confetti.brown {
+    background: #b79b72;
+}
+
+@keyframes confettiFall {
+    0% {
+        transform:
+            translateY(-30px)
+            translateX(0)
+            rotate(0deg);
+        opacity: 1;
+    }
+
+    30% {
+        transform:
+            translateY(30vh)
+            translateX(25px)
+            rotate(220deg);
+    }
+
+    60% {
+        transform:
+            translateY(65vh)
+            translateX(-30px)
+            rotate(500deg);
+    }
+
+    100% {
+        transform:
+            translateY(110vh)
+            translateX(40px)
+            rotate(900deg);
+        opacity: 0.95;
+    }
+}
+
+/* ============================================================
+   FIREWORK
+   ============================================================ */
+
+.firework {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+    z-index: 7000;
+    pointer-events: none;
+    animation: fireworkBurst 1s ease-out forwards;
+}
+
+@keyframes fireworkBurst {
+    0% {
+        transform: scale(0.2);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(12);
+        opacity: 0;
+    }
+}
+
+/* ============================================================
+   SMALL INSTRUCTIONS
+   ============================================================ */
+
+#zoomInfo {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 13px;
+    text-shadow:
+        0 0 5px black,
+        0 0 10px black;
+    pointer-events: none;
+}
+
+/*
+   Gallery/browser-zoom behaviour:
+   Ctrl + mouse-wheel browser zoom changes the CSS viewport. The gallery
+   thumbnails use viewport-relative sizing so they shrink as the page is
+   enlarged, while fixed-position alerts remain anchored to the viewport.
+*/
+
+/* ============================================================
+   LAR KNOWLEDGE BOOTH — SECRET LAR CASINO ENTRANCE
+   ============================================================ */
+#larKnowledgeBooth{
+    display:none;
+    position:fixed;
+    right:7vw;
+    top:50%;
+    transform:translateY(-50%);
+    width:230px;
+    height:230px;
+    z-index:6500;
+    cursor:pointer;
+    user-select:none;
+    filter:drop-shadow(0 0 7px rgba(0,255,255,.45));
+}
+#larKnowledgeBooth .boothBody{
+    position:absolute;
+    left:24px;
+    right:24px;
+    bottom:18px;
+    height:170px;
+    background:
+      linear-gradient(145deg,#3a2115,#744522 52%,#29170e);
+    border:5px solid #111;
+    border-radius:7px 7px 3px 3px;
+    box-shadow:0 7px 15px rgba(0,0,0,.8),inset 0 0 14px rgba(255,255,255,.12);
+}
+#larKnowledgeBooth .boothRoof{
+    position:absolute;
+    left:18px;
+    right:18px;
+    top:28px;
+    height:22px;
+    background:#111;
+    border:3px solid #ddd;
+    transform:skewX(-12deg);
+    z-index:2;
+}
+#larKnowledgeBooth .boothQuestion{
+    position:absolute;
+    left:50%;
+    top:50px;
+    transform:translateX(-50%);
+    z-index:4;
+    color:white;
+    font-family:Georgia,serif;
+    font-size:104px;
+    line-height:1;
+    font-weight:900;
+    text-shadow:
+      0 0 4px #fff,
+      0 0 10px #00eaff,
+      0 0 22px #ff39ff,
+      2px 2px 0 #111;
+}
+#larKnowledgeBooth .boothSign{
+    position:absolute;
+    left:35px;
+    right:35px;
+    bottom:34px;
+    z-index:5;
+    color:#fff7b0;
+    font-size:14px;
+    font-weight:1000;
+    letter-spacing:1px;
+    text-align:center;
+    text-shadow:0 0 5px #fff,0 0 10px #ffcf00;
+}
+#larKnowledgeBooth .neonFilaments{
+    position:absolute;
+    inset:-95px;
+    animation:larBoothStarSpin 5.5s linear infinite;
+    pointer-events:none;
+    overflow:visible;
+}
+#larKnowledgeBooth .neonFilaments i{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:5px;
+    height:180px;
+    transform-origin:50% 0;
+    opacity:.9;
+    background:linear-gradient(to bottom,rgba(255,255,255,.95),currentColor 18%,transparent 100%);
+    box-shadow:0 0 6px currentColor,0 0 16px currentColor,0 0 30px currentColor;
+    animation:larBoothElectric .85s steps(7,end) infinite alternate;
+}
+#larKnowledgeBooth .neonFilaments i:nth-child(1){color:#ff3131;transform:rotate(8deg)}
+#larKnowledgeBooth .neonFilaments i:nth-child(2){color:#ff9d00;transform:rotate(35deg);animation-delay:-.2s}
+#larKnowledgeBooth .neonFilaments i:nth-child(3){color:#ffe600;transform:rotate(68deg);animation-delay:-.4s}
+#larKnowledgeBooth .neonFilaments i:nth-child(4){color:#38ff6b;transform:rotate(102deg);animation-delay:-.1s}
+#larKnowledgeBooth .neonFilaments i:nth-child(5){color:#00eaff;transform:rotate(137deg);animation-delay:-.35s}
+#larKnowledgeBooth .neonFilaments i:nth-child(6){color:#477dff;transform:rotate(171deg);animation-delay:-.55s}
+#larKnowledgeBooth .neonFilaments i:nth-child(7){color:#b85cff;transform:rotate(210deg);animation-delay:-.15s}
+#larKnowledgeBooth .neonFilaments i:nth-child(8){color:#ff4fd8;transform:rotate(248deg);animation-delay:-.45s}
+#larKnowledgeBooth .neonFilaments i:nth-child(9){color:#00eaff;transform:rotate(286deg);animation-delay:-.3s}
+#larKnowledgeBooth .neonFilaments i:nth-child(10){color:#ffe600;transform:rotate(322deg);animation-delay:-.6s}
+
+#larKnowledgeBooth .neonFilaments i:nth-child(11){color:#ff3131;transform:rotate(12deg) scale(.72)}
+#larKnowledgeBooth .neonFilaments i:nth-child(12){color:#00eaff;transform:rotate(51deg) scale(.82);animation-delay:-.3s}
+#larKnowledgeBooth .neonFilaments i:nth-child(13){color:#b85cff;transform:rotate(88deg) scale(.68);animation-delay:-.5s}
+#larKnowledgeBooth .neonFilaments i:nth-child(14){color:#38ff6b;transform:rotate(126deg) scale(.78);animation-delay:-.2s}
+#larKnowledgeBooth .neonFilaments i:nth-child(15){color:#ffe600;transform:rotate(154deg) scale(.9);animation-delay:-.45s}
+#larKnowledgeBooth .neonFilaments i:nth-child(16){color:#ff4fd8;transform:rotate(193deg) scale(.7);animation-delay:-.15s}
+#larKnowledgeBooth .neonFilaments i:nth-child(17){color:#477dff;transform:rotate(226deg) scale(.8);animation-delay:-.55s}
+#larKnowledgeBooth .neonFilaments i:nth-child(18){color:#ff9d00;transform:rotate(263deg) scale(.72);animation-delay:-.35s}
+#larKnowledgeBooth .neonFilaments i:nth-child(19){color:#00eaff;transform:rotate(301deg) scale(.9);animation-delay:-.65s}
+#larKnowledgeBooth .neonFilaments i:nth-child(20){color:#ffe600;transform:rotate(338deg) scale(.76);animation-delay:-.25s}
+#larKnowledgeBooth .neonFilaments i:nth-child(21){color:#38ff6b;transform:rotate(30deg) scale(.55);animation-delay:-.4s}
+#larKnowledgeBooth .neonFilaments i:nth-child(22){color:#ff39ff;transform:rotate(118deg) scale(.58);animation-delay:-.6s}
+#larKnowledgeBooth .neonFilaments i:nth-child(23){color:#00eaff;transform:rotate(184deg) scale(.62);animation-delay:-.05s}
+#larKnowledgeBooth .neonFilaments i:nth-child(24){color:#ff3131;transform:rotate(246deg) scale(.56);animation-delay:-.5s}
+#larKnowledgeBooth .neonFilaments i:nth-child(25){color:#ffe600;transform:rotate(318deg) scale(.6);animation-delay:-.32s}
+#larKnowledgeBooth .neonFilaments i:nth-child(26){color:#b85cff;transform:rotate(357deg) scale(.66);animation-delay:-.7s}
+@keyframes larBoothStarSpin{to{transform:rotate(360deg)}}
+@keyframes larBoothElectric{
+    from{height:72px;opacity:.42;filter:brightness(.8)}
+    to{height:112px;opacity:1;filter:brightness(1.7)}
+}
+#larKnowledgeBooth:hover .neonFilaments i{
+    animation-duration:.42s;
+}
+#larKnowledgeOverlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:16000;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,.78);
+    padding:20px;
+    box-sizing:border-box;
+}
+#larKnowledgeBox{
+    position:relative;
+    width:min(600px,92vw);
+    background:#16110d;
+    color:white;
+    border:8px solid #6e4322;
+    outline:3px solid #fff;
+    box-shadow:
+      0 0 18px #00eaff,
+      0 0 45px #ff39ff,
+      0 0 90px rgba(255,255,255,.35),
+      0 25px 80px #000;
+    padding:30px;
+    text-align:center;
+    box-sizing:border-box;
+}
+#larKnowledgeBox::before{
+    content:"";
+    position:absolute;
+    inset:-18px;
+    pointer-events:none;
+    background:
+      repeating-conic-gradient(
+        from 8deg,
+        transparent 0 8deg,
+        rgba(0,234,255,.7) 8deg 8.8deg,
+        transparent 8.8deg 18deg,
+        rgba(255,79,216,.7) 18deg 18.8deg,
+        transparent 18.8deg 30deg
+      );
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+    mask-composite:exclude;
+    padding:7px;
+    animation:larQuestionElectric .9s linear infinite;
+}
+@keyframes larQuestionElectric{
+    to{transform:rotate(360deg)}
+}
+#larKnowledgeTitle{
+    position:relative;
+    z-index:2;
+    color:#fff5a8;
+    font-size:clamp(24px,5vw,42px);
+    font-weight:1000;
+    text-shadow:0 0 8px #fff,0 0 20px #00eaff,3px 3px 0 #000;
+    margin:0 0 16px;
+}
+#larKnowledgeQuestion{
+    position:relative;
+    z-index:2;
+    font-size:clamp(20px,4vw,31px);
+    font-weight:1000;
+    margin:12px 0 18px;
+}
+#larKnowledgeAnswers{
+    position:relative;
+    z-index:2;
+    display:grid;
+    gap:10px;
+}
+.larAnswer{
+    border:4px solid #111;
+    background:#8a572e;
+    color:white;
+    padding:13px 15px;
+    font-size:clamp(15px,2.4vw,21px);
+    font-weight:1000;
+    cursor:pointer;
+    box-shadow:0 4px 0 #000,0 0 12px rgba(255,255,255,.18);
+}
+.larAnswer:hover{
+    background:#b7783b;
+    box-shadow:0 0 12px #fff,0 0 30px #00eaff,0 4px 0 #000;
+}
+#larKnowledgeResult{
+    position:relative;
+    z-index:2;
+    display:none;
+    margin-top:20px;
+    font-size:clamp(16px,2.7vw,23px);
+    line-height:1.35;
+    font-weight:1000;
+}
+#larCasinoButton{
+    position:relative;
+    z-index:2;
+    display:none;
+    margin:18px auto 0;
+    border:5px solid #111;
+    background:#ffe45c;
+    color:#111;
+    padding:14px 22px;
+    font-size:clamp(16px,2.8vw,23px);
+    font-weight:1000;
+    cursor:pointer;
+    box-shadow:0 5px 0 #000,0 0 18px #ffe600;
+}
+#larKnowledgeClose{
+    position:absolute;
+    top:7px;
+    right:10px;
+    z-index:3;
+    border:2px solid #fff;
+    background:#250b0b;
+    color:#fff;
+    font-weight:1000;
+    cursor:pointer;
+    padding:4px 8px;
+}
+@media(max-width:600px){
+    #larKnowledgeBooth{right:50%;top:50%;transform:translate(50%,-50%) scale(.78);transform-origin:center}
+}
+
+
+#larAmbientElectricity{display:block;position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.larStarburst{position:absolute;width:150px;height:150px;left:var(--sx);top:var(--sy);transform:translate(-50%,-50%);animation:larStarRotate var(--sd) linear infinite;filter:drop-shadow(0 0 7px rgba(0,234,255,.65))}
+.larStarburst i{position:absolute;left:50%;top:50%;width:5px;height:150px;transform-origin:50% 0;border-radius:999px;background:linear-gradient(to bottom,rgba(255,255,255,.98),currentColor 15%,currentColor 52%,transparent 100%);box-shadow:0 0 5px currentColor,0 0 13px currentColor,0 0 26px currentColor;opacity:.9;animation:larRayPulse .7s ease-in-out infinite alternate}
+@keyframes larStarRotate{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes larRayPulse{from{height:105px;opacity:.45;filter:brightness(.9)}to{height:180px;opacity:1;filter:brightness(2)}}
+#larSeagulls{display:block;position:fixed;inset:0;z-index:4;pointer-events:none;overflow:hidden}
+.larSeagull{position:absolute;color:#fff;font-size:38px;font-weight:1000;text-shadow:0 2px 5px #000,0 0 10px #fff;animation:larGullFly linear infinite;letter-spacing:-10px}
+@keyframes larGullFly{from{transform:translateX(-14vw) translateY(0) scale(.7)}25%{transform:translateX(28vw) translateY(-38px) scale(1.15)}50%{transform:translateX(55vw) translateY(25px) scale(.9)}75%{transform:translateX(82vw) translateY(-45px) scale(1.25)}to{transform:translateX(118vw) translateY(10px) scale(.72)}}
+#larBackgroundStarbursts{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.larBgStar{position:absolute;width:120px;height:120px;left:var(--x);top:var(--y);transform:translate(-50%,-50%);animation:larBgSpin var(--dur) linear infinite}
+.larBgStar i{position:absolute;left:50%;top:50%;width:4px;height:120px;transform-origin:50% 0;border-radius:999px;background:linear-gradient(to bottom,#fff,currentColor 12%,currentColor 55%,transparent);box-shadow:0 0 5px currentColor,0 0 14px currentColor,0 0 24px currentColor;opacity:.72;animation:larBgPulse 1.05s ease-in-out infinite alternate}
+@keyframes larBgSpin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes larBgPulse{from{height:70px;opacity:.32}to{height:155px;opacity:.92;filter:brightness(1.8)}}
+#artworkGallery{position:relative;z-index:2}
+#larLightningLayer{position:fixed;inset:0;z-index:3;pointer-events:none;overflow:hidden}
+.larLightningBolt{position:absolute;width:7px;height:180px;transform-origin:top center;filter:drop-shadow(0 0 5px #fff) drop-shadow(0 0 14px #00eaff);opacity:0;transition:opacity .06s linear}
+.larLightningBolt::before,.larLightningBolt::after{content:"";position:absolute;left:50%;top:0;width:5px;height:100%;background:#fff;box-shadow:0 0 8px #fff,0 0 18px #00eaff,0 0 30px #fff;clip-path:polygon(45% 0,65% 0,53% 28%,82% 28%,42% 63%,57% 63%,24% 100%,35% 58%,10% 58%,49% 25%,30% 25%)}
+.larLightningBolt::after{filter:blur(5px);opacity:.8}
+
+
+/* ============================================================
+   LARRY'S VARIETY OPENING VORTEX / 3-D TITLE REVEAL
+   ============================================================ */
+#larOpeningIntro{
+  position:fixed;
+  inset:0;
+  z-index:999999;
+  overflow:hidden;
+  background:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:1;
+  transition:opacity 2.4s ease;
+  pointer-events:auto;
+}
+#larOpeningIntro.intro-fade{
+  opacity:0;
+  pointer-events:none;
+}
+#larOpeningSmoke{
+  position:absolute;
+  inset:-15%;
+  z-index:7;
+  pointer-events:none;
+  opacity:0;
+  background:
+    radial-gradient(ellipse at 22% 70%, rgba(255,255,255,.96) 0 7%, rgba(255,255,255,.62) 15%, transparent 34%),
+    radial-gradient(ellipse at 45% 62%, rgba(255,255,255,.95) 0 10%, rgba(255,255,255,.58) 21%, transparent 42%),
+    radial-gradient(ellipse at 70% 54%, rgba(255,255,255,.92) 0 11%, rgba(255,255,255,.52) 23%, transparent 45%),
+    radial-gradient(ellipse at 82% 72%, rgba(255,255,255,.9) 0 8%, rgba(255,255,255,.5) 20%, transparent 40%);
+  filter:blur(18px);
+  transform:scale(.8);
+}
+#larOpeningIntro.smoke-build #larOpeningSmoke{
+  animation:larSmokeBuild 5.2s ease-in forwards;
+}
+#larOpeningIntro.smoke-whiteout #larOpeningSmoke{
+  animation:larSmokeWhiteout 2.4s ease-in-out forwards;
+}
+@keyframes larSmokeBuild{
+  0%{opacity:0;transform:scale(.72)}
+  55%{opacity:.5;transform:scale(1.05)}
+  100%{opacity:.82;transform:scale(1.22)}
+}
+@keyframes larSmokeWhiteout{
+  0%{opacity:.82;transform:scale(1.22)}
+  55%{opacity:1;transform:scale(1.55)}
+  100%{opacity:.03;transform:scale(2.2)}
+}
+#larOpeningCar{
+  position:absolute;
+  left:-28vw;
+  bottom:18vh;
+  width:clamp(230px,30vw,520px);
+  height:clamp(90px,11vw,190px);
+  z-index:6;
+  opacity:0;
+  filter:drop-shadow(0 18px 12px rgba(0,0,0,.75));
+}
+#larOpeningIntro.car-arrive #larOpeningCar{
+  animation:larCarDrive 6.8s cubic-bezier(.2,.72,.25,1) forwards;
+}
+.larCarBody{position:absolute;left:4%;bottom:10%;width:84%;height:52%;background:linear-gradient(#6b3d20,#4a2814 55%,#321b0d);border:5px solid #201008;border-radius:12px 22px 10px 10px;box-shadow:inset 0 -12px 0 rgba(0,0,0,.25),0 0 0 2px #8b5a32;}
+.larCarRoof{position:absolute;left:29%;top:10%;width:39%;height:42%;background:#5a321a;border:5px solid #201008;border-bottom:0;border-radius:35px 45px 0 0;transform:skewX(-10deg);}
+.larCarWindow{position:absolute;left:36%;top:18%;width:28%;height:25%;background:#070707;border:3px solid #1d1008;transform:skewX(-10deg);}
+.larCarHood{position:absolute;left:0;bottom:28%;width:34%;height:24%;background:#5b3219;border:5px solid #201008;border-right:0;border-radius:16px 0 0 7px;}
+.larCarTrunk{position:absolute;right:0;bottom:29%;width:18%;height:24%;background:#4b2915;border:5px solid #201008;border-left:0;border-radius:0 18px 8px 0;}
+.larCarWheel{position:absolute;bottom:0;width:18%;aspect-ratio:1;border-radius:50%;background:#090909;border:5px solid #2a160b;box-shadow:inset 0 0 0 9px #6b3d20;}
+.larCarWheel.one{left:15%}.larCarWheel.two{right:12%}
+.larCarTailpipe{position:absolute;right:-3%;bottom:31%;width:12%;height:7%;background:#151515;border:3px solid #050505;border-radius:0 8px 8px 0;box-shadow:0 0 5px #000;}
+.larCarSmoke{position:absolute;right:-28%;bottom:18%;width:58%;height:78%;opacity:.96;filter:blur(7px);}
+.larCarSmoke i{position:absolute;border-radius:50%;background:rgba(255,255,255,.8);box-shadow:0 0 25px rgba(255,255,255,.55);animation:larExhaust 2.8s ease-out infinite;}
+.larCarSmoke i:nth-child(1){width:44px;height:44px;right:1%;bottom:8%}.larCarSmoke i:nth-child(2){width:62px;height:62px;right:13%;bottom:20%;animation-delay:.25s}.larCarSmoke i:nth-child(3){width:82px;height:82px;right:27%;bottom:4%;animation-delay:.55s}.larCarSmoke i:nth-child(4){width:106px;height:106px;right:39%;bottom:24%;animation-delay:.85s}.larCarSmoke i:nth-child(5){width:132px;height:132px;right:50%;bottom:2%;animation-delay:1.15s}.larCarSmoke i:nth-child(6){width:165px;height:165px;right:61%;bottom:22%;animation-delay:1.45s}.larCarSmoke i:nth-child(7){width:205px;height:205px;right:70%;bottom:-4%;animation-delay:1.75s}.larCarSmoke i:nth-child(8){width:240px;height:240px;right:77%;bottom:20%;animation-delay:2.05s}
+@keyframes larCarDrive{0%{left:-32vw;opacity:0;transform:scale(.8)}8%{opacity:1}55%{left:38vw;opacity:1;transform:scale(1)}100%{left:112vw;opacity:0;transform:scale(1.06)}}
+@keyframes larExhaust{0%{transform:translate(0,0) scale(.55);opacity:.08}20%{opacity:.82}100%{transform:translate(-150px,-80px) scale(1.9);opacity:0}}
+#larOpeningGulls{position:absolute;inset:0;z-index:5;pointer-events:none;opacity:0;}
+#larOpeningIntro.gulls-arrive #larOpeningGulls{animation:larGullsAppear 1.8s ease-out forwards}
+.larOpeningGull{position:absolute;width:clamp(70px,8vw,150px);height:34px;opacity:.9;filter:drop-shadow(0 4px 5px rgba(0,0,0,.8));animation:larGullSwoop var(--gd) ease-in-out infinite;animation-delay:var(--delay);}
+.larOpeningGull:before,.larOpeningGull:after{content:"";position:absolute;top:14px;width:50%;height:14px;border-top:7px solid #fff;border-radius:50%;}
+.larOpeningGull:before{left:0;transform-origin:right center;transform:rotate(18deg)}.larOpeningGull:after{right:0;transform-origin:left center;transform:rotate(-18deg)}
+@keyframes larGullsAppear{to{opacity:1}}
+@keyframes larGullSwoop{0%,100%{transform:translate3d(0,0,0) rotate(-5deg) scale(.9)}35%{transform:translate3d(var(--gx),var(--gy),0) rotate(12deg) scale(1.15)}70%{transform:translate3d(calc(var(--gx)*-.7),calc(var(--gy)*.8),0) rotate(-14deg) scale(1)}}
+#larOpeningVortex{
+  position:absolute;
+  inset:-24%;
+  background:
+    repeating-conic-gradient(from 0deg,
+      #000 0deg 8deg,
+      #f4f4f4 8deg 16deg,
+      #000 16deg 24deg,
+      #ffffff 24deg 32deg);
+  filter:contrast(1.5);
+  animation:larVortexSpin 10.5s linear infinite;
+  transform-origin:center;
+}
+#larOpeningVortex:after{
+  content:"";
+  position:absolute;
+  inset:16%;
+  border-radius:50%;
+  background:radial-gradient(circle,#000 0 5%,rgba(0,0,0,.9) 6% 17%,transparent 38%);
+  box-shadow:0 0 90px 30px rgba(255,255,255,.08) inset;
+}
+@keyframes larVortexSpin{to{transform:rotate(360deg) scale(1.08)}}
+#larOpeningTitle{
+  position:relative;
+  width:min(94vw,1200px);
+  height:260px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transform-origin:center;
+  z-index:4;
+}
+#larOpeningLetters{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:.02em;
+  white-space:nowrap;
+  transform:perspective(900px) rotateX(4deg);
+  z-index:5;
+}
+.larOpeningLetter{
+  display:inline-block;
+  position:relative;
+  color:#6e3f20;
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:clamp(52px,8vw,118px);
+  font-weight:1000;
+  line-height:.9;
+  letter-spacing:-.06em;
+  opacity:0;
+  transform:translate3d(var(--sx),var(--sy),var(--sz)) rotateY(var(--ry)) rotateZ(var(--rz)) scale(.35);
+  text-shadow:
+    2px 2px 0 #3b2110,
+    5px 5px 0 #2a160b,
+    8px 8px 0 #17100b,
+    12px 14px 20px rgba(0,0,0,.95),
+    -2px -2px 0 #a87343;
+  animation:larLetterArrive 3.8s cubic-bezier(.16,.86,.23,1) forwards;
+  animation-delay:var(--delay);
+}
+@keyframes larLetterArrive{
+  0%{opacity:0;transform:translate3d(var(--sx),var(--sy),var(--sz)) rotateY(var(--ry)) rotateZ(var(--rz)) scale(.35)}
+  55%{opacity:1;transform:translate3d(calc(var(--sx)*.18),calc(var(--sy)*.18),0) rotateY(calc(var(--ry)*.22)) rotateZ(calc(var(--rz)*.22)) scale(1.08)}
+  100%{opacity:1;transform:translate3d(0,0,0) rotateY(0) rotateZ(0) scale(1)}
+}
+.larOpeningSpace{width:.28em;display:inline-block}
+#larOpeningRays{
+  position:absolute;
+  inset:0;
+  z-index:3;
+  pointer-events:none;
+  opacity:0;
+  transform:scale(.25);
+}
+#larOpeningIntro.intro-burst #larOpeningRays{
+  animation:larBurstIn 2.2s ease-out forwards;
+}
+@keyframes larBurstIn{
+  0%{opacity:0;transform:scale(.25) rotate(0deg)}
+  35%{opacity:1}
+  100%{opacity:.96;transform:scale(1.12) rotate(8deg)}
+}
+.larOpeningRay{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:clamp(8px,1vw,16px);
+  height:47%;
+  transform-origin:50% 100%;
+  border-radius:999px;
+  background:linear-gradient(to top,rgba(255,255,255,.95),var(--ray),rgba(255,255,255,0));
+  box-shadow:0 0 18px 6px var(--ray),0 0 45px 12px var(--ray);
+}
+#larOpeningGlow{
+  position:absolute;
+  width:28vw;height:28vw;min-width:220px;min-height:220px;
+  border-radius:50%;
+  background:conic-gradient(from 0deg,rgba(255,0,0,.42),rgba(255,220,0,.35),rgba(0,255,90,.35),rgba(0,220,255,.38),rgba(70,90,255,.4),rgba(210,0,255,.42),rgba(255,0,0,.42));
+  filter:blur(12px);
+  opacity:0;
+  z-index:2;
+}
+#larOpeningIntro.intro-burst #larOpeningGlow{
+  animation:larGlowPulse 2.4s ease-out forwards;
+}
+@keyframes larGlowPulse{
+  0%{opacity:0;transform:scale(.3)}
+  35%{opacity:1;transform:scale(1.2)}
+  100%{opacity:.75;transform:scale(1.5)}
+}
+#larOpeningIntro.intro-shrink #larOpeningTitle{
+  animation:larTitleShrink 2.2s cubic-bezier(.2,.75,.25,1) forwards;
+}
+@keyframes larTitleShrink{
+  0%{transform:scale(1)}
+  100%{transform:scale(.045);opacity:0}
+}
+}
+
+
+/* ============================================================
+   V21 — CLEAN COMPLETED PAINTING VIEW
+   The normal Larry page is hidden while the finished painting is
+   being admired. The black/white spiral remains visible.
+   ============================================================ */
+
+body.final-painting-state > *:not(#puzzleOverlay) {
+    visibility:hidden !important;
+}
+
+body.final-painting-state #puzzleOverlay {
+    visibility:visible !important;
+    display:block !important;
+    position:fixed !important;
+    inset:0 !important;
+    padding:0 !important;
+    margin:0 !important;
+    overflow:hidden !important;
+    background:transparent !important;
+    z-index:999999 !important;
+}
+
+body.final-painting-state #puzzleOverlay::before {
+    display:none !important;
+}
+
+body.final-painting-state #puzzleBox {
+    visibility:visible !important;
+    position:absolute !important;
+    left:50% !important;
+    top:50% !important;
+    transform:translate(-50%,-50%) !important;
+    width:auto !important;
+    height:auto !important;
+    min-width:0 !important;
+    min-height:0 !important;
+    max-width:94vw !important;
+    max-height:94vh !important;
+    margin:0 !important;
+    padding:0 !important;
+    overflow:visible !important;
+    resize:none !important;
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    color:transparent !important;
+}
+
+body.final-painting-state #puzzleTitle,
+body.final-painting-state #puzzleMessage,
+body.final-painting-state #puzzleInstruction,
+body.final-painting-state #puzzleTimer,
+body.final-painting-state #classicPuzzleStage,
+body.final-painting-state #puzzleCancel,
+body.final-painting-state #larryCongratulations,
+body.final-painting-state #pieceTrayTitle {
+    display:none !important;
+}
+
+/* The frame hugs the painting instead of putting a white panel around it. */
+body.final-painting-state #completedPaintingDisplay {
+    display:block !important;
+    position:relative !important;
+    left:auto !important;
+    top:auto !important;
+    transform:none !important;
+    width:auto !important;
+    height:auto !important;
+    max-width:none !important;
+    max-height:none !important;
+    margin:0 !important;
+    padding:clamp(12px,1.5vw,24px) !important;
+    box-sizing:content-box !important;
+    overflow:visible !important;
+
+    /* ornate layered brown/gold frame */
+    background:
+        linear-gradient(135deg,
+            #2a1307 0%,
+            #8c501b 7%,
+            #e0b766 12%,
+            #4a230b 17%,
+            #c58c3d 23%,
+            #3a1a08 29%,
+            #d8ad5c 36%,
+            #4b240c 43%,
+            #241006 50%,
+            #d8ad5c 57%,
+            #4b240c 64%,
+            #c58c3d 71%,
+            #3a1a08 77%,
+            #e0b766 83%,
+            #8c501b 89%,
+            #2a1307 100%);
+    border:clamp(5px,.65vw,10px) solid #1c0c04;
+    box-shadow:
+        0 0 0 clamp(3px,.4vw,6px) #e4c477,
+        0 0 0 clamp(7px,.8vw,12px) #4b240c,
+        0 0 0 clamp(10px,1.1vw,17px) #d2a653,
+        0 0 0 clamp(14px,1.45vw,22px) #291306,
+        0 12px 28px rgba(0,0,0,.8),
+        0 0 28px rgba(255,215,120,.45);
+}
+
+body.final-painting-state #completedPaintingDisplay::before,
+body.final-painting-state #completedPaintingDisplay::after {
+    display:none !important;
+}
+
+/* The actual painting fills the inner frame exactly. */
+body.final-painting-state #completedPaintingImage {
+    display:block !important;
+    width:100% !important;
+    height:auto !important;
+    max-width:none !important;
+    max-height:none !important;
+    object-fit:fill !important;
+    margin:0 !important;
+    padding:0 !important;
+    border:0 !important;
+    background:transparent !important;
+    box-shadow:none !important;
+    position:relative !important;
+    z-index:1 !important;
+}
+
+/* No flash, label, or overlay survives into the final view. */
+body.final-painting-state #completedPaintingDisplay.completedFlash {
+    animation:none !important;
+}
+
+
+/* ============================================================
+   V22 — ISOLATED SPIRAL + SOLID ORNATE FRAME
+   Final painting view contains ONLY:
+     1. the black/white spiral backdrop
+     2. the framed painting
+   ============================================================ */
+
+body.final-painting-state {
+    background:#000 !important;
+    overflow:hidden !important;
+}
+
+/* Keep the original black/white spiral, but make it the only
+   background layer visible in the final state. */
+body.final-painting-state::before {
+    z-index:0 !important;
+    width:300vmax !important;
+    height:300vmax !important;
+    opacity:1 !important;
+    visibility:visible !important;
+}
+
+/* Hide every ordinary page element — paintings included. */
+body.final-painting-state > *:not(#puzzleOverlay) {
+    visibility:hidden !important;
+    pointer-events:none !important;
+}
+
+/* The puzzle overlay becomes a completely transparent window
+   over the isolated spiral. */
+body.final-painting-state #puzzleOverlay {
+    visibility:visible !important;
+    display:block !important;
+    position:fixed !important;
+    inset:0 !important;
+    width:100vw !important;
+    height:100vh !important;
+    padding:0 !important;
+    margin:0 !important;
+    overflow:hidden !important;
+    background:transparent !important;
+    z-index:999999 !important;
+}
+
+body.final-painting-state #puzzleBox {
+    visibility:visible !important;
+    position:absolute !important;
+    left:50% !important;
+    top:50% !important;
+    transform:translate(-50%,-50%) !important;
+
+    /* Inner picture deliberately smaller, so the thick frame is
+       plainly visible on every side. */
+    width:min(72vw,76vh) !important;
+    height:min(72vw,76vh) !important;
+
+    min-width:0 !important;
+    min-height:0 !important;
+    max-width:none !important;
+    max-height:none !important;
+
+    margin:0 !important;
+    padding:clamp(42px,4.2vw,82px) !important;
+    box-sizing:content-box !important;
+
+    overflow:visible !important;
+    resize:none !important;
+    background:
+        linear-gradient(135deg,
+            #211006 0%,
+            #704018 5%,
+            #d5ad5c 9%,
+            #4a210a 13%,
+            #a96d2d 17%,
+            #e5c779 21%,
+            #321507 25%,
+            #9b6025 29%,
+            #e0b866 33%,
+            #4a210a 37%,
+            #241006 42%,
+            #d7ad58 48%,
+            #4b220b 53%,
+            #e4c475 58%,
+            #351708 63%,
+            #a86a2b 68%,
+            #e1bd69 73%,
+            #4a210a 78%,
+            #c58c3d 83%,
+            #e0bd70 88%,
+            #6f3d16 93%,
+            #211006 100%) !important;
+
+    border:clamp(7px,.75vw,14px) solid #180a03 !important;
+
+    box-shadow:
+        0 0 0 clamp(4px,.45vw,8px) #e4c879,
+        0 0 0 clamp(9px,.9vw,16px) #51250b,
+        0 0 0 clamp(14px,1.35vw,25px) #d5a852,
+        0 0 0 clamp(19px,1.8vw,34px) #291205,
+        0 14px 35px rgba(0,0,0,.9),
+        0 0 35px rgba(255,216,125,.45);
+
+    color:transparent !important;
+}
+
+/* Remove absolutely everything that belonged to the puzzle UI. */
+body.final-painting-state #puzzleTitle,
+body.final-painting-state #puzzleMessage,
+body.final-painting-state #puzzleInstruction,
+body.final-painting-state #puzzleTimer,
+body.final-painting-state #classicPuzzleStage,
+body.final-painting-state #puzzleCancel,
+body.final-painting-state #larryCongratulations,
+body.final-painting-state #pieceTrayTitle,
+body.final-painting-state #pieceTray,
+body.final-painting-state #puzzlePieces,
+body.final-painting-state #puzzleControls {
+    display:none !important;
+}
+
+/* The frame itself is the block. There is NO transparent gap
+   between frame material and the artwork. */
+body.final-painting-state #completedPaintingDisplay {
+    display:block !important;
+    position:absolute !important;
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    max-width:none !important;
+    max-height:none !important;
+    margin:0 !important;
+    padding:0 !important;
+    box-sizing:border-box !important;
+    overflow:hidden !important;
+    background:#fff !important;
+    border:0 !important;
+    box-shadow:none !important;
+}
+
+/* Make the picture occupy the entire inner opening.
+   object-fit:cover removes excess white margin around a source
+   image when necessary, rather than leaving a visible gap. */
+body.final-painting-state #completedPaintingImage {
+    display:block !important;
+    position:absolute !important;
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    max-width:none !important;
+    max-height:none !important;
+    margin:0 !important;
+    padding:0 !important;
+    border:0 !important;
+    object-fit:cover !important;
+    object-position:center !important;
+    background:#fff !important;
+    box-shadow:none !important;
+}
+
+/* No pseudo-elements can create a white repair label or halo. */
+body.final-painting-state #completedPaintingDisplay::before,
+body.final-painting-state #completedPaintingDisplay::after {
+    display:none !important;
+}
+
+/* Never allow a scrollbar/resize grip in the final view. */
+body.final-painting-state,
+body.final-painting-state #puzzleOverlay,
+body.final-painting-state #puzzleBox,
+body.final-painting-state #completedPaintingDisplay {
+    scrollbar-width:none !important;
+}
+body.final-painting-state::-webkit-scrollbar,
+body.final-painting-state #puzzleOverlay::-webkit-scrollbar,
+body.final-painting-state #puzzleBox::-webkit-scrollbar,
+body.final-painting-state #completedPaintingDisplay::-webkit-scrollbar {
+    display:none !important;
+}
+
+
+/* ============================================================
+   V23 — SMALL, CENTRED FOUR-INCH-STYLE ORNATE FRAME
+   ============================================================ */
+
+body.final-painting-state #puzzleBox {
+    left:50% !important;
+    top:50% !important;
+    transform:translate(-50%,-50%) !important;
+
+    /* Overall frame block: deliberately small enough to sit
+       comfortably inside the spiral on the screen. */
+    width:min(48vw,48vh) !important;
+    height:min(48vw,48vh) !important;
+
+    /* Approx. four-inch visual frame at normal desktop scale,
+       proportionally reduced with the whole framed object. */
+    padding:clamp(30px,3.1vw,58px) !important;
+    box-sizing:content-box !important;
+
+    margin:0 !important;
+    overflow:visible !important;
+}
+
+/* The artwork occupies the inner opening with NO transparent gap. */
+body.final-painting-state #completedPaintingDisplay {
+    position:absolute !important;
+    inset:0 !important;
+    width:100% !important;
+    height:100% !important;
+    margin:0 !important;
+    padding:0 !important;
+    overflow:hidden !important;
+    box-sizing:border-box !important;
+    background:#fff !important;
+}
+
+/* Preserve the artwork itself without letting the spiral show
+   through around it. */
+body.final-painting-state #completedPaintingImage {
+    position:absolute !important;
+    inset:0 !important;
+    display:block !important;
+    width:100% !important;
+    height:100% !important;
+    margin:0 !important;
+    padding:0 !important;
+    border:0 !important;
+    object-fit:cover !important;
+    object-position:center !important;
+}
+
+/* Keep the ornate frame as a solid four-sided block. */
+body.final-painting-state #puzzleBox {
+    background:
+        linear-gradient(135deg,
+            #1b0903 0%,
+            #754319 7%,
+            #d8b25f 13%,
+            #48200a 19%,
+            #b97b32 26%,
+            #e5c978 33%,
+            #351507 40%,
+            #c49143 47%,
+            #281106 53%,
+            #d9b260 60%,
+            #4b220b 67%,
+            #c48b3c 74%,
+            #e1bd6c 81%,
+            #6d3b15 88%,
+            #1b0903 100%) !important;
+}
+
+/* Do not let any ordinary gallery material appear in the final state. */
+body.final-painting-state > *:not(#puzzleOverlay) {
+    visibility:hidden !important;
+}
+
+/* No labels, congratulations panel, slider, or repair department text. */
+body.final-painting-state #puzzleTitle,
+body.final-painting-state #puzzleMessage,
+body.final-painting-state #puzzleInstruction,
+body.final-painting-state #puzzleTimer,
+body.final-painting-state #classicPuzzleStage,
+body.final-painting-state #puzzleCancel,
+body.final-painting-state #larryCongratulations,
+body.final-painting-state #pieceTrayTitle,
+body.final-painting-state #pieceTray,
+body.final-painting-state #puzzlePieces,
+body.final-painting-state #puzzleControls {
+    display:none !important;
+}
+
+
+/* ============================================================
+   V24 — ACTUAL SMALL CENTRED ORNATE FRAME
+   The puzzleBox IS the frame. The painting sits inside its
+   opening, leaving the frame visibly exposed on all four sides.
+   ============================================================ */
+
+body.final-painting-state {
+    overflow:hidden !important;
+    background:#000 !important;
+}
+
+/* ONLY the black/white spiral is allowed behind the finished art. */
+body.final-painting-state::before {
+    content:"" !important;
+    position:fixed !important;
+    left:50% !important;
+    top:50% !important;
+    width:300vmax !important;
+    height:300vmax !important;
+    transform:translate(-50%,-50%) rotate(0deg) !important;
+    background:repeating-conic-gradient(
+        from 0deg,
+        #000 0deg 10deg,
+        #fff 10deg 20deg
+    ) !important;
+    z-index:0 !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    animation:spinSpiral 5s linear infinite !important;
+}
+
+/* Hide the entire normal page: gallery paintings, ads, booths,
+   lightning, buttons, labels, etc. */
+body.final-painting-state > *:not(#puzzleOverlay) {
+    display:none !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+}
+
+/* Transparent full-screen stage. */
+body.final-painting-state #puzzleOverlay {
+    display:block !important;
+    visibility:visible !important;
+    position:fixed !important;
+    inset:0 !important;
+    width:100vw !important;
+    height:100vh !important;
+    margin:0 !important;
+    padding:0 !important;
+    overflow:hidden !important;
+    background:transparent !important;
+    z-index:999999 !important;
+}
+
+/*
+   THIS is the actual frame.
+   About 58% of the smaller screen dimension keeps it small,
+   centred, and completely on-screen.
+*/
+body.final-painting-state #puzzleBox {
+    display:block !important;
+    visibility:visible !important;
+    position:absolute !important;
+    left:50% !important;
+    top:50% !important;
+    transform:translate(-50%,-50%) !important;
+
+    width:min(58vmin,680px) !important;
+    height:min(58vmin,680px) !important;
+
+    min-width:0 !important;
+    min-height:0 !important;
+    max-width:none !important;
+    max-height:none !important;
+
+    margin:0 !important;
+    padding:clamp(42px,7vmin,78px) !important;
+    box-sizing:border-box !important;
+
+    overflow:hidden !important;
+    resize:none !important;
+
+    /* thick, layered brown/gold ornate frame */
+    background:
+      linear-gradient(135deg,
+        #160702 0%,
+        #51230b 5%,
+        #d5a952 10%,
+        #6d3612 15%,
+        #2b1005 20%,
+        #c28b3d 25%,
+        #f0d487 30%,
+        #4b2008 36%,
+        #a96728 42%,
+        #e2bd69 48%,
+        #2a0f04 54%,
+        #d4a44e 60%,
+        #704016 66%,
+        #efcf82 72%,
+        #3b1706 78%,
+        #b97931 84%,
+        #e0b968 90%,
+        #4e2109 95%,
+        #160702 100%) !important;
+
+    border:
+      clamp(5px,.7vmin,9px)
+      solid #180903 !important;
+
+    box-shadow:
+      0 0 0 clamp(3px,.5vmin,7px) #e6c879,
+      0 0 0 clamp(7px,1.0vmin,13px) #54260b,
+      0 0 0 clamp(11px,1.5vmin,19px) #d4a650,
+      0 0 0 clamp(15px,2.0vmin,25px) #2a1004,
+      0 16px 35px rgba(0,0,0,.9),
+      0 0 30px rgba(255,215,110,.42) !important;
+
+    color:transparent !important;
+}
+
+/* Absolutely no puzzle UI remains in the final painting view. */
+body.final-painting-state #puzzleTitle,
+body.final-painting-state #puzzleMessage,
+body.final-painting-state #puzzleInstruction,
+body.final-painting-state #puzzleTimer,
+body.final-painting-state #classicPuzzleStage,
+body.final-painting-state #puzzleCancel,
+body.final-painting-state #larryCongratulations,
+body.final-painting-state #pieceTrayTitle,
+body.final-painting-state #pieceTray,
+body.final-painting-state #puzzlePieces,
+body.final-painting-state #puzzleControls {
+    display:none !important;
+}
+
+/*
+   The picture is deliberately INSIDE the frame opening.
+   The frame thickness is therefore visible on every side.
+*/
+body.final-painting-state #completedPaintingDisplay {
+    display:block !important;
+    position:absolute !important;
+
+    left:clamp(42px,7vmin,78px) !important;
+    right:clamp(42px,7vmin,78px) !important;
+    top:clamp(42px,7vmin,78px) !important;
+    bottom:clamp(42px,7vmin,78px) !important;
+
+    width:auto !important;
+    height:auto !important;
+
+    margin:0 !important;
+    padding:0 !important;
+    box-sizing:border-box !important;
+
+    overflow:hidden !important;
+    background:#fff !important;
+    border:0 !important;
+    box-shadow:none !important;
+
+    cursor:pointer !important;
+}
+
+/* Painting fills the opening completely. */
+body.final-painting-state #completedPaintingImage {
+    display:block !important;
+    position:absolute !important;
+    inset:0 !important;
+
+    width:100% !important;
+    height:100% !important;
+
+    max-width:none !important;
+    max-height:none !important;
+
+    margin:0 !important;
+    padding:0 !important;
+    border:0 !important;
+
+    object-fit:cover !important;
+    object-position:center !important;
+
+    background:#fff !important;
+}
+
+/* No pseudo-element can put a white label or panel over the art. */
+body.final-painting-state #completedPaintingDisplay::before,
+body.final-painting-state #completedPaintingDisplay::after {
+    display:none !important;
+}
+
+/* No popup can ever sit over the puzzle or finished painting. */
+body.puzzle-active .salesPopup,
+body.puzzle-active #tinyLarryNotices,
+body.puzzle-active #larKnowledgeOverlay,
+body.final-painting-state .salesPopup,
+body.final-painting-state #tinyLarryNotices,
+body.final-painting-state #larKnowledgeOverlay {
+    display:none !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+}
+
+/* Remove scrollbars from the final presentation. */
+body.final-painting-state,
+body.final-painting-state #puzzleOverlay,
+body.final-painting-state #puzzleBox,
+body.final-painting-state #completedPaintingDisplay {
+    scrollbar-width:none !important;
+}
+body.final-painting-state::-webkit-scrollbar,
+body.final-painting-state #puzzleOverlay::-webkit-scrollbar,
+body.final-painting-state #puzzleBox::-webkit-scrollbar,
+body.final-painting-state #completedPaintingDisplay::-webkit-scrollbar {
+    display:none !important;
+}
+
+
+/* ============================================================
+   V26 — FINAL PAINTING: FULL ARTWORK + SMALL CENTRED ORNATE FRAME
+   ============================================================ */
+body.final-painting-state {
+  background:#000 !important;
+  overflow:hidden !important;
+}
+body.final-painting-state::before {
+  content:"" !important;
+  position:fixed !important;
+  inset:-150vmax !important;
+  width:auto !important;
+  height:auto !important;
+  background:repeating-conic-gradient(from 0deg,#000 0deg 10deg,#fff 10deg 20deg) !important;
+  transform:rotate(0deg) !important;
+  animation:spinSpiral 5s linear infinite !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  z-index:0 !important;
+  pointer-events:none !important;
+}
+body.final-painting-state > *:not(#puzzleOverlay) {
+  display:none !important;
+  visibility:hidden !important;
+}
+body.final-painting-state #puzzleOverlay {
+  display:block !important;
+  visibility:visible !important;
+  position:fixed !important;
+  inset:0 !important;
+  width:100vw !important;
+  height:100vh !important;
+  padding:0 !important;
+  margin:0 !important;
+  background:transparent !important;
+  overflow:hidden !important;
+  z-index:100 !important;
+}
+body.final-painting-state #puzzleBox,
+body.final-painting-state #puzzleBox.finalPaintingOnly {
+  display:block !important;
+  position:absolute !important;
+  left:50% !important;
+  top:50% !important;
+  transform:translate(-50%,-50%) !important;
+  width:100vw !important;
+  height:100vh !important;
+  max-width:none !important;
+  max-height:none !important;
+  padding:0 !important;
+  margin:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+}
+body.final-painting-state #completedPaintingDisplay {
+  display:flex !important;
+  position:absolute !important;
+  left:50% !important;
+  top:50% !important;
+  transform:translate(-50%,-50%) !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:max-content !important;
+  height:max-content !important;
+  max-width:calc(72vw + 56px) !important;
+  max-height:calc(74vh + 56px) !important;
+  margin:0 !important;
+  padding:24px !important;
+  box-sizing:border-box !important;
+  overflow:visible !important;
+  background:
+    linear-gradient(135deg,#241006 0%,#8c501b 8%,#e0b766 13%,#4a230b 19%,#c58c3d 27%,#321507 34%,#d8ad5c 42%,#4b240c 50%,#d8ad5c 58%,#3a1a08 66%,#c58c3d 74%,#e0b766 82%,#8c501b 91%,#241006 100%) !important;
+  border:8px solid #160903 !important;
+  box-shadow:
+    0 0 0 4px #e4c477,
+    0 0 0 9px #4b240c,
+    0 0 0 14px #d2a653,
+    0 0 0 19px #291306,
+    0 16px 38px rgba(0,0,0,.9),
+    0 0 32px rgba(255,215,120,.42) !important;
+  cursor:pointer !important;
+}
+body.final-painting-state #completedPaintingDisplay::before {
+  content:"" !important;
+  position:absolute !important;
+  inset:10px !important;
+  border:3px solid #e7c778 !important;
+  box-shadow:inset 0 0 0 3px #3b1a08,0 0 0 2px #1c0b03 !important;
+  pointer-events:none !important;
+  z-index:2 !important;
+}
+body.final-painting-state #completedPaintingDisplay::after {
+  display:none !important;
+  content:none !important;
+}
+body.final-painting-state #completedPaintingImage {
+  display:block !important;
+  position:relative !important;
+  z-index:1 !important;
+  width:auto !important;
+  height:auto !important;
+  max-width:calc(72vw - 48px) !important;
+  max-height:calc(74vh - 48px) !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  background:#fff !important;
+  box-shadow:0 2px 16px rgba(0,0,0,.9) !important;
+  object-fit:contain !important;
+  object-position:center !important;
+}
+</style>
+<meta name="lar-version" content="v29 small centred framed painting; moving spiral; funny vague-deal announcer">
+
+<style id="v27-final-art-presentation">
+body.final-painting-state #completedPaintingDisplay{
+  display:flex!important;position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;
+  align-items:center!important;justify-content:center!important;width:auto!important;height:auto!important;
+  max-width:none!important;max-height:none!important;margin:0!important;
+  padding:clamp(18px,2.2vmin,30px)!important;box-sizing:border-box!important;overflow:visible!important;
+  background:linear-gradient(135deg,#1b0903 0%,#7a4317 8%,#e0b766 15%,#43200a 23%,#c58c3d 31%,#2b1105 40%,#dfb866 50%,#3a1907 60%,#c58c3d 69%,#e0b766 77%,#43200a 85%,#7a4317 93%,#1b0903 100%)!important;
+  border:7px solid #120702!important;
+  box-shadow:0 0 0 3px #e4c477,0 0 0 8px #4b240c,0 0 0 13px #d2a653,0 0 0 18px #291306,0 18px 42px rgba(0,0,0,.95)!important;
+}
+body.final-painting-state #completedPaintingDisplay::before{content:""!important;position:absolute!important;inset:8px!important;border:3px solid #e7c778!important;box-shadow:inset 0 0 0 3px #3b1a08,0 0 0 2px #1c0b03!important;pointer-events:none!important;z-index:2!important}
+body.final-painting-state #completedPaintingDisplay::after{display:none!important;content:none!important}
+body.final-painting-state #completedPaintingImage{
+  display:block!important;position:relative!important;z-index:1!important;width:auto!important;height:auto!important;
+  max-width:calc(82vw - 70px)!important;max-height:calc(82vh - 70px)!important;
+  min-width:0!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;
+  background:#000!important;box-shadow:0 2px 16px rgba(0,0,0,.9)!important;object-fit:contain!important;object-position:center!important;
+}
+</style>
+
+<style id="v28-final-art-exact-black-frame">
+/* V28: finished artwork is a simple black gallery wall with one centred, fitted frame. */
+body.final-painting-state{
+  background:#000 !important;
+  overflow:hidden !important;
+}
+body.final-painting-state::before,
+body.final-painting-state::after{
+  display:none !important;
+  content:none !important;
+}
+body.final-painting-state > *:not(#puzzleOverlay){
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
+body.final-painting-state #puzzleOverlay{
+  display:flex !important;
+  visibility:visible !important;
+  position:fixed !important;
+  inset:0 !important;
+  width:100vw !important;
+  height:100vh !important;
+  margin:0 !important;
+  padding:0 !important;
+  align-items:center !important;
+  justify-content:center !important;
+  background:#000 !important;
+  overflow:hidden !important;
+  z-index:999999 !important;
+}
+body.final-painting-state #puzzleOverlay > #puzzleBox{
+  display:flex !important;
+  visibility:visible !important;
+  position:relative !important;
+  left:auto !important;
+  top:auto !important;
+  transform:none !important;
+  width:auto !important;
+  height:auto !important;
+  max-width:calc(100vw - 60px) !important;
+  max-height:calc(100vh - 60px) !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+body.final-painting-state #completedPaintingDisplay{
+  display:block !important;
+  visibility:visible !important;
+  position:relative !important;
+  left:auto !important;
+  top:auto !important;
+  right:auto !important;
+  bottom:auto !important;
+  transform:none !important;
+  width:auto !important;
+  height:auto !important;
+  max-width:calc(100vw - 60px) !important;
+  max-height:calc(100vh - 60px) !important;
+  margin:0 !important;
+  padding:24px !important;
+  box-sizing:border-box !important;
+  overflow:visible !important;
+  background:linear-gradient(135deg,#241006 0%,#7b4619 7%,#d8b45f 12%,#4a2109 17%,#bd8037 24%,#e4c875 31%,#3a1707 39%,#c28c40 47%,#e1bd6c 55%,#351507 63%,#c18a3f 71%,#e5c975 79%,#4a2109 86%,#9a5b22 93%,#241006 100%) !important;
+  border:12px solid #180903 !important;
+  box-shadow:
+    0 0 0 4px #e3c477,
+    0 0 0 9px #4a2109,
+    0 0 0 15px #c89443,
+    0 0 0 21px #291205,
+    0 20px 45px rgba(0,0,0,.9) !important;
+  line-height:0 !important;
+}
+/* Four corner ornaments make the frame visibly ornate without touching the artwork. */
+body.final-painting-state #completedPaintingDisplay::before,
+body.final-painting-state #completedPaintingDisplay::after{
+  content:"" !important;
+  position:absolute !important;
+  width:28px !important;
+  height:28px !important;
+  border:5px solid #e6c875 !important;
+  border-radius:50% !important;
+  background:#4b220a !important;
+  box-shadow:inset 0 0 0 3px #c18a3f,0 0 0 2px #241006 !important;
+  z-index:5 !important;
+  pointer-events:none !important;
+}
+body.final-painting-state #completedPaintingDisplay::before{left:-17px !important;top:-17px !important;}
+body.final-painting-state #completedPaintingDisplay::after{right:-17px !important;bottom:-17px !important;}
+body.final-painting-state #completedPaintingImage{
+  display:block !important;
+  visibility:visible !important;
+  position:relative !important;
+  inset:auto !important;
+  width:auto !important;
+  height:auto !important;
+  max-width:100% !important;
+  max-height:calc(100vh - 108px) !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  object-fit:contain !important;
+  object-position:center !important;
+  background:transparent !important;
+  box-shadow:0 0 0 2px #100603 !important;
+  z-index:2 !important;
+}
+body.final-painting-state #puzzleTitle,
+body.final-painting-state #puzzleMessage,
+body.final-painting-state #puzzleInstruction,
+body.final-painting-state #puzzleTimer,
+body.final-painting-state #classicPuzzleStage,
+body.final-painting-state #puzzleCancel,
+body.final-painting-state #larryCongratulations,
+body.final-painting-state #pieceTrayTitle,
+body.final-painting-state #pieceTray,
+body.final-painting-state #puzzleControls,
+body.final-painting-state #tinyLarryNotices,
+body.final-painting-state #salesContainer,
+body.final-painting-state #wellingtonAd,
+body.final-painting-state #paperBag,
+body.final-painting-state #exitSign,
+body.final-painting-state #qualitySeal{
+  display:none !important;
+  visibility:hidden !important;
+  pointer-events:none !important;
+}
+</style>
+
+</head>
+
+<body style="background:#000;">
+<div id="larOpeningIntro" aria-label="Larry's Variety opening">
+  <div id="larOpeningVortex"></div>
+  <div id="larOpeningCar" aria-hidden="true">
+    <div class="larCarSmoke"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="larCarBody"></div><div class="larCarRoof"></div><div class="larCarWindow"></div><div class="larCarHood"></div><div class="larCarTrunk"></div><div class="larCarTailpipe"></div>
+    <div class="larCarWheel one"></div><div class="larCarWheel two"></div>
+  </div>
+  <div id="larOpeningGulls" aria-hidden="true"></div>
+  <div id="larOpeningSmoke"></div>
+  <div id="larOpeningGlow"></div>
+  <div id="larOpeningRays"></div>
+  <div id="larOpeningTitle">
+    <div id="larOpeningLetters" aria-hidden="true">
+      <span class="larOpeningLetter">L</span><span class="larOpeningLetter">A</span><span class="larOpeningLetter">R</span><span class="larOpeningLetter">R</span><span class="larOpeningLetter">Y</span><span class="larOpeningLetter">'</span><span class="larOpeningLetter">S</span><span class="larOpeningSpace"></span><span class="larOpeningLetter">V</span><span class="larOpeningLetter">A</span><span class="larOpeningLetter">R</span><span class="larOpeningLetter">I</span><span class="larOpeningLetter">E</span><span class="larOpeningLetter">T</span><span class="larOpeningLetter">Y</span>
+    </div>
+  </div>
+</div>
+
+<div id="larAmbientElectricity">
+  <i style="left:6%;top:18%;color:#00eaff;transform:rotate(22deg)"></i><i style="left:14%;top:61%;color:#ff39ff;transform:rotate(-28deg);animation-delay:-.2s"></i>
+  <i style="left:24%;top:12%;color:#ffe600;transform:rotate(41deg);animation-delay:-.4s"></i><i style="left:31%;top:73%;color:#38ff6b;transform:rotate(-55deg);animation-delay:-.1s"></i>
+  <i style="left:42%;top:22%;color:#ff3131;transform:rotate(30deg);animation-delay:-.35s"></i><i style="left:51%;top:68%;color:#477dff;transform:rotate(-38deg);animation-delay:-.55s"></i>
+  <i style="left:62%;top:11%;color:#ff9d00;transform:rotate(47deg);animation-delay:-.15s"></i><i style="left:72%;top:57%;color:#00eaff;transform:rotate(-25deg);animation-delay:-.45s"></i>
+  <i style="left:83%;top:17%;color:#b85cff;transform:rotate(35deg);animation-delay:-.3s"></i><i style="left:91%;top:72%;color:#ffe600;transform:rotate(-44deg);animation-delay:-.6s"></i>
+  <i style="left:18%;top:34%;color:#38ff6b;transform:rotate(66deg);animation-delay:-.25s"></i><i style="left:76%;top:31%;color:#ff4fd8;transform:rotate(-62deg);animation-delay:-.5s"></i>
+</div>
+<div id="larSeagulls">
+  <span class="larSeagull" style="top:10%;font-size:48px;animation-duration:12s;animation-delay:-3s">⌁⌁</span>
+  <span class="larSeagull" style="top:18%;font-size:26px;animation-duration:16s;animation-delay:-9s">⌁</span>
+  <span class="larSeagull" style="top:27%;font-size:38px;animation-duration:10s;animation-delay:-6s">⌁⌁</span>
+  <span class="larSeagull" style="top:36%;font-size:22px;animation-duration:18s;animation-delay:-12s">⌁</span>
+  <span class="larSeagull" style="top:45%;font-size:52px;animation-duration:14s;animation-delay:-4s">⌁⌁</span>
+  <span class="larSeagull" style="top:54%;font-size:30px;animation-duration:20s;animation-delay:-11s">⌁</span>
+  <span class="larSeagull" style="top:63%;font-size:44px;animation-duration:13s;animation-delay:-7s">⌁⌁</span>
+  <span class="larSeagull" style="top:72%;font-size:24px;animation-duration:17s;animation-delay:-14s">⌁</span>
+  <span class="larSeagull" style="top:81%;font-size:40px;animation-duration:15s;animation-delay:-2s">⌁⌁</span>
+</div>
+
+
+<div id="larBackgroundStarbursts" aria-hidden="true"></div>
+<div id="larLightningLayer" aria-hidden="true"></div>
+<!-- ============================================================
+     LAR KNOWLEDGE BOOTH — SECRET LAR CASINO ROUTE
+     ============================================================ -->
+<div id="larKnowledgeBooth" title="A question of some importance">
+  <div class="neonFilaments">
+    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    <i></i><i></i><i></i><i></i><i></i><i></i>
+  </div>
+  <div class="boothRoof"></div>
+  <div class="boothBody"></div>
+  <div class="boothQuestion">?</div>
+  <div class="boothSign">LAR KNOWLEDGE</div>
+</div>
+
+<div id="larKnowledgeOverlay">
+  <div id="larKnowledgeBox">
+    <button id="larKnowledgeClose">X</button>
+    <div id="larKnowledgeTitle">LARRY'S KNOWLEDGE TEST</div>
+    <div id="larKnowledgeQuestion">WHAT IS LARRY'S NAME?</div>
+    <div id="larKnowledgeAnswers"></div>
+    <div id="larKnowledgeResult"></div>
+    <button id="larCasinoButton">TAKE ME TO THE LAR CASINO</button>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     NIAGARA PRIZE — RANDOMLY CHOOSES ONE OF FOUR EXPERIENCES
+     ============================================================ -->
+
+<div id="niagaraPrize" style="display:none !important;">
+    <a href="#" id="niagaraPrizeLink" style="
+        color: white;
+        text-decoration: none;
+        text-shadow: 0 0 5px red, 0 0 10px yellow, 0 0 20px cyan;
+    ">
+        ★★★ YOU WON! ★★★
+        <br>
+        NIAGARA FALLS!
+        <br>
+        <span style="font-size: 20px;">
+            CLICK HERE FOR YOUR PRIZE
+        </span>
+    </a>
+</div>
+
+<!-- ============================================================
+     COUNTER
+     ============================================================ -->
+
+<div id="larBuckCounter">
+    LAR-BUCKS: <span id="larBucks">0</span>
+</div>
+
+<!-- ============================================================
+     CUSTOMER ALERT
+     ============================================================ -->
+
+<div id="customerAlert">
+    ONLY 2 CUSTOMERS ALLOWED!<br>
+    BUY NOW BEFORE THE OTHER CUSTOMER DOES!
+</div>
+
+<h1>LARRY'S LAR-GALLERY</h1>
+
+<!-- ============================================================
+     72-IMAGE ARTWORK COLLECTION
+     The artwork files live in the lowercase images/ folder.
+     This list is built directly into index.html so this page no
+     longer needs images.js for its gallery.
+     ============================================================ -->
+
+<ul id="artworkGallery" style="padding:0; margin:0; list-style:none;"></ul>
+
+<!-- ============================================================
+     ARTWORK
+     ============================================================ -->
+
+<img id="floatingArtwork" src="" alt="">
+
+<button id="paperBag">
+    BROWN<br>
+    BAG
+</button>
+
+<button id="exitSign">
+    EXIT
+</button>
+
+<div id="zoomInfo">
+    Wheel: zoom &nbsp; | &nbsp; Drag: move &nbsp; | &nbsp; Esc: close
+</div>
+
+<!-- ============================================================
+     NIAGARA BUS SELECTION ROOM
+     ============================================================ -->
+
+<div id="busSelectionOverlay">
+
+    <div id="busSelectionBox">
+
+        <div id="busSelectionTitle">
+            LARRY'S NIAGARA TRANSPORTATION DEPARTMENT
+        </div>
+
+        <div id="busSelectionInstruction">
+            FOUR VEHICLES HAVE ARRIVED. ONLY ONE IS THE CORRECT
+            NIAGARA VEHICLE. CHOOSE CAREFULLY.
+        </div>
+
+        <div id="busChoices"></div>
+
+        <div id="busChancePanel">
+
+            <div class="chanceTitle">
+                WRONG VEHICLE. LARRY HAS NOT GIVEN UP ON YOU.
+            </div>
+
+            <button class="busMoneyButton" id="buyOneChance">
+                PAY 3 LAR-BUCKS — ONE MORE CHANCE
+            </button>
+
+            <button class="busMoneyButton" id="buyThreeChances">
+                PAY 8 LAR-BUCKS — THREE MORE CHANCES
+            </button>
+
+            <button class="busMoneyButton" id="buyTenChances">
+                PAY 20 LAR-BUCKS — TEN MORE CHANCES
+            </button>
+
+        </div>
+
+        <button id="busCloseButton">
+            CLOSE THE TRANSPORTATION DEPARTMENT
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ============================================================
+     NIAGARA PORTAL
+     ============================================================ -->
+
+<div id="niagaraPortal">
+
+    <div id="niagaraPortalBox">
+
+        <h2>NIAGARA FALLS PORTAL</h2>
+
+        <p>
+            THE CORRECT VEHICLE HAS BEEN SELECTED.
+            <br><br>
+            LARRY HAS NOW AUTHORISED YOUR JOURNEY.
+            <br>
+            THERE IS NO REFUND.
+        </p>
+
+        <button id="niagaraPortalButton">
+            BOARD THE BUS — GO TO NIAGARA FALLS
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ============================================================
+     TINY RANDOM LARRY NOTICES / COUPONS
+     ============================================================ -->
+
+<div id="tinyLarryNotices"></div>
+
+
+<!-- ============================================================
+     PUZZLE
+     ============================================================ -->
+
+<div id="puzzleOverlay">
+    <div id="puzzleBox">
+        <div id="puzzleTitle">LARRY'S VARIETY PUZZLE DEPARTMENT</div>
+        <div id="puzzleMessage">PUT THE PICTURE BACK TOGETHER.</div>
+        <div id="puzzleInstruction">Three easy corner pieces are already in place. Pick up a piece on the right and move it toward its matching outline. Larry has installed a very forgiving magnetic snap.</div>
+        <div id="puzzleTimer">45</div>
+
+        <div id="completedPaintingDisplay" title="Click the completed painting to return">
+            <img id="completedPaintingImage" alt="Completed Larry's Variety painting">
+        </div>
+
+        <div id="classicPuzzleStage">
+            <div id="puzzleBoard"></div>
+            <div>
+                <div id="pieceTrayTitle">THE PIECES<br><small>THEY KNOW WHERE THEY BELONG.</small></div>
+                <div id="pieceTray"></div>
+            </div>
+        </div>
+        <button id="puzzleCancel">LEAVE IT BROKEN</button>
+    </div>
+</div>
+
+<!-- ============================================================
+     CONGRATULATIONS
+     ============================================================
+
+     ============================================================ -->
+
+<div id="larryCongratulations">
+
+    <div class="big">
+        SEE? YOU CAN DO PUZZLES!
+    </div>
+
+    <div class="small">
+        I KNEW YOU HAD IT IN YOU.<br>
+        <br>
+        THAT WAS ONLY THREE PIECES.<br>
+        BUT STILL.<br>
+        <br>
+        LARRY IS IMPRESSED.<br>
+        SORT OF.<br>
+        <br>
+        YOU HAVE EARNED<br>
+        <strong>3 LAR-BUCKS.</strong>
+    </div>
+
+</div>
+
+<!-- ============================================================
+     QUALITY SEAL
+     ============================================================ -->
+
+<div id="qualitySeal">
+
+    LARRY'S VARIETY<br>
+
+    <span style="font-size:22px;">
+        OFFICIAL QUALITY SEAL
+    </span>
+
+    <br><br>
+
+    ★ APPROVED ★
+
+    <br>
+
+    +3 LAR-BUCKS
+
+</div>
+
+<!-- ============================================================
+     WELLINGTON BRAND AD
+     ============================================================ -->
+
+<div id="wellingtonAd">
+
+    <div class="brand">
+        WELLINGTON BRAND™
+    </div>
+
+    <div class="wedding">
+        WEDDING CONFETTI
+    </div>
+
+    <div class="tagline">
+        "Because someone has to celebrate."
+        <br><br>
+        <small>
+            PREMIUM PAPER • PROBABLY
+        </small>
+    </div>
+
+</div>
+
+<!-- ============================================================
+     SALES POPUPS
+     ============================================================ -->
+
+<div id="salesContainer"></div>
+
+<script>
+
+/* ============================================================
+   72-IMAGE ARTWORK COLLECTION
+   ============================================================ */
+
+const images = [
+    "images/LMAC-ArquaneTheQuietTeenPoet.jpg",
+    "images/LMAC-AstropopEffect.jpg",
+    "images/LMAC-AtGulliversMuseumOfAbstractArt.jpg",
+    "images/LMAC-AylaDream.jpg",
+    "images/LMAC-BarthesDilnsby.jpg",
+    "images/LMAC-BeautifulConversations.jpg",
+    "images/LMAC-BeBopASaurus.jpg",
+    "images/LMAC-Blondie.jpg",
+    "images/LMAC-BumblebeeVsOptimusPrime.jpg",
+    "images/LMAC-ButSiddharthaWasLookingBeyondThePresent.jpg",
+    "images/LMAC-BuzzardZilla.jpg",
+    "images/LMAC-CallTheArtWorldAndInformThemOfThisArt.jpg",
+    "images/LMAC-CanyonCross.jpg",
+    "images/LMAC-CasparFreidric1800.jpg",
+    "images/LMAC-Contentment.jpg",
+    "images/LMAC-CrusoesBadger.jpg",
+    "images/LMAC-CrusoesWizard.jpg",
+    "images/LMAC-DarkHorsewoman.jpg",
+    "images/LMAC-DesertCivilizationDance.jpg",
+    "images/LMAC-DiamondMineLakeshore.jpg",
+    "images/LMAC-DinosaurSpirit.jpg",
+    "images/LMAC-DinosourFossil.jpg",
+    "images/LMAC-DreamingWoman.jpg",
+    "images/LMAC-EvilCabins.jpg",
+    "images/LMAC-Gooseland.jpg",
+    "images/LMAC-HelloThereEve.jpg",
+    "images/LMAC-HistoryBook.jpg",
+    "images/LMAC-HolidaySnapOfMyMerman.jpg",
+    "images/LMAC-HowYouReallyFeltAtTheTime.jpg",
+    "images/LMAC-Hulot.jpg",
+    "images/LMAC-IcarusIcarus.jpg",
+    "images/LMAC-IDon'tTrustLaoTsuNoMore.jpg",
+    "images/LMAC-IndianaJonesJr.jpg",
+    "images/LMAC-IndianaJr.jpg",
+    "images/LMAC-InThunder.jpg",
+    "images/LMAC-JoseKandontske.jpg",
+    "images/LMAC-Journey'sJourney.jpg",
+    "images/LMAC-LarkaVayYourHairdresser.jpg",
+    "images/LMAC-LenoresHappyDay.jpg",
+    "images/LMAC-LordStitchToothe.jpg",
+    "images/LMAC-MarmouxltTheTrainedFrenchThing.jpg",
+    "images/LMAC-MobySquid.jpg",
+    "images/LMAC-MysticValley.jpg",
+    "images/LMAC-NewNewCanadianArt.jpg",
+    "images/LMAC-PinballChing.jpg",
+    "images/LMAC-PlacesThatHaveBeen.jpg",
+    "images/LMAC-Respect.jpg",
+    "images/LMAC-RobinsonLand.jpg",
+    "images/LMAC-RoncesvallesJazzRacket.jpg",
+    "images/LMAC-SacredSanctuary.jpg",
+    "images/LMAC-SandpiperFlats.jpg",
+    "images/LMAC-TheApproachingSeaDragon.jpg",
+    "images/LMAC-TheBirdEmpress.jpg",
+    "images/LMAC-TheCarnivalGhostsVacation.jpg",
+    "images/LMAC-TheCavemansTV.jpg",
+    "images/LMAC-TheDreamOfSleep.jpg",
+    "images/LMAC-TheElectricFox.jpg",
+    "images/LMAC-TheEmbarrasingAirportIncident.jpg",
+    "images/LMAC-TheGoyaOfMay.jpg",
+    "images/LMAC-TheHoneyBee.jpg",
+    "images/LMAC-TheMonkey'sLunch.jpg",
+    "images/LMAC-TheMustardSeedPrincipleAlien.jpg",
+    "images/LMAC-TheSeaGoat.jpg",
+    "images/LMAC-TheSlap.jpg",
+    "images/LMAC-TheSupposedToBeUnpretentiousSage.jpg",
+    "images/LMAC-TheWeepyMakeupSaleslady.jpg",
+    "images/LMAC-TimeFreeScape.jpg",
+    "images/LMAC-ToTheCaveOfSomethingSpecific.jpg",
+    "images/LMAC-TumbleWeet.jpg",
+    "images/LMAC-VantageShift.jpg",
+    "images/LMAC-WatershipNow.jpg",
+    "images/LMAC-WhySilenceIsGolden.jpg"
+];
+
+const artworkGallery = document.getElementById("artworkGallery");
+
+function artworkTitle(path) {
+    return path
+        .split("/").pop()
+        .replace(/^LMAC-/, "")
+        .replace(/\.jpg$/i, "")
+        .replace(/([a-z])([A-Z])/g, "$1 $2");
+}
+
+images.forEach(function(imagePath) {
+
+    const item = document.createElement("li");
+    item.className = "excerpt-figure";
+
+    const figure = document.createElement("figure");
+    const image = document.createElement("img");
+    const caption = document.createElement("figcaption");
+
+    image.src = imagePath;
+    image.alt = artworkTitle(imagePath);
+    caption.textContent = artworkTitle(imagePath);
+
+    figure.appendChild(image);
+    figure.appendChild(caption);
+    item.appendChild(figure);
+    artworkGallery.appendChild(item);
+});
+
+
+/* ============================================================
+   HIDDEN NIAGARA PRIZE SLOT
+   Replaces one of the 72 gallery positions at 20 Lar-Bucks.
+   ============================================================ */
+
+let prizeGalleryItem = null;
+let prizeReplacedItem = null;
+let prizeHasAppeared = false;
+
+function createPrizeGalleryItem() {
+
+    const item = document.createElement("li");
+    item.className = "prize-gallery-item";
+    item.style.display = "none";
+
+    const card = document.createElement("div");
+    card.className = "prize-gallery-card";
+    card.textContent = "YOU MIGHT WIN A PRIZE";
+
+    item.appendChild(card);
+
+    item.addEventListener("click", function(event) {
+        event.stopPropagation();
+        startPrizePuzzle();
+    });
+
+    return item;
+}
+
+prizeGalleryItem = createPrizeGalleryItem();
+  function updatePrizeGalleryMessage() {
+      if(!prizeGalleryItem) return;
+      const card=prizeGalleryItem.querySelector(".prize-gallery-card");
+      if(!card) return;
+      const need=Math.max(0,20-larBucks);
+      card.textContent = need>0
+        ? "YOU MIGHT WIN A PRIZE\n\nEARN "+need+" MORE LAR-BUCK"+(need===1?"":"S")+" AND YOU WILL WIN A PRIZE!"
+        : "YOU WILL WIN A PRIZE\n\nLARRY HAS NO FURTHER COMMENT.";
+      card.style.whiteSpace="pre-line";
+  }
+
+
+
+/* ============================================================
+   FAST RANDOM GALLERY MOVEMENT
+   ============================================================ */
+
+function startGalleryMotion() {
+
+    const items =
+        Array.from(
+            artworkGallery.querySelectorAll(".excerpt-figure")
+        );
+
+    items.forEach(function(item) {
+
+        item.classList.add("gallery-moving");
+
+        item.style.setProperty("--wind-a",
+            (Math.random() * 90 - 45) + "px");
+        item.style.setProperty("--wind-b",
+            (Math.random() * 140 - 70) + "px");
+        item.style.setProperty("--wind-c",
+            (Math.random() * 100 - 50) + "px");
+
+        item.style.setProperty("--wind-y-a",
+            (Math.random() * 30 - 15) + "px");
+        item.style.setProperty("--wind-y-b",
+            (Math.random() * 45 - 22) + "px");
+        item.style.setProperty("--wind-y-c",
+            (Math.random() * 30 - 15) + "px");
+
+        item.style.animationDuration =
+            (2.8 + Math.random() * 3.0) + "s";
+
+        item.style.animationDelay =
+            (-Math.random() * 3.0) + "s";
+    });
+}
+
+startGalleryMotion();
+
+
+/* ============================================================
+   RANDOM TINY LARRY DISCLAIMERS / COUPONS
+   Based on the original Larry sales notices, but intentionally
+   smaller and shorter-lived.
+   ============================================================ */
+
+const tinyLarryMessages = [
+"Freshly arrived: paintings with a future and, possibly, a past.",
+"Good news for people who like looking at things: new artwork is available.",
+"Larry's has put more art where the art can be found. This is efficient.",
+"Today's recommendation: acquire something you did not expect to acquire.",
+"Beautiful things have a way of improving a room. Larry has several suggestions.",
+"Your wall has been unusually quiet. Larry thinks this can be remedied.",
+"Art is a conversation starter. Larry's prefers that it start immediately.",
+"Why leave a wall empty when it could be doing something?",
+"A painting can make a room look finished. Larry refuses to say which painting.",
+"Fresh choices are waiting at Larry's. Some are more choice than others.",
+"Give your eyes something interesting to do. Larry has arranged a selection.",
+"Good art does not demand much. A wall, perhaps. A little attention.",
+"Larry's recommends the ancient practice of owning something interesting.",
+"Today's special consideration: your home deserves one more interesting object.",
+"An empty wall is a decision. Larry suggests reconsidering.",
+"Some people collect art. Some people begin collecting art today.",
+"Larry believes a good painting improves the general atmosphere of a room.",
+"New arrivals have been noticed. Larry is pleased with himself.",
+"Looking is free. Taking one home is an entirely separate discussion.",
+"There's always room for one more picture if Larry is doing the measuring.",
+"Your room has possibilities. Larry has paintings.",
+"A little colour can do remarkable things to a wall. Larry has evidence.",
+"Art is portable, decorative and surprisingly good at starting conversations.",
+"Today's opportunity: find the picture that makes you stop for a second look.",
+"Larry's has selections for people who know exactly what they want and people who don't.",
+"Something interesting may be waiting for you. This announcement will not identify it.",
+"Why buy ordinary when Larry's has made extraordinary unnecessarily available?",
+"Your eyes work hard. Give them something better to look at.",
+"Good rooms contain objects with stories. Larry's contains objects with several.",
+"An artwork on a wall is technically a furnishing. Larry has chosen not to mention the loophole.",
+"Perhaps today is the day you discover the painting you did not know you wanted.",
+"Larry's: helping walls reach their full decorative potential.",
+"One tasteful addition can change a room. One untasteful addition can also change a room.",
+"Art can make a place feel lived in. Larry's can make it feel investigated.",
+"Today's deal philosophy: see something interesting, investigate immediately.",
+"Larry says there is no wrong time to improve a wall.",
+"Your visitors will notice the art. Larry is counting on it.",
+"A good picture has presence. Larry's has several kinds of presence.",
+"New things to see have entered the building.",
+"Larry's is currently experiencing an unusually high concentration of pictures.",
+"More art means more possibilities. Larry has done the arithmetic.",
+"Decorating is difficult. Choosing something interesting is considerably easier.",
+"Perhaps your wall has been waiting for this moment.",
+"Larry's recommends browsing with an open mind and a closed wallet only temporarily.",
+"Some bargains are obvious. Others are standing quietly on a wall.",
+"Art does not need to explain itself. Larry certainly won't.",
+"Today you may encounter something you like. Larry considers this a successful outcome.",
+"One glance can become a second glance. Larry calls that progress.",
+"Your home deserves a little visual trouble.",
+"Larry's has made the difficult decision to continue offering interesting things.",
+"A picture is worth a thousand words. Larry would like to discuss the other nine hundred.",
+"Good news: the art has not become less interesting overnight.",
+"There's no need to hurry. There is, however, every reason to look.",
+"Today's selection contains opportunities for tasteful improvement.",
+"Somewhere in Larry's is something that would look excellent somewhere in your house.",
+"Find something that makes the room feel more like yours.",
+"An interesting picture is a small luxury with a very large wall.",
+"Today's browsing may result in unexpected appreciation.",
+"Larry's Variety: where the walls are never quite finished.",
+"Take your time. The paintings are not going anywhere without paperwork.",
+"A room can change dramatically without moving a single wall.",
+"Today's advice: look at the pictures before making any important decisions.",
+"Larry's has a selection for every mood except perhaps complete indifference.",
+"Visual interest is available now. Larry calls this a public service.",
+"One painting can be enough. Larry is not saying how many is ideal.",
+"Perhaps you need art. Perhaps the art needs you. Larry declines to mediate.",
+"Something about this place seems to contain more pictures than expected.",
+"Browse freely. Wonder privately. Ask Larry nothing.",
+"Your walls deserve better than an empty afternoon.",
+"New artwork, new possibilities, same Larry.",
+"Come for the variety. Stay because you found something interesting.",
+"There's always another picture to look at. Larry has arranged it that way.",
+"Your wall called. Larry answered.",
+"Bring home something that makes you ask a question.",
+"Art adds character. Larry has been accused of having character.",
+"Larry's has things for serious collectors and people who just like a good picture.",
+"A room without art is perfectly legal. Larry does not recommend it.",
+"Decorating tip: put something interesting where people can see it.",
+"Your next favourite picture may be here. Larry will not guarantee which one.",
+"Look closely. The good ones reward looking.",
+"Larry's believes every wall should have at least one suspiciously interesting feature.",
+"A picture can be a memory, a mystery, or simply a very good picture.",
+"Fresh artwork is available while Larry continues to make room.",
+"Today's visual opportunity is brought to you by Larry's Variety.",
+"Some things are worth owning simply because you enjoy seeing them.",
+"Your walls have excellent taste. They just need management.",
+"Don't underestimate the power of a well-placed painting.",
+"Larry's offers a variety large enough to make choosing entertaining.",
+"A little art can make a big difference. Larry has made a little too much art.",
+"Good news for browsers: browsing remains encouraged.",
+"Good news for collectors: collecting remains encouraged even more.",
+"Today's selection has been assembled with absolutely no intention of being boring.",
+"Something may catch your eye. Larry suggests letting it.",
+"Your living room has not yet filed a complaint. There is still time.",
+"Art belongs where it can be seen. Larry has been thinking about this.",
+"Larry's has pictures. You have walls. This arrangement seems promising.",
+"Find something that makes the room feel more like yours.",
+"An interesting picture is a small luxury with a very large wall.",
+"Today's browsing may result in unexpected appreciation.",
+"Larry's Variety is pleased to announce that the pictures remain available."
+];
+
+function createTinyLarryNotice() {
+
+    const host =
+        document.getElementById(
+            "tinyLarryNotices"
+        );
+
+    if(!host) {
+        return;
+    }
+
+    const notice =
+        document.createElement("div");
+
+    notice.className =
+        "tinyLarryNotice";
+
+    const message =
+        tinyLarryMessages[
+            Math.floor(
+                Math.random() *
+                tinyLarryMessages.length
+            )
+        ];
+
+    const tags=["FROM LARRY'S","VARIETY NEWS","TODAY AT LARRY'S","A WORD FROM THE SHOP","DEAL DEPARTMENT","LARRY RECOMMENDS","JUST IN","SHOP NOTE","SPECIAL INFORMATION","THE LATEST"];
+    notice.innerHTML="<strong>"+tags[Math.floor(Math.random()*tags.length)]+"</strong>"+message;
+
+    notice.style.left =
+        (Math.random() * 78 + 8) + "%";
+
+    notice.style.top =
+        (Math.random() * 72 + 10) + "%";
+
+    host.appendChild(
+        notice
+    );
+
+    setTimeout(
+        function() {
+            notice.remove();
+        },
+        6500
+    );
+}
+
+
+function scheduleTinyLarryNotice() {
+
+    setTimeout(
+        function() {
+
+            if(
+                Math.random() < 0.88 &&
+                !document.getElementById("busSelectionOverlay").style.display
+            ) {
+                createTinyLarryNotice();
+
+                if(Math.random() < 0.45) {
+                    setTimeout(
+                        createTinyLarryNotice,
+                        4000 + Math.random() * 3000
+                    );
+                }
+            }
+
+            scheduleTinyLarryNotice();
+
+        },
+        14000 + Math.random() * 16000
+    );
+}
+
+scheduleTinyLarryNotice();
+
+
+/* ============================================================
+   ELEMENTS
+   ============================================================ */
+
+const floatingArtwork =
+    document.getElementById("floatingArtwork");
+
+const paperBag =
+    document.getElementById("paperBag");
+
+const exitSign =
+    document.getElementById("exitSign");
+
+const puzzleOverlay =
+    document.getElementById("puzzleOverlay");
+
+const puzzleBoard =
+    document.getElementById("puzzleBoard");
+
+const pieceTray =
+    document.getElementById("pieceTray");
+
+const puzzleTimer =
+    document.getElementById("puzzleTimer");
+
+const completedPaintingDisplay =
+    document.getElementById("completedPaintingDisplay");
+const completedPaintingImage =
+    document.getElementById("completedPaintingImage");
+
+const qualitySeal =
+    document.getElementById("qualitySeal");
+
+const larryCongratulations =
+    document.getElementById("larryCongratulations");
+
+const wellingtonAd =
+    document.getElementById("wellingtonAd");
+
+const larBucksDisplay =
+    document.getElementById("larBucks");
+
+const salesContainer =
+    document.getElementById("salesContainer");
+
+const puzzleCancel =
+    document.getElementById("puzzleCancel");
+
+
+/* ============================================================
+   FIXED CORNER CONTROLS — KEEP 100% SIZE
+   ============================================================ */
+
+const fixedCornerControls = [
+    document.getElementById("larBuckCounter"),
+    document.getElementById("customerAlert"),
+    document.getElementById("paperBag")
+];
+
+const originalDevicePixelRatio =
+    window.devicePixelRatio || 1;
+
+function keepCornerControlsAtOriginalSize() {
+
+    const currentDpr =
+        window.devicePixelRatio || 1;
+
+    const scale =
+        originalDevicePixelRatio / currentDpr;
+
+    if(fixedCornerControls[0]) {
+        fixedCornerControls[0].style.transform =
+            "rotate(-2deg) scale(" + scale + ")";
+    }
+
+    if(fixedCornerControls[1]) {
+        fixedCornerControls[1].style.transform =
+            "scale(" + scale + ")";
+    }
+
+    if(fixedCornerControls[2]) {
+        fixedCornerControls[2].style.transform =
+            "scale(" + scale + ")";
+    }
+}
+
+keepCornerControlsAtOriginalSize();
+
+window.addEventListener(
+    "resize",
+    keepCornerControlsAtOriginalSize
+);
+
+if(window.visualViewport) {
+    window.visualViewport.addEventListener(
+        "resize",
+        keepCornerControlsAtOriginalSize
+    );
+}
+
+
+/* ============================================================
+   NIAGARA TRANSPORTATION DEPARTMENT
+   Forty ridiculous vehicle variants exist.
+   Four are randomly drawn for each selection round.
+   Exactly one is the correct vehicle.
+   ============================================================ */
+
+const niagaraVersions = [
+    "niagara16.html",
+    "niagara20.html",
+    "niagara27.html",
+    "niagara34.html"
+];
+
+const busFleet = [
+
+    /* FIRST CLASS */
+    {
+        tier: 1,
+        name: "THE LARRY ROYAL GOLDEN COACH",
+        description: "Velvet seats, gold trim, a tiny brass orchestra and a driver who refuses to make eye contact.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE EMPEROR'S NIAGARA EXPRESS",
+        description: "A ridiculous luxury coach with chandeliers, champagne-shaped windows and a carpet no one is allowed to walk on.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE FIVE-STAR WATERFALL LINER",
+        description: "Leather seats, heated cup holders and a concierge who whispers your boarding number.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE GOLDEN LAR-MOBILE",
+        description: "Polished gold bodywork, private curtains and one unnecessarily enormous horn.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE ROYAL GALLERY BUS",
+        description: "An art-museum-on-wheels with velvet ropes and a conductor named Sir Larrysworth.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE PLATINUM PIGEON",
+        description: "A luxury coach shaped vaguely like a bird and staffed by three very serious attendants.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE EXECUTIVE WATERFALL PALACE",
+        description: "A moving palace with gold curtains, marble-effect flooring and a snack nobody understands.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE LAR-GOLD DELUXE",
+        description: "Every seat is first class because Larry says the whole bus is first class.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE NIAGARA CROWN COACH",
+        description: "A giant crown sits on top. Nobody knows why. Nobody is allowed to remove it.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE IMPERIAL LARRYLINER",
+        description: "Private cabins, velvet curtains and a tiny bell that rings whenever someone says Niagara.",
+        style: "first"
+    },
+
+    /* SECOND CLASS */
+    {
+        tier: 2,
+        name: "THE SLIGHTLY USED EXECUTIVE",
+        description: "Comfortable enough, although one seat makes a mysterious squeak every eleven minutes.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE SILVERISH EXPRESS",
+        description: "It was silver once. Larry insists it is still silver.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE SECOND-BEST BUS",
+        description: "The first-best bus is visible through the window. This is the second-best one.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE MILDLY LUXURIOUS LAR-BUS",
+        description: "Padded seats, lukewarm air conditioning and a complimentary pencil.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE ECONOMY ROYALE",
+        description: "A respectable coach with one curtain and two working cup holders.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE MIDRANGE MIRACLE",
+        description: "Not fancy. Not terrible. It has successfully completed several trips.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE SILVER BUCKET EXPRESS",
+        description: "Named after its exterior. The interior is surprisingly comfortable.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE LARRY VALUE COACH",
+        description: "A sensible vehicle, which Larry considers deeply suspicious.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE NIAGARA COMMUTER DELUXE",
+        description: "A normal bus with an abnormal amount of yellow tape.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE PRETTY GOOD EXPRESS",
+        description: "Pretty good. Quite honestly, that's the official name.",
+        style: "second"
+    },
+
+    /* THIRD CLASS */
+    {
+        tier: 3,
+        name: "THE CRANKY OLD COACH",
+        description: "It rattles whenever it sees a hill and has a bell that rings by itself.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE WOBBLEWAGON",
+        description: "The driver says the wobbling is part of the suspension system.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE BROWN THUNDER",
+        description: "Brown, loud and theoretically capable of reaching Niagara Falls.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE LARRY HAND-ME-DOWN",
+        description: "Three owners ago it was considered luxurious.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE DUSTY EXPRESS",
+        description: "The seats are dusty, the windows are dusty and the brochure is also dusty.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE ALMOST-RELIABLE",
+        description: "It has made the trip before, though not always in the intended direction.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE BUMPY NIAGARA SPECIAL",
+        description: "Free massage included, because the road does most of the work.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE BUS THAT SHOULD HAVE RETIRED",
+        description: "It keeps coming back. Larry refuses to explain.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE RATTLEBOX EXPRESS",
+        description: "Every window rattles in harmony with every other window.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE THIRD-CLASS TRAVEL MACHINE",
+        description: "Technically a bus. Spiritually a shopping cart with ambitions.",
+        style: "third"
+    },
+
+    /* FOURTH CLASS — ABSURD */
+    {
+        tier: 4,
+        name: "THE OLD MAN'S GIANT TRICYCLE",
+        description: "An elderly gentleman pedals you to Niagara Falls while towing a wooden wagon.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE GOAT-PULLED TOUR BUS",
+        description: "The goat has not agreed to this arrangement, but the trip is apparently happening.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE BARREL WITH WHEELS",
+        description: "A barrel. Four wheels. A destination. Larry calls this public transportation.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE MANUAL HORSEPOWER EXPRESS",
+        description: "A very determined old man pulls the wagon himself. He asks for tips.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE LAWN-CHAIR LIMOUSINE",
+        description: "Two lawn chairs, one rope and a highly questionable steering system.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE SHOPPING CART OF DESTINY",
+        description: "It has one wheel that squeaks and a map drawn on a napkin.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE WOODEN WHEELBARROW EXPRESS",
+        description: "The driver says Niagara is downhill. This has not been independently verified.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE GRANDPA PEDAL WAGON",
+        description: "Grandpa pedals. You sit in the wagon. Everyone pretends this is normal.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE LARRY STRING-AND-WAGON SERVICE",
+        description: "A wagon attached to a bicycle by a rope that is much too long.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE FOURTH-CLASS NIAGARA CONTRAPTION",
+        description: "Nobody can identify the vehicle. It is nevertheless headed toward Niagara.",
+        style: "fourth"
+    }
+];
+
+const busChoices =
+    document.getElementById("busChoices");
+
+const busSelectionOverlay =
+    document.getElementById("busSelectionOverlay");
+
+const busChancePanel =
+    document.getElementById("busChancePanel");
+
+const buyOneChance =
+    document.getElementById("buyOneChance");
+
+const buyThreeChances =
+    document.getElementById("buyThreeChances");
+
+const buyTenChances =
+    document.getElementById("buyTenChances");
+
+const busCloseButton =
+    document.getElementById("busCloseButton");
+
+const niagaraPortal =
+    document.getElementById("niagaraPortal");
+
+const niagaraPortalButton =
+    document.getElementById("niagaraPortalButton");
+
+let currentBusChoices = [];
+let correctBusIndex = -1;
+let busExtraChances = 0;
+let busSelectionLocked = false;
+
+
+function shuffleArray(array) {
+
+    const copy =
+        array.slice();
+
+    for(let i = copy.length - 1; i > 0; i--) {
+
+        const j =
+            Math.floor(Math.random() * (i + 1));
+
+        [copy[i], copy[j]] =
+            [copy[j], copy[i]];
+    }
+
+    return copy;
+}
+
+
+function makeBusGraphic(bus) {
+
+    if(bus.style === "fourth") {
+
+        return `
+            <div class="busGraphic trikeGraphic">
+                <div class="trikeBody"></div>
+                <div class="oldMan"></div>
+                <div class="trikeWheel one"></div>
+                <div class="trikeWheel two"></div>
+                <div class="trikeWheel three"></div>
+                <div class="busBadge">LARRY TRANSPORT</div>
+            </div>
+        `;
+    }
+
+    const className =
+        bus.style === "second" ? "second" :
+        bus.style === "third" ? "third" : "";
+
+    return `
+        <div class="busGraphic">
+            <div class="busRoof"></div>
+            <div class="busBody ${className}">
+                <div class="busWindow w1"></div>
+                <div class="busWindow w2"></div>
+                <div class="busWindow w3"></div>
+                <div class="busLuggage"></div>
+                <div class="busBadge">NIAGARA</div>
+            </div>
+            <div class="busWheel left"></div>
+            <div class="busWheel right"></div>
+        </div>
+    `;
+}
+
+
+function makeBusChoiceCard(bus, index) {
+
+    const card =
+        document.createElement("div");
+
+    card.className =
+        "busChoice";
+
+    card.innerHTML =
+        '<div class="busPictureWindow">' +
+            makeBusGraphic(bus) +
+        '</div>' +
+        '<div class="busName">' +
+            bus.name +
+        '</div>' +
+        '<div class="busDescription">' +
+            bus.description +
+        '</div>' +
+        '<div class="busStatus"></div>';
+
+    card.addEventListener(
+        "click",
+        function() {
+            chooseBus(index, card);
+        }
+    );
+
+    return card;
+}
+
+
+function drawBusChoices() {
+
+    busChoices.innerHTML =
+        "";
+
+    busSelectionLocked =
+        false;
+
+    busChancePanel.style.display =
+        "none";
+
+    const shuffledFleet =
+        shuffleArray(busFleet);
+
+    currentBusChoices =
+        shuffledFleet.slice(0, 4);
+
+    correctBusIndex =
+        Math.floor(
+            Math.random() * 4
+        );
+
+    currentBusChoices.forEach(
+        function(bus, index) {
+
+            busChoices.appendChild(
+                makeBusChoiceCard(
+                    bus,
+                    index
+                )
+            );
+        }
+    );
+}
+
+
+function openBusSelectionRoom() {
+
+    busExtraChances = 0;
+
+    drawBusChoices();
+
+    busSelectionOverlay.style.display =
+        "flex";
+}
+
+
+function chooseBus(index, card) {
+
+    if(busSelectionLocked) {
+        return;
+    }
+
+    if(index === correctBusIndex) {
+
+        busSelectionLocked =
+            true;
+
+        card.classList.add("right");
+
+        card.querySelector(".busStatus").textContent =
+            "CORRECT VEHICLE. LARRY APPROVES.";
+
+        setTimeout(
+            function() {
+
+                busSelectionOverlay.style.display =
+                    "none";
+
+                niagaraPortal.style.display =
+                    "flex";
+
+            },
+            900
+        );
+
+        return;
+    }
+
+    card.classList.add("wrong");
+
+    card.querySelector(".busStatus").textContent =
+        "WRONG VEHICLE — IT IS GOING SOMEWHERE ELSE.";
+
+    if(busExtraChances > 0) {
+
+        busExtraChances--;
+
+        setTimeout(
+            function() {
+                drawBusChoices();
+            },
+            650
+        );
+
+        return;
+    }
+
+    busChancePanel.style.display =
+        "block";
+}
+
+
+function buyBusChances(cost, amount) {
+
+    if(larBucks < cost) {
+
+        busChancePanel.querySelector(
+            ".chanceTitle"
+        ).textContent =
+            "NOT ENOUGH LAR-BUCKS. LARRY SAYS YOU NEED " +
+            cost +
+            " TO BUY THIS MANY CHANCES.";
+
+        return;
+    }
+
+    larBucks -= cost;
+
+    larBucksDisplay.textContent =
+        larBucks;
+
+    busExtraChances +=
+        amount;
+
+    busChancePanel.querySelector(
+        ".chanceTitle"
+    ).textContent =
+        amount +
+        " EXTRA CHANCES PURCHASED. CHOOSE AGAIN.";
+
+    setTimeout(
+        function() {
+            drawBusChoices();
+        },
+        450
+    );
+}
+
+
+buyOneChance.addEventListener(
+    "click",
+    function() {
+        buyBusChances(3, 1);
+    }
+);
+
+buyThreeChances.addEventListener(
+    "click",
+    function() {
+        buyBusChances(8, 3);
+    }
+);
+
+buyTenChances.addEventListener(
+    "click",
+    function() {
+        buyBusChances(20, 10);
+    }
+);
+
+
+busCloseButton.addEventListener(
+    "click",
+    function() {
+
+        busSelectionOverlay.style.display =
+            "none";
+
+        puzzleMode =
+            "art";
+    }
+);
+
+
+niagaraPortalButton.addEventListener(
+    "click",
+    function() {
+
+        const chosenNiagara =
+            niagaraVersions[
+                Math.floor(
+                    Math.random() *
+                    niagaraVersions.length
+                )
+            ];
+
+        window.location.href =
+            chosenNiagara;
+    }
+);
+
+
+/* ============================================================
+   LAR KNOWLEDGE BOOTH — REVEAL AFTER FIRST PUZZLE
+   ============================================================ */
+let firstPuzzleCompleted = false;
+function revealLarKnowledgeBooth(){
+    if(firstPuzzleCompleted) return;
+    firstPuzzleCompleted = true;
+    const booth = document.getElementById("larKnowledgeBooth");
+    if(booth) booth.style.display = "block";
+}
+
+const niagaraPrizeLink = document.getElementById("niagaraPrizeLink");
+if(niagaraPrizeLink){
+    niagaraPrizeLink.addEventListener("click", function(event){
+        event.preventDefault();
+        const chosenNiagara = niagaraVersions[Math.floor(Math.random()*niagaraVersions.length)];
+        window.location.href = chosenNiagara;
+    });
+}
+
+/* ============================================================
+   LAR-BUCKS
+   ============================================================ */
+
+/* ============================================================
+   LAR-BUCKS
+   ============================================================ */
+
+let larBucks = 0;
+
+function showNiagaraPrizeSlot(){
+    if(prizeHasAppeared || !prizeGalleryItem) return;
+    const galleryItems = Array.from(artworkGallery.querySelectorAll(".excerpt-figure"));
+    const eligible = galleryItems.filter(function(item){
+        return !item.classList.contains("niagara-target");
+    });
+    if(!eligible.length) return;
+    const chosen = eligible[Math.floor(Math.random()*eligible.length)];
+    prizeReplacedItem = chosen;
+    prizeHasAppeared = true;
+    chosen.style.display = "none";
+    prizeGalleryItem.style.display = "inline-block";
+    chosen.parentNode.insertBefore(prizeGalleryItem, chosen);
+    updatePrizeGalleryMessage();
+}
+
+function addLarBucks(amount) {
+    larBucks += amount;
+    larBucksDisplay.textContent = larBucks;
+    updatePrizeGalleryMessage();
+    if(larBucks >= 20) showNiagaraPrizeSlot();
+}
+
+
+/* ============================================================
+   REPAIR PAINTING PUZZLE — 9 PERFECT SQUARES
+   ============================================================ */
+
+let puzzleMode="art";
+let puzzleImage="";
+let puzzleTimerInterval=null;
+let solvedPieces=0;
+
+const installedPositions=[0,8];
+const missingPositions=[1,2,3,4,5,6,7];
+
+function squareBackground(position,imageSrc){
+    const row=Math.floor(position/3);
+    const col=position%3;
+    return {
+        backgroundImage:`url("${imageSrc}")`,
+        backgroundPosition:`${col*50}% ${row*50}%`
+    };
+}
+
+function makeSquarePiece(position,imageSrc,extraClass=""){
+    const piece=document.createElement("div");
+    piece.className=`squarePiece ${extraClass}`;
+    piece.dataset.position=position;
+
+    const bg=squareBackground(position,imageSrc);
+    piece.style.backgroundImage=bg.backgroundImage;
+    piece.style.backgroundPosition=bg.backgroundPosition;
+
+    return piece;
+}
+
+function makeBoardSlot(position,imageSrc,filled=false){
+    const slot=document.createElement("div");
+    slot.className=`squarePuzzleSlot${filled?" filled":""}`;
+    slot.dataset.position=position;
+
+    if(!filled){
+        const guide=document.createElement("div");
+        guide.className="squarePuzzleGuide";
+        guide.textContent="PAINTING PIECE";
+        slot.appendChild(guide);
+    }
+
+    if(filled){
+        const piece=makeSquarePiece(position,imageSrc,"placed");
+        slot.appendChild(piece);
+    }
+
+    return slot;
+}
+
+function boardSlots(){
+    return Array.from(puzzleBoard.querySelectorAll(".squarePuzzleSlot"));
+}
+
+function getBoardSlot(position){
+    return puzzleBoard.querySelector(
+        `.squarePuzzleSlot[data-position="${position}"]`
+    );
+}
+
+function returnPieceToTray(piece,slot){
+    piece.classList.remove("dragging");
+    piece.style.position="absolute";
+    piece.style.left="0";
+    piece.style.top="0";
+    piece.style.width="100%";
+    piece.style.height="100%";
+    piece.style.transform="scale(1)";
+    piece.style.filter="drop-shadow(0 2px 2px rgba(0,0,0,.35))";
+
+    if(slot) slot.appendChild(piece);
+}
+
+function attachSquareDrag(piece,position){
+    let drag=null;
+
+    piece.addEventListener("pointerdown",function(e){
+        e.preventDefault();
+        piece.setPointerCapture(e.pointerId);
+
+        const r=piece.getBoundingClientRect();
+
+        drag={
+            pointerId:e.pointerId,
+            dx:e.clientX-r.left,
+            dy:e.clientY-r.top,
+            width:r.width,
+            height:r.height,
+            traySlot:piece.parentElement
+        };
+
+        piece.classList.add("dragging");
+        piece.style.width=r.width+"px";
+        piece.style.height=r.height+"px";
+        piece.style.left=(e.clientX-drag.dx)+"px";
+        piece.style.top=(e.clientY-drag.dy)+"px";
+    });
+
+    piece.addEventListener("pointermove",function(e){
+        if(!drag) return;
+        e.preventDefault();
+
+        piece.style.left=(e.clientX-drag.dx)+"px";
+        piece.style.top=(e.clientY-drag.dy)+"px";
+
+        const target=getBoardSlot(position);
+        if(!target) return;
+
+        const tr=target.getBoundingClientRect();
+        const px=e.clientX;
+        const py=e.clientY;
+        const tx=tr.left+tr.width/2;
+        const ty=tr.top+tr.height/2;
+        const distance=Math.hypot(px-tx,py-ty);
+
+        // Heavy magnetic snap: the closer the piece gets,
+        // the more strongly its centre is pulled toward its slot.
+        const magnetRadius=Math.max(tr.width,tr.height)*1.35;
+
+        if(distance<magnetRadius){
+            const strength=Math.max(.18,1-distance/magnetRadius)*.88;
+            const currentLeft=parseFloat(piece.style.left)||0;
+            const currentTop=parseFloat(piece.style.top)||0;
+            const targetLeft=tx-drag.width/2;
+            const targetTop=ty-drag.height/2;
+
+            piece.style.left=
+                (currentLeft+(targetLeft-currentLeft)*strength)+"px";
+            piece.style.top=
+                (currentTop+(targetTop-currentTop)*strength)+"px";
+
+            piece.style.filter=
+                "drop-shadow(0 0 12px #ffe600) drop-shadow(0 8px 14px rgba(0,0,0,.65))";
+        }else{
+            piece.style.filter=
+                "drop-shadow(0 8px 14px rgba(0,0,0,.65))";
+        }
+    });
+
+    piece.addEventListener("pointerup",function(e){
+        if(!drag) return;
+        e.preventDefault();
+
+        const target=getBoardSlot(position);
+        const targetRect=target.getBoundingClientRect();
+        const pieceRect=piece.getBoundingClientRect();
+
+        const pieceCX=pieceRect.left+pieceRect.width/2;
+        const pieceCY=pieceRect.top+pieceRect.height/2;
+        const targetCX=targetRect.left+targetRect.width/2;
+        const targetCY=targetRect.top+targetRect.height/2;
+
+        const distance=Math.hypot(
+            pieceCX-targetCX,
+            pieceCY-targetCY
+        );
+
+        const traySlot=drag.traySlot;
+        drag=null;
+
+        // Very forgiving final snap.
+        if(distance<=targetRect.width*.78){
+            piece.classList.remove("dragging");
+            piece.style.position="absolute";
+            piece.style.left="0";
+            piece.style.top="0";
+            piece.style.width="100%";
+            piece.style.height="100%";
+            piece.style.transform="scale(1)";
+            piece.style.filter="none";
+            piece.classList.add("placed");
+
+            target.innerHTML="";
+            target.classList.add("filled");
+            target.appendChild(piece);
+
+            solvedPieces++;
+
+            if(solvedPieces===missingPositions.length){
+                puzzleSolved();
+            }
+        }else{
+            returnPieceToTray(piece,traySlot);
+            piece.animate(
+                [
+                    {transform:"translateX(0)"},
+                    {transform:"translateX(-6px)"},
+                    {transform:"translateX(6px)"},
+                    {transform:"translateX(-4px)"},
+                    {transform:"translateX(0)"}
+                ],
+                220
+            );
+        }
+    });
+
+    piece.addEventListener("pointercancel",function(){
+        if(!drag) return;
+        const traySlot=drag.traySlot;
+        drag=null;
+        returnPieceToTray(piece,traySlot);
+    });
+}
+
+function createPuzzle(imageSrc,mode="art"){
+    puzzleMode=mode;
+    puzzleImage=imageSrc;
+    solvedPieces=0;
+
+    clearInterval(puzzleTimerInterval);
+
+    puzzleBoard.innerHTML="";
+    pieceTray.innerHTML="";
+    puzzleBoard.classList.remove("puzzleComplete");
+    puzzleBoard.onclick=null;
+
+    completedPaintingDisplay.style.display="none";
+    completedPaintingDisplay.classList.remove("completedFlash","finalOnly");
+    completedPaintingImage.removeAttribute("src");
+document.body.classList.remove("final-painting-state");
+    puzzleOverlay.classList.remove("finalPaintingOverlay");
+    puzzleBox.classList.remove("finalPaintingOnly");
+    puzzleOverlay.style.display="block";
+    document.body.classList.add("puzzle-active");
+    paperBag.style.display="none";
+    exitSign.style.display="none";
+    qualitySeal.style.display="none";
+    larryCongratulations.style.display="none";
+    wellingtonAd.style.display="none";
+
+    puzzleTitle.textContent=
+        mode==="bus"
+        ? "LARRY'S NIAGARA PRIZE DEPARTMENT"
+        : "LARRY'S VARIETY REPAIR DEPARTMENT";
+
+    puzzleMessage.textContent=
+        mode==="bus"
+        ? "YOU BROKE IT. YOU BOUGHT IT."
+        : "YOU BROKE IT. YOU BOUGHT IT.";
+
+    puzzleInstruction.textContent=
+        "Repair the painting. Three easy pieces are already in place. Pick up a square from the side and move it toward its matching square. Larry has installed an extremely forgiving magnetic snap.";
+
+    // Build the 3x3 board in simple, predictable order.
+    for(let position=0;position<9;position++){
+        const alreadyInstalled=installedPositions.includes(position);
+        puzzleBoard.appendChild(
+            makeBoardSlot(position,imageSrc,alreadyInstalled)
+        );
+    }
+
+    // The six remaining pieces appear in easy numerical order.
+    missingPositions.forEach(position=>{
+        const slot=document.createElement("div");
+        slot.className="squareTraySlot";
+
+        const piece=makeSquarePiece(
+            position,
+            imageSrc,
+            "dragPiece"
+        );
+
+        slot.appendChild(piece);
+        pieceTray.appendChild(slot);
+        attachSquareDrag(piece,position);
+    });
+
+    let seconds=60;
+    puzzleTimer.textContent=seconds;
+
+    puzzleTimerInterval=setInterval(()=>{
+        seconds--;
+        puzzleTimer.textContent=seconds;
+
+        if(seconds<=0){
+            clearInterval(puzzleTimerInterval);
+            puzzleTimer.textContent="TIME!";
+            createSalesPopup();
+        }
+    },1000);
+}
+
+/* ============================================================
+   BUS-PRIZE PUZZLE IMAGE
+   ============================================================ */
+
+function makePrizePuzzleImage() {
+
+    const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="900" height="900" viewBox="0 0 900 900">
+            <rect width="900" height="900" fill="#fff"/>
+            <rect x="28" y="28" width="844" height="844"
+                  rx="24" fill="#fff6b0" stroke="#111" stroke-width="22"/>
+            <text x="450" y="205"
+                  text-anchor="middle"
+                  font-family="Arial"
+                  font-size="64"
+                  font-weight="900"
+                  fill="#d00000">YOU HAVE WON</text>
+            <text x="450" y="300"
+                  text-anchor="middle"
+                  font-family="Arial"
+                  font-size="58"
+                  font-weight="900"
+                  fill="#111">A BUS TRIP</text>
+            <text x="450" y="390"
+                  text-anchor="middle"
+                  font-family="Arial"
+                  font-size="54"
+                  font-weight="900"
+                  fill="#111">TO NIAGARA FALLS!</text>
+            <rect x="120" y="465" width="660" height="225"
+                  fill="#e8d6a0" stroke="#111" stroke-width="16"/>
+            <text x="450" y="550"
+                  text-anchor="middle"
+                  font-family="Arial"
+                  font-size="42"
+                  font-weight="900"
+                  fill="#111">FIRST • SECOND • THIRD</text>
+            <text x="450" y="615"
+                  text-anchor="middle"
+                  font-family="Arial"
+                  font-size="42"
+                  font-weight="900"
+                  fill="#111">• FOURTH CLASS BUS</text>
+        </svg>
+    `;
+
+    return "data:image/svg+xml;charset=utf-8," +
+        encodeURIComponent(svg);
+}
+
+function startPrizePuzzle() {
+
+    puzzleMode = "bus";
+
+    createPuzzle(
+        makePrizePuzzleImage(),
+        "bus"
+    );
+}
+
+
+/* ============================================================
+   RANDOM SALES MESSAGES
+   ============================================================ */
+
+const salesMessages = [
+
+    "WHY NOT BUY MORE? You are already here.",
+
+    "URGENT: Your Lar-Bucks are becoming lonely.",
+
+    "For TWO more Lar-Bucks, you can spend FIVE Lar-Bucks, which could earn you THREE more Lar-Bucks!",
+
+    "LIMITED TIME: This offer lasts approximately until we stop looking at it.",
+
+    "ONLY 2 CUSTOMERS ALLOWED! Unfortunately, you are one of them.",
+
+    "ACT NOW! Or act later. But preferably now.",
+
+    "BUY MORE ART. Larry has already put the boxes out.",
+
+    "CONSUMER ALERT: You have not purchased enough imaginary merchandise.",
+
+    "EXCLUSIVE DEAL: Spend 7 Lar-Bucks to unlock the opportunity to spend 9.",
+
+    "WHY SETTLE FOR ONE LAR-BUCK WHEN YOU COULD OWE SIX?",
+
+    "FINAL WARNING: The sale may end at any moment we choose.",
+
+    "YOUR FRIENDS ARE PROBABLY BUYING MORE LAR-BUCKS.",
+
+    "FLASH SALE! Everything is 100% off except the things that aren't.",
+
+    "FOR JUST 4 LAR-BUCKS: receive absolutely no guarantee whatsoever.",
+
+    "BUY NOW! The other customer is thinking about buying now.",
+
+    "CONGRATULATIONS! You have qualified to consider purchasing something.",
+
+    "URGENT DEAL: Spend 5. Receive the satisfaction of having spent 5.",
+
+    "WHY NOT BUY MORE? Larry has already made the suggestion.",
+
+    "EXTRA VALUE: One imaginary Lar-Buck may be worth another imaginary Lar-Buck.",
+
+    "LAST CHANCE! This is your last chance until the next last chance."
+
+];
+
+
+/* ============================================================
+   SALES POPUP
+   ============================================================ */
+
+function createSalesPopup() {
+
+    const popup = document.createElement("div");
+
+    popup.className = "salesPopup";
+
+    const message =
+        salesMessages[
+            Math.floor(
+                Math.random() * salesMessages.length
+            )
+        ];
+
+    popup.innerHTML =
+        "<strong>IMPORTANT LARRY NOTICE</strong>" +
+        message;
+
+    popup.style.left =
+        Math.random() * 70 + 10 + "%";
+
+    popup.style.top =
+        Math.random() * 70 + 10 + "%";
+
+    salesContainer.appendChild(popup);
+
+    setTimeout(function() {
+        popup.remove();
+    }, 3500);
+}
+
+
+/* ============================================================
+   SALES BARRAGE
+   ============================================================ */
+
+function salesBarrage() {
+
+    let count = 0;
+
+    const barrage = setInterval(function() {
+
+        createSalesPopup();
+
+        count++;
+
+        if(count >= 20) {
+            clearInterval(barrage);
+        }
+
+    }, 260);
+
+}
+
+
+/* ============================================================
+   SHOP BELL
+   ============================================================ */
+
+function shopBell() { /* intentionally silent */ }
+
+
+/* ============================================================
+   CONFETTI
+   ============================================================ */
+
+function createConfetti() {
+
+    for(let i = 0; i < 180; i++) {
+
+        const piece =
+            document.createElement("div");
+
+        piece.className = "confetti";
+
+        piece.style.left =
+            Math.random() * 100 + "vw";
+
+        piece.style.top =
+            (-Math.random() * 30) + "vh";
+
+        const typeRoll =
+            Math.random();
+
+        if(typeRoll < 0.14) {
+
+            piece.classList.add("notebook");
+
+        } else if(typeRoll < 0.23) {
+
+            piece.classList.add("brown");
+
+        } else {
+
+            piece.style.background = "#f7f7f2";
+
+        }
+
+        piece.style.animationDuration =
+            (2.5 + Math.random() * 3) + "s";
+
+        piece.style.animationDelay =
+            (Math.random() * 0.7) + "s";
+
+        document.body.appendChild(piece);
+
+        setTimeout(function() {
+            piece.remove();
+        }, 6000);
+    }
+
+}
+
+
+/* ============================================================
+   FIREWORKS
+   ============================================================ */
+
+function createFireworks() {
+
+    for(let i = 0; i < 18; i++) {
+
+        setTimeout(function() {
+
+            const firework =
+                document.createElement("div");
+
+            firework.className =
+                "firework";
+
+            firework.style.left =
+                (10 + Math.random() * 80) + "vw";
+
+            firework.style.top =
+                (10 + Math.random() * 60) + "vh";
+
+            document.body.appendChild(firework);
+
+            setTimeout(function() {
+                firework.remove();
+            }, 1200);
+
+        }, i * 100);
+    }
+}
+
+
+/* ============================================================
+   START PUZZLE
+   ============================================================ */
+
+function startPuzzle(imageSrc, mode = "art") {
+
+    createPuzzle(
+        imageSrc,
+        mode
+    );
+}
+
+
+/* ============================================================
+   PUZZLE SOLVED
+   ============================================================ */
+
+function puzzleSolved(){
+    clearInterval(puzzleTimerInterval);
+
+    // Leave the completed puzzle exactly where it is. Nothing replaces it.
+    // No final painting, no frame, no spiral-centering treatment.
+    puzzleBoard.style.display="";
+    pieceTray.parentElement.style.display="none";
+    puzzleBoard.classList.add("puzzleComplete");
+
+    puzzleMessage.textContent="";
+    puzzleInstruction.textContent="";
+
+    if(puzzleMode==="art"){
+        addLarBucks(3);
+        revealLarKnowledgeBooth();
+        shopBell();
+
+        const proudLines = [
+            ["LARRY IS PROUD OF YOU!", "YOU HAVE EARNED <strong>3 LAR-BUCKS!</strong>"],
+            ["LARRY IS ASTONISHINGLY GRATIFIED!", "YOU HAVE EARNED <strong>3 LAR-BUCKS!</strong>"],
+            ["LARRY IS DELIGHTED BEYOND MEASURE!", "YOU HAVE EARNED <strong>3 LAR-BUCKS!</strong>"],
+            ["LARRY IS MAGNIFICENTLY PLEASED!", "YOU HAVE EARNED <strong>3 LAR-BUCKS!</strong>"],
+            ["LARRY IS THUNDERSTRUCK BY YOUR PERSpicacity!", "YOU HAVE EARNED <strong>3 LAR-BUCKS!</strong>"],
+            ["LARRY IS IN A STATE OF CONSIDERABLE EXULTATION!", "YOU HAVE EARNED <strong>3 LAR-BUCKS!</strong>"],
+            ["LARRY DECLARES THIS A MOST IMPECCABLE ACHIEVEMENT!", "YOU HAVE EARNED <strong>3 LAR-BUCKS!</strong>"],
+            ["LARRY IS PROFOUNDLY IMPRESSED!", "YOU HAVE EARNED <strong>3 LAR-BUCKS!</strong>"],
+            ["LARRY FINDS YOUR PERFORMANCE EXTRAORDINARILY COMMENDABLE!", "YOU HAVE EARNED <strong>3 LAR-BUCKS!</strong>"],
+            ["LARRY IS INCONCEIVABLY PLEASED WITH THIS DEVELOPMENT!", "YOU HAVE EARNED <strong>3 LAR-BUCKS!</strong>"]
+        ];
+        const chosen = proudLines[Math.floor(Math.random()*proudLines.length)];
+
+        larryCongratulations.innerHTML=
+            '<div class="big">'+chosen[0]+'</div>' +
+            '<div class="small">'+chosen[1]+'</div>';
+
+        larryCongratulations.style.display="block";
+        larryCongratulations.classList.remove("rewardFlyAway");
+        void larryCongratulations.offsetWidth;
+
+        // The completed puzzle remains visible underneath the banner.
+        // After the brief reward moment, return directly to the main screen.
+        setTimeout(function(){
+            larryCongratulations.style.display="none";
+            larryCongratulations.classList.remove("rewardFlyAway");
+
+            completedPaintingDisplay.style.display="none";
+            completedPaintingDisplay.classList.remove("completedFlash","finalOnly");
+            completedPaintingImage.removeAttribute("src");
+
+            document.body.classList.remove("final-painting-state");
+            puzzleOverlay.classList.remove("finalPaintingOverlay");
+            puzzleBox.classList.remove("finalPaintingOnly");
+            puzzleOverlay.style.display="none";
+            document.body.classList.remove("puzzle-active");
+
+            puzzleBoard.classList.remove("puzzleComplete");
+            pieceTray.parentElement.style.display="";
+            puzzleMode="art";
+        },1200);
+    }else{
+        // Any non-art puzzle also returns directly to the main screen.
+        setTimeout(function(){
+            completedPaintingDisplay.style.display="none";
+            completedPaintingDisplay.classList.remove("completedFlash","finalOnly");
+            completedPaintingImage.removeAttribute("src");
+            puzzleOverlay.style.display="none";
+            document.body.classList.remove("puzzle-active","final-painting-state");
+            puzzleOverlay.classList.remove("finalPaintingOverlay");
+            puzzleBox.classList.remove("finalPaintingOnly");
+            puzzleBoard.classList.remove("puzzleComplete");
+            pieceTray.parentElement.style.display="";
+            puzzleMode="art";
+        },1200);
+    }
+
+    // No click handler, no second painting screen, and no action follows this.
+}
+
+/* ============================================================
+   LEAVE IT BROKEN
+   ============================================================ */
+
+puzzleCancel.addEventListener(
+    "click",
+    function() {
+
+        clearInterval(
+            puzzleTimerInterval
+        );
+
+        puzzleOverlay.style.display =
+            "none";
+
+        document.body.classList.remove("puzzle-active");
+
+        /*
+           Larry is offended that the customer
+           refuses to repair his own damage.
+        */
+
+        createSalesPopup();
+
+        setTimeout(function() {
+
+            createSalesPopup();
+
+        }, 450);
+
+        setTimeout(function() {
+
+            createSalesPopup();
+
+        }, 900);
+    }
+);
+
+
+/* ============================================================
+   ARTWORK OPENING
+   ============================================================ */
+
+let zoomLevel = 0.01;
+
+let positionX = 0;
+let positionY = 0;
+
+let dragging = false;
+
+let startMouseX = 0;
+let startMouseY = 0;
+
+let startPositionX = 0;
+let startPositionY = 0;
+
+
+/* ============================================================
+   FULL VIEW SIZE
+   ============================================================ */
+
+function calculateFullViewZoom() {
+
+    const naturalWidth =
+        floatingArtwork.naturalWidth;
+
+    const naturalHeight =
+        floatingArtwork.naturalHeight;
+
+    const availableWidth =
+        window.innerWidth * 0.85;
+
+    const availableHeight =
+        window.innerHeight * 0.85;
+
+    const widthRatio =
+        availableWidth / naturalWidth;
+
+    const heightRatio =
+        availableHeight / naturalHeight;
+
+    return Math.min(
+        widthRatio,
+        heightRatio
+    );
+}
+
+
+/* ============================================================
+   UPDATE ARTWORK
+   ============================================================ */
+
+function updateArtwork() {
+
+    floatingArtwork.style.transform =
+        "translate(-50%, -50%) " +
+        "translate(" +
+        positionX +
+        "px, " +
+        positionY +
+        "px) " +
+        "scale(" +
+        zoomLevel +
+        ")";
+}
+
+
+/* ============================================================
+   OPEN AFTER PUZZLE
+   ============================================================ */
+
+function openArtworkAfterPuzzle() {
+
+    positionX = 0;
+    positionY = 0;
+
+    zoomLevel = 0.01;
+
+    floatingArtwork.style.transition =
+        "none";
+
+    updateArtwork();
+
+    if(floatingArtwork.complete) {
+
+        animateOpen();
+
+    } else {
+
+        floatingArtwork.onload =
+            animateOpen;
+    }
+}
+
+
+/* ============================================================
+   NORMAL IMAGE CLICK
+   ============================================================ */
+
+document
+    .querySelectorAll(".excerpt-figure img")
+    .forEach(function(image) {
+
+        image.addEventListener(
+            "click",
+            function(event) {
+
+                event.stopPropagation();
+
+                floatingArtwork.src =
+                    image.src;
+
+                floatingArtwork.alt =
+                    image.alt;
+
+                puzzleMode = "art";
+
+                startPuzzle(
+                    image.src
+                );
+            }
+        );
+    });
+
+
+/* ============================================================
+   ARTWORK ANIMATION
+   ============================================================ */
+
+function animateOpen() {
+
+    const fullViewZoom =
+        calculateFullViewZoom();
+
+    requestAnimationFrame(function() {
+
+        requestAnimationFrame(function() {
+
+            zoomLevel =
+                fullViewZoom;
+
+            floatingArtwork.style.transition =
+                "transform 0.65s cubic-bezier(0.2, 0.8, 0.2, 1)";
+
+            updateArtwork();
+        });
+    });
+}
+
+
+/* ============================================================
+   MOUSE WHEEL ZOOM
+   ============================================================ */
+
+floatingArtwork.addEventListener(
+    "wheel",
+    function(event) {
+
+        event.preventDefault();
+
+        floatingArtwork.style.transition =
+            "transform 0.08s ease";
+
+        if(event.deltaY < 0) {
+
+            zoomLevel *= 1.18;
+
+        } else {
+
+            zoomLevel /= 1.18;
+        }
+
+        if(zoomLevel < 0.01) {
+            zoomLevel = 0.01;
+        }
+
+        if(zoomLevel > 10) {
+            zoomLevel = 10;
+        }
+
+        updateArtwork();
+    }
+);
+
+
+/* ============================================================
+   DRAGGING
+   ============================================================ */
+
+floatingArtwork.addEventListener(
+    "mousedown",
+    function(event) {
+
+        event.preventDefault();
+
+        dragging = true;
+
+        floatingArtwork.classList.add(
+            "dragging"
+        );
+
+        floatingArtwork.style.transition =
+            "none";
+
+        startMouseX =
+            event.clientX;
+
+        startMouseY =
+            event.clientY;
+
+        startPositionX =
+            positionX;
+
+        startPositionY =
+            positionY;
+    }
+);
+
+
+document.addEventListener(
+    "mousemove",
+    function(event) {
+
+        if(!dragging) {
+            return;
+        }
+
+        positionX =
+            startPositionX +
+            (event.clientX - startMouseX);
+
+        positionY =
+            startPositionY +
+            (event.clientY - startMouseY);
+
+        updateArtwork();
+    }
+);
+
+
+document.addEventListener(
+    "mouseup",
+    function() {
+
+        dragging = false;
+
+        floatingArtwork.classList.remove(
+            "dragging"
+        );
+    }
+);
+
+
+/* ============================================================
+   CLOSE ARTWORK
+   ============================================================ */
+
+function closeArtwork() {
+
+    floatingArtwork.style.display =
+        "none";
+
+    paperBag.style.display =
+        "none";
+
+    exitSign.style.display =
+        "none";
+
+    positionX = 0;
+    positionY = 0;
+
+    dragging = false;
+}
+
+
+/* ============================================================
+   BROWN PAPER BAG
+   Clicking it reveals the tiny EXIT sign.
+   ============================================================ */
+
+paperBag.addEventListener(
+    "click",
+    function() {
+
+        exitSign.style.display =
+            "block";
+    }
+);
+
+
+/* ============================================================
+   EXIT SIGN
+   Acts exactly like ESC when artwork is open.
+   ============================================================ */
+
+exitSign.addEventListener(
+    "click",
+    function() {
+
+        closeArtwork();
+
+        createSalesPopup();
+    }
+);
+
+
+/* ============================================================
+   ESCAPE KEY
+   ============================================================ */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if(event.key === "Escape") {
+
+            /*
+               During the puzzle, Larry refuses
+               to let the customer escape.
+            */
+
+            if(
+                puzzleOverlay.style.display ===
+                "block"
+            ) {
+
+                createSalesPopup();
+
+                return;
+            }
+
+            closeArtwork();
+        }
+    }
+);
+
+
+/* ============================================================
+   WINDOW RESIZE
+   ============================================================ */
+
+window.addEventListener(
+    "resize",
+    function() {
+
+        if(!dragging) {
+
+            positionX = 0;
+            positionY = 0;
+
+            updateArtwork();
+        }
+    }
+);
+
+
+/* ============================================================
+   INITIAL SHOP BELL
+   ============================================================ */
+
+setTimeout(function() {
+
+    shopBell();
+
+}, 2500);
+
+
+/* V24: keep the actual frame small and centred. */
+function fitFinalPaintingFrame(){
+    const box=document.getElementById("puzzleBox");
+    if(!box) return;
+
+    const side=Math.min(
+        window.innerWidth,
+        window.innerHeight
+    )*0.58;
+
+    box.style.width=Math.min(680,Math.max(300,side))+"px";
+    box.style.height=Math.min(680,Math.max(300,side))+"px";
+}
+
+window.addEventListener("resize",fitFinalPaintingFrame);
+
+</script>
+
+
+<script>
+(function(){
+  const booth=document.getElementById("larKnowledgeBooth"), overlay=document.getElementById("larKnowledgeOverlay"), answers=document.getElementById("larKnowledgeAnswers"), result=document.getElementById("larKnowledgeResult"), casino=document.getElementById("larCasinoButton"), close=document.getElementById("larKnowledgeClose"), question=document.getElementById("larKnowledgeQuestion");
+  let round=0, started=false;
+  const quizzes=[
+    {q:"ROUND 1 — WHAT IS LARRY'S NAME?",a:["Larry, naturally.","The fellow presently known as Larry.","The person the paperwork calls Larry.","Larry, unless the paperwork has changed."]},
+    {q:"ROUND 2 — WHAT IS A LAR DEAL?",a:["A deal that sounds better after Larry explains it.","A bargain with unusually long explanations.","Something purchased before Larry changes his mind.","A price that has been encouraged to become lower."]},
+    {q:"ROUND 3 — WHAT ARE LAR-BUCKS FOR?",a:["Buying things you did not know you needed.","Saving up for something even more unnecessarily Lar.","Spending immediately because Larry has a surplus.","All ordinary financial caution is discouraged."]},
+    {q:"ROUND 4 — WHAT IS LARRY'S VARIETY?",a:["A place where there is always another thing.","A shop with a suspiciously large definition of variety.","The land of deals, steals and questionable quantities.","A place where surplus is treated as a personality."]},
+    {q:"ROUND 5 — WHAT MAKES A LARMOBILE A LARMOBILE?",a:["Brown paint and an unreasonable amount of exhaust.","A shape that looks like it has been driving since 1974.","A trunk large enough to contain a minor mystery.","A vehicle Larry would describe as perfectly practical."]},
+    {q:"ROUND 6 — WHAT HAPPENS WHEN LARRY SAYS 'SPECIAL PRICE'?",a:["Everyone immediately becomes suspicious.","The price becomes somehow more interesting.","Someone discovers there is surplus.","Larry insists this is an excellent development."]},
+    {q:"ROUND 7 — WHAT IS THE LAR SPIRIT?",a:["Buy, browse, laugh, repeat.","Never underestimate the value of an unnecessary thing.","If there is a deal, Larry has probably put it somewhere.","Continue onward. Larry has not finished the announcements."]}
+  ];
+  function renderRound(){
+    const q=quizzes[round]; question.textContent=q.q; result.style.display="none"; casino.style.display="none"; answers.style.display="grid"; answers.innerHTML="";
+    q.a.forEach((text,i)=>{const b=document.createElement("button"); b.className="larAnswer"; b.textContent=String.fromCharCode(65+i)+". "+text; b.addEventListener("click",()=>{if(round<6){round++; result.textContent="RECORDED. THE LAR DEPARTMENT HAS MOVED ON TO THE NEXT QUESTION."; result.style.display="block"; setTimeout(renderRound,520);}else{answers.style.display="none"; result.textContent="THE SEVEN LAR QUESTIONS HAVE BEEN PLACED IN THE APPROPRIATE FILE. LARRY WILL NOT COMMENT FURTHER."; result.style.display="block"; casino.style.display="block";}}); answers.appendChild(b);});
+  }
+  booth.addEventListener("click",()=>{if(!started){round=0;started=true;} renderRound(); overlay.style.display="flex";});
+  close.addEventListener("click",()=>overlay.style.display="none"); overlay.addEventListener("click",e=>{if(e.target===overlay)overlay.style.display="none";}); casino.addEventListener("click",()=>window.location.href="niagara34larcasino.html");
+})();
+(function(){
+  const host=document.getElementById("larBackgroundStarbursts"); if(!host)return; const c=["#ff3131","#ff9d00","#ffe600","#38ff6b","#00eaff","#477dff","#b85cff","#ff4fd8"];
+  for(let n=0;n<17;n++){const s=document.createElement("div"); s.className="larBgStar"; s.style.setProperty("--x",(6+Math.random()*88)+"%"); s.style.setProperty("--y",(8+Math.random()*84)+"%"); s.style.setProperty("--dur",(4.5+Math.random()*6)+"s"); for(let r=0;r<12;r++){const i=document.createElement("i"); i.style.color=c[(n+r)%c.length]; i.style.transform=`rotate(${r*30}deg)`; i.style.animationDelay=(-Math.random()*1.1)+"s"; s.appendChild(i);} host.appendChild(s);}
+})();
+(function(){
+  const layer=document.getElementById("larLightningLayer"); if(!layer)return; let ac=null;
+  function ctx(){if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)(); if(ac.state==='suspended')ac.resume(); return ac;}
+ function strike(){const a=[...document.querySelectorAll('.excerpt-figure')];if(!a.length)return;const r=a[Math.floor(Math.random()*a.length)].getBoundingClientRect(),x=r.left+r.width*(.18+Math.random()*.64),y=r.top+r.height*.08,b=document.createElement('div');b.className='larLightningBolt';b.style.left=(x-3)+'px';b.style.top=Math.max(8,y-210)+'px';b.style.height=Math.max(120,y-Math.max(8,y-210)+20)+'px';b.style.transform=`rotate(${(-12+Math.random()*24)}deg)`;layer.appendChild(b);requestAnimationFrame(()=>b.style.opacity='1');setTimeout(()=>b.style.opacity='.12',80);setTimeout(()=>b.style.opacity='1',145);setTimeout(()=>b.style.opacity='0',275);setTimeout(()=>b.remove(),520);}
+  function schedule(){setTimeout(()=>{strike();if(Math.random()<.8)setTimeout(strike,300+Math.random()*850);if(Math.random()<.45)setTimeout(strike,1200+Math.random()*1100);schedule();},3000+Math.random()*4200);}
+  window.addEventListener('pointerdown',()=>{try{ctx();}catch(e){}},{once:true}); schedule();
+})();
+/* CONTINUOUS RANDOM-NOISE AUDIO REMOVED */
+</script>
+
+
+<!-- ============================================================
+     LARRY'S VARIETY OPENING VORTEX
+     The real page remains loaded underneath this opening sequence.
+     ============================================================ -->
+
+<script>
+(function(){
+  const intro=document.getElementById('larOpeningIntro');
+  const letters=[...document.querySelectorAll('.larOpeningLetter')];
+  const rays=document.getElementById('larOpeningRays');
+  const gullHost=document.getElementById('larOpeningGulls');
+  if(!intro || !rays) return;
+
+  letters.forEach((el,i)=>{
+    const side=i%4;
+    const sx=side===0 ? (-70-i*4)+'vw' : side===1 ? (70+i*4)+'vw' : (Math.random()*50-25)+'vw';
+    const sy=side===2 ? (-55-i*3)+'vh' : side===3 ? (55+i*3)+'vh' : (Math.random()*30-15)+'vh';
+    el.style.setProperty('--sx',sx); el.style.setProperty('--sy',sy);
+    el.style.setProperty('--sz',(Math.random()*500-250)+'px');
+    el.style.setProperty('--ry',(Math.random()*120-60)+'deg');
+    el.style.setProperty('--rz',(Math.random()*70-35)+'deg');
+    el.style.setProperty('--delay',(12+i*.34)+'s');
+  });
+
+  const colours=['#ff1b1b','#ff7a00','#ffe600','#39ff5a','#00eaff','#4169ff','#a855ff','#ff35d1'];
+  for(let i=0;i<48;i++){
+    const r=document.createElement('i'); r.className='larOpeningRay';
+    r.style.setProperty('--ray',colours[i%colours.length]); r.style.transform='rotate('+(i*7.5)+'deg)'; rays.appendChild(r);
+  }
+
+  if(gullHost){
+    for(let i=0;i<24;i++){
+      const g=document.createElement('i'); g.className='larOpeningGull';
+      g.style.left=(Math.random()*92)+'%'; g.style.top=(8+Math.random()*62)+'%';
+      g.style.setProperty('--gx',(Math.random()*42-21)+'vw'); g.style.setProperty('--gy',(Math.random()*30-15)+'vh');
+      g.style.setProperty('--gd',(3.5+Math.random()*4.5)+'s'); g.style.setProperty('--delay',(-Math.random()*5)+'s');
+      g.style.transform='scale('+(0.65+Math.random()*1.15)+')'; gullHost.appendChild(g);
+    }
+  }
+
+  /* Slow, theatrical sequence: car -> smoke -> whiteout -> letters -> rainbow burst -> fade. */
+  setTimeout(()=>intro.classList.add('car-arrive'),500);
+  setTimeout(()=>intro.classList.add('gulls-arrive'),1000);
+  setTimeout(()=>intro.classList.add('smoke-build'),4000);
+  setTimeout(()=>intro.classList.add('smoke-whiteout'),8500);
+  setTimeout(()=>intro.classList.add('intro-burst'),18500);
+  setTimeout(()=>intro.classList.add('intro-shrink'),21800);
+  setTimeout(()=>{
+    intro.classList.add('intro-fade');
+    setTimeout(()=>intro.remove(),3000);
+  },24400);
+})();
+</script>
+
+<script>
+/* ============================================================
+   LARRY'S VARIETY ANNOUNCER — V31
+   Deep, happy male deal announcer + delayed British female interjections.
+   No interruptions: each voice finishes, then a full pause passes.
+   ============================================================
+*/
+(function(){
+  let ctx=null, master=null, organGain=null, started=false, voiceTimer=null;
+  let maleBag=[], femaleBag=[];
+  const dealLines = [
+    "THE SAVINGS! THE SAVINGS! YOU COULD WIN A PRIZE!",
+    "DON'T BE PUZZLED! LARRY'S VARIETY HAS SOME VERY CLASSY SPECIALS.",
+    "NEW SHIPMENTS! FRESH DEALS! LARRY SAYS THIS IS AN EXCELLENT TIME TO COME DOWN.",
+    "RUSH DOWN NOW BEFORE THE ART COLLECTORS SNAP EM UP!",
+    "SPECIALS HAVE ARRIVED! LARRY HAS ARRIVED! THE TIMING COULD NOT BE BETTER.",
+    "THE SAVINGS ARE HERE, AND THEY HAVE BROUGHT THEIR FRIENDS.",
+    "NEW SHIPMENT! SOMETHING FRESH HAS LANDED AT LARRY'S VARIETY.",
+    "COME ON DOWN! A VERY GOOD DEAL MAY BE WAITING FOR YOU.",
+    "WHO KNOWS WHO'LL SNAP UP THIS GOLDMINE!",
+    "THE SPECIALS ARE MOVING FAST! LARRY RECOMMENDS A DECISIVE LITTLE HURRY.",
+    "YOU COULD WIN A PRIZE! THAT IS A POSSIBILITY LARRY IS HAPPY TO DISCUSS.",
+    "NEW STOCK! NEW OPPORTUNITIES! SAME LARRY!",
+    "RUSH DOWN BEFORE THE COLLECTORS GET WIND OF THIS LOT.",
+    "SPECIAL DEALS! VERY SPECIAL DEALS! THE ORDINARY DEALS HAVE BEEN SENT HOME.",
+    "THE SAVINGS ARE SUBSTANTIAL, THE SHIPMENTS ARE RECENT, AND THE DOOR IS OPEN.",
+    "LARRY'S VARIETY HAS RECEIVED A NEW DELIVERY AND IS TAKING IT VERY SERIOUSLY.",
+    "HURRY ALONG! THERE ARE SPECIALS IN THE BUILDING.",
+    "A FRESH SHIPMENT HAS ARRIVED AND LARRY HAS GIVEN IT HIS APPROVAL.",
+    "DEALS! SAVINGS! PRIZES! A VERY PROMISING AFTERNOON IS DEVELOPING.",
+    "DON'T DELAY! THE GOOD STUFF HAS A HABIT OF FINDING A NEW OWNER.",
+    "SPECIALS TODAY! NEW SHIPMENTS TODAY! LARRY IS FEELING PARTICULARLY GENEROUS.",
+    "RUSH DOWN NOW! THE COLLECTORS MAY BE CURIOUS, AND CURIOSITY IS QUICK.",
+    "THE DEAL DEPARTMENT REPORTS THAT SOMETHING EXCELLENT IS AVAILABLE.",
+    "YOU MAY SAVE MONEY! YOU MAY WIN A PRIZE! YOU MAY EVEN DO BOTH.",
+    "NEW ARRIVALS! FRESH OPPORTUNITIES! LARRY HAS PUT THE WORD OUT.",
+    "THE SAVINGS HAVE BEEN RELEASED FROM THEIR CONFINEMENT.",
+    "SPECIAL OFFER! LARRY CANNOT SAY TOO MUCH, WHICH MAKES IT ESPECIALLY SPECIAL.",
+    "COME QUICKLY! THE COLLECTORS ARE BEGINNING TO DEVELOP IDEAS.",
+    "A NEW SHIPMENT MEANS NEW POSSIBILITIES. LARRY SUPPORTS THIS DEVELOPMENT.",
+    "LARRY'S VARIETY! WHERE THE SPECIALS KNOW HOW TO MAKE AN ENTRANCE.",
+    "RUSH DOWN! THERE IS NO NEED TO PANIC, BUT THERE IS EVERY REASON TO HURRY.",
+    "THE PRIZE POTENTIAL IS LOOKING HEALTHY TODAY.",
+    "SAVINGS HAVE BEEN SPOTTED IN THE VICINITY OF LARRY'S VARIETY.",
+    "NEW SHIPMENT! NEW DEAL! NEW REASONS TO WONDER WHAT LARRY HAS BEEN UP TO.",
+    "SPECIALS ARE AVAILABLE! LARRY SUGGESTS A BRISK WALK IN THIS DIRECTION.",
+    "DON'T LET A COLLECTOR BEAT YOU TO A VERY GOOD DEAL.",
+    "THE LARRY DEPARTMENT OF SAVINGS HAS MADE ANOTHER DECISION.",
+    "GOOD DEALS ARE LIKE GOOD NEWS: BEST RECEIVED WITHOUT DELAY.",
+    "A FRESH LOT HAS ARRIVED! LARRY CALLS THIS A FORTUNATE CIRCUMSTANCE.",
+    "COME DOWN BEFORE SOMEONE ELSE DISCOVERS WHAT YOU HAVE JUST HEARD.",
+    "SPECIALS! SHIPMENTS! SAVINGS! ALL THREE HAVE BEEN OBSERVED.",
+    "THE PRIZES ARE POSSIBLE, THE DEALS ARE REAL, AND LARRY IS READY.",
+    "RUSH DOWN! THE WINDOW OF OPPORTUNITY HAS BEEN LEFT CONVENIENTLY OPEN.",
+    "LARRY HAS NEW STOCK AND A VERY STRONG FEELING ABOUT IT.",
+    "SOMETHING GOOD HAS ARRIVED. LARRY HAS DECIDED NOT TO KEEP IT SECRET.",
+    "THE SAVINGS ARE PARTICULARLY LIVELY TODAY.",
+    "NEW SHIPMENT! IF YOU LIKE NEW SHIPMENTS, THIS IS A PROMISING DEVELOPMENT.",
+    "THE COLLECTORS ARE OUT THERE. GET HERE FIRST.",
+    "A SPECIAL HAS APPEARED! LARRY RECOMMENDS IMMEDIATE INVESTIGATION.",
+    "YOU COULD WIN A PRIZE! LARRY DOES NOT SAY THIS LIGHTLY.",
+    "COME ON DOWN! THE LATEST SHIPMENT IS WAITING TO BE DISCOVERED.",
+    "DEALS HAVE BEEN MARKED FOR IMMEDIATE ATTENTION BY THE LARRY DEPARTMENT.",
+    "RUSH DOWN NOW! GOOD THINGS HAVE BEEN KNOWN TO CHANGE HANDS.",
+    "LARRY'S VARIETY HAS ANOTHER SPECIAL AND IS NOT BEING MODEST ABOUT IT.",
+    "THE NEW SHIPMENT IS IN! THE TIMING IS BEAUTIFUL.",
+    "SAVINGS ARE AVAILABLE! LARRY SAYS THIS WITH GREAT CONFIDENCE.",
+    "A PRIZE MAY BE WON! A DEAL MAY BE FOUND! THIS IS A BUSY DAY.",
+    "SPECIALS ARE HERE AND THE COLLECTORS HAVE NOT YET TAKEN EVERYTHING.",
+    "HURRY DOWN! THERE IS STILL TIME TO BE EARLY.",
+    "LARRY HAS RECEIVED SOMETHING NEW AND WOULD LIKE YOU TO COME SEE IT.",
+    "THE DEALS ARE GOOD TODAY. TOMORROW HAS NOT YET BEEN CONSULTED.",
+    "NEW STOCK HAS ARRIVED! LARRY'S TIMING REMAINS EXCELLENT.",
+    "COME QUICKLY! THE SPECIALS HAVE BEEN NOTICED BY OTHER PEOPLE.",
+    "THE SAVINGS ARE ATTRACTIVE, THE SHIPMENT IS FRESH, AND LARRY IS PLEASED.",
+    "RUSH DOWN BEFORE THE COLLECTORS START SAYING CLEVER THINGS ABOUT THESE DEALS.",
+    "A NEW SPECIAL HAS JOINED THE LARRY FAMILY.",
+    "YOU COULD SAVE! YOU COULD WIN! YOU COULD ARRIVE BEFORE EVERYONE ELSE.",
+    "THE LATEST DELIVERY HAS CAUSED A GREAT DEAL OF INTEREST AT LARRY'S VARIETY.",
+    "SPECIALS TODAY! LARRY HAS BEEN INFORMED AND IS NOW INFORMING YOU.",
+    "HURRY DOWN! THE GOOD DEALS ARE GETTING ACCUSTOMED TO BEING WANTED.",
+    "THE PRIZE DEPARTMENT IS FEELING OPTIMISTIC.",
+    "NEW SHIPMENT! THERE IS SOMETHING ABOUT NEW SHIPMENTS THAT LARRY FINDS ENCOURAGING.",
+    "THE SAVINGS ARE READY. THE COLLECTORS ARE CURIOUS. YOU KNOW WHAT TO DO.",
+    "RUSH DOWN! LARRY HAS NO INTENTION OF LETTING A GOOD SPECIAL GO UNANNOUNCED.",
+    "ANOTHER DEAL HAS ARRIVED AT LARRY'S VARIETY, APPARENTLY ON PURPOSE.",
+    "THE SPECIALS ARE LOOKING VERY SPECIAL INDEED.",
+    "COME DOWN NOW! THE LATEST SHIPMENT HAS A CERTAIN AIR OF IMPORTANCE.",
+    "LARRY SAYS HURRY, AND LARRY HAS NEVER BEEN KNOWN TO UNDERSTATE A GOOD DEAL.",
+    "THE SAVINGS ARE IN POSITION! THE NEW SHIPMENT IS IN POSITION! YOU MAY PROCEED.",
+    "A FRESH OPPORTUNITY HAS ARRIVED IN A BOX, OR SOMETHING VERY MUCH LIKE A BOX.",
+    "RUSH DOWN BEFORE THE ART COLLECTORS DISCOVER THE GOLDEN OPPORTUNITY.",
+    "SPECIALS! PRIZES! NEW SHIPMENTS! LARRY'S CALENDAR IS HAVING A VERY GOOD DAY.",
+    "THE DEALS ARE WAITING PATIENTLY. LARRY IS NOT.",
+    "YOU MAY WIN A PRIZE! LARRY SUGGESTS THAT YOU GIVE THIS POSSIBILITY A FAIR CHANCE.",
+    "NEW ARRIVALS HAVE BEEN REGISTERED! LARRY IS PLEASED WITH THE PAPERWORK.",
+    "HURRY DOWN! THE COLLECTORS MAY HAVE HEARD SOMETHING.",
+    "ANOTHER SPECIAL HAS ARRIVED, AND LARRY IS ALREADY PREPARING THE NEXT ANNOUNCEMENT.",
+    "THE SAVINGS ARE EXCELLENT TODAY. THIS IS NOT AN OFFICIAL SCIENTIFIC MEASUREMENT.",
+    "COME ON DOWN! A FRESH DEAL HAS ENTERED THE BUILDING.",
+    "RUSH DOWN NOW! THE NEW SHIPMENT DESERVES A PROPER WELCOME.",
+    "LARRY'S VARIETY HAS SPECIALS, SAVINGS, AND A VERY POSITIVE ATTITUDE TOWARD YOUR ARRIVAL.",
+    "THE COLLECTORS MAY SNAP THESE UP. LARRY SUGGESTS YOU GET THERE FIRST.",
+    "A NEW DEAL HAS BEEN SPOTTED! LARRY IS FOLLOWING IT WITH INTEREST.",
+    "SPECIALS ARE ON THE MOVE! PLEASE MOVE YOURSELF ACCORDINGLY.",
+    "THE PRIZE COULD BE YOURS! THE SAVINGS COULD BE YOURS! THE AFTERNOON IS YOURS.",
+    "LARRY HAS ANOTHER SHIPMENT AND ANOTHER REASON TO HURRY.",
+    "COME DOWN BEFORE THE BEST DEALS BECOME THE DEALS SOMEONE ELSE GOT.",
+    "THE SAVINGS ARE IN THE SHOP, THE SPECIALS ARE READY, AND LARRY IS ANNOUNCING.",
+    "NEW SHIPMENT! NEW DEAL! OLD-FASHIONED URGENCY!",
+    "RUSH DOWN NOW! LARRY WOULD HATE FOR YOU TO HEAR THIS ANNOUNCEMENT TOO LATE."
+];
+  const femaleLines = [
+    "OY! SUCH PREPOSTEROUS DEALS!",
+    "I WANT THIS ART FOR MY FLAT!",
+    "LOOK AT ITS COLOURS--SO PRETTY! I THINK I'LL RUSH DOWN AND SPEND A QUID ON THESE LOVELIES!",
+    "OOOOH! BLIMEY, MY EYES! THEY'RE BEWITCHED!",
+    "OOOOOH!!!! COO-EY!",
+    "OY! SUCH FLABBERGASTING DEALS!",
+    "I WANT THIS ART FOR MY FLAT! IT WOULD LOOK ABSOLUTELY SPLENDID.",
+    "LOOK AT THOSE COLOURS! SO PRETTY! I'M OFF TO SPEND A QUID!",
+    "OY! SUCH MAGNIFICENTLY PECULIAR DEALS!",
+    "OOOOH! BLIMEY! MY EYES HAVE BEEN COMPLETELY BEWITCHED!",
+    "COO-EY! WHAT A REMARKABLY PREPOSTEROUS SPECIAL!",
+    "I WANT THIS ART FOR MY FLAT! IT'S ABSOLUTELY CHARMING.",
+    "OY! SUCH ASTONISHINGLY BIZARRE DEALS!",
+    "OOOOOH! I SAY! MY EYES ARE UTTERLY BEWITCHED!",
+    "COO-EY! SUCH A GLORIOUSLY ECCENTRIC BARGAIN!",
+    "I WANT THIS ART FOR MY FLAT! I'LL HAVE TO RUSH DOWN.",
+    "OY! SUCH EXTRAORDINARY DEALS! WHO COULD RESIST?",
+    "OOOOH, BLIMEY! THESE SPECIALS ARE VISUALLY ENCHANTING!",
+    "COO-EY! WHAT AN IMPROBABLE LITTLE GOLDMINE!",
+    "I WANT THIS ART FOR MY FLAT! AND I'VE GOT A QUID READY."
+];
+
+  function shuffle(a){
+    const x=a.slice();
+    for(let i=x.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[x[i],x[j]]=[x[j],x[i]];}
+    return x;
+  }
+  function nextFromBag(kind){
+    const bag=kind==='female'?femaleBag:maleBag;
+    if(!bag.length){
+      const fresh=shuffle(kind==='female'?femaleLines:dealLines);
+      bag.push(...fresh);
+    }
+    return bag.pop();
+  }
+  function makeAudio(){
+    if(ctx) return;
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if(!AC)return;
+    ctx=new AC();
+    master=ctx.createGain(); master.gain.value=.14; master.connect(ctx.destination);
+    organGain=ctx.createGain(); organGain.gain.value=0; organGain.connect(master);
+  }
+  function organChord(when,freqs,duration){
+    if(!ctx||!organGain)return;
+    freqs.forEach((freq,idx)=>{
+      const osc=ctx.createOscillator(),g=ctx.createGain();
+      osc.type='sine'; osc.frequency.value=freq;
+      g.gain.setValueAtTime(.0001,when);
+      g.gain.linearRampToValueAtTime(.015/(idx+1),when+.55);
+      g.gain.setValueAtTime(.015/(idx+1),when+Math.max(.6,duration-.9));
+      g.gain.linearRampToValueAtTime(.0001,when+duration);
+      osc.connect(g);g.connect(organGain);osc.start(when);osc.stop(when+duration+.05);
+    });
+  }
+  function chooseVoice(female){
+    const voices=speechSynthesis.getVoices();
+    if(female){
+      return voices.find(v=>/en[-_](GB|UK)/i.test(v.lang)&&/female|susan|hazel|libby|samantha|serena|kate|sophie|google uk english female|microsoft.*female/i.test(v.name))
+        || voices.find(v=>/en[-_](GB|UK)/i.test(v.lang)&&!/david|george|daniel|mark/i.test(v.name))
+        || voices.find(v=>/en[-_](GB|UK)/i.test(v.lang));
+    }
+    return voices.find(v=>/en[-_](GB|CA|US)/i.test(v.lang)&&/David|George|Daniel|Mark|Google UK|Microsoft/i.test(v.name))
+      || voices.find(v=>/en[-_](GB|CA|US)/i.test(v.lang))
+      || voices.find(v=>/^en/i.test(v.lang));
+  }
+  function speakOne(text,female=false){
+    if(!('speechSynthesis' in window))return;
+    const u=new SpeechSynthesisUtterance(text);
+    if(female){u.rate=.64;u.pitch=.78;u.volume=1;}
+    else{u.rate=.57;u.pitch=.14;u.volume=1;}
+    const v=chooseVoice(female); if(v)u.voice=v;
+    u.onend=()=>{voiceTimer=setTimeout(speakNext,33000+Math.random()*3500);};
+    u.onerror=()=>{voiceTimer=setTimeout(speakNext,33000);};
+    speechSynthesis.speak(u);
+  }
+  function speakNext(){
+    if(!started)return;
+    const female=(Math.random()<0.28);
+    speakOne(nextFromBag(female?'female':'male'),female);
+  }
+  function start(){
+    if(started&&speechSynthesis.speaking)return;
+    started=true;
+    try{
+      makeAudio();
+      if(ctx&&ctx.state==='suspended')ctx.resume();
+      if(ctx&&organGain){
+        const now=ctx.currentTime;
+        organGain.gain.cancelScheduledValues(now);
+        organGain.gain.setValueAtTime(.0001,now);
+        organGain.gain.linearRampToValueAtTime(.7,now+3);
+        const chords=[[65.41,77.78,97.99],[58.27,69.30,87.31],[55,65.41,77.78],[51.91,61.74,77.78]];
+        let t=now;
+        for(let i=0;i<18;i++){organChord(t,chords[i%chords.length],7);t+=6.5;}
+      }
+      speakNext();
+    }catch(e){started=false;}
+  }
+  window.startLarryOpeningAudio=start;
+  window.addEventListener('load',()=>setTimeout(start,900),{once:true});
+  ['pointerdown','keydown','touchstart'].forEach(ev=>window.addEventListener(ev,()=>setTimeout(start,30),{passive:true}));
+  if('speechSynthesis' in window) speechSynthesis.onvoiceschanged=()=>{ if(started&&!speechSynthesis.speaking)speakNext(); };
+})();
+</script>
+
+
+
+<script>
+/* V26 safety: never crop the completed artwork. Re-apply contain after the image knows its natural size. */
+(function(){
+  const img=document.getElementById('completedPaintingImage');
+  if(!img) return;
+  function fit(){
+    img.style.objectFit='contain';
+    img.style.objectPosition='center';
+    img.style.width='auto';
+    img.style.height='auto';
+  }
+  img.addEventListener('load',fit);
+  window.addEventListener('resize',fit);
+  fit();
+})();
+</script>
+
+<script id="v28-fit-final-art">
+function fitCompletedArtFrame(){
+  const img=document.getElementById("completedPaintingImage"), frame=document.getElementById("completedPaintingDisplay");
+  if(!img||!frame||!img.naturalWidth||!img.naturalHeight)return;
+  const framePadding=48; // 24px on each side; the ornate border is outside this.
+  const maxW=Math.max(120,window.innerWidth-60-framePadding);
+  const maxH=Math.max(120,window.innerHeight-60-framePadding);
+  const scale=Math.min(maxW/img.naturalWidth,maxH/img.naturalHeight,1);
+  img.style.width=Math.round(img.naturalWidth*scale)+"px";
+  img.style.height=Math.round(img.naturalHeight*scale)+"px";
+  frame.style.width=(Math.round(img.naturalWidth*scale)+framePadding)+"px";
+  frame.style.height=(Math.round(img.naturalHeight*scale)+framePadding)+"px";
+}
+window.fitCompletedArtFrame=fitCompletedArtFrame;
+window.addEventListener("resize",function(){if(document.body.classList.contains("final-painting-state"))fitCompletedArtFrame()});
+window.addEventListener("load",function(){
+  const img=document.getElementById("completedPaintingImage");
+  if(img) img.addEventListener("load",function(){if(document.body.classList.contains("final-painting-state"))fitCompletedArtFrame()});
+});
+</script>
+
+
+<style id="v29-final-frame-and-spiral">
+/* V29: one small, centred framed photograph over the simple moving spiral. */
+body.final-painting-state{
+  background:#000 !important;
+  overflow:hidden !important;
+}
+body.final-painting-state::before{
+  content:"" !important;
+  display:block !important;
+  position:fixed !important;
+  left:50% !important;
+  top:50% !important;
+  width:260vmax !important;
+  height:260vmax !important;
+  transform:translate(-50%,-50%) !important;
+  background:repeating-conic-gradient(from 0deg,#000 0deg 9deg,#fff 9deg 18deg) !important;
+  animation:spinSpiral 7s linear infinite !important;
+  opacity:1 !important;
+  visibility:visible !important;
+  z-index:0 !important;
+  pointer-events:none !important;
+}
+body.final-painting-state #puzzleOverlay{
+  position:fixed !important;
+  inset:0 !important;
+  display:block !important;
+  background:transparent !important;
+  z-index:20 !important;
+  pointer-events:none !important;
+}
+body.final-painting-state #puzzleBox{
+  position:fixed !important;
+  inset:0 !important;
+  width:100vw !important;
+  height:100vh !important;
+  max-width:none !important;
+  max-height:none !important;
+  display:block !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  padding:0 !important;
+  margin:0 !important;
+  pointer-events:none !important;
+}
+body.final-painting-state #completedPaintingDisplay{
+  position:fixed !important;
+  left:50% !important;
+  top:50% !important;
+  transform:translate(-50%,-50%) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  box-sizing:border-box !important;
+  width:auto !important;
+  height:auto !important;
+  max-width:none !important;
+  max-height:none !important;
+  margin:0 !important;
+  padding:22px !important;
+  overflow:visible !important;
+  line-height:0 !important;
+  background:linear-gradient(135deg,#241006 0%,#9b5b20 8%,#e4c875 13%,#54250b 19%,#c18a3f 28%,#e7ce82 36%,#482008 45%,#c18a3f 55%,#e8cf83 64%,#4a2109 73%,#c18a3f 82%,#e5c875 90%,#291105 100%) !important;
+  border:10px solid #180903 !important;
+  box-shadow:0 0 0 4px #e3c477,0 0 0 8px #4a2109,0 0 0 13px #c89443,0 0 0 18px #291205,0 18px 45px rgba(0,0,0,.92) !important;
+  pointer-events:none !important;
+}
+body.final-painting-state #completedPaintingDisplay::before,
+body.final-painting-state #completedPaintingDisplay::after{
+  content:"" !important;
+  position:absolute !important;
+  width:26px !important;
+  height:26px !important;
+  border:4px solid #e6c875 !important;
+  border-radius:50% !important;
+  background:#4b220a !important;
+  box-shadow:inset 0 0 0 3px #c18a3f,0 0 0 2px #241006 !important;
+  z-index:5 !important;
+}
+body.final-painting-state #completedPaintingDisplay::before{left:-16px !important;top:-16px !important;}
+body.final-painting-state #completedPaintingDisplay::after{right:-16px !important;bottom:-16px !important;}
+body.final-painting-state #completedPaintingImage{
+  display:block !important;
+  position:relative !important;
+  width:auto !important;
+  height:auto !important;
+  max-width:none !important;
+  max-height:none !important;
+  min-width:0 !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  border:0 !important;
+  object-fit:contain !important;
+  object-position:center !important;
+  background:transparent !important;
+  box-shadow:none !important;
+  z-index:2 !important;
+}
+</style>
+
+<script id="v29-final-frame-fit">
+(function(){
+  function fitSmallCenteredFrame(){
+    const img=document.getElementById('completedPaintingImage');
+    const frame=document.getElementById('completedPaintingDisplay');
+    if(!img||!frame||!img.naturalWidth||!img.naturalHeight)return;
+    /* Deliberately smaller: the artwork itself occupies no more than 58% of
+       the available screen dimension while preserving its exact proportions. */
+    const pad=44;
+    const maxW=Math.max(120,window.innerWidth*.58-pad);
+    const maxH=Math.max(120,window.innerHeight*.68-pad);
+    const scale=Math.min(maxW/img.naturalWidth,maxH/img.naturalHeight,.58);
+    const w=Math.max(40,Math.round(img.naturalWidth*scale));
+    const h=Math.max(40,Math.round(img.naturalHeight*scale));
+    img.style.width=w+'px';
+    img.style.height=h+'px';
+    frame.style.width=(w+pad)+'px';
+    frame.style.height=(h+pad)+'px';
+    frame.style.left='50%';
+    frame.style.top='50%';
+    frame.style.transform='translate(-50%,-50%)';
+  }
+  window.fitCompletedArtFrame=fitSmallCenteredFrame;
+  function whenReady(){
+    const img=document.getElementById('completedPaintingImage');
+    if(img){
+      img.addEventListener('load',fitSmallCenteredFrame);
+      if(img.complete)fitSmallCenteredFrame();
+    }
+    window.addEventListener('resize',fitSmallCenteredFrame);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',whenReady);
+  else whenReady();
+})();
+</script>
+
+<style id="v30-final-painting-authority">
+/* V30 FINAL: the completed artwork is a small whole photograph INSIDE a real fitted frame. */
+body.final-painting-state{
+  background:#000 !important;
+  overflow:hidden !important;
+}
+body.final-painting-state::before{
+  content:"" !important;
+  position:fixed !important;
+  inset:-80vmax !important;
+  width:260vmax !important;
+  height:260vmax !important;
+  left:50% !important; top:50% !important;
+  transform:translate(-50%,-50%) !important;
+  background:repeating-conic-gradient(from 0deg,#000 0deg 9deg,#fff 9deg 18deg) !important;
+  animation:spinSpiral 8s linear infinite !important;
+  opacity:1 !important;
+  z-index:0 !important;
+  pointer-events:none !important;
+}
+body.final-painting-state #puzzleOverlay,
+body.final-painting-state #puzzleOverlay.finalPaintingOverlay{
+  position:fixed !important; inset:0 !important;
+  display:block !important; padding:0 !important;
+  background:transparent !important; overflow:hidden !important;
+  z-index:2000 !important; pointer-events:none !important;
+}
+body.final-painting-state #puzzleOverlay > #puzzleBox,
+body.final-painting-state #puzzleBox.finalPaintingOnly{
+  position:fixed !important; inset:0 !important;
+  width:100vw !important; height:100vh !important;
+  min-width:0 !important; min-height:0 !important; max-width:none !important; max-height:none !important;
+  margin:0 !important; padding:0 !important; border:0 !important;
+  background:transparent !important; box-shadow:none !important; overflow:hidden !important;
+  pointer-events:none !important; resize:none !important;
+}
+body.final-painting-state #puzzleTitle,
+body.final-painting-state #puzzleMessage,
+body.final-painting-state #puzzleInstruction,
+body.final-painting-state #puzzleTimer,
+body.final-painting-state #classicPuzzleStage,
+body.final-painting-state #puzzleCancel,
+body.final-painting-state #pieceTrayTitle,
+body.final-painting-state #larryCongratulations{display:none !important;}
+body.final-painting-state #completedPaintingDisplay{
+  position:fixed !important;
+  left:50% !important; top:50% !important;
+  transform:translate(-50%,-50%) !important;
+  display:flex !important; align-items:center !important; justify-content:center !important;
+  box-sizing:border-box !important;
+  width:auto !important; height:auto !important;
+  max-width:none !important; max-height:none !important;
+  min-width:0 !important; min-height:0 !important;
+  margin:0 !important;
+  padding:30px !important;
+  background:linear-gradient(135deg,#211006 0%,#6d3b16 7%,#d2a85b 12%,#4a220b 18%,#c88d3f 27%,#321507 36%,#e1bf72 45%,#54280c 54%,#d09b4a 64%,#3a1908 73%,#d8b46a 84%,#4a220b 92%,#1c0b03 100%) !important;
+  border:12px solid #160803 !important;
+  border-radius:3px !important;
+  box-shadow:
+    0 0 0 5px #e0bd70,
+    0 0 0 10px #4a2109,
+    0 0 0 14px #bd8538,
+    0 0 0 19px #281005,
+    0 18px 50px rgba(0,0,0,.95) !important;
+  overflow:visible !important;
+  line-height:0 !important;
+  pointer-events:none !important;
+  z-index:2001 !important;
+}
+body.final-painting-state #completedPaintingDisplay::before{
+  content:"" !important; position:absolute !important; inset:12px !important;
+  border:4px solid #edcf83 !important;
+  box-shadow:inset 0 0 0 4px #3a1908,0 0 0 2px #1b0a03 !important;
+  pointer-events:none !important; z-index:5 !important;
+}
+body.final-painting-state #completedPaintingDisplay::after{
+  content:"" !important; display:block !important;
+  position:absolute !important; width:34px !important; height:34px !important;
+  right:-18px !important; bottom:-18px !important; left:auto !important;
+  transform:none !important; padding:0 !important;
+  background:#4b220a !important; border:5px solid #e5c778 !important;
+  border-radius:50% !important; box-shadow:inset 0 0 0 4px #a86d2d,0 0 0 2px #1c0b03 !important;
+  z-index:6 !important;
+}
+body.final-painting-state #completedPaintingImage{
+  display:block !important; position:relative !important; z-index:2 !important;
+  flex:0 0 auto !important; width:auto !important; height:auto !important;
+  max-width:none !important; max-height:none !important;
+  min-width:0 !important; min-height:0 !important;
+  margin:0 !important; padding:0 !important; border:0 !important;
+  object-fit:contain !important; object-position:center !important;
+  background:#fff !important; box-shadow:none !important;
+}
+</style>
+<script id="v30-final-painting-fit">
+(function(){
+  function fitFinalPaintingV30(){
+    const img=document.getElementById('completedPaintingImage');
+    const frame=document.getElementById('completedPaintingDisplay');
+    if(!img||!frame||!img.naturalWidth||!img.naturalHeight)return;
+    /* Small enough to leave generous room around the frame; never crop. */
+    const pad=60;
+    const maxW=Math.min(window.innerWidth*0.46,760)-pad;
+    const maxH=Math.min(window.innerHeight*0.58,650)-pad;
+    const scale=Math.min(maxW/img.naturalWidth,maxH/img.naturalHeight,0.48);
+    const w=Math.max(60,Math.floor(img.naturalWidth*scale));
+    const h=Math.max(60,Math.floor(img.naturalHeight*scale));
+    img.style.width=w+'px'; img.style.height=h+'px';
+    frame.style.width=(w+pad)+'px'; frame.style.height=(h+pad)+'px';
+    frame.style.left='50%'; frame.style.top='50%';
+    frame.style.transform='translate(-50%,-50%)';
+  }
+  window.fitCompletedArtFrame=fitFinalPaintingV30;
+  function ready(){
+    const img=document.getElementById('completedPaintingImage');
+    if(img){img.addEventListener('load',fitFinalPaintingV30); if(img.complete)fitFinalPaintingV30();}
+    window.addEventListener('resize',fitFinalPaintingV30);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ready); else ready();
+})();
+</script>
+
+</body>
+</html>
