@@ -866,7 +866,7 @@ figure {
     z-index: 2000;
     background: rgba(0,0,0,0.93);
     overflow-y: auto;
-    padding: 25px;
+    padding: 10px;
     box-sizing: border-box;
 }
 
@@ -876,14 +876,14 @@ figure {
 
 #puzzleBox {
     width: min(410px, 90vw);
-    margin: 20px auto;
+    margin: 10px auto;
     background: #eee;
     color: black;
     border: 5px solid #111;
     box-shadow:
         0 0 30px white,
         0 0 70px black;
-    padding: 14px;
+    padding: 10px;
     box-sizing: border-box;
 }
 
@@ -988,10 +988,10 @@ figure {
 #pieceTray {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    width: min(680px, 82vw);
+    gap: 6px;
+    width: min(340px, 82vw);
     margin: 15px auto;
-    padding: 10px;
+    padding: 6px;
     background: #222;
     border: 5px solid #555;
     box-sizing: border-box;
@@ -1606,10 +1606,24 @@ figure {
 .larSeagull::before{left:1px;transform:rotate(16deg)}
 .larSeagull::after{right:1px;transform:rotate(-16deg)}
 @keyframes larGullFly{from{transform:translateX(-12vw) translateY(0) scale(.7)}20%{transform:translateX(20vw) translateY(-25px) scale(.95)}40%{transform:translateX(43vw) translateY(16px) scale(.78)}60%{transform:translateX(66vw) translateY(-34px) scale(1.05)}80%{transform:translateX(88vw) translateY(12px) scale(.86)}to{transform:translateX(115vw) translateY(-8px) scale(.72)}}
+
+/* 17 rotating neon starbursts stay beneath the paintings. */
+#larBackgroundStars{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.larBackgroundStar{position:absolute;width:220px;height:220px;transform:translate(-50%,-50%);transform-origin:50% 50%;animation:larStarDrift 18s linear infinite}
+.larBackgroundStar i{position:absolute;left:50%;top:50%;width:5px;height:120px;margin-left:-2.5px;transform-origin:50% 0;border-radius:999px;background:linear-gradient(to bottom,rgba(255,255,255,.95),currentColor 18%,currentColor 55%,transparent);box-shadow:0 0 5px currentColor,0 0 15px currentColor,0 0 28px currentColor;opacity:.7;animation:larBgRayPulse .9s steps(6,end) infinite alternate}
+@keyframes larStarDrift{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes larBgRayPulse{from{height:70px;opacity:.28;filter:brightness(.8)}to{height:145px;opacity:.9;filter:brightness(2.2)}}
+.excerpt-figure{position:relative;z-index:2}
+#larKnowledgeBooth{z-index:9}
+.excerpt-figure:hover figcaption{color:#fff;animation:larRainbowTitle 2.2s linear infinite;text-shadow:0 0 6px currentColor,0 0 16px currentColor,0 0 28px currentColor}
+@keyframes larRainbowTitle{0%{color:#ff3030}16%{color:#ff9d00}33%{color:#ffe600}50%{color:#39ff68}66%{color:#00eaff}83%{color:#7d5cff}100%{color:#ff39d8}}
+#larLightningLayer{position:fixed;inset:0;z-index:7;pointer-events:none;overflow:hidden}
+.larLightningBolt{position:absolute;width:13px;background:linear-gradient(90deg,transparent,#fff 25%,#00eaff 50%,#fff 75%,transparent);box-shadow:0 0 7px #fff,0 0 18px #00eaff,0 0 32px #ff39d8;clip-path:polygon(40% 0,75% 0,58% 25%,92% 25%,52% 55%,75% 55%,20% 100%,35% 62%,5% 62%,45% 34%,18% 34%);transform-origin:50% 0;animation:larBoltFlash .18s steps(2,end) 3}
+@keyframes larBoltFlash{0%,100%{opacity:0}30%{opacity:1}60%{opacity:.25}80%{opacity:1}}
 </style>
 </head>
 
-<body>
+<body><div id="larBackgroundStars"><div class="larBackgroundStar" style="left:7%;top:10%;animation-delay:-0.0s"><i style="color:#ff3131;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ff9d00;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ffe600;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#38ff6b;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#00eaff;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#477dff;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#b85cff;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ff4fd8;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ff3131;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ff9d00;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ffe600;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#38ff6b;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:24%;top:39%;animation-delay:-0.8s"><i style="color:#ff9d00;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ffe600;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#38ff6b;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#00eaff;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#477dff;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#b85cff;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#ff4fd8;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ff3131;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ff9d00;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ffe600;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#38ff6b;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#00eaff;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:41%;top:68%;animation-delay:-1.6s"><i style="color:#ffe600;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#38ff6b;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#00eaff;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#477dff;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#b85cff;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#ff4fd8;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#ff3131;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ff9d00;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ffe600;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#38ff6b;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#00eaff;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#477dff;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:58%;top:17%;animation-delay:-2.4s"><i style="color:#38ff6b;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#00eaff;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#477dff;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#b85cff;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#ff4fd8;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#ff3131;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#ff9d00;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ffe600;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#38ff6b;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#00eaff;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#477dff;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#b85cff;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:75%;top:46%;animation-delay:-3.2s"><i style="color:#00eaff;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#477dff;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#b85cff;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#ff4fd8;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#ff3131;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#ff9d00;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#ffe600;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#38ff6b;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#00eaff;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#477dff;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#b85cff;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#ff4fd8;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:92%;top:75%;animation-delay:-4.0s"><i style="color:#477dff;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#b85cff;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ff4fd8;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#ff3131;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#ff9d00;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#ffe600;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#38ff6b;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#00eaff;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#477dff;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#b85cff;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ff4fd8;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#ff3131;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:21%;top:24%;animation-delay:-4.8s"><i style="color:#b85cff;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ff4fd8;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ff3131;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#ff9d00;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#ffe600;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#38ff6b;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#00eaff;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#477dff;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#b85cff;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ff4fd8;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ff3131;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#ff9d00;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:38%;top:53%;animation-delay:-5.6s"><i style="color:#ff4fd8;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ff3131;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ff9d00;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#ffe600;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#38ff6b;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#00eaff;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#477dff;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#b85cff;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ff4fd8;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ff3131;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ff9d00;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#ffe600;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:55%;top:82%;animation-delay:-6.4s"><i style="color:#ff3131;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ff9d00;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ffe600;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#38ff6b;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#00eaff;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#477dff;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#b85cff;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ff4fd8;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ff3131;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ff9d00;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ffe600;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#38ff6b;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:72%;top:31%;animation-delay:-7.2s"><i style="color:#ff9d00;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ffe600;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#38ff6b;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#00eaff;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#477dff;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#b85cff;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#ff4fd8;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ff3131;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ff9d00;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ffe600;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#38ff6b;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#00eaff;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:89%;top:60%;animation-delay:-8.0s"><i style="color:#ffe600;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#38ff6b;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#00eaff;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#477dff;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#b85cff;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#ff4fd8;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#ff3131;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ff9d00;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ffe600;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#38ff6b;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#00eaff;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#477dff;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:18%;top:89%;animation-delay:-8.8s"><i style="color:#38ff6b;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#00eaff;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#477dff;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#b85cff;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#ff4fd8;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#ff3131;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#ff9d00;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ffe600;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#38ff6b;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#00eaff;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#477dff;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#b85cff;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:35%;top:38%;animation-delay:-9.6s"><i style="color:#00eaff;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#477dff;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#b85cff;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#ff4fd8;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#ff3131;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#ff9d00;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#ffe600;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#38ff6b;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#00eaff;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#477dff;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#b85cff;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#ff4fd8;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:52%;top:67%;animation-delay:-10.4s"><i style="color:#477dff;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#b85cff;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ff4fd8;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#ff3131;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#ff9d00;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#ffe600;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#38ff6b;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#00eaff;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#477dff;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#b85cff;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ff4fd8;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#ff3131;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:69%;top:16%;animation-delay:-11.2s"><i style="color:#b85cff;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ff4fd8;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ff3131;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#ff9d00;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#ffe600;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#38ff6b;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#00eaff;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#477dff;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#b85cff;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ff4fd8;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ff3131;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#ff9d00;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:86%;top:45%;animation-delay:-12.0s"><i style="color:#ff4fd8;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ff3131;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ff9d00;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#ffe600;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#38ff6b;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#00eaff;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#477dff;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#b85cff;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ff4fd8;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ff3131;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ff9d00;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#ffe600;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:15%;top:74%;animation-delay:-12.8s"><i style="color:#ff3131;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ff9d00;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ffe600;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#38ff6b;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#00eaff;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#477dff;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#b85cff;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ff4fd8;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ff3131;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ff9d00;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ffe600;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#38ff6b;transform:rotate(165deg);animation-delay:-0.88s"></i></div></div><div id="larLightningLayer"></div>
 
 <div id="larAmbientElectricity">
   <i style="color:#ff3131;transform:rotate(0deg);animation-delay:0.00s;left:48%;top:44%"></i>
@@ -2168,60 +2182,7 @@ function startGalleryMotion() {
 startGalleryMotion();
 
 
-/* ============================================================
-   GLITCH: OCCASIONALLY ONLY A SMALL RANDOM SET SHOWS
-   Hidden paintings retain their gallery positions.
-   ============================================================ */
-
-let galleryGlitchTimer = null;
-
-function runGalleryGlitch() {
-
-    const items =
-        Array.from(
-            artworkGallery.querySelectorAll(".excerpt-figure")
-        );
-
-    if(items.length < 12) {
-        return;
-    }
-
-    items.forEach(function(item) {
-        item.classList.remove("gallery-glitch-hidden");
-    });
-
-    const keepCount =
-        10 + Math.floor(Math.random() * 9);
-
-    const shuffled =
-        items.slice().sort(
-            () => Math.random() - 0.5
-        );
-
-    shuffled.slice(keepCount).forEach(function(item) {
-        item.classList.add("gallery-glitch-hidden");
-    });
-
-    setTimeout(function() {
-        items.forEach(function(item) {
-            item.classList.remove("gallery-glitch-hidden");
-        });
-    }, 1700 + Math.random() * 1800);
-}
-
-function scheduleGalleryGlitch() {
-
-    clearTimeout(galleryGlitchTimer);
-
-    galleryGlitchTimer =
-        setTimeout(function() {
-            runGalleryGlitch();
-            scheduleGalleryGlitch();
-        }, 15000 + Math.random() * 15000);
-}
-
-scheduleGalleryGlitch();
-
+/* Gallery remains fully populated: no random hiding/glitching. */
 
 /* ============================================================
    RANDOM TINY LARRY DISCLAIMERS / COUPONS
@@ -3041,18 +3002,16 @@ let puzzleMode = "art";
       const booth=document.getElementById("larKnowledgeBooth");
       const figures=Array.from(document.querySelectorAll("#artworkGallery .excerpt-figure"));
       if(!booth || !figures.length) return;
-      const candidates=figures.filter(f=>f!==booth.parentElement && !f.classList.contains("gallery-glitch-hidden"));
-      const target=(candidates.length?candidates:figures)[Math.floor(Math.random()*(candidates.length?candidates.length:figures.length))];
-      if(!target) return;
-      target.style.position="relative";
+      const target=figures[Math.floor(Math.random()*figures.length)];
       const img=target.querySelector("img");
-      const rect=img ? img.getBoundingClientRect() : target.getBoundingClientRect();
-      booth.style.width=Math.max(150,Math.min(300,rect.width))+"px";
-      booth.style.height=Math.max(150,Math.min(300,rect.height))+"px";
-      booth.style.left="50%";
-      booth.style.top=(img ? img.offsetTop + rect.height/2 : rect.height/2)+"px";
+      const rect=(img||target).getBoundingClientRect();
+      if(!rect.width || !rect.height) return;
+      booth.style.position="fixed";
+      booth.style.width=Math.max(120,Math.min(260,rect.width))+"px";
+      booth.style.height=Math.max(120,Math.min(260,rect.height))+"px";
+      booth.style.left=(rect.left+rect.width/2)+"px";
+      booth.style.top=(rect.top+rect.height/2)+"px";
       booth.style.transform="translate(-50%,-50%)";
-      target.appendChild(booth);
   }
   function startBoothRoaming(){
       const booth=document.getElementById("larKnowledgeBooth");
@@ -3060,7 +3019,7 @@ let puzzleMode = "art";
       booth.style.display="block";
       placeBoothOnRandomPainting();
       clearInterval(larBoothMoveTimer);
-      larBoothMoveTimer=setInterval(placeBoothOnRandomPainting,7000+Math.random()*5000);
+      larBoothMoveTimer=setInterval(placeBoothOnRandomPainting,6000+Math.random()*4000);
   }
   function revealLarKnowledgeBooth(){
       if(firstPuzzleCompleted) return;
@@ -3278,68 +3237,6 @@ function salesBarrage() {
 
     }, 350);
 
-}
-
-
-/* ============================================================
-   SHOP BELL
-   ============================================================ */
-
-function shopBell() {
-
-    try {
-
-        const AudioContext =
-            window.AudioContext ||
-            window.webkitAudioContext;
-
-        const ctx = new AudioContext();
-
-        const oscillator =
-            ctx.createOscillator();
-
-        const gain =
-            ctx.createGain();
-
-        oscillator.type = "sine";
-
-        oscillator.frequency.setValueAtTime(
-            880,
-            ctx.currentTime
-        );
-
-        oscillator.frequency.exponentialRampToValueAtTime(
-            520,
-            ctx.currentTime + 0.25
-        );
-
-        gain.gain.setValueAtTime(
-            0.0001,
-            ctx.currentTime
-        );
-
-        gain.gain.exponentialRampToValueAtTime(
-            0.35,
-            ctx.currentTime + 0.02
-        );
-
-        gain.gain.exponentialRampToValueAtTime(
-            0.0001,
-            ctx.currentTime + 0.6
-        );
-
-        oscillator.connect(gain);
-        gain.connect(ctx.destination);
-
-        oscillator.start();
-
-        oscillator.stop(
-            ctx.currentTime + 0.6
-        );
-
-    } catch(e) {
-        /* Browser may block generated audio. */
-    }
 }
 
 
@@ -3828,7 +3725,6 @@ function puzzleSolved() {
 
     addLarBucks(3);
 
-    shopBell();
     createConfetti();
     createFireworks();
 
@@ -4276,7 +4172,6 @@ window.addEventListener(
 
 setTimeout(function() {
 
-    shopBell();
 
 }, 2500);
 
@@ -4284,84 +4179,30 @@ setTimeout(function() {
 
 
 <script>
-/* ============================================================
-   SECRET LAR KNOWLEDGE BOOTH
-   Every answer is technically acceptable.
-   ============================================================ */
 (function(){
-  const booth = document.getElementById("larKnowledgeBooth");
-  const overlay = document.getElementById("larKnowledgeOverlay");
-  const answers = document.getElementById("larKnowledgeAnswers");
-  const result = document.getElementById("larKnowledgeResult");
-  const casino = document.getElementById("larCasinoButton");
-  const close = document.getElementById("larKnowledgeClose");
-
-  const correctAnswers = [
-    "A. Larry.",
-    "B. Larry. The answer remains Larry.",
-    "C. Larry, despite several administrative objections.",
-    "D. Larry. This is the part where everyone looks at the paperwork."
-  ];
-  const wrongAnswers = [
-    "E. Maurice.", "F. Gerald from Accounting.", "G. The Duchess of Winnipeg.",
-    "H. Mr. Pudding.", "I. Leonard, who denies everything.", "J. Trevor. No particular reason.",
-    "K. The man formerly known as Brenda.", "L. Reginald Thunderpants.",
-    "M. A perfectly respectable turnip.", "N. Someone called Dave, apparently."
-  ];
-  const wrongResponses = [
-    "NO. That is not Larry. Complete another puzzle and try again. Larry's records are laughing.",
-    "NO. Wrong gentleman. Please complete another puzzle and return with renewed Lar-confidence.",
-    "INCORRECT. The Department of Names has rejected that candidate. Complete another puzzle and try again.",
-    "NOPE. Larry is not that person. The paperwork has been dramatically shuffled. Try again after another puzzle.",
-    "NEGATIVE. That name has been escorted from the premises. Complete another puzzle and try again.",
-    "NOT LARRY. Very nearly impressive, but no. Another puzzle may improve matters considerably."
-  ];
-
-  function shuffle(a){
-    for(let i=a.length-1;i>0;i--){
-      const j=Math.floor(Math.random()*(i+1));
-      [a[i],a[j]]=[a[j],a[i]];
-    }
-    return a;
-  }
-
-  function openBooth(){
-    result.style.display="none";
-    casino.style.display="none";
-    answers.style.display="grid";
-    answers.innerHTML="";
-    const correct=correctAnswers[Math.floor(Math.random()*correctAnswers.length)];
-    const wrongs=shuffle(wrongAnswers.slice()).slice(0,3);
-    const chosen=shuffle([{text:correct,correct:true},...wrongs.map(text=>({text,correct:false}))]);
-    chosen.forEach(choice=>{
-      const b=document.createElement("button");
-      b.className="larAnswer";
-      b.textContent=choice.text;
-      b.addEventListener("click",()=>{
-        answers.style.display="none";
-        if(choice.correct){
-          result.textContent="YOUR ANSWER HAS BEEN RECORDED. LARRY'S DEPARTMENT WILL NOT COMMENT ON WHETHER YOU ARE CORRECT. A DOOR HAS, HOWEVER, BECOME AVAILABLE.";
-          casino.style.display="block";
-        } else {
-          result.textContent=wrongResponses[Math.floor(Math.random()*wrongResponses.length)];
-        }
-        result.style.display="block";
-      });
-      answers.appendChild(b);
-    });
-    overlay.style.display="flex";
-  }
-
-  booth.addEventListener("click",openBooth);
-  close.addEventListener("click",()=>overlay.style.display="none");
-  overlay.addEventListener("click",e=>{
-    if(e.target===overlay) overlay.style.display="none";
-  });
-  casino.addEventListener("click",()=>{
-    window.location.href="niagara34larcasino.html";
-  });
+ const booth=document.getElementById("larKnowledgeBooth"), overlay=document.getElementById("larKnowledgeOverlay"), answers=document.getElementById("larKnowledgeAnswers"), result=document.getElementById("larKnowledgeResult"), casino=document.getElementById("larCasinoButton"), close=document.getElementById("larKnowledgeClose");
+ const quizzes=[
+ {q:"What is Larry's name?",a:["A. Larry — as originally filed.","B. Larry — with administrative confidence.","C. Larry — proprietor of the situation.","D. Larry — the short version remains perfectly adequate."]},
+ {q:"What should you do when Larry announces a deal?",a:["A. Investigate the deal with Lar-like enthusiasm.","B. Approach the deal before it develops further.","C. Bring your Lar-bucks and an open mind.","D. All of the above, preferably before lunch."]},
+ {q:"What is the proper attitude toward Lar-bucks?",a:["A. Respectful but not sentimental.","B. Spendable, mysterious and slightly suspicious.","C. Keep them moving through the Larry economy.","D. Never attempt to eat them."]},
+ {q:"What is Larry's Variety famous for?",a:["A. Variety.","B. Larry.","C. Deals of uncertain historical significance.","D. The continued refusal to become ordinary."]},
+ {q:"When the Lar-mobile arrives, what should you expect?",a:["A. Brown machinery and unreasonable exhaust.","B. A long hood and an even longer explanation.","C. A vehicle that looks as though it has seen things.","D. Some combination of all the above, depending on the Lar-mobile."]},
+ {q:"What happens after a successful Lar level?",a:["A. Electricity becomes unnecessarily ceremonial.","B. A low tuba may become involved.","C. Larry becomes privately impressed.","D. The next Lar is permitted to occur."]},
+ {q:"What is the safest policy when Larry says there is a prize?",a:["A. Continue collecting until the paperwork becomes interesting.","B. Check Larry's Variety for further instructions.","C. Assume nothing and enjoy the mystery.","D. Keep going. Larry has almost certainly arranged something."]}
+ ];
+ let last=-1;
+ function openBooth(){
+   result.style.display="none"; casino.style.display="none"; answers.style.display="grid"; answers.innerHTML="";
+   let n=Math.floor(Math.random()*quizzes.length); if(n===last)n=(n+1)%quizzes.length; last=n; const quiz=quizzes[n];
+   document.getElementById("larKnowledgeQuestion").textContent=quiz.q;
+   quiz.a.forEach(text=>{const b=document.createElement("button"); b.className="larAnswer"; b.textContent=text; b.onclick=()=>{answers.style.display="none"; result.textContent=["Your answer has been entered into the Larry files. The files remain silent.","Recorded. Larry's Department of Lar Knowledge declines to elaborate.","Your response has been filed under: probably fine.","The answer has been accepted for further mysterious consideration."][Math.floor(Math.random()*4)]; result.style.display="block"; casino.style.display="block";}; answers.appendChild(b);});
+   overlay.style.display="flex";
+ }
+ booth.addEventListener("click",openBooth); close.addEventListener("click",()=>overlay.style.display="none"); overlay.addEventListener("click",e=>{if(e.target===overlay)overlay.style.display="none"}); casino.addEventListener("click",()=>location.href="niagara34larcasino.html");
 })();
 </script>
 
-</body>
+<script>
+(function(){const layer=document.getElementById("larLightningLayer");if(!layer)return;function thunder(){try{const AC=window.AudioContext||window.webkitAudioContext,ctx=new AC(),now=ctx.currentTime,buf=ctx.createBuffer(1,ctx.sampleRate*1.15,ctx.sampleRate),d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length)*.7;const src=ctx.createBufferSource(),f=ctx.createBiquadFilter(),g=ctx.createGain();f.type="lowpass";f.frequency.value=180;g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.42,now+.04);g.gain.exponentialRampToValueAtTime(.0001,now+1.1);src.buffer=buf;src.connect(f);f.connect(g);g.connect(ctx.destination);src.start();src.stop(now+1.12);setTimeout(()=>ctx.close(),1400)}catch(e){}} function strike(){const imgs=Array.from(document.querySelectorAll("#artworkGallery .excerpt-figure img"));if(!imgs.length)return;const img=imgs[Math.floor(Math.random()*imgs.length)],r=img.getBoundingClientRect();if(r.width<20||r.height<20)return;const x=r.left+r.width*(.25+Math.random()*.5),y=r.top+r.height*.55,sx=x+(Math.random()*120-60),sy=-30,dx=x-sx,dy=y-sy,len=Math.hypot(dx,dy),ang=Math.atan2(dx,dy)*180/Math.PI,b=document.createElement("div");b.className="larLightningBolt";b.style.left=sx+"px";b.style.top=sy+"px";b.style.height=len+"px";b.style.transform="rotate("+ang+"deg)";layer.appendChild(b);thunder();setTimeout(()=>b.remove(),650)} function schedule(){setTimeout(()=>{strike();schedule()},9000+Math.random()*15000)}schedule()})();
+</script></body>
 </html>
