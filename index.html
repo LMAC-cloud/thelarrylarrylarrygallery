@@ -3503,7 +3503,7 @@ prizeGalleryItem = createPrizeGalleryItem();
       const need=Math.max(0,20-larBucks);
       card.textContent = need>0
         ? "YOU MIGHT WIN A PRIZE\n\nEARN "+need+" MORE LAR-BUCK"+(need===1?"":"S")+" AND YOU WILL WIN A PRIZE!"
-        : "YOU WILL WIN A PRIZE\n\nLARRY HAS NO FURTHER COMMENT.";
+        : "YOU HAVE WON A PRIZE!\n\nYOUR NIAGARA JOURNEY AWAITS.";
       card.style.whiteSpace="pre-line";
   }
 
@@ -3842,11 +3842,14 @@ if(window.visualViewport) {
    Exactly one is the correct vehicle.
    ============================================================ */
 
+// These four files are in the same GitHub Pages folder as this main page.
+// Build their URLs from the current page so the browser never treats them
+// as a missing subfolder path.
 const niagaraVersions = [
-    "niagara16.html",
-    "niagara20.html",
-    "niagara27.html",
-    "niagara34.html"
+    new URL("./niagara16.html", document.baseURI).href,
+    new URL("./niagara20.html", document.baseURI).href,
+    new URL("./niagara27.html", document.baseURI).href,
+    new URL("./niagara34.html", document.baseURI).href
 ];
 
 const busFleet = [
@@ -4394,6 +4397,8 @@ busCloseButton.addEventListener(
 );
 
 
+// The Niagara portal randomly chooses exactly one of the four real
+// Niagara pages listed above. No other filename is used here.
 niagaraPortalButton.addEventListener(
     "click",
     function() {
@@ -4406,8 +4411,7 @@ niagaraPortalButton.addEventListener(
                 )
             ];
 
-        window.location.href =
-            chosenNiagara;
+        window.location.assign(chosenNiagara);
     }
 );
 
@@ -4428,7 +4432,7 @@ if(niagaraPrizeLink){
     niagaraPrizeLink.addEventListener("click", function(event){
         event.preventDefault();
         const chosenNiagara = niagaraVersions[Math.floor(Math.random()*niagaraVersions.length)];
-        window.location.href = chosenNiagara;
+        window.location.assign(chosenNiagara);
     });
 }
 
@@ -5089,7 +5093,10 @@ function puzzleSolved(){
             puzzleMode="art";
         },1200);
     }else{
-        // Any non-art puzzle also returns directly to the main screen.
+        // The Niagara prize puzzle is different: once the prize puzzle is solved,
+        // the player proceeds into Larry's Niagara Transportation Department.
+        // The four Niagara destination links and the full fleet of named Larry
+        // vehicles remain part of that next stage.
         setTimeout(function(){
             completedPaintingDisplay.style.display="none";
             completedPaintingDisplay.classList.remove("completedFlash","finalOnly");
@@ -5100,7 +5107,11 @@ function puzzleSolved(){
             puzzleBox.classList.remove("finalPaintingOnly");
             puzzleBoard.classList.remove("puzzleComplete");
             pieceTray.parentElement.style.display="";
-            puzzleMode="art";
+
+            // Do NOT return to the main screen here.
+            // The prize has been won; now choose the Niagara transportation.
+            openBusSelectionRoom();
+            puzzleMode="bus";
         },1200);
     }
 
