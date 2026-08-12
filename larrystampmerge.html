@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Larry's L.A.R.R.Y. Stamp Collection — v16</title>
+<title>Larry's L.A.R.R.Y. Stamp Collection — v17</title>
 <style>
   * { box-sizing: border-box; }
   html, body { width:100%; height:100%; margin:0; overflow:hidden; }
@@ -543,9 +543,6 @@ const heldNum = document.getElementById('heldNum');
 const bookBtn = document.getElementById('bookBtn');
 const dropBtn = document.getElementById('dropBtn');
 const tankBtn = document.getElementById('tankBtn');
-const bookClose = document.getElementById('bookClose');
-const prevPageBtn = document.getElementById('prevPage');
-const nextPageBtn = document.getElementById('nextPage');
 const message = document.getElementById('message');
 const bucksEl = document.getElementById('bucks');
 const countEl = document.getElementById('count');
@@ -596,7 +593,6 @@ const larryLevelMessages = [
   'LARRY SAYS: MAGNIFICENT STAMP WORK!',
   'LARRY IS THRILLED! NEXT BATCH AWAITS!'
 ];
-let mouseConstraint;
 let cursorX = 0, cursorY = 0;
 const DROP_COOLDOWN = 260;
 
@@ -1077,37 +1073,9 @@ function closeStampModal() {
 }
 
 function updateBook() {
-  // The old stretched sidebar-book page has been removed.
-  // The BOOK OF LAR STAMPS button now opens the compact stamp popup directly.
-  if (pageNoEl) pageNoEl.textContent = Math.floor(pageStart/7)+1;
-
-  if (slotsEl) {
-    slotsEl.innerHTML='';
-    currentPageTiers().forEach(tier=> {
-      const slot=document.createElement('button');
-      slot.type='button';
-      slot.className='slot'+(collected.has(tier)?' collected':'');
-      const im=document.createElement('img');
-      im.src=images[tier-1];
-      im.alt=`Stamp ${tier}`;
-      if (!collected.has(tier)) im.classList.add('lockedStamp');
-      const title=document.createElement('small');
-      title.className='slotTitle';
-      title.textContent=titleFromPath(images[tier-1]);
-      const num=document.createElement('span');
-      num.textContent=String(tier).padStart(2,'0');
-      slot.appendChild(im);
-      slot.appendChild(title);
-      slot.appendChild(num);
-      slot.addEventListener('click',()=>openStampModal(tier));
-      slotsEl.appendChild(slot);
-    });
-  }
-
-  countEl.textContent = `${collected.size}/${images.length}`;
-
-  if (prevPageBtn) prevPageBtn.disabled = pageStart === 0;
-  if (nextPageBtn) nextPageBtn.disabled = pageStart + 7 >= images.length;
+  // BOOK OF LAR STAMPS is now the popup itself; there is no stretched
+  // sidebar book page to rebuild.
+  if (countEl) countEl.textContent = `${collected.size}/${images.length}`;
 }
 function showMessage(text, ms=700) {
   message.textContent=text;
@@ -1238,8 +1206,6 @@ tankBtn.addEventListener('click', toggleTankMode);
 bookBtn.addEventListener('click', ()=>{
   openStampModal(Math.min(generatorStart + 1, images.length));
 });
-prevPageBtn.addEventListener('click',()=>goToPage(pageStart-7));
-nextPageBtn.addEventListener('click',()=>goToPage(pageStart+7));
 stampModalClose.addEventListener('click', closeStampModal);
 stampPrev.addEventListener('click', () => {
   modalTier = modalTier <= 1 ? images.length : modalTier - 1;
@@ -1508,29 +1474,31 @@ function draw() {
     ctx.translate(b.position.x,b.position.y);
     ctx.rotate(b.angle||0);
 
-    // stamp paper + dark outline
-    ctx.beginPath();
-    ctx.arc(0,0,r+4,0,Math.PI*2);
-    ctx.fillStyle='#f1e2bd';
-    ctx.fill();
-    ctx.lineWidth=3;
-    ctx.strokeStyle='#5a351d';
-    ctx.stroke();
-
+    // LAR "planet": artwork runs all the way to the circular edge.
+    // No taupe paper ring and no brown outline. The image is cropped from
+    // its centre and slightly zoomed so white paper borders are kept outside
+    // the visible circle whenever possible.
     const im=b.plugin.image;
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(0,0,r,0,Math.PI*2);
+    ctx.clip();
+
     if(im && im.complete && im.naturalWidth) {
-      ctx.save();
-      ctx.beginPath(); ctx.arc(0,0,r-3,0,Math.PI*2); ctx.clip();
-      ctx.drawImage(im,-r+3,-r+3,(r-3)*2,(r-3)*2);
-      ctx.restore();
+      const iw=im.naturalWidth, ih=im.naturalHeight;
+      const diameter=r*2;
+      const cover=Math.max(diameter/iw, diameter/ih) * 1.14;
+      const dw=iw*cover, dh=ih*cover;
+      ctx.drawImage(im, -dw/2, -dh/2, dw, dh);
     } else {
       ctx.fillStyle='#d8c49a';
-      ctx.beginPath(); ctx.arc(0,0,r-3,0,Math.PI*2); ctx.fill();
+      ctx.fillRect(-r,-r,r*2,r*2);
     }
+    ctx.restore();
 
     // Tier number sits in a separate little white box BESIDE the bubble.
     const boxW = 30, boxH = 22;
-    const boxX = r - 2;
+    const boxX = r + 2;
     const boxY = -boxH/2;
     ctx.fillStyle='#fff';
     ctx.fillRect(boxX,boxY,boxW,boxH);
