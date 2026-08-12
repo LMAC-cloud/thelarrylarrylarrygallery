@@ -443,7 +443,7 @@ h1 {
 #busChancePanel {
     display: none;
     margin-top: 18px;
-    padding: 14px;
+    padding: 8px;
     border: 3px dashed #ffe16b;
     background: #171717;
     color: white;
@@ -587,6 +587,7 @@ h1 {
 /* ============================================================
    GALLERY
    ============================================================ */
+#artworkGallery{position:relative;z-index:2;}
 
 
 .excerpt-figure {
@@ -874,11 +875,11 @@ figure {
    ============================================================ */
 
 #puzzleBox {
-    width: min(820px, 90vw);
+    width: min(410px, 90vw);
     margin: 20px auto;
     background: #eee;
     color: black;
-    border: 8px solid #111;
+    border: 5px solid #111;
     box-shadow:
         0 0 30px white,
         0 0 70px black;
@@ -891,26 +892,26 @@ figure {
    ============================================================ */
 
 #puzzleTitle {
-    font-size: 22px;
+    font-size: 18px;
     font-weight: 900;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 #puzzleMessage {
-    font-size: 19px;
+    font-size: 14px;
     font-weight: 900;
     color: red;
     margin: 10px 0;
 }
 
 #puzzleInstruction {
-    font-size: 14px;
+    font-size: 11px;
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 7px;
 }
 
 #puzzleTimer {
-    font-size: 42px;
+    font-size: 25px;
     font-weight: 900;
     color: red;
     margin: 10px;
@@ -923,9 +924,9 @@ figure {
    ============================================================ */
 
 #puzzleBoard {
-    width: min(680px, 82vw);
+    width: min(340px, 82vw);
     aspect-ratio: 1 / 1;
-    margin: 15px auto;
+    margin: 8px auto;
     position: relative;
     background: white;
     overflow: hidden;
@@ -1386,123 +1387,89 @@ figure {
    LAR KNOWLEDGE BOOTH — SECRET LAR CASINO ENTRANCE
    ============================================================ */
 #larKnowledgeBooth{
-    display:none;
-    position:fixed;
-    right:7vw;
-    top:50%;
-    transform:translateY(-50%);
-    width:230px;
-    height:230px;
-    z-index:6500;
-    cursor:pointer;
-    user-select:none;
-    filter:drop-shadow(0 0 7px rgba(0,255,255,.45));
+    display:none; position:absolute; left:50%; top:50%;
+    width:min(18vw,300px); height:min(18vw,300px);
+    min-width:150px; min-height:150px;
+    transform:translate(-50%,-50%); z-index:8;
+    cursor:pointer; user-select:none; pointer-events:auto;
 }
 #larKnowledgeBooth .boothBody{
-    position:absolute;
-    left:24px;
-    right:24px;
-    bottom:18px;
-    height:170px;
-    background:
-      linear-gradient(145deg,#3a2115,#744522 52%,#29170e);
-    border:5px solid #111;
-    border-radius:7px 7px 3px 3px;
-    box-shadow:0 7px 15px rgba(0,0,0,.8),inset 0 0 14px rgba(255,255,255,.12);
+    position:absolute; left:15%; right:15%; top:15%; bottom:15%;
+    background:linear-gradient(145deg,#3a2115,#744522 52%,#29170e);
+    border:5px solid #111; border-radius:7px 7px 3px 3px;
+    box-shadow:0 7px 15px rgba(0,0,0,.8),inset 0 0 14px rgba(255,255,255,.12),0 0 18px rgba(0,234,255,.8),0 0 40px rgba(255,57,216,.65);
+    z-index:3;
 }
 #larKnowledgeBooth .boothRoof{
-    position:absolute;
-    left:18px;
-    right:18px;
-    top:28px;
-    height:22px;
-    background:#111;
-    border:3px solid #ddd;
-    transform:skewX(-12deg);
-    z-index:2;
+    position:absolute; left:11%; right:11%; top:10%; height:9%;
+    background:#111; border:3px solid #ddd; transform:skewX(-12deg); z-index:4;
 }
 #larKnowledgeBooth .boothQuestion{
-    position:absolute;
-    left:50%;
-    top:50px;
-    transform:translateX(-50%);
-    z-index:4;
-    color:white;
-    font-family:Georgia,serif;
-    font-size:104px;
-    line-height:1;
-    font-weight:900;
-    text-shadow:
-      0 0 4px #fff,
-      0 0 10px #00eaff,
-      0 0 22px #ff39ff,
-      2px 2px 0 #111;
+    position:absolute; left:50%; top:20%; transform:translateX(-50%); z-index:5;
+    color:white; font-family:Georgia,serif; font-size:clamp(70px,8vw,104px);
+    line-height:1; font-weight:900;
+    text-shadow:0 0 4px #fff,0 0 10px #00eaff,0 0 22px #ff39ff,2px 2px 0 #111;
 }
 #larKnowledgeBooth .boothSign{
-    position:absolute;
-    left:35px;
-    right:35px;
-    bottom:34px;
-    z-index:5;
-    color:#fff7b0;
-    font-size:14px;
-    font-weight:1000;
-    letter-spacing:1px;
-    text-align:center;
-    text-shadow:0 0 5px #fff,0 0 10px #ffcf00;
+    position:absolute; left:18%; right:18%; bottom:19%; z-index:5;
+    color:#fff7b0; font-size:clamp(9px,1.3vw,14px); font-weight:1000;
+    letter-spacing:1px; text-align:center; text-shadow:0 0 5px #fff,0 0 10px #ffcf00;
 }
 #larKnowledgeBooth .neonFilaments{
-    position:absolute;
-    inset:-75px;
-    pointer-events:none;
-    overflow:visible;
+    position:absolute; inset:-80%; pointer-events:none; overflow:visible; z-index:0;
+    transform-origin:50% 50%; animation:larStarClockwise 16s linear infinite;
+}
+#larKnowledgeBooth .neonFilaments::after{
+    content:""; position:absolute; left:50%; top:50%; width:30px; height:30px;
+    transform:translate(-50%,-50%); border-radius:50%; background:#fff;
+    box-shadow:0 0 18px #fff,0 0 45px #00eaff,0 0 80px #ff39d8; opacity:.9;
 }
 #larKnowledgeBooth .neonFilaments i{
-    position:absolute;
-    left:50%;
-    top:50%;
-    width:2px;
-    height:96px;
-    transform-origin:50% 0;
-    opacity:.9;
-    background:linear-gradient(to bottom,rgba(255,255,255,.95),currentColor 18%,transparent 100%);
-    box-shadow:0 0 4px currentColor,0 0 9px currentColor;
-    animation:larBoothElectric .85s steps(7,end) infinite alternate;
+    position:absolute; left:50%; top:50%; width:6px; height:150px; margin-left:-3px;
+    transform-origin:50% 0; opacity:.95; border-radius:999px;
+    background:linear-gradient(to bottom,rgba(255,255,255,1),currentColor 15%,currentColor 55%,rgba(255,255,255,0) 100%);
+    box-shadow:0 0 6px currentColor,0 0 14px currentColor,0 0 28px currentColor;
+    animation:larRayPulse .8s steps(6,end) infinite alternate;
 }
-#larKnowledgeBooth .neonFilaments i:nth-child(1){color:#ff3131;transform:rotate(8deg)}
-#larKnowledgeBooth .neonFilaments i:nth-child(2){color:#ff9d00;transform:rotate(35deg);animation-delay:-.2s}
-#larKnowledgeBooth .neonFilaments i:nth-child(3){color:#ffe600;transform:rotate(68deg);animation-delay:-.4s}
-#larKnowledgeBooth .neonFilaments i:nth-child(4){color:#38ff6b;transform:rotate(102deg);animation-delay:-.1s}
-#larKnowledgeBooth .neonFilaments i:nth-child(5){color:#00eaff;transform:rotate(137deg);animation-delay:-.35s}
-#larKnowledgeBooth .neonFilaments i:nth-child(6){color:#477dff;transform:rotate(171deg);animation-delay:-.55s}
-#larKnowledgeBooth .neonFilaments i:nth-child(7){color:#b85cff;transform:rotate(210deg);animation-delay:-.15s}
-#larKnowledgeBooth .neonFilaments i:nth-child(8){color:#ff4fd8;transform:rotate(248deg);animation-delay:-.45s}
-#larKnowledgeBooth .neonFilaments i:nth-child(9){color:#00eaff;transform:rotate(286deg);animation-delay:-.3s}
-#larKnowledgeBooth .neonFilaments i:nth-child(10){color:#ffe600;transform:rotate(322deg);animation-delay:-.6s}
-
-#larKnowledgeBooth .neonFilaments i:nth-child(11){color:#ff3131;transform:rotate(12deg) scale(.72)}
-#larKnowledgeBooth .neonFilaments i:nth-child(12){color:#00eaff;transform:rotate(51deg) scale(.82);animation-delay:-.3s}
-#larKnowledgeBooth .neonFilaments i:nth-child(13){color:#b85cff;transform:rotate(88deg) scale(.68);animation-delay:-.5s}
-#larKnowledgeBooth .neonFilaments i:nth-child(14){color:#38ff6b;transform:rotate(126deg) scale(.78);animation-delay:-.2s}
-#larKnowledgeBooth .neonFilaments i:nth-child(15){color:#ffe600;transform:rotate(154deg) scale(.9);animation-delay:-.45s}
-#larKnowledgeBooth .neonFilaments i:nth-child(16){color:#ff4fd8;transform:rotate(193deg) scale(.7);animation-delay:-.15s}
-#larKnowledgeBooth .neonFilaments i:nth-child(17){color:#477dff;transform:rotate(226deg) scale(.8);animation-delay:-.55s}
-#larKnowledgeBooth .neonFilaments i:nth-child(18){color:#ff9d00;transform:rotate(263deg) scale(.72);animation-delay:-.35s}
-#larKnowledgeBooth .neonFilaments i:nth-child(19){color:#00eaff;transform:rotate(301deg) scale(.9);animation-delay:-.65s}
-#larKnowledgeBooth .neonFilaments i:nth-child(20){color:#ffe600;transform:rotate(338deg) scale(.76);animation-delay:-.25s}
-#larKnowledgeBooth .neonFilaments i:nth-child(21){color:#38ff6b;transform:rotate(30deg) scale(.55);animation-delay:-.4s}
-#larKnowledgeBooth .neonFilaments i:nth-child(22){color:#ff39ff;transform:rotate(118deg) scale(.58);animation-delay:-.6s}
-#larKnowledgeBooth .neonFilaments i:nth-child(23){color:#00eaff;transform:rotate(184deg) scale(.62);animation-delay:-.05s}
-#larKnowledgeBooth .neonFilaments i:nth-child(24){color:#ff3131;transform:rotate(246deg) scale(.56);animation-delay:-.5s}
-#larKnowledgeBooth .neonFilaments i:nth-child(25){color:#ffe600;transform:rotate(318deg) scale(.6);animation-delay:-.32s}
-#larKnowledgeBooth .neonFilaments i:nth-child(26){color:#b85cff;transform:rotate(357deg) scale(.66);animation-delay:-.7s}
-@keyframes larBoothElectric{
-    from{height:72px;opacity:.42;filter:brightness(.8)}
-    to{height:112px;opacity:1;filter:brightness(1.7)}
-}
-#larKnowledgeBooth:hover .neonFilaments i{
-    animation-duration:.42s;
-}
+#larKnowledgeBooth .neonFilaments i:nth-child(1){color:#ff3131;transform:rotate(0deg) scaleY(0.72);animation-delay:0.00s}
+#larKnowledgeBooth .neonFilaments i:nth-child(2){color:#ff9d00;transform:rotate(10deg) scaleY(0.80);animation-delay:-0.11s}
+#larKnowledgeBooth .neonFilaments i:nth-child(3){color:#ffe600;transform:rotate(20deg) scaleY(0.88);animation-delay:-0.22s}
+#larKnowledgeBooth .neonFilaments i:nth-child(4){color:#38ff6b;transform:rotate(30deg) scaleY(0.96);animation-delay:-0.33s}
+#larKnowledgeBooth .neonFilaments i:nth-child(5){color:#00eaff;transform:rotate(40deg) scaleY(1.04);animation-delay:-0.44s}
+#larKnowledgeBooth .neonFilaments i:nth-child(6){color:#477dff;transform:rotate(50deg) scaleY(0.72);animation-delay:-0.55s}
+#larKnowledgeBooth .neonFilaments i:nth-child(7){color:#b85cff;transform:rotate(60deg) scaleY(0.80);animation-delay:-0.66s}
+#larKnowledgeBooth .neonFilaments i:nth-child(8){color:#ff4fd8;transform:rotate(70deg) scaleY(0.88);animation-delay:-0.77s}
+#larKnowledgeBooth .neonFilaments i:nth-child(9){color:#ff3131;transform:rotate(80deg) scaleY(0.96);animation-delay:-0.88s}
+#larKnowledgeBooth .neonFilaments i:nth-child(10){color:#ff9d00;transform:rotate(90deg) scaleY(1.04);animation-delay:0.00s}
+#larKnowledgeBooth .neonFilaments i:nth-child(11){color:#ffe600;transform:rotate(100deg) scaleY(0.72);animation-delay:-0.11s}
+#larKnowledgeBooth .neonFilaments i:nth-child(12){color:#38ff6b;transform:rotate(110deg) scaleY(0.80);animation-delay:-0.22s}
+#larKnowledgeBooth .neonFilaments i:nth-child(13){color:#00eaff;transform:rotate(120deg) scaleY(0.88);animation-delay:-0.33s}
+#larKnowledgeBooth .neonFilaments i:nth-child(14){color:#477dff;transform:rotate(130deg) scaleY(0.96);animation-delay:-0.44s}
+#larKnowledgeBooth .neonFilaments i:nth-child(15){color:#b85cff;transform:rotate(140deg) scaleY(1.04);animation-delay:-0.55s}
+#larKnowledgeBooth .neonFilaments i:nth-child(16){color:#ff4fd8;transform:rotate(150deg) scaleY(0.72);animation-delay:-0.66s}
+#larKnowledgeBooth .neonFilaments i:nth-child(17){color:#ff3131;transform:rotate(160deg) scaleY(0.80);animation-delay:-0.77s}
+#larKnowledgeBooth .neonFilaments i:nth-child(18){color:#ff9d00;transform:rotate(170deg) scaleY(0.88);animation-delay:-0.88s}
+#larKnowledgeBooth .neonFilaments i:nth-child(19){color:#ffe600;transform:rotate(180deg) scaleY(0.96);animation-delay:0.00s}
+#larKnowledgeBooth .neonFilaments i:nth-child(20){color:#38ff6b;transform:rotate(190deg) scaleY(1.04);animation-delay:-0.11s}
+#larKnowledgeBooth .neonFilaments i:nth-child(21){color:#00eaff;transform:rotate(200deg) scaleY(0.72);animation-delay:-0.22s}
+#larKnowledgeBooth .neonFilaments i:nth-child(22){color:#477dff;transform:rotate(210deg) scaleY(0.80);animation-delay:-0.33s}
+#larKnowledgeBooth .neonFilaments i:nth-child(23){color:#b85cff;transform:rotate(220deg) scaleY(0.88);animation-delay:-0.44s}
+#larKnowledgeBooth .neonFilaments i:nth-child(24){color:#ff4fd8;transform:rotate(230deg) scaleY(0.96);animation-delay:-0.55s}
+#larKnowledgeBooth .neonFilaments i:nth-child(25){color:#ff3131;transform:rotate(240deg) scaleY(1.04);animation-delay:-0.66s}
+#larKnowledgeBooth .neonFilaments i:nth-child(26){color:#ff9d00;transform:rotate(250deg) scaleY(0.72);animation-delay:-0.77s}
+#larKnowledgeBooth .neonFilaments i:nth-child(27){color:#ffe600;transform:rotate(260deg) scaleY(0.80);animation-delay:-0.88s}
+#larKnowledgeBooth .neonFilaments i:nth-child(28){color:#38ff6b;transform:rotate(270deg) scaleY(0.88);animation-delay:0.00s}
+#larKnowledgeBooth .neonFilaments i:nth-child(29){color:#00eaff;transform:rotate(280deg) scaleY(0.96);animation-delay:-0.11s}
+#larKnowledgeBooth .neonFilaments i:nth-child(30){color:#477dff;transform:rotate(290deg) scaleY(1.04);animation-delay:-0.22s}
+#larKnowledgeBooth .neonFilaments i:nth-child(31){color:#b85cff;transform:rotate(300deg) scaleY(0.72);animation-delay:-0.33s}
+#larKnowledgeBooth .neonFilaments i:nth-child(32){color:#ff4fd8;transform:rotate(310deg) scaleY(0.80);animation-delay:-0.44s}
+#larKnowledgeBooth .neonFilaments i:nth-child(33){color:#ff3131;transform:rotate(320deg) scaleY(0.88);animation-delay:-0.55s}
+#larKnowledgeBooth .neonFilaments i:nth-child(34){color:#ff9d00;transform:rotate(330deg) scaleY(0.96);animation-delay:-0.66s}
+#larKnowledgeBooth .neonFilaments i:nth-child(35){color:#ffe600;transform:rotate(340deg) scaleY(1.04);animation-delay:-0.77s}
+#larKnowledgeBooth .neonFilaments i:nth-child(36){color:#38ff6b;transform:rotate(350deg) scaleY(0.72);animation-delay:-0.88s}
+@keyframes larStarClockwise{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes larRayPulse{from{opacity:.32;filter:brightness(.75);height:105px}to{opacity:1;filter:brightness(2.6);height:175px}}
+#larKnowledgeBooth:hover .neonFilaments i{animation-duration:.34s}
 #larKnowledgeOverlay{
     display:none;
     position:fixed;
@@ -1625,47 +1592,101 @@ figure {
     padding:4px 8px;
 }
 @media(max-width:600px){
-    #larKnowledgeBooth{right:50%;top:50%;transform:translate(50%,-50%) scale(.78);transform-origin:center}
+    #larKnowledgeBooth{width:190px;height:190px;min-width:130px;min-height:130px}
 }
 
 
-#larAmbientElectricity{display:none;position:fixed;inset:0;z-index:5400;pointer-events:none;overflow:hidden}
-#larAmbientElectricity i{position:absolute;width:2px;height:70px;transform-origin:50% 0;background:linear-gradient(to bottom,rgba(255,255,255,.95),currentColor,transparent);box-shadow:0 0 4px currentColor,0 0 11px currentColor;opacity:.8;animation:larAmbientZap .7s steps(6,end) infinite alternate}
-@keyframes larAmbientZap{0%{opacity:.25;height:35px}50%{opacity:1}100%{opacity:.35;height:110px}}
-#larSeagulls{display:none;position:fixed;inset:0;z-index:5350;pointer-events:none;overflow:hidden}
-.larSeagull{position:absolute;color:#fff;font-size:28px;font-weight:900;text-shadow:0 2px 4px #000,0 0 7px #fff;animation:larGullFly linear infinite}
-@keyframes larGullFly{from{transform:translateX(-12vw) translateY(0) scale(.7)}25%{transform:translateX(30vw) translateY(-25px) scale(1)}50%{transform:translateX(55vw) translateY(18px) scale(.85)}75%{transform:translateX(80vw) translateY(-30px) scale(1.05)}to{transform:translateX(115vw) translateY(8px) scale(.75)}}
-
+#larAmbientElectricity{display:block;position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;transform-origin:50% 50%;animation:larAmbientSpin 26s linear infinite}
+#larAmbientElectricity i{position:absolute;left:50%;top:50%;width:4px;height:120px;transform-origin:50% 0;border-radius:999px;background:linear-gradient(to bottom,rgba(255,255,255,.9),currentColor,transparent);box-shadow:0 0 5px currentColor,0 0 13px currentColor,0 0 24px currentColor;opacity:.58;animation:larAmbientZap 1s steps(7,end) infinite alternate}
+@keyframes larAmbientZap{0%{opacity:.25;height:70px}50%{opacity:.8}100%{opacity:.55;height:155px}}
+@keyframes larAmbientSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+#larSeagulls{display:block;position:fixed;inset:0;z-index:4;pointer-events:none;overflow:hidden}
+.larSeagull{position:absolute;width:42px;height:24px;animation:larGullFly linear infinite;filter:drop-shadow(0 2px 3px #000)}
+.larSeagull::before,.larSeagull::after{content:"";position:absolute;top:10px;width:20px;height:11px;border-top:3px solid white;border-radius:70% 70% 0 0}
+.larSeagull::before{left:1px;transform:rotate(16deg)}
+.larSeagull::after{right:1px;transform:rotate(-16deg)}
+@keyframes larGullFly{from{transform:translateX(-12vw) translateY(0) scale(.7)}20%{transform:translateX(20vw) translateY(-25px) scale(.95)}40%{transform:translateX(43vw) translateY(16px) scale(.78)}60%{transform:translateX(66vw) translateY(-34px) scale(1.05)}80%{transform:translateX(88vw) translateY(12px) scale(.86)}to{transform:translateX(115vw) translateY(-8px) scale(.72)}}
 </style>
 </head>
 
 <body>
 
 <div id="larAmbientElectricity">
-  <i style="left:6%;top:18%;color:#00eaff;transform:rotate(22deg)"></i><i style="left:14%;top:61%;color:#ff39ff;transform:rotate(-28deg);animation-delay:-.2s"></i>
-  <i style="left:24%;top:12%;color:#ffe600;transform:rotate(41deg);animation-delay:-.4s"></i><i style="left:31%;top:73%;color:#38ff6b;transform:rotate(-55deg);animation-delay:-.1s"></i>
-  <i style="left:42%;top:22%;color:#ff3131;transform:rotate(30deg);animation-delay:-.35s"></i><i style="left:51%;top:68%;color:#477dff;transform:rotate(-38deg);animation-delay:-.55s"></i>
-  <i style="left:62%;top:11%;color:#ff9d00;transform:rotate(47deg);animation-delay:-.15s"></i><i style="left:72%;top:57%;color:#00eaff;transform:rotate(-25deg);animation-delay:-.45s"></i>
-  <i style="left:83%;top:17%;color:#b85cff;transform:rotate(35deg);animation-delay:-.3s"></i><i style="left:91%;top:72%;color:#ffe600;transform:rotate(-44deg);animation-delay:-.6s"></i>
-  <i style="left:18%;top:34%;color:#38ff6b;transform:rotate(66deg);animation-delay:-.25s"></i><i style="left:76%;top:31%;color:#ff4fd8;transform:rotate(-62deg);animation-delay:-.5s"></i>
+  <i style="color:#ff3131;transform:rotate(0deg);animation-delay:0.00s;left:48%;top:44%"></i>
+  <i style="color:#ff9d00;transform:rotate(20deg);animation-delay:-0.15s;left:50%;top:48%"></i>
+  <i style="color:#ffe600;transform:rotate(40deg);animation-delay:-0.30s;left:52%;top:44%"></i>
+  <i style="color:#38ff6b;transform:rotate(60deg);animation-delay:-0.45s;left:48%;top:48%"></i>
+  <i style="color:#00eaff;transform:rotate(80deg);animation-delay:-0.60s;left:50%;top:44%"></i>
+  <i style="color:#477dff;transform:rotate(100deg);animation-delay:-0.75s;left:52%;top:48%"></i>
+  <i style="color:#b85cff;transform:rotate(120deg);animation-delay:-0.90s;left:48%;top:44%"></i>
+  <i style="color:#ff4fd8;transform:rotate(140deg);animation-delay:0.00s;left:50%;top:48%"></i>
+  <i style="color:#ff3131;transform:rotate(160deg);animation-delay:-0.15s;left:52%;top:44%"></i>
+  <i style="color:#ff9d00;transform:rotate(180deg);animation-delay:-0.30s;left:48%;top:48%"></i>
+  <i style="color:#ffe600;transform:rotate(200deg);animation-delay:-0.45s;left:50%;top:44%"></i>
+  <i style="color:#38ff6b;transform:rotate(220deg);animation-delay:-0.60s;left:52%;top:48%"></i>
+  <i style="color:#00eaff;transform:rotate(240deg);animation-delay:-0.75s;left:48%;top:44%"></i>
+  <i style="color:#477dff;transform:rotate(260deg);animation-delay:-0.90s;left:50%;top:48%"></i>
+  <i style="color:#b85cff;transform:rotate(280deg);animation-delay:0.00s;left:52%;top:44%"></i>
+  <i style="color:#ff4fd8;transform:rotate(300deg);animation-delay:-0.15s;left:48%;top:48%"></i>
+  <i style="color:#ff3131;transform:rotate(320deg);animation-delay:-0.30s;left:50%;top:44%"></i>
+  <i style="color:#ff9d00;transform:rotate(340deg);animation-delay:-0.45s;left:52%;top:48%"></i>
 </div>
 <div id="larSeagulls">
-  <span class="larSeagull" style="top:12%;animation-duration:13s;animation-delay:-3s">⌁</span>
-  <span class="larSeagull" style="top:25%;font-size:22px;animation-duration:17s;animation-delay:-9s">⌁</span>
-  <span class="larSeagull" style="top:43%;font-size:34px;animation-duration:11s;animation-delay:-6s">⌁</span>
-  <span class="larSeagull" style="top:58%;font-size:20px;animation-duration:15s;animation-delay:-12s">⌁</span>
-  <span class="larSeagull" style="top:75%;font-size:30px;animation-duration:19s;animation-delay:-4s">⌁</span>
+  <span class="larSeagull" style="top:8%;animation-duration:10s;animation-delay:0.0s;transform:scale(0.70)"></span>
+  <span class="larSeagull" style="top:15%;animation-duration:12s;animation-delay:-1.7s;transform:scale(0.82)"></span>
+  <span class="larSeagull" style="top:22%;animation-duration:14s;animation-delay:-3.4s;transform:scale(0.94)"></span>
+  <span class="larSeagull" style="top:29%;animation-duration:16s;animation-delay:-5.1s;transform:scale(1.06)"></span>
+  <span class="larSeagull" style="top:36%;animation-duration:18s;animation-delay:-6.8s;transform:scale(0.70)"></span>
+  <span class="larSeagull" style="top:43%;animation-duration:20s;animation-delay:-8.5s;transform:scale(0.82)"></span>
+  <span class="larSeagull" style="top:50%;animation-duration:10s;animation-delay:-10.2s;transform:scale(0.94)"></span>
+  <span class="larSeagull" style="top:57%;animation-duration:12s;animation-delay:-11.9s;transform:scale(1.06)"></span>
+  <span class="larSeagull" style="top:64%;animation-duration:14s;animation-delay:0.0s;transform:scale(0.70)"></span>
+  <span class="larSeagull" style="top:71%;animation-duration:16s;animation-delay:-1.7s;transform:scale(0.82)"></span>
+  <span class="larSeagull" style="top:78%;animation-duration:18s;animation-delay:-3.4s;transform:scale(0.94)"></span>
+  <span class="larSeagull" style="top:85%;animation-duration:20s;animation-delay:-5.1s;transform:scale(1.06)"></span>
 </div>
-
 
 <!-- ============================================================
      LAR KNOWLEDGE BOOTH — SECRET LAR CASINO ROUTE
      ============================================================ -->
 <div id="larKnowledgeBooth" title="A question of some importance">
   <div class="neonFilaments">
-    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-    <i></i><i></i><i></i><i></i><i></i><i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
   </div>
   <div class="boothRoof"></div>
   <div class="boothBody"></div>
@@ -3015,15 +3036,36 @@ const repairPositions = [1, 4, 7];
 
 let puzzleMode = "art";
   let firstPuzzleCompleted = false;
+  let larBoothMoveTimer = null;
+  function placeBoothOnRandomPainting(){
+      const booth=document.getElementById("larKnowledgeBooth");
+      const figures=Array.from(document.querySelectorAll("#artworkGallery .excerpt-figure"));
+      if(!booth || !figures.length) return;
+      const candidates=figures.filter(f=>f!==booth.parentElement && !f.classList.contains("gallery-glitch-hidden"));
+      const target=(candidates.length?candidates:figures)[Math.floor(Math.random()*(candidates.length?candidates.length:figures.length))];
+      if(!target) return;
+      target.style.position="relative";
+      const img=target.querySelector("img");
+      const rect=img ? img.getBoundingClientRect() : target.getBoundingClientRect();
+      booth.style.width=Math.max(150,Math.min(300,rect.width))+"px";
+      booth.style.height=Math.max(150,Math.min(300,rect.height))+"px";
+      booth.style.left="50%";
+      booth.style.top=(img ? img.offsetTop + rect.height/2 : rect.height/2)+"px";
+      booth.style.transform="translate(-50%,-50%)";
+      target.appendChild(booth);
+  }
+  function startBoothRoaming(){
+      const booth=document.getElementById("larKnowledgeBooth");
+      if(!booth) return;
+      booth.style.display="block";
+      placeBoothOnRandomPainting();
+      clearInterval(larBoothMoveTimer);
+      larBoothMoveTimer=setInterval(placeBoothOnRandomPainting,7000+Math.random()*5000);
+  }
   function revealLarKnowledgeBooth(){
       if(firstPuzzleCompleted) return;
       firstPuzzleCompleted=true;
-      const booth=document.getElementById("larKnowledgeBooth");
-      const electricity=document.getElementById("larAmbientElectricity");
-      const gulls=document.getElementById("larSeagulls");
-      if(booth) booth.style.display="block";
-      if(electricity) electricity.style.display="block";
-      if(gulls) gulls.style.display="block";
+      startBoothRoaming();
   }
 
 
@@ -4213,6 +4255,10 @@ window.addEventListener(
     "resize",
     function() {
 
+        if(document.getElementById("larKnowledgeBooth")?.style.display === "block") {
+            placeBoothOnRandomPainting();
+        }
+
         if(!dragging) {
 
             positionX = 0;
@@ -4250,19 +4296,25 @@ setTimeout(function() {
   const casino = document.getElementById("larCasinoButton");
   const close = document.getElementById("larKnowledgeClose");
 
-  const answerPool = [
+  const correctAnswers = [
     "A. Larry.",
-    "B. The person generally referred to as Larry.",
-    "C. The individual responsible for the Variety.",
-    "D. Probably Larry.",
-    "E. Larry, according to several witnesses.",
-    "F. The fellow whose name is Larry.",
-    "G. Larry, unless something has changed.",
-    "H. The owner of an unreasonable number of things.",
-    "I. The person on the receipt.",
-    "J. A man answering to Larry.",
-    "K. Larry. This was not expected to be difficult.",
-    "L. The one who keeps being called Larry."
+    "B. Larry. The answer remains Larry.",
+    "C. Larry, despite several administrative objections.",
+    "D. Larry. This is the part where everyone looks at the paperwork."
+  ];
+  const wrongAnswers = [
+    "E. Maurice.", "F. Gerald from Accounting.", "G. The Duchess of Winnipeg.",
+    "H. Mr. Pudding.", "I. Leonard, who denies everything.", "J. Trevor. No particular reason.",
+    "K. The man formerly known as Brenda.", "L. Reginald Thunderpants.",
+    "M. A perfectly respectable turnip.", "N. Someone called Dave, apparently."
+  ];
+  const wrongResponses = [
+    "NO. That is not Larry. Complete another puzzle and try again. Larry's records are laughing.",
+    "NO. Wrong gentleman. Please complete another puzzle and return with renewed Lar-confidence.",
+    "INCORRECT. The Department of Names has rejected that candidate. Complete another puzzle and try again.",
+    "NOPE. Larry is not that person. The paperwork has been dramatically shuffled. Try again after another puzzle.",
+    "NEGATIVE. That name has been escorted from the premises. Complete another puzzle and try again.",
+    "NOT LARRY. Very nearly impressive, but no. Another puzzle may improve matters considerably."
   ];
 
   function shuffle(a){
@@ -4278,18 +4330,22 @@ setTimeout(function() {
     casino.style.display="none";
     answers.style.display="grid";
     answers.innerHTML="";
-    const chosen=shuffle(answerPool.slice()).slice(0,3);
-    chosen.forEach(text=>{
+    const correct=correctAnswers[Math.floor(Math.random()*correctAnswers.length)];
+    const wrongs=shuffle(wrongAnswers.slice()).slice(0,3);
+    const chosen=shuffle([{text:correct,correct:true},...wrongs.map(text=>({text,correct:false}))]);
+    chosen.forEach(choice=>{
       const b=document.createElement("button");
       b.className="larAnswer";
-      b.textContent=text;
+      b.textContent=choice.text;
       b.addEventListener("click",()=>{
         answers.style.display="none";
-        result.textContent =
-          "YOUR ANSWER HAS BEEN RECORDED. LARRY'S DEPARTMENT WILL NOT COMMENT ON WHETHER YOU ARE CORRECT. " +
-          "A DOOR HAS, HOWEVER, BECOME AVAILABLE.";
+        if(choice.correct){
+          result.textContent="YOUR ANSWER HAS BEEN RECORDED. LARRY'S DEPARTMENT WILL NOT COMMENT ON WHETHER YOU ARE CORRECT. A DOOR HAS, HOWEVER, BECOME AVAILABLE.";
+          casino.style.display="block";
+        } else {
+          result.textContent=wrongResponses[Math.floor(Math.random()*wrongResponses.length)];
+        }
         result.style.display="block";
-        casino.style.display="block";
       });
       answers.appendChild(b);
     });
