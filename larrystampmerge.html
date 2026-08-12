@@ -275,31 +275,6 @@
     border:2px solid #5b350e; border-radius:10px; background:#efe0bd;
     color:#2a170e; font-weight:bold; padding:9px 18px; cursor:pointer;
   }
-  #stampModalNav {
-    display:flex; align-items:center; justify-content:center; gap:18px;
-    margin:12px 0 14px;
-    font:bold 14px Georgia,serif;
-  }
-  #stampModalNav button {
-    width:46px; height:38px;
-    border:3px solid #6b3f1d; border-radius:10px;
-    background:#f4e6c5; color:#2d1a0c;
-    font:bold 28px Georgia,serif; line-height:1;
-    cursor:pointer;
-    box-shadow:0 3px 0 #5a351d;
-  }
-  #stampModalNav button:active { transform:translateY(2px); box-shadow:0 1px 0 #5a351d; }
-  #larBusButton {
-    display:block; width:100%; margin-top:10px;
-    box-sizing:border-box; text-decoration:none; text-align:center;
-    border:4px solid #4b2a16; border-radius:13px;
-    background:linear-gradient(#9a5b2e,#6d391b);
-    color:#fff3d0; font:bold 17px Georgia,serif;
-    padding:10px 12px; cursor:pointer;
-    box-shadow:inset 0 2px rgba(255,255,255,.22), 0 4px 0 #3a2111;
-  }
-  #larBusButton:hover { filter:brightness(1.08); }
-  #larBusButton:active { transform:translateY(2px); box-shadow:inset 0 2px rgba(255,255,255,.18), 0 2px 0 #3a2111; }
   #postalCursor {
     position:fixed; width:26px; height:26px; pointer-events:none; z-index:100;
     transform:translate(-4px,-4px); display:none;
@@ -339,17 +314,8 @@
   #celebrationSub { margin-top:9px; font-size:18px; font-weight:bold; }
   .confetti { position:absolute; width:9px; height:18px; top:-30px; opacity:.95; animation:confettiFall var(--dur) linear infinite; transform:rotate(var(--rot)); }
   @keyframes confettiFall { to { transform:translate3d(var(--dx),110vh,0) rotate(720deg); } }
-  .firework { position:absolute; width:14px; height:14px; border-radius:50%; left:var(--x); top:var(--y); background:#fff; box-shadow:0 0 16px 6px rgba(255,255,255,.95); animation:fireworkPop 1.5s ease-out infinite; }
-  .firework::before {
-    content:""; position:absolute; inset:-64px; border-radius:50%;
-    background:
-      radial-gradient(circle, transparent 0 7px, rgba(255,255,255,.98) 8px 10px, transparent 11px 22px,
-      rgba(244,211,106,.95) 23px 27px, transparent 28px 42px,
-      rgba(255,90,90,.85) 43px 46px, transparent 47px),
-      repeating-conic-gradient(from 0deg, rgba(255,255,255,.95) 0 3deg, transparent 3deg 18deg);
-    -webkit-mask:radial-gradient(circle, transparent 0 10px, #000 11px 66px, transparent 67px);
-    mask:radial-gradient(circle, transparent 0 10px, #000 11px 66px, transparent 67px);
-  }
+  .firework { position:absolute; width:10px; height:10px; border-radius:50%; left:var(--x); top:var(--y); background:#fff; box-shadow:0 0 12px 4px rgba(255,255,255,.8); animation:fireworkPop 1.4s ease-out infinite; }
+  .firework::before { content:""; position:absolute; inset:-42px; border-radius:50%; background:radial-gradient(circle, transparent 0 8px, rgba(255,255,255,.9) 9px 11px, transparent 12px 17px, rgba(244,211,106,.8) 18px 20px, transparent 21px); }
   @keyframes fireworkPop { 0%,100% { transform:scale(.15); opacity:.2; } 35% { transform:scale(1); opacity:1; } 70% { transform:scale(1.1); opacity:.8; } }
   #hint { font-size:12px; line-height:1.3; text-align:center; }
   @media (max-width:900px) {
@@ -378,6 +344,9 @@
     </div>
     <div id="message"></div>
     <div id="levelCelebration" aria-hidden="true">
+      <div class="firework" style="--x:18%;--y:18%;"></div>
+      <div class="firework" style="--x:82%;--y:20%;animation-delay:.25s"></div>
+      <div class="firework" style="--x:50%;--y:10%;animation-delay:.5s"></div>
       <div id="celebrationCard">
         <div id="celebrationTitle">LARRY IS PROUD OF YOU!</div>
         <div id="celebrationSub">NEXT TRY THESE!</div>
@@ -403,7 +372,6 @@
         <button class="smallBtn" id="dropBtn">DROP ONCE</button>
       </div>
       <div id="hint">Move the L.A.R.R.Y. mailbox to aim, then click once to drop. AUTO LARRY can drop for you. Drag a stamp through the pile and onto a matching stamp to merge it.</div>
-      <a id="larBusButton" href="index.html" title="Return to the LAR BUS">🚌 LAR BUS — RETURN</a>
     </section>
 
     <section id="book">
@@ -422,11 +390,6 @@
     <img id="stampModalImg" alt="Stamp artwork">
     <div id="stampModalTitle"></div>
     <div id="stampModalNumber"></div>
-    <div id="stampModalNav">
-      <button id="stampPrev" aria-label="Previous stamp">‹</button>
-      <span>1–72</span>
-      <button id="stampNext" aria-label="Next stamp">›</button>
-    </div>
     <button id="stampModalClose">CLOSE</button>
   </div>
 </div>
@@ -532,9 +495,6 @@ const stampModalImg = document.getElementById('stampModalImg');
 const stampModalTitle = document.getElementById('stampModalTitle');
 const stampModalNumber = document.getElementById('stampModalNumber');
 const stampModalClose = document.getElementById('stampModalClose');
-const stampPrev = document.getElementById('stampPrev');
-const stampNext = document.getElementById('stampNext');
-let modalTier = 1;
 const levelBadge = document.getElementById('levelBadge');
 const levelCelebration = document.getElementById('levelCelebration');
 
@@ -719,10 +679,8 @@ function launchCelebration(nextStart) {
   const messageIndex = Math.max(0, (levelNumber - 1) % larryLevelMessages.length);
   document.getElementById('celebrationTitle').textContent = larryLevelMessages[messageIndex];
   document.getElementById('celebrationSub').textContent = `NEXT TRY THESE! — LAR LEVEL ${levelNumber + 1}`;
-  levelCelebration.querySelectorAll('.confetti, .firework').forEach(el => el.remove());
-
-  // A much fuller celebration: lots of falling confetti plus many fireworks.
-  for (let i=0; i<120; i++) {
+  levelCelebration.querySelectorAll('.confetti').forEach(el => el.remove());
+  for (let i=0; i<42; i++) {
     const c=document.createElement('span');
     c.className='confetti';
     c.style.left=(Math.random()*100)+'%';
@@ -730,20 +688,9 @@ function launchCelebration(nextStart) {
     c.style.setProperty('--dur', (2.0+Math.random()*2.2)+'s');
     c.style.setProperty('--rot', (Math.random()*360)+'deg');
     c.style.background=['#f4d36a','#fff','#d13a2f','#6eb6ff','#7ac77a'][i%5];
-    c.style.animationDelay=(-Math.random()*2.8)+'s';
+    c.style.animationDelay=(-Math.random()*2)+'s';
     levelCelebration.appendChild(c);
   }
-
-  for (let i=0; i<16; i++) {
-    const f = document.createElement('span');
-    f.className = 'firework';
-    f.style.left = (8 + Math.random()*84) + '%';
-    f.style.top = (8 + Math.random()*46) + '%';
-    f.style.animationDelay = (-Math.random()*1.4) + 's';
-    f.style.animationDuration = (1.15 + Math.random()*.75) + 's';
-    levelCelebration.appendChild(f);
-  }
-
   levelCelebration.classList.add('show');
   levelCelebration.setAttribute('aria-hidden','false');
   clearTimeout(launchCelebration.timer);
@@ -882,27 +829,7 @@ function collectTier(tier) {
     if (nextStart < images.length) {
       launchCelebration(nextStart);
     } else {
-      levelCelebration.querySelectorAll('.confetti, .firework').forEach(el => el.remove());
-      for (let i=0; i<140; i++) {
-        const c=document.createElement('span');
-        c.className='confetti';
-        c.style.left=(Math.random()*100)+'%';
-        c.style.setProperty('--dx', ((Math.random()-.5)*220)+'px');
-        c.style.setProperty('--dur', (1.8+Math.random()*2.6)+'s');
-        c.style.setProperty('--rot', (Math.random()*360)+'deg');
-        c.style.background=['#f4d36a','#fff','#d13a2f','#6eb6ff','#7ac77a'][i%5];
-        c.style.animationDelay=(-Math.random()*2.5)+'s';
-        levelCelebration.appendChild(c);
-      }
-      for (let i=0; i<20; i++) {
-        const f=document.createElement('span');
-        f.className='firework';
-        f.style.left=(5+Math.random()*90)+'%';
-        f.style.top=(6+Math.random()*48)+'%';
-        f.style.animationDelay=(-Math.random()*1.5)+'s';
-        f.style.animationDuration=(1.1+Math.random()*.8)+'s';
-        levelCelebration.appendChild(f);
-      }
+      levelCelebration.querySelectorAll('.confetti').forEach(el => el.remove());
       document.getElementById('celebrationTitle').textContent='LARRY IS PROUD OF YOU! YOU DID IT!';
       document.getElementById('celebrationSub').textContent='ALL 72 LAR STAMPS COLLECTED — YOU RECEIVE 1000 LAR-BUCKS!';
       bucks += 1000;
@@ -932,16 +859,11 @@ function titleFromPath(path) {
 }
 
 function openStampModal(tier) {
-  modalTier = Math.max(1, Math.min(images.length, Number(tier) || 1));
-  updateStampModal();
+  stampModalImg.src = images[tier-1];
+  stampModalTitle.textContent = titleFromPath(images[tier-1]);
+  stampModalNumber.textContent = `LAR STAMP #${String(tier).padStart(2,'0')}`;
   stampModal.classList.add('show');
   stampModal.setAttribute('aria-hidden','false');
-}
-
-function updateStampModal() {
-  stampModalImg.src = images[modalTier-1];
-  stampModalTitle.textContent = titleFromPath(images[modalTier-1]);
-  stampModalNumber.textContent = `LAR STAMP #${String(modalTier).padStart(2,'0')} OF ${images.length}`;
 }
 
 function closeStampModal() {
@@ -1073,28 +995,8 @@ clearBtn.addEventListener('click', clearBoardKeepTopFour);
 prevPageBtn.addEventListener('click',()=>goToPage(pageStart-7));
 nextPageBtn.addEventListener('click',()=>goToPage(pageStart+7));
 stampModalClose.addEventListener('click', closeStampModal);
-stampPrev.addEventListener('click', () => {
-  modalTier = modalTier <= 1 ? images.length : modalTier - 1;
-  updateStampModal();
-});
-stampNext.addEventListener('click', () => {
-  modalTier = modalTier >= images.length ? 1 : modalTier + 1;
-  updateStampModal();
-});
 stampModal.addEventListener('click', e => { if (e.target === stampModal) closeStampModal(); });
-window.addEventListener('keydown', e => {
-  if (e.code === 'Escape') closeStampModal();
-  if (stampModal.classList.contains('show') && e.code === 'ArrowLeft') {
-    e.preventDefault();
-    modalTier = modalTier <= 1 ? images.length : modalTier - 1;
-    updateStampModal();
-  }
-  if (stampModal.classList.contains('show') && e.code === 'ArrowRight') {
-    e.preventDefault();
-    modalTier = modalTier >= images.length ? 1 : modalTier + 1;
-    updateStampModal();
-  }
-});
+window.addEventListener('keydown', e => { if (e.code === 'Escape') closeStampModal(); });
 
 window.addEventListener('keydown',e=> {
   if(e.code==='Space' && !e.repeat) {
