@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Larry's L.A.R.R.Y. Stamp Collection — v13</title>
+<title>Larry's L.A.R.R.Y. Stamp Collection — v9</title>
 <style>
   * { box-sizing: border-box; }
   html, body { width:100%; height:100%; margin:0; overflow:hidden; }
@@ -31,7 +31,7 @@
     height:100vh;
     margin:auto;
     display:grid;
-    grid-template-columns:320px minmax(0, 1fr);
+    grid-template-columns:minmax(0, 1fr) 260px;
     grid-template-rows:120px minmax(0,1fr);
     gap:12px;
     padding:12px;
@@ -45,22 +45,22 @@
   }
   #wasteMailbox {
     position:absolute;
-    top:38px;
-    width:min(300px, 40vw);
-    height:72px;
+    top:30px;
+    width:min(310px, 44vw);
+    height:80px;
     border-radius:18px 18px 28px 28px;
     background:linear-gradient(#c52222,#8f0f0f);
     border:5px solid #4c0808;
     box-shadow:0 10px 0 rgba(0,0,0,.45), inset 0 5px 0 rgba(255,255,255,.18);
     cursor:grab;
     z-index:20;
-    transition:none; touch-action:none;
+    transition:left .05s linear;
   }
   #wasteText {
     position:absolute; inset:0;
     display:flex; align-items:center; justify-content:center;
     font-family:Impact, Haettenschweiler, "Arial Black", sans-serif;
-    font-size:clamp(21px,2.2vw,31px);
+    font-size:clamp(22px,2.4vw,34px);
     letter-spacing:.18em;
     color:#fff;
     text-shadow:3px 3px 0 #3c0505;
@@ -69,10 +69,9 @@
   #heldStamp {
     position:absolute;
     left:50%;
-    top:68px;
-    bottom:auto;
-    width:88px;
-    height:88px;
+    bottom:-72px;
+    width:104px;
+    height:104px;
     transform:translateX(-50%);
     border-radius:50%;
     border:4px solid #f4e6c5;
@@ -89,7 +88,7 @@
     position:absolute; left:4px; top:4px;
     background:rgba(255,255,255,.95);
     color:#2d1a0c;
-    font:bold 12px Arial;
+    font:bold 14px Arial;
     padding:3px 5px;
     border-radius:4px;
     border:1px solid #6b3f1d;
@@ -105,7 +104,6 @@
     border:3px solid #4b0909;
   }
   #gamePanel {
-    grid-column:2; grid-row:2;
     position:relative;
     min-width:0; min-height:0;
     border-radius:24px;
@@ -116,7 +114,6 @@
   }
   #gameCanvas { width:100%; height:100%; display:block; cursor:none; }
   #side {
-    grid-column:1; grid-row:2;
     min-height:0;
     display:flex;
     flex-direction:column;
@@ -162,30 +159,29 @@
     background:#f4ead7;
     color:#2a170e;
     border-radius:10px;
-    padding:5px 4px;
+    padding:8px;
     text-align:center;
     font-weight:bold;
   }
-  .stat b { display:block; font-size:16px; }
+  .stat b { display:block; font-size:20px; }
   #doubleBtn {
     width:100%;
-    border:2px solid #5b350e;
+    border:3px solid #5b350e;
     border-radius:14px;
     background:linear-gradient(#f3c85b,#b87813);
     color:#241404;
     font-weight:bold;
-    padding:7px 4px;
+    padding:11px 8px;
     cursor:pointer;
     box-shadow:0 5px 0 #6e410c;
-    font-size:13px;
+    font-size:16px;
   }
   #doubleBtn:active { transform:translateY(4px); box-shadow:0 1px 0 #6e410c; }
   #doubleBtn:disabled { opacity:.45; cursor:not-allowed; }
   #boardControls {
     display:grid;
-    grid-template-columns:1fr 1fr 1fr;
-    gap:5px;
-    margin-top:7px;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
   }
   .smallBtn {
     border:2px solid #5b350e;
@@ -193,7 +189,7 @@
     background:#efe0bd;
     color:#2a170e;
     font-weight:bold;
-    padding:7px 3px;
+    padding:8px 5px;
     cursor:pointer;
   }
   .smallBtn:hover { filter:brightness(1.08); }
@@ -210,12 +206,12 @@
   #book {
     flex:1;
     min-height:0;
-    overflow:hidden;
+    overflow:auto;
     background:#e7d5ae;
     color:#2d1a0c;
     border:8px solid #6b3f1d;
     border-radius:12px;
-    padding:7px;
+    padding:9px;
     box-shadow:inset 0 0 0 2px #3b210e;
   }
   #bookTitle {
@@ -224,10 +220,10 @@
   }
   #slots {
     display:grid; grid-template-columns:1fr 1fr;
-    gap:5px;
+    gap:7px;
   }
   .slot {
-    min-height:72px;
+    min-height:92px;
     border:2px dashed #8a6a40;
     background:#f5ead0;
     position:relative;
@@ -255,15 +251,6 @@
     font:bold 12px Arial;
     border-radius:4px;
     border:1px solid #6b3f1d;
-  }
-  .slot img.lockedStamp { filter:blur(5px) grayscale(65%); opacity:.45; }
-  .slotTitle {
-    position:absolute; left:6px; right:42px; bottom:6px;
-    z-index:3; padding:2px 4px; border-radius:3px;
-    background:rgba(25,15,8,.82); color:#fff3d0;
-    font:700 7px/1.05 Georgia,serif;
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-    pointer-events:none;
   }
   .slot:hover { filter:brightness(1.06); }
 
@@ -305,11 +292,11 @@
   #larBusButton {
     display:block; width:100%; margin-top:10px;
     box-sizing:border-box; text-decoration:none; text-align:center;
-    border:2px solid #4b2a16; border-radius:999px;
+    border:4px solid #4b2a16; border-radius:13px;
     background:linear-gradient(#9a5b2e,#6d391b);
-    color:#fff3d0; font:bold 12px Georgia,serif;
-    padding:5px 12px; cursor:pointer;
-    box-shadow:inset 0 1px rgba(255,255,255,.22), 0 2px 0 #3a2111;
+    color:#fff3d0; font:bold 17px Georgia,serif;
+    padding:10px 12px; cursor:pointer;
+    box-shadow:inset 0 2px rgba(255,255,255,.22), 0 4px 0 #3a2111;
   }
   #larBusButton:hover { filter:brightness(1.08); }
   #larBusButton:active { transform:translateY(2px); box-shadow:inset 0 2px rgba(255,255,255,.18), 0 2px 0 #3a2111; }
@@ -368,8 +355,7 @@
   @media (max-width:900px) {
     #app { grid-template-columns:1fr; grid-template-rows:105px minmax(0,1fr) 310px; }
     #header { grid-column:1; }
-    #gamePanel { grid-column:1; grid-row:2; }
-    #side { grid-column:1; grid-row:3; display:grid; grid-template-columns:1fr 1fr; }
+    #side { display:grid; grid-template-columns:1fr 1fr; }
     #book { grid-column:1 / -1; }
     #wasteMailbox { width:48vw; }
   }
@@ -413,8 +399,8 @@
     <section class="panel">
       <button id="doubleBtn">AUTO LARRY — START</button>
       <div id="boardControls">
-        <button class="smallBtn" id="inspectBtn">INSPECT LAR STAMPS</button>
-        <button class="smallBtn" id="dropBtn">LAR DROP</button>
+        <button class="smallBtn" id="clearBtn">CLEAR — POP LAST 7 / KEEP 4</button>
+        <button class="smallBtn" id="dropBtn">DROP ONCE</button>
       </div>
       <div id="hint">Move the L.A.R.R.Y. mailbox to aim, then click once to drop. AUTO LARRY can drop for you. Drag a stamp through the pile and onto a matching stamp to merge it.</div>
       <a id="larBusButton" href="index.html" title="Return to the LAR BUS">🚌 LAR BUS — RETURN</a>
@@ -531,7 +517,7 @@ const panel = document.getElementById('gamePanel');
 const mailbox = document.getElementById('wasteMailbox');
 const heldStampImg = document.getElementById('heldStampImg');
 const heldNum = document.getElementById('heldNum');
-const inspectBtn = document.getElementById('inspectBtn');
+const clearBtn = document.getElementById('clearBtn');
 const dropBtn = document.getElementById('dropBtn');
 const prevPageBtn = document.getElementById('prevPage');
 const nextPageBtn = document.getElementById('nextPage');
@@ -553,7 +539,7 @@ const levelBadge = document.getElementById('levelBadge');
 const levelCelebration = document.getElementById('levelCelebration');
 
 const engine = Engine.create();
-engine.gravity.y = 1.38;
+engine.gravity.y = 1.05;
 const world = engine.world;
 const runner = Runner.create();
 
@@ -568,7 +554,6 @@ let generatorStart = 0;
 let doubleMode = false;
 let autoLarry = false;
 let autoTimer = null;
-let autoWaitingBody = null;
 let dropLock = false;
 let mailboxX = 0.5;
 let draggingMailbox = false;
@@ -649,12 +634,10 @@ function createStamp(tier, x, y) {
     image: imgs[tier-1],
     radius:r,
     born:performance.now(),
-    merged:false,
-    autoSpawned:false
+    merged:false
   };
   stamps.push(body);
   Composite.add(world,body);
-  Body.setVelocity(body, {x:0, y:2.6});
 
   // A stamp registers in YOUR NEW LAR STAMPS the first time it is actually
   // seen on the board. This includes a newly created stamp produced by a merge.
@@ -778,7 +761,7 @@ function launchCelebration(nextStart) {
   },1800);
 }
 
-function dropStamp(isAuto = false) {
+function dropStamp() {
   const now = performance.now();
   if (now-lastDropTime < DROP_COOLDOWN) return false;
   lastDropTime = now;
@@ -788,11 +771,10 @@ function dropStamp(isAuto = false) {
   const y = origin.y;
   const tier = Number(heldStampImg.dataset.tier) || chooseNextTier();
 
-  const body = createStamp(tier, x, y);
-  body.plugin.autoSpawned = isAuto;
+  createStamp(tier, x, y);
   sound('drop');
   updateHeldStamp();
-  return body;
+  return true;
 }
 
 function popBody(body) {
@@ -838,10 +820,9 @@ function tryMerge(a,b) {
   sound('merge');
 
   if (nextTier <= groupEnd) {
-    const mergedResult = createStamp(nextTier, x, y);
+    createStamp(nextTier, x, y);
     if (nextTier > unlockedTier) unlockedTier = nextTier;
     updateHeldStamp();
-    if (autoWaitingBody === a || autoWaitingBody === b) autoWaitingBody = mergedResult;
   }
 
   flashMerge(x, y, stampRadius(tier));
@@ -864,22 +845,6 @@ Events.on(engine,'collisionStart', event => {
 const MAX_UPWARD_BOUNCE = 5.5;
 const MAX_SIDE_SPEED = 10;
 Events.on(engine,'afterUpdate', () => {
-  // While a stamp is being carried, it passes behind the pile. The instant
-  // its edge touches a matching stamp, it merges without waiting for release.
-  for (const dragged of stamps) {
-    if (!dragged || !dragged.plugin || !dragged.plugin.dragging || dragged.plugin.merged || dragged.plugin.popped) continue;
-    for (const other of stamps) {
-      if (!other || other === dragged || !other.plugin || other.plugin.dragging || other.plugin.merged || other.plugin.popped) continue;
-      if (other.plugin.tier !== dragged.plugin.tier) continue;
-      const dx = dragged.position.x - other.position.x;
-      const dy = dragged.position.y - other.position.y;
-      if (Math.hypot(dx,dy) <= dragged.plugin.radius + other.plugin.radius + 2) {
-        tryMerge(dragged, other);
-        break;
-      }
-    }
-  }
-
   for (const b of stamps) {
     if (!b || !b.plugin || b.plugin.dragging || b.plugin.popped) continue;
     let vx = Math.max(-MAX_SIDE_SPEED, Math.min(MAX_SIDE_SPEED, b.velocity.x));
@@ -994,14 +959,9 @@ function updateBook() {
     const im=document.createElement('img');
     im.src=images[tier-1];
     im.alt=`Stamp ${tier}`;
-    if (!collected.has(tier)) im.classList.add('lockedStamp');
-    const title=document.createElement('small');
-    title.className='slotTitle';
-    title.textContent=titleFromPath(images[tier-1]);
     const num=document.createElement('span');
     num.textContent=String(tier).padStart(2,'0');
     slot.appendChild(im);
-    slot.appendChild(title);
     slot.appendChild(num);
     slot.addEventListener('click',()=>openStampModal(tier));
     slotsEl.appendChild(slot);
@@ -1025,7 +985,6 @@ function updateDoubleButton() {
 
 function stopAutoLarry() {
   autoLarry = false;
-  autoWaitingBody = null;
   if (autoTimer) {
     clearInterval(autoTimer);
     autoTimer = null;
@@ -1036,30 +995,12 @@ function stopAutoLarry() {
 function startAutoLarry() {
   if (autoLarry) return;
   autoLarry = true;
-  autoWaitingBody = null;
   updateDoubleButton();
   autoTimer = setInterval(() => {
-    if (!autoLarry || levelCelebration.classList.contains('show')) return;
-
-    // Wait until the previous automatic drop has settled in the lower-middle.
-    if (autoWaitingBody && stamps.includes(autoWaitingBody) && autoWaitingBody.plugin && !autoWaitingBody.plugin.popped) {
-      const b = autoWaitingBody;
-      const settled = b.position.y > H - 250 &&
-        Math.abs(b.position.x - W/2) < W * 0.40 &&
-        Math.abs(b.velocity.y) < 1.8 &&
-        Math.abs(b.velocity.x) < 1.8;
-      if (!settled) return;
-    } else {
-      autoWaitingBody = null;
-      // If the field isn't empty, wait for a lower central piece to settle.
-      if (stamps.some(b => b.plugin && b.position.y > H - 250 &&
-          Math.abs(b.position.x - W/2) < W * 0.40 &&
-          (Math.abs(b.velocity.y) >= 1.8 || Math.abs(b.velocity.x) >= 1.8))) return;
-    }
-
-    const dropped = dropStamp(true);
-    if (dropped) autoWaitingBody = dropped;
-  }, 120);
+    if (!autoLarry) return;
+    if (levelCelebration.classList.contains('show')) return;
+    dropStamp();
+  }, 360);
 }
 
 doubleBtn.addEventListener('click',()=> {
@@ -1102,25 +1043,24 @@ function setMailboxFromClientX(clientX) {
 }
 
 let mailboxMoved=false;
-let mailboxDownX=0;
 mailbox.addEventListener('pointerdown',e=> {
-  // Exact aiming: a click drops without changing position; movement drags
-  // the mailbox directly with the pointer. No CSS transition adds lag.
+  // A simple click must NOT reposition the mailbox. The player aims first,
+  // then clicks it to drop. Repositioning only begins once the pointer moves.
   draggingMailbox=true;
   mailboxMoved=false;
-  mailboxDownX=e.clientX;
   mailbox.setPointerCapture(e.pointerId);
-  e.preventDefault();
 });
+let mailboxDownX=0;
+mailbox.addEventListener('pointerdown',e=> { mailboxDownX=e.clientX; });
 mailbox.addEventListener('pointermove',e=> {
-  if(!draggingMailbox) return;
-  if(Math.abs(e.clientX-mailboxDownX)>1) mailboxMoved=true;
-  if(mailboxMoved) setMailboxFromClientX(e.clientX);
+  if(draggingMailbox && Math.abs(e.clientX-mailboxDownX)>3) {
+    mailboxMoved=true;
+    setMailboxFromClientX(e.clientX);
+  }
 });
 mailbox.addEventListener('pointerup',e=> {
   if(!draggingMailbox) return;
   draggingMailbox=false;
-  try { mailbox.releasePointerCapture(e.pointerId); } catch(_) {}
   if(!mailboxMoved) dropStamp();
 });
 mailbox.addEventListener('pointercancel',e=> {
@@ -1129,7 +1069,7 @@ mailbox.addEventListener('pointercancel',e=> {
 });
 
 dropBtn.addEventListener('click', dropStamp);
-inspectBtn.addEventListener('click', () => openStampModal(pageStart + 1));
+clearBtn.addEventListener('click', clearBoardKeepTopFour);
 prevPageBtn.addEventListener('click',()=>goToPage(pageStart-7));
 nextPageBtn.addEventListener('click',()=>goToPage(pageStart+7));
 stampModalClose.addEventListener('click', closeStampModal);
@@ -1288,11 +1228,7 @@ function draw() {
     ctx.fillText(String(tier).padStart(2,'0'),x+slotW-numBoxW/2-2,slotY+slotH/2+4);
   });
 
-  const drawOrder = [
-    ...stamps.filter(b => b && b.plugin && b.plugin.dragging),
-    ...stamps.filter(b => b && b.plugin && !b.plugin.dragging)
-  ];
-  for(const b of drawOrder) {
+  for(const b of stamps) {
     if(!b.position || !b.plugin) continue;
     const r=b.plugin.radius;
     ctx.save();
