@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Larry's L.A.R.R.Y. Stamp Collection — v13</title>
+<title>Larry's L.A.R.R.Y. Stamp Collection — v14</title>
 <style>
   * { box-sizing: border-box; }
   html, body { width:100%; height:100%; margin:0; overflow:hidden; }
@@ -45,7 +45,7 @@
   }
   #wasteMailbox {
     position:absolute;
-    top:38px;
+    top:48px;
     width:min(300px, 40vw);
     height:72px;
     border-radius:18px 18px 28px 28px;
@@ -161,12 +161,13 @@
   .stat {
     background:#f4ead7;
     color:#2a170e;
-    border-radius:10px;
-    padding:5px 4px;
+    border-radius:8px;
+    padding:3px;
     text-align:center;
     font-weight:bold;
+    font-size:10px;
   }
-  .stat b { display:block; font-size:16px; }
+  .stat b { display:block; font-size:13px; }
   #doubleBtn {
     width:100%;
     border:2px solid #5b350e;
@@ -183,8 +184,8 @@
   #doubleBtn:disabled { opacity:.45; cursor:not-allowed; }
   #boardControls {
     display:grid;
-    grid-template-columns:1fr 1fr 1fr;
-    gap:5px;
+    grid-template-columns:repeat(4,1fr);
+    gap:4px;
     margin-top:7px;
   }
   .smallBtn {
@@ -207,8 +208,18 @@
   }
   .pageNav button { padding:5px 4px; }
   #pageStatus { font:bold 12px Arial; text-align:center; }
+  #tankBtn.active {
+    background:linear-gradient(#b8e0b8,#6d9f6d);
+    border-color:#355c35; color:#142414;
+  }
+  #tankBtn { font-size:11px; padding-left:2px; padding-right:2px; }
+  .modalLocked { filter:blur(4px) grayscale(100%); opacity:.55; }
+
   #book {
-    flex:1;
+    display:none;
+    position:absolute;
+    inset:0;
+    z-index:120;
     min-height:0;
     overflow:hidden;
     background:#e7d5ae;
@@ -218,10 +229,18 @@
     padding:7px;
     box-shadow:inset 0 0 0 2px #3b210e;
   }
+  #book.open { display:block; }
   #bookTitle {
-    text-align:center; font-weight:bold; font-size:16px;
-    margin-bottom:8px;
+    text-align:center; font-weight:bold; font-size:15px;
+    margin-bottom:6px;
   }
+  #bookClose {
+    position:absolute; right:7px; top:7px; z-index:4;
+    border:2px solid #5b350e; border-radius:8px;
+    background:#efe0bd; color:#2a170e; font-weight:bold;
+    padding:4px 7px; cursor:pointer;
+  }
+  #book .pageNav { padding-top:2px; }
   #slots {
     display:grid; grid-template-columns:1fr 1fr;
     gap:5px;
@@ -256,7 +275,7 @@
     border-radius:4px;
     border:1px solid #6b3f1d;
   }
-  .slot img.lockedStamp { filter:blur(5px) grayscale(65%); opacity:.45; }
+  .slot img.lockedStamp { filter:blur(4px) grayscale(100%); opacity:.42; }
   .slotTitle {
     position:absolute; left:6px; right:42px; bottom:6px;
     z-index:3; padding:2px 4px; border-radius:3px;
@@ -413,14 +432,16 @@
     <section class="panel">
       <button id="doubleBtn">AUTO LARRY — START</button>
       <div id="boardControls">
-        <button class="smallBtn" id="inspectBtn">INSPECT LAR STAMPS</button>
+        <button class="smallBtn" id="bookBtn">BOOK OF LAR STAMPS</button>
         <button class="smallBtn" id="dropBtn">LAR DROP</button>
+        <button class="smallBtn" id="tankBtn">LAR TANK</button>
       </div>
       <div id="hint">Move the L.A.R.R.Y. mailbox to aim, then click once to drop. AUTO LARRY can drop for you. Drag a stamp through the pile and onto a matching stamp to merge it.</div>
       <a id="larBusButton" href="index.html" title="Return to the LAR BUS">🚌 LAR BUS — RETURN</a>
     </section>
 
     <section id="book">
+      <button id="bookClose" type="button">CLOSE</button>
       <div class="pageNav">
         <button class="smallBtn" id="prevPage">‹ BACK</button>
         <div id="pageStatus">PAGE <span id="pageNo">1</span></div>
@@ -531,8 +552,10 @@ const panel = document.getElementById('gamePanel');
 const mailbox = document.getElementById('wasteMailbox');
 const heldStampImg = document.getElementById('heldStampImg');
 const heldNum = document.getElementById('heldNum');
-const inspectBtn = document.getElementById('inspectBtn');
+const bookBtn = document.getElementById('bookBtn');
 const dropBtn = document.getElementById('dropBtn');
+const tankBtn = document.getElementById('tankBtn');
+const bookClose = document.getElementById('bookClose');
 const prevPageBtn = document.getElementById('prevPage');
 const nextPageBtn = document.getElementById('nextPage');
 const message = document.getElementById('message');
@@ -570,6 +593,7 @@ let autoLarry = false;
 let autoTimer = null;
 let autoWaitingBody = null;
 let dropLock = false;
+let tankMode = false;
 let mailboxX = 0.5;
 let draggingMailbox = false;
 let lastDropTime = 0;
@@ -778,6 +802,41 @@ function launchCelebration(nextStart) {
   },1800);
 }
 
+
+function fillLarTank() {
+  tankMode = true;
+  stopAutoLarry();
+  tankBtn.classList.add('active');
+  tankBtn.textContent = 'LAR TANK ON';
+
+  const start = generatorStart + 1;
+  const tiers = [
+    start,start,start,start,start,start,
+    Math.min(start+1,images.length),Math.min(start+1,images.length),
+    Math.min(start+1,images.length),Math.min(start+1,images.length),
+    Math.min(start+2,images.length),Math.min(start+2,images.length)
+  ];
+  tiers.filter(t=>t>=1 && t<=images.length).forEach((tier,i)=>{
+    const r=stampRadius(tier);
+    const cols=4, col=i%cols, row=Math.floor(i/cols);
+    const x=Math.max(r,Math.min(W-r,35+r+col*(W-70-2*r)/(cols-1)));
+    const y=Math.max(105,H-205-row*Math.max(38,r*.58));
+    const b=createStamp(tier,x,y);
+    Body.setVelocity(b,{x:0,y:0});
+    Body.setAngularVelocity(b,0);
+  });
+  showMessage('LAR TANK FILLED — DRAG TO MERGE',1200);
+}
+function toggleTankMode() {
+  tankMode=!tankMode;
+  if(tankMode) fillLarTank();
+  else {
+    tankBtn.classList.remove('active');
+    tankBtn.textContent='LAR TANK';
+    showMessage('LAR TANK OFF — NORMAL MERGE MODE',900);
+  }
+}
+
 function dropStamp(isAuto = false) {
   const now = performance.now();
   if (now-lastDropTime < DROP_COOLDOWN) return false;
@@ -855,6 +914,7 @@ function flashMerge(x, y, r) {
 const mergeBursts = [];
 
 Events.on(engine,'collisionStart', event => {
+  if (tankMode) return;
   for (const pair of event.pairs) {
     const a=pair.bodyA, b=pair.bodyB;
     if (a.label==='stamp' && b.label==='stamp') tryMerge(a,b);
@@ -977,6 +1037,7 @@ function updateStampModal() {
   stampModalImg.src = images[modalTier-1];
   stampModalTitle.textContent = titleFromPath(images[modalTier-1]);
   stampModalNumber.textContent = `LAR STAMP #${String(modalTier).padStart(2,'0')} OF ${images.length}`;
+  stampModalImg.classList.toggle('modalLocked', !collected.has(modalTier));
 }
 
 function closeStampModal() {
@@ -1034,32 +1095,38 @@ function stopAutoLarry() {
 }
 
 function startAutoLarry() {
-  if (autoLarry) return;
-  autoLarry = true;
-  autoWaitingBody = null;
+  if (autoLarry || tankMode) return;
+  autoLarry=true;
+  autoWaitingBody=null;
   updateDoubleButton();
-  autoTimer = setInterval(() => {
-    if (!autoLarry || levelCelebration.classList.contains('show')) return;
 
-    // Wait until the previous automatic drop has settled in the lower-middle.
-    if (autoWaitingBody && stamps.includes(autoWaitingBody) && autoWaitingBody.plugin && !autoWaitingBody.plugin.popped) {
-      const b = autoWaitingBody;
-      const settled = b.position.y > H - 250 &&
-        Math.abs(b.position.x - W/2) < W * 0.40 &&
-        Math.abs(b.velocity.y) < 1.8 &&
-        Math.abs(b.velocity.x) < 1.8;
-      if (!settled) return;
-    } else {
-      autoWaitingBody = null;
-      // If the field isn't empty, wait for a lower central piece to settle.
-      if (stamps.some(b => b.plugin && b.position.y > H - 250 &&
-          Math.abs(b.position.x - W/2) < W * 0.40 &&
-          (Math.abs(b.velocity.y) >= 1.8 || Math.abs(b.velocity.x) >= 1.8))) return;
+  const autoTry=()=>{
+    if(!autoLarry || tankMode || levelCelebration.classList.contains('show')) return;
+    if(autoWaitingBody && stamps.includes(autoWaitingBody)) return;
+    autoWaitingBody=dropStamp(true);
+  };
+
+  autoTry();
+  autoTimer=setInterval(()=>{
+    if(!autoLarry || tankMode || levelCelebration.classList.contains('show')) return;
+    if(!autoWaitingBody || !stamps.includes(autoWaitingBody)){
+      autoWaitingBody=null;
+      autoTry();
+      return;
     }
-
-    const dropped = dropStamp(true);
-    if (dropped) autoWaitingBody = dropped;
-  }, 120);
+    const b=autoWaitingBody;
+    const floorContact=b.position.y >= H-165;
+    const bottomBubbleContact=stamps.some(other=>{
+      if(!other || other===b || !other.plugin || other.plugin.popped) return false;
+      if(other.position.y < H-245) return false;
+      return Math.hypot(b.position.x-other.position.x,b.position.y-other.position.y)
+        <= b.plugin.radius+other.plugin.radius+4;
+    });
+    if(floorContact || bottomBubbleContact){
+      autoWaitingBody=null;
+      autoTry();
+    }
+  },45);
 }
 
 doubleBtn.addEventListener('click',()=> {
@@ -1129,7 +1196,14 @@ mailbox.addEventListener('pointercancel',e=> {
 });
 
 dropBtn.addEventListener('click', dropStamp);
-inspectBtn.addEventListener('click', () => openStampModal(pageStart + 1));
+tankBtn.addEventListener('click', toggleTankMode);
+bookBtn.addEventListener('click', ()=>{
+  document.getElementById('book').classList.add('open');
+  updateBook();
+});
+bookClose.addEventListener('click', ()=>{
+  document.getElementById('book').classList.remove('open');
+});
 prevPageBtn.addEventListener('click',()=>goToPage(pageStart-7));
 nextPageBtn.addEventListener('click',()=>goToPage(pageStart+7));
 stampModalClose.addEventListener('click', closeStampModal);
@@ -1251,6 +1325,9 @@ function draw() {
   ctx.font='bold 18px Georgia';
   ctx.textAlign='center';
   ctx.fillText(`YOUR NEW LAR STAMPS!!! — PAGE ${Math.floor(pageStart/7)+1}`,W/2,bookY+24);
+  ctx.font='bold 11px Arial';
+  ctx.fillStyle='#6b3f1d';
+  ctx.fillText(`${Math.max(0,images.length-collected.size)} STILL TO DISCOVER`,W/2,bookY+37);
 
   const pageTiers = currentPageTiers();
   const gap = 8;
@@ -1273,8 +1350,14 @@ function draw() {
     const imageW = slotW-numBoxW-5;
     if(im && im.complete && im.naturalWidth){
       ctx.save();
-      ctx.globalAlpha = collected.has(tier) ? 1 : .22;
+      if (collected.has(tier)) {
+        ctx.globalAlpha = 1;
+      } else {
+        ctx.globalAlpha = .42;
+        ctx.filter = 'grayscale(100%) blur(4px)';
+      }
       ctx.drawImage(im,x+3,slotY+3,imageW-6,slotH-6);
+      ctx.filter = 'none';
       ctx.restore();
     }
     ctx.fillStyle='#fff';
@@ -1377,6 +1460,7 @@ updateLevelBadge();
 updateBook();
 updateDoubleButton();
 updateHeldStamp();
+tankBtn.classList.remove('active');
 window.addEventListener('resize',resize);
 Runner.run(runner,engine);
 draw();
