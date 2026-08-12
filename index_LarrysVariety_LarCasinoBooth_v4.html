@@ -1,0 +1,4208 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Larry's Variety — LMAC</title>
+
+<style>
+
+/* ============================================================
+   BASIC PAGE
+   ============================================================ */
+
+body {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    color: white;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* ============================================================
+   SPINNING BLACK & WHITE BACKGROUND
+   ============================================================ */
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 300vmax;
+    height: 300vmax;
+    background: repeating-conic-gradient(
+        from 0deg,
+        #000 0deg 10deg,
+        #fff 10deg 20deg
+    );
+    transform: translate(-50%, -50%) rotate(0deg);
+    z-index: -10;
+    animation: spinSpiral 5s linear infinite;
+}
+
+@keyframes spinSpiral {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+/* ============================================================
+   TITLE
+   ============================================================ */
+
+h1 {
+    color: white;
+    font-size: 42px;
+    text-shadow: 2px 2px 4px black, 0 0 15px black;
+    margin: 30px 0 20px 0;
+}
+
+/* ============================================================
+   GALLERY WIND / MOVING ORDER
+   ============================================================ */
+
+@keyframes galleryWind {
+    0%   { transform: translate3d(0, 0, 0); }
+    20%  { transform: translate3d(var(--wind-a), var(--wind-y-a), 0); }
+    50%  { transform: translate3d(var(--wind-b), var(--wind-y-b), 0); }
+    78%  { transform: translate3d(var(--wind-c), var(--wind-y-c), 0); }
+    100% { transform: translate3d(0, 0, 0); }
+}
+
+.excerpt-figure {
+    will-change: transform;
+}
+
+.excerpt-figure.gallery-moving {
+    animation-name: galleryWind;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+}
+
+.excerpt-figure.gallery-glitch-hidden {
+    visibility: hidden;
+}
+
+.prize-gallery-item {
+    display: inline-block;
+    margin: 15px;
+    text-align: center;
+    position: relative;
+    width: min(18vw, 300px);
+    min-width: 150px;
+    vertical-align: top;
+    cursor: pointer;
+    will-change: transform;
+}
+
+.prize-gallery-card {
+    height: min(18vw, 300px);
+    min-height: 150px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+    background:
+        repeating-conic-gradient(
+            from 0deg,
+            #fff200 0deg 12deg,
+            #ff2b00 12deg 24deg
+        );
+    border: 15px solid #111;
+    box-shadow:
+        0 0 20px black,
+        0 0 45px #ffe600,
+        0 20px 30px rgba(0,0,0,0.9);
+    color: #111;
+    font-size: clamp(18px, 2.2vw, 32px);
+    font-weight: 1000;
+    line-height: 1.05;
+    text-shadow: 2px 2px 0 white;
+    animation: prizeFlash 0.65s infinite alternate;
+}
+
+.prize-gallery-item:hover .prize-gallery-card {
+    box-shadow:
+        0 0 20px white,
+        0 0 50px #ffe600,
+        0 0 90px white,
+        0 20px 35px rgba(0,0,0,0.9);
+}
+
+@keyframes prizeFlash {
+    from { filter: brightness(1); }
+    to   { filter: brightness(1.35); }
+}
+
+/* ============================================================
+   NIAGARA BUS SELECTION ROOM
+   ============================================================ */
+
+#busSelectionOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 12000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    background:
+        radial-gradient(circle at center,
+            rgba(255,255,255,.12),
+            rgba(0,0,0,.94) 65%);
+}
+
+#busSelectionBox {
+    width: min(1180px, 96vw);
+    max-height: 94vh;
+    overflow: auto;
+    box-sizing: border-box;
+    background: #111;
+    border: 10px solid #d7bd70;
+    box-shadow:
+        0 0 0 5px #fff,
+        0 0 45px #ffd700,
+        0 25px 80px black;
+    padding: 22px;
+    text-align: center;
+}
+
+#busSelectionTitle {
+    color: #ffeaa0;
+    font-size: clamp(24px, 4vw, 48px);
+    font-weight: 1000;
+    text-shadow:
+        0 0 8px #fff,
+        0 0 20px #ffcf00,
+        3px 3px 0 black;
+    margin-bottom: 8px;
+}
+
+#busSelectionInstruction {
+    color: white;
+    font-size: clamp(14px, 2vw, 21px);
+    margin-bottom: 18px;
+}
+
+#busChoices {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    align-items: stretch;
+}
+
+.busChoice {
+    min-width: 0;
+    background: #050505;
+    border: 4px solid #333;
+    padding: 10px;
+    cursor: pointer;
+    color: white;
+    box-shadow:
+        inset 0 0 20px black,
+        0 8px 18px rgba(0,0,0,.8);
+    transition:
+        transform .18s ease,
+        border-color .18s ease,
+        box-shadow .18s ease;
+}
+
+.busChoice:hover {
+    transform: translateY(-7px) scale(1.02);
+    border-color: #ffe27a;
+    box-shadow:
+        inset 0 0 20px black,
+        0 0 22px #ffe27a,
+        0 12px 28px black;
+}
+
+.busChoice.wrong {
+    animation: busWrong .45s ease-in-out 2;
+    border-color: #ff2222;
+}
+
+.busChoice.right {
+    border-color: #fff2a8;
+    box-shadow:
+        inset 0 0 20px black,
+        0 0 35px #ffd400,
+        0 0 80px rgba(255,220,0,.65);
+}
+
+@keyframes busWrong {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-12px) rotate(-1deg); }
+    75% { transform: translateX(12px) rotate(1deg); }
+}
+
+.busPictureWindow {
+    height: 180px;
+    background:
+        radial-gradient(circle at 50% 35%, #28303a, #050505 68%);
+    border: 5px solid #222;
+    box-shadow:
+        inset 0 0 25px black,
+        0 0 12px black;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.busPictureWindow::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(
+            125deg,
+            transparent 0 43%,
+            rgba(255,255,255,.13) 44%,
+            transparent 48% 100%
+        );
+    pointer-events: none;
+}
+
+.busGraphic {
+    position: absolute;
+    left: 7%;
+    right: 7%;
+    bottom: 30px;
+    height: 88px;
+}
+
+.busBody {
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    bottom: 20px;
+    height: 54px;
+    border-radius: 16px 20px 9px 9px;
+    background: linear-gradient(#f8df72, #8d5d12);
+    border: 4px solid #151515;
+    box-shadow: 0 8px 8px rgba(0,0,0,.7);
+}
+
+.busBody.second {
+    background: linear-gradient(#bcbcbc, #5a5a5a);
+}
+
+.busBody.third {
+    background: linear-gradient(#b56f39, #4a2415);
+}
+
+.busBody.fourth {
+    background: linear-gradient(#6f4b2e, #23150d);
+    border-radius: 8px 8px 4px 4px;
+}
+
+.busRoof {
+    position: absolute;
+    left: 15%;
+    right: 18%;
+    top: -14px;
+    height: 22px;
+    border-radius: 14px 14px 0 0;
+    background: #d9bd5a;
+    border: 4px solid #151515;
+}
+
+.busWindow {
+    position: absolute;
+    top: 8px;
+    width: 17%;
+    height: 22px;
+    background: #07121c;
+    border: 2px solid #ddd;
+}
+
+.busWindow.w1 { left: 13%; }
+.busWindow.w2 { left: 35%; }
+.busWindow.w3 { left: 57%; }
+
+.busWheel {
+    position: absolute;
+    width: 27px;
+    height: 27px;
+    bottom: 2px;
+    border-radius: 50%;
+    background: #050505;
+    border: 5px solid #777;
+    box-shadow: 0 0 0 2px black;
+}
+
+.busWheel.left { left: 16%; }
+.busWheel.right { right: 16%; }
+
+.busLuggage {
+    position: absolute;
+    right: 1%;
+    bottom: 44px;
+    width: 28px;
+    height: 22px;
+    background: #aa1717;
+    border: 3px solid #111;
+    transform: rotate(-8deg);
+}
+
+.busBadge {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 1000;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 3px black;
+    pointer-events: none;
+}
+
+.trikeGraphic .trikeBody {
+    position: absolute;
+    left: 18%;
+    right: 16%;
+    bottom: 28px;
+    height: 32px;
+    background: #76502f;
+    border: 4px solid #111;
+    border-radius: 6px 15px 8px 8px;
+}
+
+.trikeGraphic .oldMan {
+    position: absolute;
+    left: 43%;
+    bottom: 57px;
+    width: 28px;
+    height: 35px;
+    border-radius: 45% 45% 30% 30%;
+    background: #aaa;
+    border: 3px solid #111;
+}
+
+.trikeGraphic .oldMan::after {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: -11px;
+    width: 20px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ddd;
+    border: 2px solid #111;
+}
+
+.trikeWheel {
+    position: absolute;
+    width: 31px;
+    height: 31px;
+    bottom: 1px;
+    border-radius: 50%;
+    background: #111;
+    border: 5px solid #777;
+}
+
+.trikeWheel.one { left: 12%; }
+.trikeWheel.two { right: 12%; }
+.trikeWheel.three {
+    left: 48%;
+    width: 23px;
+    height: 23px;
+}
+
+.busName {
+    color: #ffe98a;
+    font-size: 17px;
+    font-weight: 1000;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.busDescription {
+    color: #ddd;
+    font-size: 12px;
+    line-height: 1.25;
+    min-height: 58px;
+}
+
+.busStatus {
+    margin-top: 8px;
+    min-height: 20px;
+    color: #ff8a8a;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+#busChancePanel {
+    display: none;
+    margin-top: 18px;
+    padding: 8px;
+    border: 3px dashed #ffe16b;
+    background: #171717;
+    color: white;
+}
+
+#busChancePanel .chanceTitle {
+    color: #ffef99;
+    font-weight: 1000;
+    margin-bottom: 10px;
+}
+
+.busMoneyButton,
+#busCloseButton,
+#niagaraPortalButton {
+    border: 4px solid #111;
+    padding: 11px 15px;
+    margin: 5px;
+    font-weight: 1000;
+    cursor: pointer;
+    box-shadow:
+        0 4px 0 #000,
+        0 0 15px rgba(255,220,90,.45);
+}
+
+.busMoneyButton {
+    background: #ffe36b;
+    color: #111;
+}
+
+#busCloseButton {
+    background: #ddd;
+    color: #111;
+}
+
+#niagaraPortal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 13000;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(circle,
+            rgba(255,255,255,.28),
+            rgba(0,0,0,.92) 60%);
+}
+
+#niagaraPortalBox {
+    width: min(720px, 92vw);
+    background: #111;
+    color: white;
+    border: 12px solid #d9bd67;
+    outline: 5px solid white;
+    padding: 28px;
+    text-align: center;
+    box-shadow:
+        0 0 40px #ffd000,
+        0 0 100px rgba(255,210,0,.6),
+        0 25px 80px black;
+}
+
+#niagaraPortalBox h2 {
+    color: #fff1a3;
+    font-size: clamp(28px, 5vw, 54px);
+    margin: 0 0 10px;
+    text-shadow:
+        0 0 10px white,
+        0 0 25px #ffd000;
+}
+
+#niagaraPortalBox p {
+    font-size: 18px;
+    line-height: 1.4;
+}
+
+#niagaraPortalButton {
+    background: #ffe16b;
+    color: #111;
+    font-size: 20px;
+}
+
+#tinyLarryNotices {
+    position: fixed;
+    inset: 0;
+    z-index: 11000;
+    pointer-events: none;
+}
+
+.tinyLarryNotice {
+    position: absolute;
+    width: 145px;
+    min-height: 72px;
+    box-sizing: border-box;
+    padding: 8px;
+    background: #fff;
+    color: #111;
+    border: 4px solid #111;
+    box-shadow:
+        0 0 12px black,
+        0 5px 12px rgba(0,0,0,.75);
+    font-size: 10px;
+    line-height: 1.15;
+    font-weight: 900;
+    animation:
+        tinyNoticeIn .18s ease-out,
+        tinyNoticeOut .45s ease-in 2.0s forwards;
+}
+
+.tinyLarryNotice strong {
+    display: block;
+    color: #c40000;
+    font-size: 11px;
+    margin-bottom: 3px;
+}
+
+@keyframes tinyNoticeIn {
+    from { opacity: 0; transform: scale(.35) rotate(-7deg); }
+    to   { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+@keyframes tinyNoticeOut {
+    to { opacity: 0; transform: scale(.2) rotate(10deg); }
+}
+
+@media (max-width: 800px) {
+    #busChoices {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .busPictureWindow {
+        height: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    #busChoices {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================================
+   GALLERY
+   ============================================================ */
+#artworkGallery{position:relative;z-index:2;}
+
+
+.excerpt-figure {
+    display: inline-block;
+    margin: 15px;
+    text-align: center;
+    position: relative;
+}
+
+.excerpt-figure img {
+    /*
+       Keep the gallery paintings thumbnail-like at every browser zoom.
+       Because Ctrl+mouse-wheel browser zoom changes the CSS viewport,
+       using vw lets the individual paintings shrink as the page is enlarged
+       instead of becoming enormous.
+    */
+    height: clamp(95px, 18vw, 300px);
+    width: auto;
+    display: block;
+    margin: 0 auto;
+    border: 15px solid black;
+    border-radius: 3px;
+    box-shadow:
+        0 0 20px black,
+        0 0 40px black,
+        0 0 60px rgba(0,0,0,0.8),
+        0 20px 30px rgba(0,0,0,0.9);
+    animation:
+        smokyPulse 4s ease-in-out infinite,
+        floatingShadow 6s ease-in-out infinite;
+    transition: box-shadow 0.25s ease;
+    cursor: pointer;
+}
+
+@keyframes smokyPulse {
+    0% {
+        box-shadow:
+            0 0 20px black,
+            0 0 40px black,
+            0 0 60px rgba(0,0,0,0.8),
+            0 20px 30px rgba(0,0,0,0.9);
+    }
+
+    50% {
+        box-shadow:
+            0 0 30px black,
+            0 0 60px black,
+            0 0 80px rgba(0,0,0,0.9),
+            0 25px 35px rgba(0,0,0,1);
+    }
+
+    100% {
+        box-shadow:
+            0 0 20px black,
+            0 0 40px black,
+            0 0 60px rgba(0,0,0,0.8),
+            0 20px 30px rgba(0,0,0,0.9);
+    }
+}
+
+@keyframes floatingShadow {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+.excerpt-figure:hover img {
+    box-shadow:
+        0 0 10px white,
+        0 0 25px white,
+        0 0 50px white,
+        0 0 90px rgba(255,255,255,0.8),
+        0 20px 35px rgba(0,0,0,0.9);
+}
+
+.excerpt-figure figcaption {
+    text-align: center;
+    width: 100%;
+    padding-top: 7px;
+    font-size: 14px;
+    font-weight: bold;
+    color: black;
+    text-shadow: none;
+    transition:
+        color 0.15s ease,
+        text-shadow 0.15s ease;
+}
+
+.excerpt-figure:hover figcaption {
+    color: white;
+    text-shadow:
+        0 0 5px white,
+        0 0 10px white,
+        0 0 20px white;
+}
+
+figure {
+    margin: 20px;
+}
+
+/* ============================================================
+   LAR-BUCK COUNTER
+   ============================================================ */
+
+#larBuckCounter {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 5000;
+    background: #fff4b0;
+    color: #3b2100;
+    border: 4px solid #6b3d00;
+    padding: 8px 14px;
+    font-weight: bold;
+    box-shadow:
+        0 0 10px black,
+        0 4px 10px rgba(0,0,0,0.6);
+    transform: rotate(-2deg);
+}
+
+/* ============================================================
+   SHOP ALERT
+   ============================================================ */
+
+#customerAlert {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 5000;
+    background: #ffef00;
+    color: black;
+    border: 4px solid red;
+    padding: 7px 10px;
+    font-size: 12px;
+    line-height: 1.15;
+    max-width: 210px;
+    text-align: center;
+    font-weight: 900;
+    box-shadow: 0 0 20px black;
+    animation: alertPulse 0.8s infinite alternate;
+    transform-origin: top right;
+}
+
+@keyframes alertPulse {
+    from { box-shadow: 0 0 20px black; }
+    to   { box-shadow: 0 0 28px black; }
+}
+
+/* ============================================================
+   BROWN PAPER BAG
+   ============================================================ */
+
+#paperBag {
+    display: none;
+    position: fixed;
+    bottom: 18px;
+    left: 18px;
+    z-index: 8000;
+    width: 58px;
+    height: 68px;
+    background: linear-gradient(
+        90deg,
+        #8f5d2d,
+        #c28a4b,
+        #9a642f
+    );
+    border: 3px solid #603817;
+    border-radius: 4px 4px 10px 10px;
+    box-shadow:
+        0 0 12px black,
+        0 8px 15px rgba(0,0,0,0.8);
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 9px;
+    color: #27170a;
+    padding-top: 7px;
+}
+
+#paperBag::before {
+    content: "";
+    position: absolute;
+    top: -13px;
+    left: 11px;
+    width: 32px;
+    height: 17px;
+    border: 4px solid #603817;
+    border-bottom: none;
+    border-radius: 50% 50% 0 0;
+}
+
+/* ============================================================
+   SECRET EXIT SIGN
+   ============================================================ */
+
+#exitSign {
+    display: none;
+    position: fixed;
+    bottom: 28px;
+    left: 91px;
+    z-index: 8001;
+    background: #180000;
+    color: #ff2020;
+    border: 2px solid #7a0000;
+    padding: 4px 9px;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    cursor: pointer;
+    box-shadow:
+        0 0 4px red,
+        0 0 10px red,
+        inset 0 0 5px #400000;
+    text-shadow:
+        0 0 4px red,
+        0 0 9px red;
+    animation: neonFlicker 2.8s infinite;
+}
+
+@keyframes neonFlicker {
+    0%, 88%, 92%, 100% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 0.45;
+    }
+}
+
+/* ============================================================
+   ARTWORK WINDOW
+   ============================================================ */
+
+#floatingArtwork {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    top: 50%;
+    left: 50%;
+    width: auto;
+    height: auto;
+    max-width: none;
+    max-height: none;
+    border: 15px solid black;
+    box-shadow:
+        0 0 20px black,
+        0 0 40px black,
+        0 0 70px rgba(0,0,0,0.9),
+        0 25px 50px rgba(0,0,0,0.9);
+    cursor: grab;
+    user-select: none;
+    -webkit-user-drag: none;
+    transform-origin: center center;
+}
+
+#floatingArtwork.dragging {
+    cursor: grabbing;
+}
+
+/* ============================================================
+   PUZZLE OVERLAY
+   ============================================================ */
+
+#puzzleOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    background: rgba(0,0,0,0.93);
+    overflow-y: auto;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* ============================================================
+   PUZZLE BOX
+   ============================================================ */
+
+#puzzleBox {
+    width: min(410px, 90vw);
+    margin: 10px auto;
+    background: #eee;
+    color: black;
+    border: 5px solid #111;
+    box-shadow:
+        0 0 30px white,
+        0 0 70px black;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+/* ============================================================
+   PUZZLE HEADER
+   ============================================================ */
+
+#puzzleTitle {
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 6px;
+}
+
+#puzzleMessage {
+    font-size: 14px;
+    font-weight: 900;
+    color: red;
+    margin: 10px 0;
+}
+
+#puzzleInstruction {
+    font-size: 11px;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+#puzzleTimer {
+    font-size: 25px;
+    font-weight: 900;
+    color: red;
+    margin: 10px;
+}
+
+/* ============================================================
+   PUZZLE BOARD
+   IMPORTANT:
+   The picture itself has NO GRID LINES.
+   ============================================================ */
+
+#puzzleBoard {
+    width: min(340px, 82vw);
+    aspect-ratio: 1 / 1;
+    margin: 8px auto;
+    position: relative;
+    background: white;
+    overflow: hidden;
+    box-sizing: border-box;
+    box-shadow:
+        0 0 15px black,
+        0 0 30px rgba(0,0,0,0.6);
+}
+
+/* ============================================================
+   BOARD PIECES
+   ============================================================ */
+
+.puzzleBoardPiece {
+    position: absolute;
+    width: 33.333333%;
+    height: 33.333333%;
+    background-repeat: no-repeat;
+    box-sizing: border-box;
+}
+
+/* ============================================================
+   EMPTY REPAIR HOLES
+   ============================================================ */
+
+.repairHole {
+    position: absolute;
+    width: 33.333333%;
+    height: 33.333333%;
+    background:
+        repeating-linear-gradient(
+            45deg,
+            #d0d0d0 0px,
+            #d0d0d0 3px,
+            #eeeeee 3px,
+            #eeeeee 6px
+        );
+    border: 3px dashed #777;
+    box-sizing: border-box;
+    z-index: 20;
+}
+
+.repairHole::after {
+    content: "REPAIR";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: #777;
+    font-size: 12px;
+    font-weight: 900;
+    opacity: 0.75;
+}
+
+/* ============================================================
+   PUZZLE PIECE TRAY
+   ============================================================ */
+
+#pieceTray {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    width: min(340px, 82vw);
+    margin: 15px auto;
+    padding: 6px;
+    background: #222;
+    border: 5px solid #555;
+    box-sizing: border-box;
+}
+
+.traySlot {
+    aspect-ratio: 1 / 1;
+    background: #555;
+    border: 2px solid #aaa;
+    position: relative;
+    overflow: hidden;
+}
+
+/* ============================================================
+   DRAGGABLE REPAIR PIECES
+   ============================================================ */
+
+.repairPiece {
+    position: absolute;
+    inset: 0;
+    background-repeat: no-repeat;
+    cursor: grab;
+    box-sizing: border-box;
+    transition:
+        transform 0.15s ease,
+        opacity 0.2s ease;
+}
+
+.repairPiece:active {
+    cursor: grabbing;
+}
+
+.repairPiece.correct {
+    cursor: default;
+    opacity: 0;
+}
+
+/* ============================================================
+   CANCEL / LEAVE BROKEN
+   ============================================================ */
+
+#puzzleCancel {
+    background: #111;
+    color: white;
+    border: 3px solid #777;
+    padding: 10px 18px;
+    font-weight: 900;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+#puzzleCancel:hover {
+    background: #6b0000;
+}
+
+/* ============================================================
+   PUZZLE SHAKE
+   ============================================================ */
+
+@keyframes shake {
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-7px);
+    }
+
+    50% {
+        transform: translateX(7px);
+    }
+
+    75% {
+        transform: translateX(-5px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* ============================================================
+   CONDESCENDING SUCCESS MESSAGE
+   ============================================================ */
+
+#larryCongratulations {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(-2deg);
+    z-index: 7500;
+    width: min(620px, 85vw);
+    background: #fff;
+    color: #111;
+    border: 8px solid #111;
+    box-shadow:
+        0 0 25px white,
+        0 0 70px black;
+    padding: 25px;
+    font-weight: 900;
+    text-align: center;
+}
+
+#larryCongratulations .big {
+    color: red;
+    font-size: 34px;
+    margin-bottom: 15px;
+}
+
+#larryCongratulations .small {
+    font-size: 18px;
+    line-height: 1.55;
+}
+
+/* ============================================================
+   QUALITY SEAL
+   ============================================================ */
+
+#qualitySeal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-5deg);
+    z-index: 7400;
+    background: white;
+    color: black;
+    border: 12px double #c59b00;
+    padding: 30px 45px;
+    font-size: 32px;
+    font-weight: 900;
+    text-align: center;
+    box-shadow:
+        0 0 30px gold,
+        0 0 80px black;
+    animation: sealAppear 0.8s ease-out;
+}
+
+@keyframes sealAppear {
+    from {
+        transform:
+            translate(-50%, -50%)
+            rotate(-5deg)
+            scale(0.1);
+    }
+
+    to {
+        transform:
+            translate(-50%, -50%)
+            rotate(-5deg)
+            scale(1);
+    }
+}
+
+/* ============================================================
+   WELLINGTON BRAND WEDDING CONFETTI AD
+   ============================================================ */
+
+#wellingtonAd {
+    display: none;
+    position: fixed;
+    left: 50%;
+    top: 16%;
+    transform: translateX(-50%) rotate(-2deg);
+    z-index: 8500;
+    background: #fff;
+    color: #111;
+    border: 6px solid #111;
+    width: min(360px, 80vw);
+    padding: 15px;
+    box-shadow:
+        0 0 20px black,
+        0 0 40px rgba(255,255,255,0.8);
+    font-family: Georgia, serif;
+    animation: weddingAdIn 0.3s ease-out;
+}
+
+#wellingtonAd .brand {
+    font-size: 25px;
+    font-weight: 900;
+    letter-spacing: 2px;
+}
+
+#wellingtonAd .wedding {
+    color: #8b0000;
+    font-size: 29px;
+    font-weight: 900;
+    margin-top: 4px;
+}
+
+#wellingtonAd .tagline {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    margin-top: 8px;
+    font-weight: bold;
+}
+
+@keyframes weddingAdIn {
+    from {
+        transform:
+            translateX(-50%)
+            rotate(-2deg)
+            scale(0.1);
+        opacity: 0;
+    }
+
+    to {
+        transform:
+            translateX(-50%)
+            rotate(-2deg)
+            scale(1);
+        opacity: 1;
+    }
+}
+
+/* ============================================================
+   SALES POPUPS
+   ============================================================ */
+
+#salesContainer {
+    position: fixed;
+    inset: 0;
+    z-index: 6000;
+    pointer-events: none;
+}
+
+.salesPopup {
+    position: absolute;
+    width: 260px;
+    background: #fff;
+    color: black;
+    border: 5px solid #111;
+    box-shadow:
+        0 0 20px black,
+        0 8px 20px rgba(0,0,0,0.8);
+    padding: 14px;
+    font-weight: bold;
+    pointer-events: none;
+    animation:
+        popupIn 0.2s ease-out,
+        popupOut 0.5s ease-in 2.8s forwards;
+}
+
+.salesPopup strong {
+    display: block;
+    color: red;
+    font-size: 18px;
+    margin-bottom: 6px;
+}
+
+@keyframes popupIn {
+    from {
+        opacity: 0;
+        transform: scale(0.4) rotate(-8deg);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+@keyframes popupOut {
+    to {
+        opacity: 0;
+        transform: scale(0.2) rotate(12deg);
+    }
+}
+
+/* ============================================================
+   CONFETTI
+   Mostly white hole-punch circles, with occasional
+   old paper scraps containing blue notebook lines.
+   ============================================================ */
+
+.confetti {
+    position: fixed;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    z-index: 7000;
+    pointer-events: none;
+    animation:
+        confettiFall 3.5s linear forwards;
+}
+
+.confetti.notebook {
+    border-radius: 2px;
+    width: 15px;
+    height: 11px;
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            #f3eee3 0px,
+            #f3eee3 3px,
+            #668fc4 3px,
+            #668fc4 4px
+        );
+    border: 1px solid #8c806c;
+}
+
+.confetti.brown {
+    background: #b79b72;
+}
+
+@keyframes confettiFall {
+    0% {
+        transform:
+            translateY(-30px)
+            translateX(0)
+            rotate(0deg);
+        opacity: 1;
+    }
+
+    30% {
+        transform:
+            translateY(30vh)
+            translateX(25px)
+            rotate(220deg);
+    }
+
+    60% {
+        transform:
+            translateY(65vh)
+            translateX(-30px)
+            rotate(500deg);
+    }
+
+    100% {
+        transform:
+            translateY(110vh)
+            translateX(40px)
+            rotate(900deg);
+        opacity: 0.95;
+    }
+}
+
+/* ============================================================
+   FIREWORK
+   ============================================================ */
+
+.firework {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+    z-index: 7000;
+    pointer-events: none;
+    animation: fireworkBurst 1s ease-out forwards;
+}
+
+@keyframes fireworkBurst {
+    0% {
+        transform: scale(0.2);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(12);
+        opacity: 0;
+    }
+}
+
+/* ============================================================
+   SMALL INSTRUCTIONS
+   ============================================================ */
+
+#zoomInfo {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 13px;
+    text-shadow:
+        0 0 5px black,
+        0 0 10px black;
+    pointer-events: none;
+}
+
+/*
+   Gallery/browser-zoom behaviour:
+   Ctrl + mouse-wheel browser zoom changes the CSS viewport. The gallery
+   thumbnails use viewport-relative sizing so they shrink as the page is
+   enlarged, while fixed-position alerts remain anchored to the viewport.
+*/
+
+/* ============================================================
+   LAR KNOWLEDGE BOOTH — SECRET LAR CASINO ENTRANCE
+   ============================================================ */
+#larKnowledgeBooth{
+    display:none; position:absolute; left:50%; top:50%;
+    width:min(18vw,300px); height:min(18vw,300px);
+    min-width:150px; min-height:150px;
+    transform:translate(-50%,-50%); z-index:8;
+    cursor:pointer; user-select:none; pointer-events:auto;
+}
+#larKnowledgeBooth .boothBody{
+    position:absolute; left:15%; right:15%; top:15%; bottom:15%;
+    background:linear-gradient(145deg,#3a2115,#744522 52%,#29170e);
+    border:5px solid #111; border-radius:7px 7px 3px 3px;
+    box-shadow:0 7px 15px rgba(0,0,0,.8),inset 0 0 14px rgba(255,255,255,.12),0 0 18px rgba(0,234,255,.8),0 0 40px rgba(255,57,216,.65);
+    z-index:3;
+}
+#larKnowledgeBooth .boothRoof{
+    position:absolute; left:11%; right:11%; top:10%; height:9%;
+    background:#111; border:3px solid #ddd; transform:skewX(-12deg); z-index:4;
+}
+#larKnowledgeBooth .boothQuestion{
+    position:absolute; left:50%; top:20%; transform:translateX(-50%); z-index:5;
+    color:white; font-family:Georgia,serif; font-size:clamp(70px,8vw,104px);
+    line-height:1; font-weight:900;
+    text-shadow:0 0 4px #fff,0 0 10px #00eaff,0 0 22px #ff39ff,2px 2px 0 #111;
+}
+#larKnowledgeBooth .boothSign{
+    position:absolute; left:18%; right:18%; bottom:19%; z-index:5;
+    color:#fff7b0; font-size:clamp(9px,1.3vw,14px); font-weight:1000;
+    letter-spacing:1px; text-align:center; text-shadow:0 0 5px #fff,0 0 10px #ffcf00;
+}
+#larKnowledgeBooth .neonFilaments{
+    position:absolute; inset:-80%; pointer-events:none; overflow:visible; z-index:0;
+    transform-origin:50% 50%; animation:larStarClockwise 16s linear infinite;
+}
+#larKnowledgeBooth .neonFilaments::after{
+    content:""; position:absolute; left:50%; top:50%; width:30px; height:30px;
+    transform:translate(-50%,-50%); border-radius:50%; background:#fff;
+    box-shadow:0 0 18px #fff,0 0 45px #00eaff,0 0 80px #ff39d8; opacity:.9;
+}
+#larKnowledgeBooth .neonFilaments i{
+    position:absolute; left:50%; top:50%; width:6px; height:150px; margin-left:-3px;
+    transform-origin:50% 0; opacity:.95; border-radius:999px;
+    background:linear-gradient(to bottom,rgba(255,255,255,1),currentColor 15%,currentColor 55%,rgba(255,255,255,0) 100%);
+    box-shadow:0 0 6px currentColor,0 0 14px currentColor,0 0 28px currentColor;
+    animation:larRayPulse .8s steps(6,end) infinite alternate;
+}
+#larKnowledgeBooth .neonFilaments i:nth-child(1){color:#ff3131;transform:rotate(0deg) scaleY(0.72);animation-delay:0.00s}
+#larKnowledgeBooth .neonFilaments i:nth-child(2){color:#ff9d00;transform:rotate(10deg) scaleY(0.80);animation-delay:-0.11s}
+#larKnowledgeBooth .neonFilaments i:nth-child(3){color:#ffe600;transform:rotate(20deg) scaleY(0.88);animation-delay:-0.22s}
+#larKnowledgeBooth .neonFilaments i:nth-child(4){color:#38ff6b;transform:rotate(30deg) scaleY(0.96);animation-delay:-0.33s}
+#larKnowledgeBooth .neonFilaments i:nth-child(5){color:#00eaff;transform:rotate(40deg) scaleY(1.04);animation-delay:-0.44s}
+#larKnowledgeBooth .neonFilaments i:nth-child(6){color:#477dff;transform:rotate(50deg) scaleY(0.72);animation-delay:-0.55s}
+#larKnowledgeBooth .neonFilaments i:nth-child(7){color:#b85cff;transform:rotate(60deg) scaleY(0.80);animation-delay:-0.66s}
+#larKnowledgeBooth .neonFilaments i:nth-child(8){color:#ff4fd8;transform:rotate(70deg) scaleY(0.88);animation-delay:-0.77s}
+#larKnowledgeBooth .neonFilaments i:nth-child(9){color:#ff3131;transform:rotate(80deg) scaleY(0.96);animation-delay:-0.88s}
+#larKnowledgeBooth .neonFilaments i:nth-child(10){color:#ff9d00;transform:rotate(90deg) scaleY(1.04);animation-delay:0.00s}
+#larKnowledgeBooth .neonFilaments i:nth-child(11){color:#ffe600;transform:rotate(100deg) scaleY(0.72);animation-delay:-0.11s}
+#larKnowledgeBooth .neonFilaments i:nth-child(12){color:#38ff6b;transform:rotate(110deg) scaleY(0.80);animation-delay:-0.22s}
+#larKnowledgeBooth .neonFilaments i:nth-child(13){color:#00eaff;transform:rotate(120deg) scaleY(0.88);animation-delay:-0.33s}
+#larKnowledgeBooth .neonFilaments i:nth-child(14){color:#477dff;transform:rotate(130deg) scaleY(0.96);animation-delay:-0.44s}
+#larKnowledgeBooth .neonFilaments i:nth-child(15){color:#b85cff;transform:rotate(140deg) scaleY(1.04);animation-delay:-0.55s}
+#larKnowledgeBooth .neonFilaments i:nth-child(16){color:#ff4fd8;transform:rotate(150deg) scaleY(0.72);animation-delay:-0.66s}
+#larKnowledgeBooth .neonFilaments i:nth-child(17){color:#ff3131;transform:rotate(160deg) scaleY(0.80);animation-delay:-0.77s}
+#larKnowledgeBooth .neonFilaments i:nth-child(18){color:#ff9d00;transform:rotate(170deg) scaleY(0.88);animation-delay:-0.88s}
+#larKnowledgeBooth .neonFilaments i:nth-child(19){color:#ffe600;transform:rotate(180deg) scaleY(0.96);animation-delay:0.00s}
+#larKnowledgeBooth .neonFilaments i:nth-child(20){color:#38ff6b;transform:rotate(190deg) scaleY(1.04);animation-delay:-0.11s}
+#larKnowledgeBooth .neonFilaments i:nth-child(21){color:#00eaff;transform:rotate(200deg) scaleY(0.72);animation-delay:-0.22s}
+#larKnowledgeBooth .neonFilaments i:nth-child(22){color:#477dff;transform:rotate(210deg) scaleY(0.80);animation-delay:-0.33s}
+#larKnowledgeBooth .neonFilaments i:nth-child(23){color:#b85cff;transform:rotate(220deg) scaleY(0.88);animation-delay:-0.44s}
+#larKnowledgeBooth .neonFilaments i:nth-child(24){color:#ff4fd8;transform:rotate(230deg) scaleY(0.96);animation-delay:-0.55s}
+#larKnowledgeBooth .neonFilaments i:nth-child(25){color:#ff3131;transform:rotate(240deg) scaleY(1.04);animation-delay:-0.66s}
+#larKnowledgeBooth .neonFilaments i:nth-child(26){color:#ff9d00;transform:rotate(250deg) scaleY(0.72);animation-delay:-0.77s}
+#larKnowledgeBooth .neonFilaments i:nth-child(27){color:#ffe600;transform:rotate(260deg) scaleY(0.80);animation-delay:-0.88s}
+#larKnowledgeBooth .neonFilaments i:nth-child(28){color:#38ff6b;transform:rotate(270deg) scaleY(0.88);animation-delay:0.00s}
+#larKnowledgeBooth .neonFilaments i:nth-child(29){color:#00eaff;transform:rotate(280deg) scaleY(0.96);animation-delay:-0.11s}
+#larKnowledgeBooth .neonFilaments i:nth-child(30){color:#477dff;transform:rotate(290deg) scaleY(1.04);animation-delay:-0.22s}
+#larKnowledgeBooth .neonFilaments i:nth-child(31){color:#b85cff;transform:rotate(300deg) scaleY(0.72);animation-delay:-0.33s}
+#larKnowledgeBooth .neonFilaments i:nth-child(32){color:#ff4fd8;transform:rotate(310deg) scaleY(0.80);animation-delay:-0.44s}
+#larKnowledgeBooth .neonFilaments i:nth-child(33){color:#ff3131;transform:rotate(320deg) scaleY(0.88);animation-delay:-0.55s}
+#larKnowledgeBooth .neonFilaments i:nth-child(34){color:#ff9d00;transform:rotate(330deg) scaleY(0.96);animation-delay:-0.66s}
+#larKnowledgeBooth .neonFilaments i:nth-child(35){color:#ffe600;transform:rotate(340deg) scaleY(1.04);animation-delay:-0.77s}
+#larKnowledgeBooth .neonFilaments i:nth-child(36){color:#38ff6b;transform:rotate(350deg) scaleY(0.72);animation-delay:-0.88s}
+@keyframes larStarClockwise{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes larRayPulse{from{opacity:.32;filter:brightness(.75);height:105px}to{opacity:1;filter:brightness(2.6);height:175px}}
+#larKnowledgeBooth:hover .neonFilaments i{animation-duration:.34s}
+#larKnowledgeOverlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:16000;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,.78);
+    padding:20px;
+    box-sizing:border-box;
+}
+#larKnowledgeBox{
+    position:relative;
+    width:min(600px,92vw);
+    background:#16110d;
+    color:white;
+    border:8px solid #6e4322;
+    outline:3px solid #fff;
+    box-shadow:
+      0 0 18px #00eaff,
+      0 0 45px #ff39ff,
+      0 0 90px rgba(255,255,255,.35),
+      0 25px 80px #000;
+    padding:30px;
+    text-align:center;
+    box-sizing:border-box;
+}
+#larKnowledgeBox::before{
+    content:"";
+    position:absolute;
+    inset:-18px;
+    pointer-events:none;
+    background:
+      repeating-conic-gradient(
+        from 8deg,
+        transparent 0 8deg,
+        rgba(0,234,255,.7) 8deg 8.8deg,
+        transparent 8.8deg 18deg,
+        rgba(255,79,216,.7) 18deg 18.8deg,
+        transparent 18.8deg 30deg
+      );
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;
+    mask-composite:exclude;
+    padding:7px;
+    animation:larQuestionElectric .9s linear infinite;
+}
+@keyframes larQuestionElectric{
+    to{transform:rotate(360deg)}
+}
+#larKnowledgeTitle{
+    position:relative;
+    z-index:2;
+    color:#fff5a8;
+    font-size:clamp(24px,5vw,42px);
+    font-weight:1000;
+    text-shadow:0 0 8px #fff,0 0 20px #00eaff,3px 3px 0 #000;
+    margin:0 0 16px;
+}
+#larKnowledgeQuestion{
+    position:relative;
+    z-index:2;
+    font-size:clamp(20px,4vw,31px);
+    font-weight:1000;
+    margin:12px 0 18px;
+}
+#larKnowledgeAnswers{
+    position:relative;
+    z-index:2;
+    display:grid;
+    gap:10px;
+}
+.larAnswer{
+    border:4px solid #111;
+    background:#8a572e;
+    color:white;
+    padding:13px 15px;
+    font-size:clamp(15px,2.4vw,21px);
+    font-weight:1000;
+    cursor:pointer;
+    box-shadow:0 4px 0 #000,0 0 12px rgba(255,255,255,.18);
+}
+.larAnswer:hover{
+    background:#b7783b;
+    box-shadow:0 0 12px #fff,0 0 30px #00eaff,0 4px 0 #000;
+}
+#larKnowledgeResult{
+    position:relative;
+    z-index:2;
+    display:none;
+    margin-top:20px;
+    font-size:clamp(16px,2.7vw,23px);
+    line-height:1.35;
+    font-weight:1000;
+}
+#larCasinoButton{
+    position:relative;
+    z-index:2;
+    display:none;
+    margin:18px auto 0;
+    border:5px solid #111;
+    background:#ffe45c;
+    color:#111;
+    padding:14px 22px;
+    font-size:clamp(16px,2.8vw,23px);
+    font-weight:1000;
+    cursor:pointer;
+    box-shadow:0 5px 0 #000,0 0 18px #ffe600;
+}
+#larKnowledgeClose{
+    position:absolute;
+    top:7px;
+    right:10px;
+    z-index:3;
+    border:2px solid #fff;
+    background:#250b0b;
+    color:#fff;
+    font-weight:1000;
+    cursor:pointer;
+    padding:4px 8px;
+}
+@media(max-width:600px){
+    #larKnowledgeBooth{width:190px;height:190px;min-width:130px;min-height:130px}
+}
+
+
+#larAmbientElectricity{display:block;position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;transform-origin:50% 50%;animation:larAmbientSpin 26s linear infinite}
+#larAmbientElectricity i{position:absolute;left:50%;top:50%;width:4px;height:120px;transform-origin:50% 0;border-radius:999px;background:linear-gradient(to bottom,rgba(255,255,255,.9),currentColor,transparent);box-shadow:0 0 5px currentColor,0 0 13px currentColor,0 0 24px currentColor;opacity:.58;animation:larAmbientZap 1s steps(7,end) infinite alternate}
+@keyframes larAmbientZap{0%{opacity:.25;height:70px}50%{opacity:.8}100%{opacity:.55;height:155px}}
+@keyframes larAmbientSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+#larSeagulls{display:block;position:fixed;inset:0;z-index:4;pointer-events:none;overflow:hidden}
+.larSeagull{position:absolute;width:42px;height:24px;animation:larGullFly linear infinite;filter:drop-shadow(0 2px 3px #000)}
+.larSeagull::before,.larSeagull::after{content:"";position:absolute;top:10px;width:20px;height:11px;border-top:3px solid white;border-radius:70% 70% 0 0}
+.larSeagull::before{left:1px;transform:rotate(16deg)}
+.larSeagull::after{right:1px;transform:rotate(-16deg)}
+@keyframes larGullFly{from{transform:translateX(-12vw) translateY(0) scale(.7)}20%{transform:translateX(20vw) translateY(-25px) scale(.95)}40%{transform:translateX(43vw) translateY(16px) scale(.78)}60%{transform:translateX(66vw) translateY(-34px) scale(1.05)}80%{transform:translateX(88vw) translateY(12px) scale(.86)}to{transform:translateX(115vw) translateY(-8px) scale(.72)}}
+
+/* 17 rotating neon starbursts stay beneath the paintings. */
+#larBackgroundStars{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.larBackgroundStar{position:absolute;width:220px;height:220px;transform:translate(-50%,-50%);transform-origin:50% 50%;animation:larStarDrift 18s linear infinite}
+.larBackgroundStar i{position:absolute;left:50%;top:50%;width:5px;height:120px;margin-left:-2.5px;transform-origin:50% 0;border-radius:999px;background:linear-gradient(to bottom,rgba(255,255,255,.95),currentColor 18%,currentColor 55%,transparent);box-shadow:0 0 5px currentColor,0 0 15px currentColor,0 0 28px currentColor;opacity:.7;animation:larBgRayPulse .9s steps(6,end) infinite alternate}
+@keyframes larStarDrift{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes larBgRayPulse{from{height:70px;opacity:.28;filter:brightness(.8)}to{height:145px;opacity:.9;filter:brightness(2.2)}}
+.excerpt-figure{position:relative;z-index:2}
+#larKnowledgeBooth{z-index:9}
+.excerpt-figure:hover figcaption{color:#fff;animation:larRainbowTitle 2.2s linear infinite;text-shadow:0 0 6px currentColor,0 0 16px currentColor,0 0 28px currentColor}
+@keyframes larRainbowTitle{0%{color:#ff3030}16%{color:#ff9d00}33%{color:#ffe600}50%{color:#39ff68}66%{color:#00eaff}83%{color:#7d5cff}100%{color:#ff39d8}}
+#larLightningLayer{position:fixed;inset:0;z-index:7;pointer-events:none;overflow:hidden}
+.larLightningBolt{position:absolute;width:13px;background:linear-gradient(90deg,transparent,#fff 25%,#00eaff 50%,#fff 75%,transparent);box-shadow:0 0 7px #fff,0 0 18px #00eaff,0 0 32px #ff39d8;clip-path:polygon(40% 0,75% 0,58% 25%,92% 25%,52% 55%,75% 55%,20% 100%,35% 62%,5% 62%,45% 34%,18% 34%);transform-origin:50% 0;animation:larBoltFlash .18s steps(2,end) 3}
+@keyframes larBoltFlash{0%,100%{opacity:0}30%{opacity:1}60%{opacity:.25}80%{opacity:1}}
+</style>
+</head>
+
+<body><div id="larBackgroundStars"><div class="larBackgroundStar" style="left:7%;top:10%;animation-delay:-0.0s"><i style="color:#ff3131;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ff9d00;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ffe600;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#38ff6b;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#00eaff;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#477dff;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#b85cff;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ff4fd8;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ff3131;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ff9d00;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ffe600;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#38ff6b;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:24%;top:39%;animation-delay:-0.8s"><i style="color:#ff9d00;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ffe600;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#38ff6b;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#00eaff;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#477dff;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#b85cff;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#ff4fd8;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ff3131;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ff9d00;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ffe600;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#38ff6b;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#00eaff;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:41%;top:68%;animation-delay:-1.6s"><i style="color:#ffe600;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#38ff6b;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#00eaff;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#477dff;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#b85cff;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#ff4fd8;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#ff3131;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ff9d00;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ffe600;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#38ff6b;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#00eaff;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#477dff;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:58%;top:17%;animation-delay:-2.4s"><i style="color:#38ff6b;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#00eaff;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#477dff;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#b85cff;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#ff4fd8;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#ff3131;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#ff9d00;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ffe600;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#38ff6b;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#00eaff;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#477dff;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#b85cff;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:75%;top:46%;animation-delay:-3.2s"><i style="color:#00eaff;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#477dff;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#b85cff;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#ff4fd8;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#ff3131;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#ff9d00;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#ffe600;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#38ff6b;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#00eaff;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#477dff;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#b85cff;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#ff4fd8;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:92%;top:75%;animation-delay:-4.0s"><i style="color:#477dff;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#b85cff;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ff4fd8;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#ff3131;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#ff9d00;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#ffe600;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#38ff6b;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#00eaff;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#477dff;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#b85cff;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ff4fd8;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#ff3131;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:21%;top:24%;animation-delay:-4.8s"><i style="color:#b85cff;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ff4fd8;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ff3131;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#ff9d00;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#ffe600;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#38ff6b;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#00eaff;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#477dff;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#b85cff;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ff4fd8;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ff3131;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#ff9d00;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:38%;top:53%;animation-delay:-5.6s"><i style="color:#ff4fd8;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ff3131;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ff9d00;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#ffe600;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#38ff6b;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#00eaff;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#477dff;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#b85cff;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ff4fd8;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ff3131;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ff9d00;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#ffe600;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:55%;top:82%;animation-delay:-6.4s"><i style="color:#ff3131;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ff9d00;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ffe600;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#38ff6b;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#00eaff;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#477dff;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#b85cff;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ff4fd8;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ff3131;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ff9d00;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ffe600;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#38ff6b;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:72%;top:31%;animation-delay:-7.2s"><i style="color:#ff9d00;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ffe600;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#38ff6b;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#00eaff;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#477dff;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#b85cff;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#ff4fd8;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ff3131;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ff9d00;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ffe600;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#38ff6b;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#00eaff;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:89%;top:60%;animation-delay:-8.0s"><i style="color:#ffe600;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#38ff6b;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#00eaff;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#477dff;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#b85cff;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#ff4fd8;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#ff3131;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ff9d00;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ffe600;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#38ff6b;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#00eaff;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#477dff;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:18%;top:89%;animation-delay:-8.8s"><i style="color:#38ff6b;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#00eaff;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#477dff;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#b85cff;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#ff4fd8;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#ff3131;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#ff9d00;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ffe600;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#38ff6b;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#00eaff;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#477dff;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#b85cff;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:35%;top:38%;animation-delay:-9.6s"><i style="color:#00eaff;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#477dff;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#b85cff;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#ff4fd8;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#ff3131;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#ff9d00;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#ffe600;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#38ff6b;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#00eaff;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#477dff;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#b85cff;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#ff4fd8;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:52%;top:67%;animation-delay:-10.4s"><i style="color:#477dff;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#b85cff;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ff4fd8;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#ff3131;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#ff9d00;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#ffe600;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#38ff6b;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#00eaff;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#477dff;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#b85cff;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ff4fd8;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#ff3131;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:69%;top:16%;animation-delay:-11.2s"><i style="color:#b85cff;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ff4fd8;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ff3131;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#ff9d00;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#ffe600;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#38ff6b;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#00eaff;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#477dff;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#b85cff;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ff4fd8;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ff3131;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#ff9d00;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:86%;top:45%;animation-delay:-12.0s"><i style="color:#ff4fd8;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ff3131;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ff9d00;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#ffe600;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#38ff6b;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#00eaff;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#477dff;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#b85cff;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ff4fd8;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ff3131;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ff9d00;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#ffe600;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:15%;top:74%;animation-delay:-12.8s"><i style="color:#ff3131;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ff9d00;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ffe600;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#38ff6b;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#00eaff;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#477dff;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#b85cff;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ff4fd8;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ff3131;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ff9d00;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ffe600;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#38ff6b;transform:rotate(165deg);animation-delay:-0.88s"></i></div></div><div id="larLightningLayer"></div>
+
+<div id="larAmbientElectricity">
+  <i style="color:#ff3131;transform:rotate(0deg);animation-delay:0.00s;left:48%;top:44%"></i>
+  <i style="color:#ff9d00;transform:rotate(20deg);animation-delay:-0.15s;left:50%;top:48%"></i>
+  <i style="color:#ffe600;transform:rotate(40deg);animation-delay:-0.30s;left:52%;top:44%"></i>
+  <i style="color:#38ff6b;transform:rotate(60deg);animation-delay:-0.45s;left:48%;top:48%"></i>
+  <i style="color:#00eaff;transform:rotate(80deg);animation-delay:-0.60s;left:50%;top:44%"></i>
+  <i style="color:#477dff;transform:rotate(100deg);animation-delay:-0.75s;left:52%;top:48%"></i>
+  <i style="color:#b85cff;transform:rotate(120deg);animation-delay:-0.90s;left:48%;top:44%"></i>
+  <i style="color:#ff4fd8;transform:rotate(140deg);animation-delay:0.00s;left:50%;top:48%"></i>
+  <i style="color:#ff3131;transform:rotate(160deg);animation-delay:-0.15s;left:52%;top:44%"></i>
+  <i style="color:#ff9d00;transform:rotate(180deg);animation-delay:-0.30s;left:48%;top:48%"></i>
+  <i style="color:#ffe600;transform:rotate(200deg);animation-delay:-0.45s;left:50%;top:44%"></i>
+  <i style="color:#38ff6b;transform:rotate(220deg);animation-delay:-0.60s;left:52%;top:48%"></i>
+  <i style="color:#00eaff;transform:rotate(240deg);animation-delay:-0.75s;left:48%;top:44%"></i>
+  <i style="color:#477dff;transform:rotate(260deg);animation-delay:-0.90s;left:50%;top:48%"></i>
+  <i style="color:#b85cff;transform:rotate(280deg);animation-delay:0.00s;left:52%;top:44%"></i>
+  <i style="color:#ff4fd8;transform:rotate(300deg);animation-delay:-0.15s;left:48%;top:48%"></i>
+  <i style="color:#ff3131;transform:rotate(320deg);animation-delay:-0.30s;left:50%;top:44%"></i>
+  <i style="color:#ff9d00;transform:rotate(340deg);animation-delay:-0.45s;left:52%;top:48%"></i>
+</div>
+<div id="larSeagulls">
+  <span class="larSeagull" style="top:8%;animation-duration:10s;animation-delay:0.0s;transform:scale(0.70)"></span>
+  <span class="larSeagull" style="top:15%;animation-duration:12s;animation-delay:-1.7s;transform:scale(0.82)"></span>
+  <span class="larSeagull" style="top:22%;animation-duration:14s;animation-delay:-3.4s;transform:scale(0.94)"></span>
+  <span class="larSeagull" style="top:29%;animation-duration:16s;animation-delay:-5.1s;transform:scale(1.06)"></span>
+  <span class="larSeagull" style="top:36%;animation-duration:18s;animation-delay:-6.8s;transform:scale(0.70)"></span>
+  <span class="larSeagull" style="top:43%;animation-duration:20s;animation-delay:-8.5s;transform:scale(0.82)"></span>
+  <span class="larSeagull" style="top:50%;animation-duration:10s;animation-delay:-10.2s;transform:scale(0.94)"></span>
+  <span class="larSeagull" style="top:57%;animation-duration:12s;animation-delay:-11.9s;transform:scale(1.06)"></span>
+  <span class="larSeagull" style="top:64%;animation-duration:14s;animation-delay:0.0s;transform:scale(0.70)"></span>
+  <span class="larSeagull" style="top:71%;animation-duration:16s;animation-delay:-1.7s;transform:scale(0.82)"></span>
+  <span class="larSeagull" style="top:78%;animation-duration:18s;animation-delay:-3.4s;transform:scale(0.94)"></span>
+  <span class="larSeagull" style="top:85%;animation-duration:20s;animation-delay:-5.1s;transform:scale(1.06)"></span>
+</div>
+
+<!-- ============================================================
+     LAR KNOWLEDGE BOOTH — SECRET LAR CASINO ROUTE
+     ============================================================ -->
+<div id="larKnowledgeBooth" title="A question of some importance">
+  <div class="neonFilaments">
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+    <i></i>
+  </div>
+  <div class="boothRoof"></div>
+  <div class="boothBody"></div>
+  <div class="boothQuestion">?</div>
+  <div class="boothSign">LAR KNOWLEDGE</div>
+</div>
+
+<div id="larKnowledgeOverlay">
+  <div id="larKnowledgeBox">
+    <button id="larKnowledgeClose">X</button>
+    <div id="larKnowledgeTitle">LARRY'S KNOWLEDGE TEST</div>
+    <div id="larKnowledgeQuestion">WHAT IS LARRY'S NAME?</div>
+    <div id="larKnowledgeAnswers"></div>
+    <div id="larKnowledgeResult"></div>
+    <button id="larCasinoButton">TAKE ME TO THE LAR CASINO</button>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     NIAGARA PRIZE — RANDOMLY CHOOSES ONE OF FOUR EXPERIENCES
+     ============================================================ -->
+
+<div id="niagaraPrize" style="display:none !important;">
+    <a href="#" id="niagaraPrizeLink" style="
+        color: white;
+        text-decoration: none;
+        text-shadow: 0 0 5px red, 0 0 10px yellow, 0 0 20px cyan;
+    ">
+        ★★★ YOU WON! ★★★
+        <br>
+        NIAGARA FALLS!
+        <br>
+        <span style="font-size: 20px;">
+            CLICK HERE FOR YOUR PRIZE
+        </span>
+    </a>
+</div>
+
+<!-- ============================================================
+     COUNTER
+     ============================================================ -->
+
+<div id="larBuckCounter">
+    LAR-BUCKS: <span id="larBucks">0</span>
+</div>
+
+<!-- ============================================================
+     CUSTOMER ALERT
+     ============================================================ -->
+
+<div id="customerAlert">
+    ONLY 2 CUSTOMERS ALLOWED!<br>
+    BUY NOW BEFORE THE OTHER CUSTOMER DOES!
+</div>
+
+<h1>LARRY'S LAR-GALLERY</h1>
+
+<!-- ============================================================
+     72-IMAGE ARTWORK COLLECTION
+     The artwork files live in the lowercase images/ folder.
+     This list is built directly into index.html so this page no
+     longer needs images.js for its gallery.
+     ============================================================ -->
+
+<ul id="artworkGallery" style="padding:0; margin:0; list-style:none;"></ul>
+
+<!-- ============================================================
+     ARTWORK
+     ============================================================ -->
+
+<img id="floatingArtwork" src="" alt="">
+
+<button id="paperBag">
+    BROWN<br>
+    BAG
+</button>
+
+<button id="exitSign">
+    EXIT
+</button>
+
+<div id="zoomInfo">
+    Wheel: zoom &nbsp; | &nbsp; Drag: move &nbsp; | &nbsp; Esc: close
+</div>
+
+<!-- ============================================================
+     NIAGARA BUS SELECTION ROOM
+     ============================================================ -->
+
+<div id="busSelectionOverlay">
+
+    <div id="busSelectionBox">
+
+        <div id="busSelectionTitle">
+            LARRY'S NIAGARA TRANSPORTATION DEPARTMENT
+        </div>
+
+        <div id="busSelectionInstruction">
+            FOUR VEHICLES HAVE ARRIVED. ONLY ONE IS THE CORRECT
+            NIAGARA VEHICLE. CHOOSE CAREFULLY.
+        </div>
+
+        <div id="busChoices"></div>
+
+        <div id="busChancePanel">
+
+            <div class="chanceTitle">
+                WRONG VEHICLE. LARRY HAS NOT GIVEN UP ON YOU.
+            </div>
+
+            <button class="busMoneyButton" id="buyOneChance">
+                PAY 3 LAR-BUCKS — ONE MORE CHANCE
+            </button>
+
+            <button class="busMoneyButton" id="buyThreeChances">
+                PAY 8 LAR-BUCKS — THREE MORE CHANCES
+            </button>
+
+            <button class="busMoneyButton" id="buyTenChances">
+                PAY 20 LAR-BUCKS — TEN MORE CHANCES
+            </button>
+
+        </div>
+
+        <button id="busCloseButton">
+            CLOSE THE TRANSPORTATION DEPARTMENT
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ============================================================
+     NIAGARA PORTAL
+     ============================================================ -->
+
+<div id="niagaraPortal">
+
+    <div id="niagaraPortalBox">
+
+        <h2>NIAGARA FALLS PORTAL</h2>
+
+        <p>
+            THE CORRECT VEHICLE HAS BEEN SELECTED.
+            <br><br>
+            LARRY HAS NOW AUTHORISED YOUR JOURNEY.
+            <br>
+            THERE IS NO REFUND.
+        </p>
+
+        <button id="niagaraPortalButton">
+            BOARD THE BUS — GO TO NIAGARA FALLS
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ============================================================
+     TINY RANDOM LARRY NOTICES / COUPONS
+     ============================================================ -->
+
+<div id="tinyLarryNotices"></div>
+
+
+<!-- ============================================================
+     PUZZLE
+     ============================================================ -->
+
+<div id="puzzleOverlay">
+
+    <div id="puzzleBox">
+
+        <div id="puzzleTitle">
+            LARRY'S VARIETY ART REPAIR DEPARTMENT
+        </div>
+
+        <div id="puzzleMessage">
+            YOU BROKE IT. YOU BOUGHT IT.
+        </div>
+
+        <div id="puzzleInstruction">
+            Assemble the three missing pieces to regain access
+            to the artwork. Larry has made this extremely easy
+            because he believes in you.
+        </div>
+
+        <div id="puzzleTimer">
+            20
+        </div>
+
+        <div id="puzzleBoard"></div>
+
+        <h3>
+            PIECES — PLEASE REASSEMBLE BEFORE THEY GO ON SALE
+        </h3>
+
+        <div id="pieceTray"></div>
+
+        <button id="puzzleCancel">
+            Leave it broken
+        </button>
+
+    </div>
+
+</div>
+
+<!-- ============================================================
+     CONGRATULATIONS
+     ============================================================ -->
+
+<div id="larryCongratulations">
+
+    <div class="big">
+        SEE? YOU CAN DO PUZZLES!
+    </div>
+
+    <div class="small">
+        I KNEW YOU HAD IT IN YOU.<br>
+        <br>
+        THAT WAS ONLY THREE PIECES.<br>
+        BUT STILL.<br>
+        <br>
+        LARRY IS IMPRESSED.<br>
+        SORT OF.<br>
+        <br>
+        YOU HAVE EARNED<br>
+        <strong>3 LAR-BUCKS.</strong>
+    </div>
+
+</div>
+
+<!-- ============================================================
+     QUALITY SEAL
+     ============================================================ -->
+
+<div id="qualitySeal">
+
+    LARRY'S VARIETY<br>
+
+    <span style="font-size:22px;">
+        OFFICIAL QUALITY SEAL
+    </span>
+
+    <br><br>
+
+    ★ APPROVED ★
+
+    <br>
+
+    +3 LAR-BUCKS
+
+</div>
+
+<!-- ============================================================
+     WELLINGTON BRAND AD
+     ============================================================ -->
+
+<div id="wellingtonAd">
+
+    <div class="brand">
+        WELLINGTON BRAND™
+    </div>
+
+    <div class="wedding">
+        WEDDING CONFETTI
+    </div>
+
+    <div class="tagline">
+        "Because someone has to celebrate."
+        <br><br>
+        <small>
+            PREMIUM PAPER • PROBABLY
+        </small>
+    </div>
+
+</div>
+
+<!-- ============================================================
+     SALES POPUPS
+     ============================================================ -->
+
+<div id="salesContainer"></div>
+
+<script>
+
+/* ============================================================
+   72-IMAGE ARTWORK COLLECTION
+   ============================================================ */
+
+const images = [
+    "images/LMAC-ArquaneTheQuietTeenPoet.jpg",
+    "images/LMAC-AstropopEffect.jpg",
+    "images/LMAC-AtGulliversMuseumOfAbstractArt.jpg",
+    "images/LMAC-AylaDream.jpg",
+    "images/LMAC-BarthesDilnsby.jpg",
+    "images/LMAC-BeautifulConversations.jpg",
+    "images/LMAC-BeBopASaurus.jpg",
+    "images/LMAC-Blondie.jpg",
+    "images/LMAC-BumblebeeVsOptimusPrime.jpg",
+    "images/LMAC-ButSiddharthaWasLookingBeyondThePresent.jpg",
+    "images/LMAC-BuzzardZilla.jpg",
+    "images/LMAC-CallTheArtWorldAndInformThemOfThisArt.jpg",
+    "images/LMAC-CanyonCross.jpg",
+    "images/LMAC-CasparFreidric1800.jpg",
+    "images/LMAC-Contentment.jpg",
+    "images/LMAC-CrusoesBadger.jpg",
+    "images/LMAC-CrusoesWizard.jpg",
+    "images/LMAC-DarkHorsewoman.jpg",
+    "images/LMAC-DesertCivilizationDance.jpg",
+    "images/LMAC-DiamondMineLakeshore.jpg",
+    "images/LMAC-DinosaurSpirit.jpg",
+    "images/LMAC-DinosourFossil.jpg",
+    "images/LMAC-DreamingWoman.jpg",
+    "images/LMAC-EvilCabins.jpg",
+    "images/LMAC-Gooseland.jpg",
+    "images/LMAC-HelloThereEve.jpg",
+    "images/LMAC-HistoryBook.jpg",
+    "images/LMAC-HolidaySnapOfMyMerman.jpg",
+    "images/LMAC-HowYouReallyFeltAtTheTime.jpg",
+    "images/LMAC-Hulot.jpg",
+    "images/LMAC-IcarusIcarus.jpg",
+    "images/LMAC-IDon'tTrustLaoTsuNoMore.jpg",
+    "images/LMAC-IndianaJonesJr.jpg",
+    "images/LMAC-IndianaJr.jpg",
+    "images/LMAC-InThunder.jpg",
+    "images/LMAC-JoseKandontske.jpg",
+    "images/LMAC-Journey'sJourney.jpg",
+    "images/LMAC-LarkaVayYourHairdresser.jpg",
+    "images/LMAC-LenoresHappyDay.jpg",
+    "images/LMAC-LordStitchToothe.jpg",
+    "images/LMAC-MarmouxltTheTrainedFrenchThing.jpg",
+    "images/LMAC-MobySquid.jpg",
+    "images/LMAC-MysticValley.jpg",
+    "images/LMAC-NewNewCanadianArt.jpg",
+    "images/LMAC-PinballChing.jpg",
+    "images/LMAC-PlacesThatHaveBeen.jpg",
+    "images/LMAC-Respect.jpg",
+    "images/LMAC-RobinsonLand.jpg",
+    "images/LMAC-RoncesvallesJazzRacket.jpg",
+    "images/LMAC-SacredSanctuary.jpg",
+    "images/LMAC-SandpiperFlats.jpg",
+    "images/LMAC-TheApproachingSeaDragon.jpg",
+    "images/LMAC-TheBirdEmpress.jpg",
+    "images/LMAC-TheCarnivalGhostsVacation.jpg",
+    "images/LMAC-TheCavemansTV.jpg",
+    "images/LMAC-TheDreamOfSleep.jpg",
+    "images/LMAC-TheElectricFox.jpg",
+    "images/LMAC-TheEmbarrasingAirportIncident.jpg",
+    "images/LMAC-TheGoyaOfMay.jpg",
+    "images/LMAC-TheHoneyBee.jpg",
+    "images/LMAC-TheMonkey'sLunch.jpg",
+    "images/LMAC-TheMustardSeedPrincipleAlien.jpg",
+    "images/LMAC-TheSeaGoat.jpg",
+    "images/LMAC-TheSlap.jpg",
+    "images/LMAC-TheSupposedToBeUnpretentiousSage.jpg",
+    "images/LMAC-TheWeepyMakeupSaleslady.jpg",
+    "images/LMAC-TimeFreeScape.jpg",
+    "images/LMAC-ToTheCaveOfSomethingSpecific.jpg",
+    "images/LMAC-TumbleWeet.jpg",
+    "images/LMAC-VantageShift.jpg",
+    "images/LMAC-WatershipNow.jpg",
+    "images/LMAC-WhySilenceIsGolden.jpg"
+];
+
+const artworkGallery = document.getElementById("artworkGallery");
+
+function artworkTitle(path) {
+    return path
+        .split("/").pop()
+        .replace(/^LMAC-/, "")
+        .replace(/\.jpg$/i, "")
+        .replace(/([a-z])([A-Z])/g, "$1 $2");
+}
+
+images.forEach(function(imagePath) {
+
+    const item = document.createElement("li");
+    item.className = "excerpt-figure";
+
+    const figure = document.createElement("figure");
+    const image = document.createElement("img");
+    const caption = document.createElement("figcaption");
+
+    image.src = imagePath;
+    image.alt = artworkTitle(imagePath);
+    caption.textContent = artworkTitle(imagePath);
+
+    figure.appendChild(image);
+    figure.appendChild(caption);
+    item.appendChild(figure);
+    artworkGallery.appendChild(item);
+});
+
+
+/* ============================================================
+   HIDDEN NIAGARA PRIZE SLOT
+   Replaces one of the 72 gallery positions at 20 Lar-Bucks.
+   ============================================================ */
+
+let prizeGalleryItem = null;
+let prizeReplacedItem = null;
+let prizeHasAppeared = false;
+
+function createPrizeGalleryItem() {
+
+    const item = document.createElement("li");
+    item.className = "prize-gallery-item";
+    item.style.display = "none";
+
+    const card = document.createElement("div");
+    card.className = "prize-gallery-card";
+    card.textContent = "YOU MIGHT WIN A PRIZE";
+
+    item.appendChild(card);
+
+    item.addEventListener("click", function(event) {
+        event.stopPropagation();
+        startPrizePuzzle();
+    });
+
+    return item;
+}
+
+prizeGalleryItem = createPrizeGalleryItem();
+  function updatePrizeGalleryMessage() {
+      if(!prizeGalleryItem) return;
+      const card=prizeGalleryItem.querySelector(".prize-gallery-card");
+      if(!card) return;
+      const need=Math.max(0,20-larBucks);
+      card.textContent = need>0
+        ? "YOU MIGHT WIN A PRIZE\n\nEARN "+need+" MORE LAR-BUCK"+(need===1?"":"S")+" AND YOU WILL WIN A PRIZE!"
+        : "YOU WILL WIN A PRIZE\n\nLARRY HAS NO FURTHER COMMENT.";
+      card.style.whiteSpace="pre-line";
+  }
+
+
+
+/* ============================================================
+   FAST RANDOM GALLERY MOVEMENT
+   ============================================================ */
+
+function startGalleryMotion() {
+
+    const items =
+        Array.from(
+            artworkGallery.querySelectorAll(".excerpt-figure")
+        );
+
+    items.forEach(function(item) {
+
+        item.classList.add("gallery-moving");
+
+        item.style.setProperty("--wind-a",
+            (Math.random() * 90 - 45) + "px");
+        item.style.setProperty("--wind-b",
+            (Math.random() * 140 - 70) + "px");
+        item.style.setProperty("--wind-c",
+            (Math.random() * 100 - 50) + "px");
+
+        item.style.setProperty("--wind-y-a",
+            (Math.random() * 30 - 15) + "px");
+        item.style.setProperty("--wind-y-b",
+            (Math.random() * 45 - 22) + "px");
+        item.style.setProperty("--wind-y-c",
+            (Math.random() * 30 - 15) + "px");
+
+        item.style.animationDuration =
+            (2.8 + Math.random() * 3.0) + "s";
+
+        item.style.animationDelay =
+            (-Math.random() * 3.0) + "s";
+    });
+}
+
+startGalleryMotion();
+
+
+/* Gallery remains fully populated: no random hiding/glitching. */
+
+/* ============================================================
+   RANDOM TINY LARRY DISCLAIMERS / COUPONS
+   Based on the original Larry sales notices, but intentionally
+   smaller and shorter-lived.
+   ============================================================ */
+
+const tinyLarryMessages = [
+
+    "WHY NOT BUY MORE? You are already here.",
+    "URGENT: Your Lar-Bucks are becoming lonely.",
+    "For TWO more Lar-Bucks, you can spend FIVE Lar-Bucks!",
+    "LIMITED TIME: This offer lasts until Larry gets bored.",
+    "ONLY 2 CUSTOMERS ALLOWED! Unfortunately, you are one.",
+    "ACT NOW! Or act later. But preferably now.",
+    "BUY MORE ART. Larry has already put the boxes out.",
+    "CONSUMER ALERT: You have not purchased enough imaginary merchandise.",
+    "EXCLUSIVE DEAL: Spend 7 Lar-Bucks to unlock the opportunity to spend 9.",
+    "FLASH SALE! Everything is 100% off except the things that aren't.",
+    "FOR JUST 4 LAR-BUCKS: receive absolutely no guarantee whatsoever.",
+    "CONGRATULATIONS! You have qualified to consider purchasing something.",
+    "URGENT DEAL: Spend 5. Receive the satisfaction of having spent 5.",
+    "EXTRA VALUE: One imaginary Lar-Buck may be worth another imaginary Lar-Buck.",
+    "LAST CHANCE! This is your last chance until the next last chance.",
+    "COUPON: SHOW THIS BOX TO LARRY. Larry may look at it.",
+    "SPECIAL OFFER: 3 Lar-Bucks for the price of 3 Lar-Bucks!",
+    "FREE GIFT: The gift is the opportunity to continue browsing.",
+    "TODAY ONLY: Absolutely nothing is normal.",
+    "DEAL OF THE MINUTE: You have approximately no minutes left."
+];
+
+function createTinyLarryNotice() {
+
+    const host =
+        document.getElementById(
+            "tinyLarryNotices"
+        );
+
+    if(!host) {
+        return;
+    }
+
+    const notice =
+        document.createElement("div");
+
+    notice.className =
+        "tinyLarryNotice";
+
+    const message =
+        tinyLarryMessages[
+            Math.floor(
+                Math.random() *
+                tinyLarryMessages.length
+            )
+        ];
+
+    notice.innerHTML =
+        "<strong>LARRY NOTICE</strong>" +
+        message;
+
+    notice.style.left =
+        (Math.random() * 78 + 8) + "%";
+
+    notice.style.top =
+        (Math.random() * 72 + 10) + "%";
+
+    host.appendChild(
+        notice
+    );
+
+    setTimeout(
+        function() {
+            notice.remove();
+        },
+        2550
+    );
+}
+
+
+function scheduleTinyLarryNotice() {
+
+    setTimeout(
+        function() {
+
+            /*
+               It appears only occasionally, so the gallery is
+               not buried under notices.
+            */
+
+            if(
+                Math.random() < 0.72 &&
+                !document.getElementById(
+                    "busSelectionOverlay"
+                ).style.display
+            ) {
+                createTinyLarryNotice();
+            }
+
+            scheduleTinyLarryNotice();
+
+        },
+        18000 + Math.random() * 30000
+    );
+}
+
+scheduleTinyLarryNotice();
+
+
+/* ============================================================
+   ELEMENTS
+   ============================================================ */
+
+const floatingArtwork =
+    document.getElementById("floatingArtwork");
+
+const paperBag =
+    document.getElementById("paperBag");
+
+const exitSign =
+    document.getElementById("exitSign");
+
+const puzzleOverlay =
+    document.getElementById("puzzleOverlay");
+
+const puzzleBoard =
+    document.getElementById("puzzleBoard");
+
+const pieceTray =
+    document.getElementById("pieceTray");
+
+const puzzleTimer =
+    document.getElementById("puzzleTimer");
+
+const qualitySeal =
+    document.getElementById("qualitySeal");
+
+const larryCongratulations =
+    document.getElementById("larryCongratulations");
+
+const wellingtonAd =
+    document.getElementById("wellingtonAd");
+
+const larBucksDisplay =
+    document.getElementById("larBucks");
+
+const salesContainer =
+    document.getElementById("salesContainer");
+
+const puzzleCancel =
+    document.getElementById("puzzleCancel");
+
+
+/* ============================================================
+   FIXED CORNER CONTROLS — KEEP 100% SIZE
+   ============================================================ */
+
+const fixedCornerControls = [
+    document.getElementById("larBuckCounter"),
+    document.getElementById("customerAlert"),
+    document.getElementById("paperBag")
+];
+
+const originalDevicePixelRatio =
+    window.devicePixelRatio || 1;
+
+function keepCornerControlsAtOriginalSize() {
+
+    const currentDpr =
+        window.devicePixelRatio || 1;
+
+    const scale =
+        originalDevicePixelRatio / currentDpr;
+
+    if(fixedCornerControls[0]) {
+        fixedCornerControls[0].style.transform =
+            "rotate(-2deg) scale(" + scale + ")";
+    }
+
+    if(fixedCornerControls[1]) {
+        fixedCornerControls[1].style.transform =
+            "scale(" + scale + ")";
+    }
+
+    if(fixedCornerControls[2]) {
+        fixedCornerControls[2].style.transform =
+            "scale(" + scale + ")";
+    }
+}
+
+keepCornerControlsAtOriginalSize();
+
+window.addEventListener(
+    "resize",
+    keepCornerControlsAtOriginalSize
+);
+
+if(window.visualViewport) {
+    window.visualViewport.addEventListener(
+        "resize",
+        keepCornerControlsAtOriginalSize
+    );
+}
+
+
+/* ============================================================
+   NIAGARA TRANSPORTATION DEPARTMENT
+   Forty ridiculous vehicle variants exist.
+   Four are randomly drawn for each selection round.
+   Exactly one is the correct vehicle.
+   ============================================================ */
+
+const niagaraVersions = [
+    "niagara16.html",
+    "niagara20.html",
+    "niagara27.html",
+    "niagara34.html"
+];
+
+const busFleet = [
+
+    /* FIRST CLASS */
+    {
+        tier: 1,
+        name: "THE LARRY ROYAL GOLDEN COACH",
+        description: "Velvet seats, gold trim, a tiny brass orchestra and a driver who refuses to make eye contact.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE EMPEROR'S NIAGARA EXPRESS",
+        description: "A ridiculous luxury coach with chandeliers, champagne-shaped windows and a carpet no one is allowed to walk on.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE FIVE-STAR WATERFALL LINER",
+        description: "Leather seats, heated cup holders and a concierge who whispers your boarding number.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE GOLDEN LAR-MOBILE",
+        description: "Polished gold bodywork, private curtains and one unnecessarily enormous horn.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE ROYAL GALLERY BUS",
+        description: "An art-museum-on-wheels with velvet ropes and a conductor named Sir Larrysworth.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE PLATINUM PIGEON",
+        description: "A luxury coach shaped vaguely like a bird and staffed by three very serious attendants.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE EXECUTIVE WATERFALL PALACE",
+        description: "A moving palace with gold curtains, marble-effect flooring and a snack nobody understands.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE LAR-GOLD DELUXE",
+        description: "Every seat is first class because Larry says the whole bus is first class.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE NIAGARA CROWN COACH",
+        description: "A giant crown sits on top. Nobody knows why. Nobody is allowed to remove it.",
+        style: "first"
+    },
+    {
+        tier: 1,
+        name: "THE IMPERIAL LARRYLINER",
+        description: "Private cabins, velvet curtains and a tiny bell that rings whenever someone says Niagara.",
+        style: "first"
+    },
+
+    /* SECOND CLASS */
+    {
+        tier: 2,
+        name: "THE SLIGHTLY USED EXECUTIVE",
+        description: "Comfortable enough, although one seat makes a mysterious squeak every eleven minutes.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE SILVERISH EXPRESS",
+        description: "It was silver once. Larry insists it is still silver.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE SECOND-BEST BUS",
+        description: "The first-best bus is visible through the window. This is the second-best one.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE MILDLY LUXURIOUS LAR-BUS",
+        description: "Padded seats, lukewarm air conditioning and a complimentary pencil.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE ECONOMY ROYALE",
+        description: "A respectable coach with one curtain and two working cup holders.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE MIDRANGE MIRACLE",
+        description: "Not fancy. Not terrible. It has successfully completed several trips.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE SILVER BUCKET EXPRESS",
+        description: "Named after its exterior. The interior is surprisingly comfortable.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE LARRY VALUE COACH",
+        description: "A sensible vehicle, which Larry considers deeply suspicious.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE NIAGARA COMMUTER DELUXE",
+        description: "A normal bus with an abnormal amount of yellow tape.",
+        style: "second"
+    },
+    {
+        tier: 2,
+        name: "THE PRETTY GOOD EXPRESS",
+        description: "Pretty good. Quite honestly, that's the official name.",
+        style: "second"
+    },
+
+    /* THIRD CLASS */
+    {
+        tier: 3,
+        name: "THE CRANKY OLD COACH",
+        description: "It rattles whenever it sees a hill and has a bell that rings by itself.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE WOBBLEWAGON",
+        description: "The driver says the wobbling is part of the suspension system.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE BROWN THUNDER",
+        description: "Brown, loud and theoretically capable of reaching Niagara Falls.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE LARRY HAND-ME-DOWN",
+        description: "Three owners ago it was considered luxurious.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE DUSTY EXPRESS",
+        description: "The seats are dusty, the windows are dusty and the brochure is also dusty.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE ALMOST-RELIABLE",
+        description: "It has made the trip before, though not always in the intended direction.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE BUMPY NIAGARA SPECIAL",
+        description: "Free massage included, because the road does most of the work.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE BUS THAT SHOULD HAVE RETIRED",
+        description: "It keeps coming back. Larry refuses to explain.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE RATTLEBOX EXPRESS",
+        description: "Every window rattles in harmony with every other window.",
+        style: "third"
+    },
+    {
+        tier: 3,
+        name: "THE THIRD-CLASS TRAVEL MACHINE",
+        description: "Technically a bus. Spiritually a shopping cart with ambitions.",
+        style: "third"
+    },
+
+    /* FOURTH CLASS — ABSURD */
+    {
+        tier: 4,
+        name: "THE OLD MAN'S GIANT TRICYCLE",
+        description: "An elderly gentleman pedals you to Niagara Falls while towing a wooden wagon.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE GOAT-PULLED TOUR BUS",
+        description: "The goat has not agreed to this arrangement, but the trip is apparently happening.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE BARREL WITH WHEELS",
+        description: "A barrel. Four wheels. A destination. Larry calls this public transportation.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE MANUAL HORSEPOWER EXPRESS",
+        description: "A very determined old man pulls the wagon himself. He asks for tips.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE LAWN-CHAIR LIMOUSINE",
+        description: "Two lawn chairs, one rope and a highly questionable steering system.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE SHOPPING CART OF DESTINY",
+        description: "It has one wheel that squeaks and a map drawn on a napkin.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE WOODEN WHEELBARROW EXPRESS",
+        description: "The driver says Niagara is downhill. This has not been independently verified.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE GRANDPA PEDAL WAGON",
+        description: "Grandpa pedals. You sit in the wagon. Everyone pretends this is normal.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE LARRY STRING-AND-WAGON SERVICE",
+        description: "A wagon attached to a bicycle by a rope that is much too long.",
+        style: "fourth"
+    },
+    {
+        tier: 4,
+        name: "THE FOURTH-CLASS NIAGARA CONTRAPTION",
+        description: "Nobody can identify the vehicle. It is nevertheless headed toward Niagara.",
+        style: "fourth"
+    }
+];
+
+const busChoices =
+    document.getElementById("busChoices");
+
+const busSelectionOverlay =
+    document.getElementById("busSelectionOverlay");
+
+const busChancePanel =
+    document.getElementById("busChancePanel");
+
+const buyOneChance =
+    document.getElementById("buyOneChance");
+
+const buyThreeChances =
+    document.getElementById("buyThreeChances");
+
+const buyTenChances =
+    document.getElementById("buyTenChances");
+
+const busCloseButton =
+    document.getElementById("busCloseButton");
+
+const niagaraPortal =
+    document.getElementById("niagaraPortal");
+
+const niagaraPortalButton =
+    document.getElementById("niagaraPortalButton");
+
+let currentBusChoices = [];
+let correctBusIndex = -1;
+let busExtraChances = 0;
+let busSelectionLocked = false;
+
+
+function shuffleArray(array) {
+
+    const copy =
+        array.slice();
+
+    for(let i = copy.length - 1; i > 0; i--) {
+
+        const j =
+            Math.floor(Math.random() * (i + 1));
+
+        [copy[i], copy[j]] =
+            [copy[j], copy[i]];
+    }
+
+    return copy;
+}
+
+
+function makeBusGraphic(bus) {
+
+    if(bus.style === "fourth") {
+
+        return `
+            <div class="busGraphic trikeGraphic">
+                <div class="trikeBody"></div>
+                <div class="oldMan"></div>
+                <div class="trikeWheel one"></div>
+                <div class="trikeWheel two"></div>
+                <div class="trikeWheel three"></div>
+                <div class="busBadge">LARRY TRANSPORT</div>
+            </div>
+        `;
+    }
+
+    const className =
+        bus.style === "second" ? "second" :
+        bus.style === "third" ? "third" : "";
+
+    return `
+        <div class="busGraphic">
+            <div class="busRoof"></div>
+            <div class="busBody ${className}">
+                <div class="busWindow w1"></div>
+                <div class="busWindow w2"></div>
+                <div class="busWindow w3"></div>
+                <div class="busLuggage"></div>
+                <div class="busBadge">NIAGARA</div>
+            </div>
+            <div class="busWheel left"></div>
+            <div class="busWheel right"></div>
+        </div>
+    `;
+}
+
+
+function makeBusChoiceCard(bus, index) {
+
+    const card =
+        document.createElement("div");
+
+    card.className =
+        "busChoice";
+
+    card.innerHTML =
+        '<div class="busPictureWindow">' +
+            makeBusGraphic(bus) +
+        '</div>' +
+        '<div class="busName">' +
+            bus.name +
+        '</div>' +
+        '<div class="busDescription">' +
+            bus.description +
+        '</div>' +
+        '<div class="busStatus"></div>';
+
+    card.addEventListener(
+        "click",
+        function() {
+            chooseBus(index, card);
+        }
+    );
+
+    return card;
+}
+
+
+function drawBusChoices() {
+
+    busChoices.innerHTML =
+        "";
+
+    busSelectionLocked =
+        false;
+
+    busChancePanel.style.display =
+        "none";
+
+    const shuffledFleet =
+        shuffleArray(busFleet);
+
+    currentBusChoices =
+        shuffledFleet.slice(0, 4);
+
+    correctBusIndex =
+        Math.floor(
+            Math.random() * 4
+        );
+
+    currentBusChoices.forEach(
+        function(bus, index) {
+
+            busChoices.appendChild(
+                makeBusChoiceCard(
+                    bus,
+                    index
+                )
+            );
+        }
+    );
+}
+
+
+function openBusSelectionRoom() {
+
+    busExtraChances = 0;
+
+    drawBusChoices();
+
+    busSelectionOverlay.style.display =
+        "flex";
+}
+
+
+function chooseBus(index, card) {
+
+    if(busSelectionLocked) {
+        return;
+    }
+
+    if(index === correctBusIndex) {
+
+        busSelectionLocked =
+            true;
+
+        card.classList.add("right");
+
+        card.querySelector(".busStatus").textContent =
+            "CORRECT VEHICLE. LARRY APPROVES.";
+
+        setTimeout(
+            function() {
+
+                busSelectionOverlay.style.display =
+                    "none";
+
+                niagaraPortal.style.display =
+                    "flex";
+
+            },
+            900
+        );
+
+        return;
+    }
+
+    card.classList.add("wrong");
+
+    card.querySelector(".busStatus").textContent =
+        "WRONG VEHICLE — IT IS GOING SOMEWHERE ELSE.";
+
+    if(busExtraChances > 0) {
+
+        busExtraChances--;
+
+        setTimeout(
+            function() {
+                drawBusChoices();
+            },
+            650
+        );
+
+        return;
+    }
+
+    busChancePanel.style.display =
+        "block";
+}
+
+
+function buyBusChances(cost, amount) {
+
+    if(larBucks < cost) {
+
+        busChancePanel.querySelector(
+            ".chanceTitle"
+        ).textContent =
+            "NOT ENOUGH LAR-BUCKS. LARRY SAYS YOU NEED " +
+            cost +
+            " TO BUY THIS MANY CHANCES.";
+
+        return;
+    }
+
+    larBucks -= cost;
+
+    larBucksDisplay.textContent =
+        larBucks;
+
+    busExtraChances +=
+        amount;
+
+    busChancePanel.querySelector(
+        ".chanceTitle"
+    ).textContent =
+        amount +
+        " EXTRA CHANCES PURCHASED. CHOOSE AGAIN.";
+
+    setTimeout(
+        function() {
+            drawBusChoices();
+        },
+        450
+    );
+}
+
+
+buyOneChance.addEventListener(
+    "click",
+    function() {
+        buyBusChances(3, 1);
+    }
+);
+
+buyThreeChances.addEventListener(
+    "click",
+    function() {
+        buyBusChances(8, 3);
+    }
+);
+
+buyTenChances.addEventListener(
+    "click",
+    function() {
+        buyBusChances(20, 10);
+    }
+);
+
+
+busCloseButton.addEventListener(
+    "click",
+    function() {
+
+        busSelectionOverlay.style.display =
+            "none";
+
+        puzzleMode =
+            "art";
+    }
+);
+
+
+niagaraPortalButton.addEventListener(
+    "click",
+    function() {
+
+        const chosenNiagara =
+            niagaraVersions[
+                Math.floor(
+                    Math.random() *
+                    niagaraVersions.length
+                )
+            ];
+
+        window.location.href =
+            chosenNiagara;
+    }
+);
+
+
+/* ============================================================
+   LAR-BUCKS
+   ============================================================ */
+
+/* ============================================================
+   LAR-BUCKS
+   ============================================================ */
+
+let larBucks = 0;
+
+function addLarBucks(amount) {
+      larBucks += amount;
+      larBucksDisplay.textContent = larBucks;
+      updatePrizeGalleryMessage();
+      if(larBucks >= 20) {
+         showNiagaraPrizeSlot();
+         updatePrizeGalleryMessage();
+      }
+  }
+
+
+/* ============================================================
+   PUZZLE STATE
+   ============================================================ */
+
+let puzzleImage = "";
+let puzzleTimerInterval = null;
+let solvedPieces = 0;
+
+const repairPositions = [1, 4, 7];
+
+let puzzleMode = "art";
+  let firstPuzzleCompleted = false;
+  let larBoothMoveTimer = null;
+  function placeBoothOnRandomPainting(){
+      const booth=document.getElementById("larKnowledgeBooth");
+      const figures=Array.from(document.querySelectorAll("#artworkGallery .excerpt-figure"));
+      if(!booth || !figures.length) return;
+      const target=figures[Math.floor(Math.random()*figures.length)];
+      const img=target.querySelector("img");
+      const rect=(img||target).getBoundingClientRect();
+      if(!rect.width || !rect.height) return;
+      booth.style.position="fixed";
+      booth.style.width=Math.max(120,Math.min(260,rect.width))+"px";
+      booth.style.height=Math.max(120,Math.min(260,rect.height))+"px";
+      booth.style.left=(rect.left+rect.width/2)+"px";
+      booth.style.top=(rect.top+rect.height/2)+"px";
+      booth.style.transform="translate(-50%,-50%)";
+  }
+  function startBoothRoaming(){
+      const booth=document.getElementById("larKnowledgeBooth");
+      if(!booth) return;
+      booth.style.display="block";
+      placeBoothOnRandomPainting();
+      clearInterval(larBoothMoveTimer);
+      larBoothMoveTimer=setInterval(placeBoothOnRandomPainting,6000+Math.random()*4000);
+  }
+  function revealLarKnowledgeBooth(){
+      if(firstPuzzleCompleted) return;
+      firstPuzzleCompleted=true;
+      startBoothRoaming();
+  }
+
+
+
+/* ============================================================
+   NIAGARA PRIZE SLOT
+   ============================================================ */
+
+function showNiagaraPrizeSlot() {
+
+    if(prizeHasAppeared) {
+        return;
+    }
+
+    prizeHasAppeared = true;
+
+    const galleryItems =
+        Array.from(
+            artworkGallery.querySelectorAll(".excerpt-figure")
+        );
+
+    if(!galleryItems.length) {
+        return;
+    }
+
+    const chosenIndex =
+        Math.floor(
+            Math.random() * galleryItems.length
+        );
+
+    prizeReplacedItem =
+        galleryItems[chosenIndex];
+
+    prizeReplacedItem.style.display =
+        "none";
+
+    prizeGalleryItem.style.display =
+        "inline-block";
+
+    prizeReplacedItem.parentNode.insertBefore(
+        prizeGalleryItem,
+        prizeReplacedItem
+    );
+}
+
+
+/* ============================================================
+   BUS-PRIZE PUZZLE IMAGE
+   ============================================================ */
+
+function makePrizePuzzleImage() {
+
+    const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg"
+             width="900" height="900" viewBox="0 0 900 900">
+            <rect width="900" height="900" fill="#fff"/>
+            <rect x="28" y="28" width="844" height="844"
+                  rx="24" fill="#fff6b0" stroke="#111" stroke-width="22"/>
+            <text x="450" y="205"
+                  text-anchor="middle"
+                  font-family="Arial"
+                  font-size="64"
+                  font-weight="900"
+                  fill="#d00000">YOU HAVE WON</text>
+            <text x="450" y="300"
+                  text-anchor="middle"
+                  font-family="Arial"
+                  font-size="58"
+                  font-weight="900"
+                  fill="#111">A BUS TRIP</text>
+            <text x="450" y="390"
+                  text-anchor="middle"
+                  font-family="Arial"
+                  font-size="54"
+                  font-weight="900"
+                  fill="#111">TO NIAGARA FALLS!</text>
+            <rect x="120" y="465" width="660" height="225"
+                  fill="#e8d6a0" stroke="#111" stroke-width="16"/>
+            <text x="450" y="550"
+                  text-anchor="middle"
+                  font-family="Arial"
+                  font-size="42"
+                  font-weight="900"
+                  fill="#111">FIRST • SECOND • THIRD</text>
+            <text x="450" y="615"
+                  text-anchor="middle"
+                  font-family="Arial"
+                  font-size="42"
+                  font-weight="900"
+                  fill="#111">• FOURTH CLASS BUS</text>
+        </svg>
+    `;
+
+    return "data:image/svg+xml;charset=utf-8," +
+        encodeURIComponent(svg);
+}
+
+function startPrizePuzzle() {
+
+    puzzleMode = "bus";
+
+    createPuzzle(
+        makePrizePuzzleImage(),
+        "bus"
+    );
+}
+
+
+/* ============================================================
+   RANDOM SALES MESSAGES
+   ============================================================ */
+
+const salesMessages = [
+
+    "WHY NOT BUY MORE? You are already here.",
+
+    "URGENT: Your Lar-Bucks are becoming lonely.",
+
+    "For TWO more Lar-Bucks, you can spend FIVE Lar-Bucks, which could earn you THREE more Lar-Bucks!",
+
+    "LIMITED TIME: This offer lasts approximately until we stop looking at it.",
+
+    "ONLY 2 CUSTOMERS ALLOWED! Unfortunately, you are one of them.",
+
+    "ACT NOW! Or act later. But preferably now.",
+
+    "BUY MORE ART. Larry has already put the boxes out.",
+
+    "CONSUMER ALERT: You have not purchased enough imaginary merchandise.",
+
+    "EXCLUSIVE DEAL: Spend 7 Lar-Bucks to unlock the opportunity to spend 9.",
+
+    "WHY SETTLE FOR ONE LAR-BUCK WHEN YOU COULD OWE SIX?",
+
+    "FINAL WARNING: The sale may end at any moment we choose.",
+
+    "YOUR FRIENDS ARE PROBABLY BUYING MORE LAR-BUCKS.",
+
+    "FLASH SALE! Everything is 100% off except the things that aren't.",
+
+    "FOR JUST 4 LAR-BUCKS: receive absolutely no guarantee whatsoever.",
+
+    "BUY NOW! The other customer is thinking about buying now.",
+
+    "CONGRATULATIONS! You have qualified to consider purchasing something.",
+
+    "URGENT DEAL: Spend 5. Receive the satisfaction of having spent 5.",
+
+    "WHY NOT BUY MORE? Larry has already made the suggestion.",
+
+    "EXTRA VALUE: One imaginary Lar-Buck may be worth another imaginary Lar-Buck.",
+
+    "LAST CHANCE! This is your last chance until the next last chance."
+
+];
+
+
+/* ============================================================
+   SALES POPUP
+   ============================================================ */
+
+function createSalesPopup() {
+
+    const popup = document.createElement("div");
+
+    popup.className = "salesPopup";
+
+    const message =
+        salesMessages[
+            Math.floor(
+                Math.random() * salesMessages.length
+            )
+        ];
+
+    popup.innerHTML =
+        "<strong>IMPORTANT LARRY NOTICE</strong>" +
+        message;
+
+    popup.style.left =
+        Math.random() * 70 + 10 + "%";
+
+    popup.style.top =
+        Math.random() * 70 + 10 + "%";
+
+    salesContainer.appendChild(popup);
+
+    setTimeout(function() {
+        popup.remove();
+    }, 3500);
+}
+
+
+/* ============================================================
+   SALES BARRAGE
+   ============================================================ */
+
+function salesBarrage() {
+
+    let count = 0;
+
+    const barrage = setInterval(function() {
+
+        createSalesPopup();
+
+        count++;
+
+        if(count >= 12) {
+            clearInterval(barrage);
+        }
+
+    }, 350);
+
+}
+
+
+/* ============================================================
+   CONFETTI
+   ============================================================ */
+
+function createConfetti() {
+
+    for(let i = 0; i < 180; i++) {
+
+        const piece =
+            document.createElement("div");
+
+        piece.className = "confetti";
+
+        piece.style.left =
+            Math.random() * 100 + "vw";
+
+        piece.style.top =
+            (-Math.random() * 30) + "vh";
+
+        const typeRoll =
+            Math.random();
+
+        if(typeRoll < 0.14) {
+
+            piece.classList.add("notebook");
+
+        } else if(typeRoll < 0.23) {
+
+            piece.classList.add("brown");
+
+        } else {
+
+            piece.style.background = "#f7f7f2";
+
+        }
+
+        piece.style.animationDuration =
+            (2.5 + Math.random() * 3) + "s";
+
+        piece.style.animationDelay =
+            (Math.random() * 0.7) + "s";
+
+        document.body.appendChild(piece);
+
+        setTimeout(function() {
+            piece.remove();
+        }, 6000);
+    }
+
+}
+
+
+/* ============================================================
+   FIREWORKS
+   ============================================================ */
+
+function createFireworks() {
+
+    for(let i = 0; i < 18; i++) {
+
+        setTimeout(function() {
+
+            const firework =
+                document.createElement("div");
+
+            firework.className =
+                "firework";
+
+            firework.style.left =
+                (10 + Math.random() * 80) + "vw";
+
+            firework.style.top =
+                (10 + Math.random() * 60) + "vh";
+
+            document.body.appendChild(firework);
+
+            setTimeout(function() {
+                firework.remove();
+            }, 1200);
+
+        }, i * 100);
+    }
+}
+
+
+/* ============================================================
+   PUZZLE PIECE BACKGROUND POSITION
+   ============================================================ */
+
+function setPieceBackground(
+    piece,
+    correctPosition
+) {
+
+    const row =
+        Math.floor(correctPosition / 3);
+
+    const col =
+        correctPosition % 3;
+
+    piece.style.backgroundImage =
+        "url('" + puzzleImage + "')";
+
+    piece.style.backgroundSize =
+        "300% 300%";
+
+    piece.style.backgroundPosition =
+        (col * 50) + "% " +
+        (row * 50) + "%";
+}
+
+
+/* ============================================================
+   CREATE COMPLETED PICTURE
+   ============================================================ */
+
+function createPuzzle(imageSrc, mode = "art") {
+
+    puzzleMode = mode;
+    puzzleImage = imageSrc;
+
+    puzzleBoard.innerHTML = "";
+    pieceTray.innerHTML = "";
+
+    solvedPieces = 0;
+
+    puzzleOverlay.style.display = "block";
+
+    paperBag.style.display = "none";
+    exitSign.style.display = "none";
+
+    qualitySeal.style.display = "none";
+    larryCongratulations.style.display = "none";
+    wellingtonAd.style.display = "none";
+
+    if(puzzleMode === "bus") {
+
+        puzzleTitle.textContent =
+            "LARRY'S NIAGARA PRIZE DEPARTMENT";
+
+        puzzleMessage.textContent =
+            "YOU HAVE WON A BUS TRIP TO NIAGARA FALLS!";
+
+        puzzleInstruction.textContent =
+            "Assemble the three missing pieces to discover which bus class Larry has decided you deserve.";
+
+    } else {
+
+        puzzleTitle.textContent =
+            "LARRY'S VARIETY ART REPAIR DEPARTMENT";
+
+        puzzleMessage.textContent =
+            "YOU BROKE IT. YOU BOUGHT IT.";
+
+        puzzleInstruction.textContent =
+            "Assemble the three missing pieces to regain access to the artwork. Larry has made this extremely easy because he believes in you.";
+    }
+
+
+
+    /*
+       Create all nine pieces of the finished image.
+
+       Only positions 1, 4 and 7 will be removed.
+       Everything else remains visible.
+    */
+
+    for(let i = 0; i < 9; i++) {
+
+        if(repairPositions.includes(i)) {
+
+            const hole =
+                document.createElement("div");
+
+            hole.className =
+                "repairHole";
+
+            hole.style.left =
+                ((i % 3) * 33.333333) + "%";
+
+            hole.style.top =
+                (Math.floor(i / 3) * 33.333333) + "%";
+
+            puzzleBoard.appendChild(hole);
+
+        } else {
+
+            const boardPiece =
+                document.createElement("div");
+
+            boardPiece.className =
+                "puzzleBoardPiece";
+
+            boardPiece.style.left =
+                ((i % 3) * 33.333333) + "%";
+
+            boardPiece.style.top =
+                (Math.floor(i / 3) * 33.333333) + "%";
+
+            setPieceBackground(
+                boardPiece,
+                i
+            );
+
+            puzzleBoard.appendChild(
+                boardPiece
+            );
+        }
+    }
+
+
+    /*
+       Create three tray pieces.
+
+       They are shuffled only among the three
+       correct positions, so the puzzle is easy.
+    */
+
+    let shuffledPositions =
+        [1, 4, 7];
+
+    shuffledPositions.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    for(let i = 0; i < 3; i++) {
+
+        const traySlot =
+            document.createElement("div");
+
+        traySlot.className =
+            "traySlot";
+
+        pieceTray.appendChild(
+            traySlot
+        );
+
+        const correctPosition =
+            shuffledPositions[i];
+
+        const piece =
+            document.createElement("div");
+
+        piece.className =
+            "repairPiece";
+
+        piece.dataset.correct =
+            correctPosition;
+
+        setPieceBackground(
+            piece,
+            correctPosition
+        );
+
+        piece.draggable = true;
+
+
+        piece.addEventListener(
+            "dragstart",
+            function(event) {
+
+                event.dataTransfer.setData(
+                    "text/plain",
+                    correctPosition
+                );
+
+                event.dataTransfer.effectAllowed =
+                    "move";
+
+                piece.dataset.dragging =
+                    "true";
+            }
+        );
+
+
+        piece.addEventListener(
+            "dragend",
+            function() {
+
+                delete piece.dataset.dragging;
+            }
+        );
+
+
+        traySlot.appendChild(piece);
+    }
+
+
+    /*
+       The repair holes accept the correct piece.
+    */
+
+    document
+        .querySelectorAll(".repairHole")
+        .forEach(function(hole) {
+
+            hole.addEventListener(
+                "dragover",
+                function(event) {
+
+                    event.preventDefault();
+                }
+            );
+
+
+            hole.addEventListener(
+                "drop",
+                function(event) {
+
+                    event.preventDefault();
+
+                    const dragged =
+                        document.querySelector(
+                            '[data-dragging="true"]'
+                        );
+
+                    if(!dragged) {
+                        return;
+                    }
+
+                    const correct =
+                        Number(
+                            dragged.dataset.correct
+                        );
+
+                    const target =
+                        Array.from(
+                            puzzleBoard.children
+                        ).indexOf(hole);
+
+                    /*
+                       The target is determined by
+                       the hole's actual coordinates.
+                    */
+
+                    const targetPosition =
+                        Math.round(
+                            parseFloat(hole.style.top) /
+                            33.333333
+                        ) * 3 +
+                        Math.round(
+                            parseFloat(hole.style.left) /
+                            33.333333
+                        );
+
+                    if(correct === targetPosition) {
+
+                        /*
+                           Put the piece into the
+                           actual board position.
+                        */
+
+                        const finalPiece =
+                            document.createElement("div");
+
+                        finalPiece.className =
+                            "puzzleBoardPiece";
+
+                        finalPiece.style.left =
+                            hole.style.left;
+
+                        finalPiece.style.top =
+                            hole.style.top;
+
+                        setPieceBackground(
+                            finalPiece,
+                            correct
+                        );
+
+                        puzzleBoard.appendChild(
+                            finalPiece
+                        );
+
+                        dragged.classList.add(
+                            "correct"
+                        );
+
+                        dragged.draggable =
+                            false;
+
+                        hole.remove();
+
+                        solvedPieces++;
+
+                        if(solvedPieces === 3) {
+                            puzzleSolved();
+                        }
+
+                    } else {
+
+                        dragged.style.animation =
+                            "shake 0.2s";
+
+                        setTimeout(function() {
+
+                            dragged.style.animation =
+                                "";
+
+                        }, 250);
+                    }
+                }
+            );
+        });
+
+
+    /*
+       20-second countdown.
+    */
+
+    let seconds = 20;
+
+    puzzleTimer.textContent =
+        seconds;
+
+    clearInterval(
+        puzzleTimerInterval
+    );
+
+    puzzleTimerInterval =
+        setInterval(function() {
+
+            seconds--;
+
+            puzzleTimer.textContent =
+                seconds;
+
+            if(seconds <= 0) {
+
+                clearInterval(
+                    puzzleTimerInterval
+                );
+
+                puzzleTimer.textContent =
+                    "TIME!";
+
+                createSalesPopup();
+            }
+
+        }, 1000);
+}
+
+
+/* ============================================================
+   START PUZZLE
+   ============================================================ */
+
+function startPuzzle(imageSrc, mode = "art") {
+
+    createPuzzle(
+        imageSrc,
+        mode
+    );
+}
+
+
+/* ============================================================
+   PUZZLE SOLVED
+   ============================================================ */
+
+function puzzleSolved() {
+
+    clearInterval(
+        puzzleTimerInterval
+    );
+
+    if(puzzleMode === "bus") {
+
+        puzzleOverlay.style.display =
+            "none";
+
+        openBusSelectionRoom();
+
+        return;
+    }
+
+    revealLarKnowledgeBooth();
+
+
+    /* ============================================================
+       NORMAL ART PUZZLE COMPLETION
+       ============================================================ */
+
+    addLarBucks(3);
+
+    createConfetti();
+    createFireworks();
+
+    larryCongratulations.innerHTML =
+        '<div class="big">LARRY IS IMPRESSED!</div>' +
+        '<div class="small">YOU HAVE EARNED <strong>3 LAR BUCKS!</strong></div>';
+
+    larryCongratulations.style.display =
+        "block";
+
+    puzzleOverlay.style.display =
+        "none";
+
+    let congratulationsClosed =
+        false;
+
+    function closeCongratulations() {
+
+        if(congratulationsClosed) {
+            return;
+        }
+
+        congratulationsClosed = true;
+
+        larryCongratulations.style.display =
+            "none";
+
+        larryCongratulations.onclick =
+            null;
+
+        puzzleMode = "art";
+    }
+
+    larryCongratulations.onclick =
+        closeCongratulations;
+
+    setTimeout(
+        closeCongratulations,
+        1000
+    );
+}
+
+
+/* ============================================================
+   LEAVE IT BROKEN
+   ============================================================ */
+
+puzzleCancel.addEventListener(
+    "click",
+    function() {
+
+        clearInterval(
+            puzzleTimerInterval
+        );
+
+        puzzleOverlay.style.display =
+            "none";
+
+        /*
+           Larry is offended that the customer
+           refuses to repair his own damage.
+        */
+
+        createSalesPopup();
+
+        setTimeout(function() {
+
+            createSalesPopup();
+
+        }, 450);
+
+        setTimeout(function() {
+
+            createSalesPopup();
+
+        }, 900);
+    }
+);
+
+
+/* ============================================================
+   ARTWORK OPENING
+   ============================================================ */
+
+let zoomLevel = 0.01;
+
+let positionX = 0;
+let positionY = 0;
+
+let dragging = false;
+
+let startMouseX = 0;
+let startMouseY = 0;
+
+let startPositionX = 0;
+let startPositionY = 0;
+
+
+/* ============================================================
+   FULL VIEW SIZE
+   ============================================================ */
+
+function calculateFullViewZoom() {
+
+    const naturalWidth =
+        floatingArtwork.naturalWidth;
+
+    const naturalHeight =
+        floatingArtwork.naturalHeight;
+
+    const availableWidth =
+        window.innerWidth * 0.85;
+
+    const availableHeight =
+        window.innerHeight * 0.85;
+
+    const widthRatio =
+        availableWidth / naturalWidth;
+
+    const heightRatio =
+        availableHeight / naturalHeight;
+
+    return Math.min(
+        widthRatio,
+        heightRatio
+    );
+}
+
+
+/* ============================================================
+   UPDATE ARTWORK
+   ============================================================ */
+
+function updateArtwork() {
+
+    floatingArtwork.style.transform =
+        "translate(-50%, -50%) " +
+        "translate(" +
+        positionX +
+        "px, " +
+        positionY +
+        "px) " +
+        "scale(" +
+        zoomLevel +
+        ")";
+}
+
+
+/* ============================================================
+   OPEN AFTER PUZZLE
+   ============================================================ */
+
+function openArtworkAfterPuzzle() {
+
+    positionX = 0;
+    positionY = 0;
+
+    zoomLevel = 0.01;
+
+    floatingArtwork.style.transition =
+        "none";
+
+    updateArtwork();
+
+    if(floatingArtwork.complete) {
+
+        animateOpen();
+
+    } else {
+
+        floatingArtwork.onload =
+            animateOpen;
+    }
+}
+
+
+/* ============================================================
+   NORMAL IMAGE CLICK
+   ============================================================ */
+
+document
+    .querySelectorAll(".excerpt-figure img")
+    .forEach(function(image) {
+
+        image.addEventListener(
+            "click",
+            function(event) {
+
+                event.stopPropagation();
+
+                floatingArtwork.src =
+                    image.src;
+
+                floatingArtwork.alt =
+                    image.alt;
+
+                puzzleMode = "art";
+
+                startPuzzle(
+                    image.src
+                );
+            }
+        );
+    });
+
+
+/* ============================================================
+   ARTWORK ANIMATION
+   ============================================================ */
+
+function animateOpen() {
+
+    const fullViewZoom =
+        calculateFullViewZoom();
+
+    requestAnimationFrame(function() {
+
+        requestAnimationFrame(function() {
+
+            zoomLevel =
+                fullViewZoom;
+
+            floatingArtwork.style.transition =
+                "transform 0.65s cubic-bezier(0.2, 0.8, 0.2, 1)";
+
+            updateArtwork();
+        });
+    });
+}
+
+
+/* ============================================================
+   MOUSE WHEEL ZOOM
+   ============================================================ */
+
+floatingArtwork.addEventListener(
+    "wheel",
+    function(event) {
+
+        event.preventDefault();
+
+        floatingArtwork.style.transition =
+            "transform 0.08s ease";
+
+        if(event.deltaY < 0) {
+
+            zoomLevel *= 1.18;
+
+        } else {
+
+            zoomLevel /= 1.18;
+        }
+
+        if(zoomLevel < 0.01) {
+            zoomLevel = 0.01;
+        }
+
+        if(zoomLevel > 10) {
+            zoomLevel = 10;
+        }
+
+        updateArtwork();
+    }
+);
+
+
+/* ============================================================
+   DRAGGING
+   ============================================================ */
+
+floatingArtwork.addEventListener(
+    "mousedown",
+    function(event) {
+
+        event.preventDefault();
+
+        dragging = true;
+
+        floatingArtwork.classList.add(
+            "dragging"
+        );
+
+        floatingArtwork.style.transition =
+            "none";
+
+        startMouseX =
+            event.clientX;
+
+        startMouseY =
+            event.clientY;
+
+        startPositionX =
+            positionX;
+
+        startPositionY =
+            positionY;
+    }
+);
+
+
+document.addEventListener(
+    "mousemove",
+    function(event) {
+
+        if(!dragging) {
+            return;
+        }
+
+        positionX =
+            startPositionX +
+            (event.clientX - startMouseX);
+
+        positionY =
+            startPositionY +
+            (event.clientY - startMouseY);
+
+        updateArtwork();
+    }
+);
+
+
+document.addEventListener(
+    "mouseup",
+    function() {
+
+        dragging = false;
+
+        floatingArtwork.classList.remove(
+            "dragging"
+        );
+    }
+);
+
+
+/* ============================================================
+   CLOSE ARTWORK
+   ============================================================ */
+
+function closeArtwork() {
+
+    floatingArtwork.style.display =
+        "none";
+
+    paperBag.style.display =
+        "none";
+
+    exitSign.style.display =
+        "none";
+
+    positionX = 0;
+    positionY = 0;
+
+    dragging = false;
+}
+
+
+/* ============================================================
+   BROWN PAPER BAG
+   Clicking it reveals the tiny EXIT sign.
+   ============================================================ */
+
+paperBag.addEventListener(
+    "click",
+    function() {
+
+        exitSign.style.display =
+            "block";
+    }
+);
+
+
+/* ============================================================
+   EXIT SIGN
+   Acts exactly like ESC when artwork is open.
+   ============================================================ */
+
+exitSign.addEventListener(
+    "click",
+    function() {
+
+        closeArtwork();
+
+        createSalesPopup();
+    }
+);
+
+
+/* ============================================================
+   ESCAPE KEY
+   ============================================================ */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if(event.key === "Escape") {
+
+            /*
+               During the puzzle, Larry refuses
+               to let the customer escape.
+            */
+
+            if(
+                puzzleOverlay.style.display ===
+                "block"
+            ) {
+
+                createSalesPopup();
+
+                return;
+            }
+
+            closeArtwork();
+        }
+    }
+);
+
+
+/* ============================================================
+   WINDOW RESIZE
+   ============================================================ */
+
+window.addEventListener(
+    "resize",
+    function() {
+
+        if(document.getElementById("larKnowledgeBooth")?.style.display === "block") {
+            placeBoothOnRandomPainting();
+        }
+
+        if(!dragging) {
+
+            positionX = 0;
+            positionY = 0;
+
+            updateArtwork();
+        }
+    }
+);
+
+
+/* ============================================================
+   INITIAL SHOP BELL
+   ============================================================ */
+
+setTimeout(function() {
+
+
+}, 2500);
+
+</script>
+
+
+<script>
+(function(){
+ const booth=document.getElementById("larKnowledgeBooth"), overlay=document.getElementById("larKnowledgeOverlay"), answers=document.getElementById("larKnowledgeAnswers"), result=document.getElementById("larKnowledgeResult"), casino=document.getElementById("larCasinoButton"), close=document.getElementById("larKnowledgeClose");
+ const quizzes=[
+ {q:"What is Larry's name?",a:["A. Larry — as originally filed.","B. Larry — with administrative confidence.","C. Larry — proprietor of the situation.","D. Larry — the short version remains perfectly adequate."]},
+ {q:"What should you do when Larry announces a deal?",a:["A. Investigate the deal with Lar-like enthusiasm.","B. Approach the deal before it develops further.","C. Bring your Lar-bucks and an open mind.","D. All of the above, preferably before lunch."]},
+ {q:"What is the proper attitude toward Lar-bucks?",a:["A. Respectful but not sentimental.","B. Spendable, mysterious and slightly suspicious.","C. Keep them moving through the Larry economy.","D. Never attempt to eat them."]},
+ {q:"What is Larry's Variety famous for?",a:["A. Variety.","B. Larry.","C. Deals of uncertain historical significance.","D. The continued refusal to become ordinary."]},
+ {q:"When the Lar-mobile arrives, what should you expect?",a:["A. Brown machinery and unreasonable exhaust.","B. A long hood and an even longer explanation.","C. A vehicle that looks as though it has seen things.","D. Some combination of all the above, depending on the Lar-mobile."]},
+ {q:"What happens after a successful Lar level?",a:["A. Electricity becomes unnecessarily ceremonial.","B. A low tuba may become involved.","C. Larry becomes privately impressed.","D. The next Lar is permitted to occur."]},
+ {q:"What is the safest policy when Larry says there is a prize?",a:["A. Continue collecting until the paperwork becomes interesting.","B. Check Larry's Variety for further instructions.","C. Assume nothing and enjoy the mystery.","D. Keep going. Larry has almost certainly arranged something."]}
+ ];
+ let last=-1;
+ function openBooth(){
+   result.style.display="none"; casino.style.display="none"; answers.style.display="grid"; answers.innerHTML="";
+   let n=Math.floor(Math.random()*quizzes.length); if(n===last)n=(n+1)%quizzes.length; last=n; const quiz=quizzes[n];
+   document.getElementById("larKnowledgeQuestion").textContent=quiz.q;
+   quiz.a.forEach(text=>{const b=document.createElement("button"); b.className="larAnswer"; b.textContent=text; b.onclick=()=>{answers.style.display="none"; result.textContent=["Your answer has been entered into the Larry files. The files remain silent.","Recorded. Larry's Department of Lar Knowledge declines to elaborate.","Your response has been filed under: probably fine.","The answer has been accepted for further mysterious consideration."][Math.floor(Math.random()*4)]; result.style.display="block"; casino.style.display="block";}; answers.appendChild(b);});
+   overlay.style.display="flex";
+ }
+ booth.addEventListener("click",openBooth); close.addEventListener("click",()=>overlay.style.display="none"); overlay.addEventListener("click",e=>{if(e.target===overlay)overlay.style.display="none"}); casino.addEventListener("click",()=>location.href="niagara34larcasino.html");
+})();
+</script>
+
+<script>
+(function(){const layer=document.getElementById("larLightningLayer");if(!layer)return;function thunder(){try{const AC=window.AudioContext||window.webkitAudioContext,ctx=new AC(),now=ctx.currentTime,buf=ctx.createBuffer(1,ctx.sampleRate*1.15,ctx.sampleRate),d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length)*.7;const src=ctx.createBufferSource(),f=ctx.createBiquadFilter(),g=ctx.createGain();f.type="lowpass";f.frequency.value=180;g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.42,now+.04);g.gain.exponentialRampToValueAtTime(.0001,now+1.1);src.buffer=buf;src.connect(f);f.connect(g);g.connect(ctx.destination);src.start();src.stop(now+1.12);setTimeout(()=>ctx.close(),1400)}catch(e){}} function strike(){const imgs=Array.from(document.querySelectorAll("#artworkGallery .excerpt-figure img"));if(!imgs.length)return;const img=imgs[Math.floor(Math.random()*imgs.length)],r=img.getBoundingClientRect();if(r.width<20||r.height<20)return;const x=r.left+r.width*(.25+Math.random()*.5),y=r.top+r.height*.55,sx=x+(Math.random()*120-60),sy=-30,dx=x-sx,dy=y-sy,len=Math.hypot(dx,dy),ang=Math.atan2(dx,dy)*180/Math.PI,b=document.createElement("div");b.className="larLightningBolt";b.style.left=sx+"px";b.style.top=sy+"px";b.style.height=len+"px";b.style.transform="rotate("+ang+"deg)";layer.appendChild(b);thunder();setTimeout(()=>b.remove(),650)} function schedule(){setTimeout(()=>{strike();schedule()},9000+Math.random()*15000)}schedule()})();
+</script></body>
+</html>
