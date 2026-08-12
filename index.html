@@ -83,9 +83,6 @@ h1 {
     animation-iteration-count: infinite;
 }
 
-.excerpt-figure.gallery-glitch-hidden {
-    visibility: hidden;
-}
 
 .prize-gallery-item {
     display: inline-block;
@@ -443,7 +440,7 @@ h1 {
 #busChancePanel {
     display: none;
     margin-top: 18px;
-    padding: 8px;
+    padding: 14px;
     border: 3px dashed #ffe16b;
     background: #171717;
     color: white;
@@ -587,7 +584,6 @@ h1 {
 /* ============================================================
    GALLERY
    ============================================================ */
-#artworkGallery{position:relative;z-index:2;}
 
 
 .excerpt-figure {
@@ -685,11 +681,12 @@ h1 {
 }
 
 .excerpt-figure:hover figcaption {
-    color: white;
+    color: #050505;
     text-shadow:
-        0 0 5px white,
-        0 0 10px white,
-        0 0 20px white;
+        0 0 4px #fff,
+        0 0 10px #fff,
+        0 0 18px #fff,
+        0 0 30px rgba(255,255,255,.95);
 }
 
 figure {
@@ -866,7 +863,7 @@ figure {
     z-index: 2000;
     background: rgba(0,0,0,0.93);
     overflow-y: auto;
-    padding: 10px;
+    padding: 25px;
     box-sizing: border-box;
 }
 
@@ -875,15 +872,15 @@ figure {
    ============================================================ */
 
 #puzzleBox {
-    width: min(410px, 90vw);
-    margin: 10px auto;
+    width: min(738px, 81vw);
+    margin: 20px auto;
     background: #eee;
     color: black;
-    border: 5px solid #111;
+    border: 8px solid #111;
     box-shadow:
         0 0 30px white,
         0 0 70px black;
-    padding: 10px;
+    padding: 14px;
     box-sizing: border-box;
 }
 
@@ -892,26 +889,26 @@ figure {
    ============================================================ */
 
 #puzzleTitle {
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 900;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
 #puzzleMessage {
-    font-size: 14px;
+    font-size: 19px;
     font-weight: 900;
     color: red;
     margin: 10px 0;
 }
 
 #puzzleInstruction {
-    font-size: 11px;
+    font-size: 14px;
     font-weight: bold;
-    margin-bottom: 7px;
+    margin-bottom: 10px;
 }
 
 #puzzleTimer {
-    font-size: 25px;
+    font-size: 42px;
     font-weight: 900;
     color: red;
     margin: 10px;
@@ -924,9 +921,9 @@ figure {
    ============================================================ */
 
 #puzzleBoard {
-    width: min(340px, 82vw);
+    width: min(612px, 74vw);
     aspect-ratio: 1 / 1;
-    margin: 8px auto;
+    margin: 15px auto;
     position: relative;
     background: white;
     overflow: hidden;
@@ -988,10 +985,10 @@ figure {
 #pieceTray {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-    width: min(340px, 82vw);
+    gap: 12px;
+    width: min(612px, 74vw);
     margin: 15px auto;
-    padding: 6px;
+    padding: 10px;
     background: #222;
     border: 5px solid #555;
     box-sizing: border-box;
@@ -1387,89 +1384,125 @@ figure {
    LAR KNOWLEDGE BOOTH — SECRET LAR CASINO ENTRANCE
    ============================================================ */
 #larKnowledgeBooth{
-    display:none; position:absolute; left:50%; top:50%;
-    width:min(18vw,300px); height:min(18vw,300px);
-    min-width:150px; min-height:150px;
-    transform:translate(-50%,-50%); z-index:8;
-    cursor:pointer; user-select:none; pointer-events:auto;
+    display:none;
+    position:fixed;
+    right:7vw;
+    top:50%;
+    transform:translateY(-50%);
+    width:230px;
+    height:230px;
+    z-index:6500;
+    cursor:pointer;
+    user-select:none;
+    filter:drop-shadow(0 0 7px rgba(0,255,255,.45));
 }
 #larKnowledgeBooth .boothBody{
-    position:absolute; left:15%; right:15%; top:15%; bottom:15%;
-    background:linear-gradient(145deg,#3a2115,#744522 52%,#29170e);
-    border:5px solid #111; border-radius:7px 7px 3px 3px;
-    box-shadow:0 7px 15px rgba(0,0,0,.8),inset 0 0 14px rgba(255,255,255,.12),0 0 18px rgba(0,234,255,.8),0 0 40px rgba(255,57,216,.65);
-    z-index:3;
+    position:absolute;
+    left:24px;
+    right:24px;
+    bottom:18px;
+    height:170px;
+    background:
+      linear-gradient(145deg,#3a2115,#744522 52%,#29170e);
+    border:5px solid #111;
+    border-radius:7px 7px 3px 3px;
+    box-shadow:0 7px 15px rgba(0,0,0,.8),inset 0 0 14px rgba(255,255,255,.12);
 }
 #larKnowledgeBooth .boothRoof{
-    position:absolute; left:11%; right:11%; top:10%; height:9%;
-    background:#111; border:3px solid #ddd; transform:skewX(-12deg); z-index:4;
+    position:absolute;
+    left:18px;
+    right:18px;
+    top:28px;
+    height:22px;
+    background:#111;
+    border:3px solid #ddd;
+    transform:skewX(-12deg);
+    z-index:2;
 }
 #larKnowledgeBooth .boothQuestion{
-    position:absolute; left:50%; top:20%; transform:translateX(-50%); z-index:5;
-    color:white; font-family:Georgia,serif; font-size:clamp(70px,8vw,104px);
-    line-height:1; font-weight:900;
-    text-shadow:0 0 4px #fff,0 0 10px #00eaff,0 0 22px #ff39ff,2px 2px 0 #111;
+    position:absolute;
+    left:50%;
+    top:50px;
+    transform:translateX(-50%);
+    z-index:4;
+    color:white;
+    font-family:Georgia,serif;
+    font-size:104px;
+    line-height:1;
+    font-weight:900;
+    text-shadow:
+      0 0 4px #fff,
+      0 0 10px #00eaff,
+      0 0 22px #ff39ff,
+      2px 2px 0 #111;
 }
 #larKnowledgeBooth .boothSign{
-    position:absolute; left:18%; right:18%; bottom:19%; z-index:5;
-    color:#fff7b0; font-size:clamp(9px,1.3vw,14px); font-weight:1000;
-    letter-spacing:1px; text-align:center; text-shadow:0 0 5px #fff,0 0 10px #ffcf00;
+    position:absolute;
+    left:35px;
+    right:35px;
+    bottom:34px;
+    z-index:5;
+    color:#fff7b0;
+    font-size:14px;
+    font-weight:1000;
+    letter-spacing:1px;
+    text-align:center;
+    text-shadow:0 0 5px #fff,0 0 10px #ffcf00;
 }
 #larKnowledgeBooth .neonFilaments{
-    position:absolute; inset:-80%; pointer-events:none; overflow:visible; z-index:0;
-    transform-origin:50% 50%; animation:larStarClockwise 16s linear infinite;
-}
-#larKnowledgeBooth .neonFilaments::after{
-    content:""; position:absolute; left:50%; top:50%; width:30px; height:30px;
-    transform:translate(-50%,-50%); border-radius:50%; background:#fff;
-    box-shadow:0 0 18px #fff,0 0 45px #00eaff,0 0 80px #ff39d8; opacity:.9;
+    position:absolute;
+    inset:-95px;
+    animation:larBoothStarSpin 5.5s linear infinite;
+    pointer-events:none;
+    overflow:visible;
 }
 #larKnowledgeBooth .neonFilaments i{
-    position:absolute; left:50%; top:50%; width:6px; height:150px; margin-left:-3px;
-    transform-origin:50% 0; opacity:.95; border-radius:999px;
-    background:linear-gradient(to bottom,rgba(255,255,255,1),currentColor 15%,currentColor 55%,rgba(255,255,255,0) 100%);
-    box-shadow:0 0 6px currentColor,0 0 14px currentColor,0 0 28px currentColor;
-    animation:larRayPulse .8s steps(6,end) infinite alternate;
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:5px;
+    height:180px;
+    transform-origin:50% 0;
+    opacity:.9;
+    background:linear-gradient(to bottom,rgba(255,255,255,.95),currentColor 18%,transparent 100%);
+    box-shadow:0 0 6px currentColor,0 0 16px currentColor,0 0 30px currentColor;
+    animation:larBoothElectric .85s steps(7,end) infinite alternate;
 }
-#larKnowledgeBooth .neonFilaments i:nth-child(1){color:#ff3131;transform:rotate(0deg) scaleY(0.72);animation-delay:0.00s}
-#larKnowledgeBooth .neonFilaments i:nth-child(2){color:#ff9d00;transform:rotate(10deg) scaleY(0.80);animation-delay:-0.11s}
-#larKnowledgeBooth .neonFilaments i:nth-child(3){color:#ffe600;transform:rotate(20deg) scaleY(0.88);animation-delay:-0.22s}
-#larKnowledgeBooth .neonFilaments i:nth-child(4){color:#38ff6b;transform:rotate(30deg) scaleY(0.96);animation-delay:-0.33s}
-#larKnowledgeBooth .neonFilaments i:nth-child(5){color:#00eaff;transform:rotate(40deg) scaleY(1.04);animation-delay:-0.44s}
-#larKnowledgeBooth .neonFilaments i:nth-child(6){color:#477dff;transform:rotate(50deg) scaleY(0.72);animation-delay:-0.55s}
-#larKnowledgeBooth .neonFilaments i:nth-child(7){color:#b85cff;transform:rotate(60deg) scaleY(0.80);animation-delay:-0.66s}
-#larKnowledgeBooth .neonFilaments i:nth-child(8){color:#ff4fd8;transform:rotate(70deg) scaleY(0.88);animation-delay:-0.77s}
-#larKnowledgeBooth .neonFilaments i:nth-child(9){color:#ff3131;transform:rotate(80deg) scaleY(0.96);animation-delay:-0.88s}
-#larKnowledgeBooth .neonFilaments i:nth-child(10){color:#ff9d00;transform:rotate(90deg) scaleY(1.04);animation-delay:0.00s}
-#larKnowledgeBooth .neonFilaments i:nth-child(11){color:#ffe600;transform:rotate(100deg) scaleY(0.72);animation-delay:-0.11s}
-#larKnowledgeBooth .neonFilaments i:nth-child(12){color:#38ff6b;transform:rotate(110deg) scaleY(0.80);animation-delay:-0.22s}
-#larKnowledgeBooth .neonFilaments i:nth-child(13){color:#00eaff;transform:rotate(120deg) scaleY(0.88);animation-delay:-0.33s}
-#larKnowledgeBooth .neonFilaments i:nth-child(14){color:#477dff;transform:rotate(130deg) scaleY(0.96);animation-delay:-0.44s}
-#larKnowledgeBooth .neonFilaments i:nth-child(15){color:#b85cff;transform:rotate(140deg) scaleY(1.04);animation-delay:-0.55s}
-#larKnowledgeBooth .neonFilaments i:nth-child(16){color:#ff4fd8;transform:rotate(150deg) scaleY(0.72);animation-delay:-0.66s}
-#larKnowledgeBooth .neonFilaments i:nth-child(17){color:#ff3131;transform:rotate(160deg) scaleY(0.80);animation-delay:-0.77s}
-#larKnowledgeBooth .neonFilaments i:nth-child(18){color:#ff9d00;transform:rotate(170deg) scaleY(0.88);animation-delay:-0.88s}
-#larKnowledgeBooth .neonFilaments i:nth-child(19){color:#ffe600;transform:rotate(180deg) scaleY(0.96);animation-delay:0.00s}
-#larKnowledgeBooth .neonFilaments i:nth-child(20){color:#38ff6b;transform:rotate(190deg) scaleY(1.04);animation-delay:-0.11s}
-#larKnowledgeBooth .neonFilaments i:nth-child(21){color:#00eaff;transform:rotate(200deg) scaleY(0.72);animation-delay:-0.22s}
-#larKnowledgeBooth .neonFilaments i:nth-child(22){color:#477dff;transform:rotate(210deg) scaleY(0.80);animation-delay:-0.33s}
-#larKnowledgeBooth .neonFilaments i:nth-child(23){color:#b85cff;transform:rotate(220deg) scaleY(0.88);animation-delay:-0.44s}
-#larKnowledgeBooth .neonFilaments i:nth-child(24){color:#ff4fd8;transform:rotate(230deg) scaleY(0.96);animation-delay:-0.55s}
-#larKnowledgeBooth .neonFilaments i:nth-child(25){color:#ff3131;transform:rotate(240deg) scaleY(1.04);animation-delay:-0.66s}
-#larKnowledgeBooth .neonFilaments i:nth-child(26){color:#ff9d00;transform:rotate(250deg) scaleY(0.72);animation-delay:-0.77s}
-#larKnowledgeBooth .neonFilaments i:nth-child(27){color:#ffe600;transform:rotate(260deg) scaleY(0.80);animation-delay:-0.88s}
-#larKnowledgeBooth .neonFilaments i:nth-child(28){color:#38ff6b;transform:rotate(270deg) scaleY(0.88);animation-delay:0.00s}
-#larKnowledgeBooth .neonFilaments i:nth-child(29){color:#00eaff;transform:rotate(280deg) scaleY(0.96);animation-delay:-0.11s}
-#larKnowledgeBooth .neonFilaments i:nth-child(30){color:#477dff;transform:rotate(290deg) scaleY(1.04);animation-delay:-0.22s}
-#larKnowledgeBooth .neonFilaments i:nth-child(31){color:#b85cff;transform:rotate(300deg) scaleY(0.72);animation-delay:-0.33s}
-#larKnowledgeBooth .neonFilaments i:nth-child(32){color:#ff4fd8;transform:rotate(310deg) scaleY(0.80);animation-delay:-0.44s}
-#larKnowledgeBooth .neonFilaments i:nth-child(33){color:#ff3131;transform:rotate(320deg) scaleY(0.88);animation-delay:-0.55s}
-#larKnowledgeBooth .neonFilaments i:nth-child(34){color:#ff9d00;transform:rotate(330deg) scaleY(0.96);animation-delay:-0.66s}
-#larKnowledgeBooth .neonFilaments i:nth-child(35){color:#ffe600;transform:rotate(340deg) scaleY(1.04);animation-delay:-0.77s}
-#larKnowledgeBooth .neonFilaments i:nth-child(36){color:#38ff6b;transform:rotate(350deg) scaleY(0.72);animation-delay:-0.88s}
-@keyframes larStarClockwise{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-@keyframes larRayPulse{from{opacity:.32;filter:brightness(.75);height:105px}to{opacity:1;filter:brightness(2.6);height:175px}}
-#larKnowledgeBooth:hover .neonFilaments i{animation-duration:.34s}
+#larKnowledgeBooth .neonFilaments i:nth-child(1){color:#ff3131;transform:rotate(8deg)}
+#larKnowledgeBooth .neonFilaments i:nth-child(2){color:#ff9d00;transform:rotate(35deg);animation-delay:-.2s}
+#larKnowledgeBooth .neonFilaments i:nth-child(3){color:#ffe600;transform:rotate(68deg);animation-delay:-.4s}
+#larKnowledgeBooth .neonFilaments i:nth-child(4){color:#38ff6b;transform:rotate(102deg);animation-delay:-.1s}
+#larKnowledgeBooth .neonFilaments i:nth-child(5){color:#00eaff;transform:rotate(137deg);animation-delay:-.35s}
+#larKnowledgeBooth .neonFilaments i:nth-child(6){color:#477dff;transform:rotate(171deg);animation-delay:-.55s}
+#larKnowledgeBooth .neonFilaments i:nth-child(7){color:#b85cff;transform:rotate(210deg);animation-delay:-.15s}
+#larKnowledgeBooth .neonFilaments i:nth-child(8){color:#ff4fd8;transform:rotate(248deg);animation-delay:-.45s}
+#larKnowledgeBooth .neonFilaments i:nth-child(9){color:#00eaff;transform:rotate(286deg);animation-delay:-.3s}
+#larKnowledgeBooth .neonFilaments i:nth-child(10){color:#ffe600;transform:rotate(322deg);animation-delay:-.6s}
+
+#larKnowledgeBooth .neonFilaments i:nth-child(11){color:#ff3131;transform:rotate(12deg) scale(.72)}
+#larKnowledgeBooth .neonFilaments i:nth-child(12){color:#00eaff;transform:rotate(51deg) scale(.82);animation-delay:-.3s}
+#larKnowledgeBooth .neonFilaments i:nth-child(13){color:#b85cff;transform:rotate(88deg) scale(.68);animation-delay:-.5s}
+#larKnowledgeBooth .neonFilaments i:nth-child(14){color:#38ff6b;transform:rotate(126deg) scale(.78);animation-delay:-.2s}
+#larKnowledgeBooth .neonFilaments i:nth-child(15){color:#ffe600;transform:rotate(154deg) scale(.9);animation-delay:-.45s}
+#larKnowledgeBooth .neonFilaments i:nth-child(16){color:#ff4fd8;transform:rotate(193deg) scale(.7);animation-delay:-.15s}
+#larKnowledgeBooth .neonFilaments i:nth-child(17){color:#477dff;transform:rotate(226deg) scale(.8);animation-delay:-.55s}
+#larKnowledgeBooth .neonFilaments i:nth-child(18){color:#ff9d00;transform:rotate(263deg) scale(.72);animation-delay:-.35s}
+#larKnowledgeBooth .neonFilaments i:nth-child(19){color:#00eaff;transform:rotate(301deg) scale(.9);animation-delay:-.65s}
+#larKnowledgeBooth .neonFilaments i:nth-child(20){color:#ffe600;transform:rotate(338deg) scale(.76);animation-delay:-.25s}
+#larKnowledgeBooth .neonFilaments i:nth-child(21){color:#38ff6b;transform:rotate(30deg) scale(.55);animation-delay:-.4s}
+#larKnowledgeBooth .neonFilaments i:nth-child(22){color:#ff39ff;transform:rotate(118deg) scale(.58);animation-delay:-.6s}
+#larKnowledgeBooth .neonFilaments i:nth-child(23){color:#00eaff;transform:rotate(184deg) scale(.62);animation-delay:-.05s}
+#larKnowledgeBooth .neonFilaments i:nth-child(24){color:#ff3131;transform:rotate(246deg) scale(.56);animation-delay:-.5s}
+#larKnowledgeBooth .neonFilaments i:nth-child(25){color:#ffe600;transform:rotate(318deg) scale(.6);animation-delay:-.32s}
+#larKnowledgeBooth .neonFilaments i:nth-child(26){color:#b85cff;transform:rotate(357deg) scale(.66);animation-delay:-.7s}
+@keyframes larBoothStarSpin{to{transform:rotate(360deg)}}
+@keyframes larBoothElectric{
+    from{height:72px;opacity:.42;filter:brightness(.8)}
+    to{height:112px;opacity:1;filter:brightness(1.7)}
+}
+#larKnowledgeBooth:hover .neonFilaments i{
+    animation-duration:.42s;
+}
 #larKnowledgeOverlay{
     display:none;
     position:fixed;
@@ -1592,115 +1625,64 @@ figure {
     padding:4px 8px;
 }
 @media(max-width:600px){
-    #larKnowledgeBooth{width:190px;height:190px;min-width:130px;min-height:130px}
+    #larKnowledgeBooth{right:50%;top:50%;transform:translate(50%,-50%) scale(.78);transform-origin:center}
 }
 
 
-#larAmbientElectricity{display:block;position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;transform-origin:50% 50%;animation:larAmbientSpin 26s linear infinite}
-#larAmbientElectricity i{position:absolute;left:50%;top:50%;width:4px;height:120px;transform-origin:50% 0;border-radius:999px;background:linear-gradient(to bottom,rgba(255,255,255,.9),currentColor,transparent);box-shadow:0 0 5px currentColor,0 0 13px currentColor,0 0 24px currentColor;opacity:.58;animation:larAmbientZap 1s steps(7,end) infinite alternate}
-@keyframes larAmbientZap{0%{opacity:.25;height:70px}50%{opacity:.8}100%{opacity:.55;height:155px}}
-@keyframes larAmbientSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+#larAmbientElectricity{display:block;position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.larStarburst{position:absolute;width:150px;height:150px;left:var(--sx);top:var(--sy);transform:translate(-50%,-50%);animation:larStarRotate var(--sd) linear infinite;filter:drop-shadow(0 0 7px rgba(0,234,255,.65))}
+.larStarburst i{position:absolute;left:50%;top:50%;width:5px;height:150px;transform-origin:50% 0;border-radius:999px;background:linear-gradient(to bottom,rgba(255,255,255,.98),currentColor 15%,currentColor 52%,transparent 100%);box-shadow:0 0 5px currentColor,0 0 13px currentColor,0 0 26px currentColor;opacity:.9;animation:larRayPulse .7s ease-in-out infinite alternate}
+@keyframes larStarRotate{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes larRayPulse{from{height:105px;opacity:.45;filter:brightness(.9)}to{height:180px;opacity:1;filter:brightness(2)}}
 #larSeagulls{display:block;position:fixed;inset:0;z-index:4;pointer-events:none;overflow:hidden}
-.larSeagull{position:absolute;width:42px;height:24px;animation:larGullFly linear infinite;filter:drop-shadow(0 2px 3px #000)}
-.larSeagull::before,.larSeagull::after{content:"";position:absolute;top:10px;width:20px;height:11px;border-top:3px solid white;border-radius:70% 70% 0 0}
-.larSeagull::before{left:1px;transform:rotate(16deg)}
-.larSeagull::after{right:1px;transform:rotate(-16deg)}
-@keyframes larGullFly{from{transform:translateX(-12vw) translateY(0) scale(.7)}20%{transform:translateX(20vw) translateY(-25px) scale(.95)}40%{transform:translateX(43vw) translateY(16px) scale(.78)}60%{transform:translateX(66vw) translateY(-34px) scale(1.05)}80%{transform:translateX(88vw) translateY(12px) scale(.86)}to{transform:translateX(115vw) translateY(-8px) scale(.72)}}
-
-/* 17 rotating neon starbursts stay beneath the paintings. */
-#larBackgroundStars{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.larBackgroundStar{position:absolute;width:220px;height:220px;transform:translate(-50%,-50%);transform-origin:50% 50%;animation:larStarDrift 18s linear infinite}
-.larBackgroundStar i{position:absolute;left:50%;top:50%;width:5px;height:120px;margin-left:-2.5px;transform-origin:50% 0;border-radius:999px;background:linear-gradient(to bottom,rgba(255,255,255,.95),currentColor 18%,currentColor 55%,transparent);box-shadow:0 0 5px currentColor,0 0 15px currentColor,0 0 28px currentColor;opacity:.7;animation:larBgRayPulse .9s steps(6,end) infinite alternate}
-@keyframes larStarDrift{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
-@keyframes larBgRayPulse{from{height:70px;opacity:.28;filter:brightness(.8)}to{height:145px;opacity:.9;filter:brightness(2.2)}}
-.excerpt-figure{position:relative;z-index:2}
-#larKnowledgeBooth{z-index:9}
-.excerpt-figure:hover figcaption{color:#fff;animation:larRainbowTitle 2.2s linear infinite;text-shadow:0 0 6px currentColor,0 0 16px currentColor,0 0 28px currentColor}
-@keyframes larRainbowTitle{0%{color:#ff3030}16%{color:#ff9d00}33%{color:#ffe600}50%{color:#39ff68}66%{color:#00eaff}83%{color:#7d5cff}100%{color:#ff39d8}}
-#larLightningLayer{position:fixed;inset:0;z-index:7;pointer-events:none;overflow:hidden}
-.larLightningBolt{position:absolute;width:13px;background:linear-gradient(90deg,transparent,#fff 25%,#00eaff 50%,#fff 75%,transparent);box-shadow:0 0 7px #fff,0 0 18px #00eaff,0 0 32px #ff39d8;clip-path:polygon(40% 0,75% 0,58% 25%,92% 25%,52% 55%,75% 55%,20% 100%,35% 62%,5% 62%,45% 34%,18% 34%);transform-origin:50% 0;animation:larBoltFlash .18s steps(2,end) 3}
-@keyframes larBoltFlash{0%,100%{opacity:0}30%{opacity:1}60%{opacity:.25}80%{opacity:1}}
+.larSeagull{position:absolute;color:#fff;font-size:38px;font-weight:1000;text-shadow:0 2px 5px #000,0 0 10px #fff;animation:larGullFly linear infinite;letter-spacing:-10px}
+@keyframes larGullFly{from{transform:translateX(-14vw) translateY(0) scale(.7)}25%{transform:translateX(28vw) translateY(-38px) scale(1.15)}50%{transform:translateX(55vw) translateY(25px) scale(.9)}75%{transform:translateX(82vw) translateY(-45px) scale(1.25)}to{transform:translateX(118vw) translateY(10px) scale(.72)}}
+#larBackgroundStarbursts{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.larBgStar{position:absolute;width:120px;height:120px;left:var(--x);top:var(--y);transform:translate(-50%,-50%);animation:larBgSpin var(--dur) linear infinite}
+.larBgStar i{position:absolute;left:50%;top:50%;width:4px;height:120px;transform-origin:50% 0;border-radius:999px;background:linear-gradient(to bottom,#fff,currentColor 12%,currentColor 55%,transparent);box-shadow:0 0 5px currentColor,0 0 14px currentColor,0 0 24px currentColor;opacity:.72;animation:larBgPulse 1.05s ease-in-out infinite alternate}
+@keyframes larBgSpin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes larBgPulse{from{height:70px;opacity:.32}to{height:155px;opacity:.92;filter:brightness(1.8)}}
+#artworkGallery{position:relative;z-index:2}
+#larLightningLayer{position:fixed;inset:0;z-index:3;pointer-events:none;overflow:hidden}
+.larLightningBolt{position:absolute;width:7px;height:180px;transform-origin:top center;filter:drop-shadow(0 0 5px #fff) drop-shadow(0 0 14px #00eaff);opacity:0;transition:opacity .06s linear}
+.larLightningBolt::before,.larLightningBolt::after{content:"";position:absolute;left:50%;top:0;width:5px;height:100%;background:#fff;box-shadow:0 0 8px #fff,0 0 18px #00eaff,0 0 30px #fff;clip-path:polygon(45% 0,65% 0,53% 28%,82% 28%,42% 63%,57% 63%,24% 100%,35% 58%,10% 58%,49% 25%,30% 25%)}
+.larLightningBolt::after{filter:blur(5px);opacity:.8}
 </style>
 </head>
 
-<body><div id="larBackgroundStars"><div class="larBackgroundStar" style="left:7%;top:10%;animation-delay:-0.0s"><i style="color:#ff3131;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ff9d00;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ffe600;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#38ff6b;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#00eaff;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#477dff;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#b85cff;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ff4fd8;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ff3131;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ff9d00;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ffe600;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#38ff6b;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:24%;top:39%;animation-delay:-0.8s"><i style="color:#ff9d00;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ffe600;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#38ff6b;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#00eaff;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#477dff;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#b85cff;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#ff4fd8;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ff3131;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ff9d00;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ffe600;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#38ff6b;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#00eaff;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:41%;top:68%;animation-delay:-1.6s"><i style="color:#ffe600;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#38ff6b;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#00eaff;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#477dff;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#b85cff;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#ff4fd8;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#ff3131;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ff9d00;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ffe600;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#38ff6b;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#00eaff;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#477dff;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:58%;top:17%;animation-delay:-2.4s"><i style="color:#38ff6b;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#00eaff;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#477dff;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#b85cff;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#ff4fd8;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#ff3131;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#ff9d00;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ffe600;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#38ff6b;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#00eaff;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#477dff;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#b85cff;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:75%;top:46%;animation-delay:-3.2s"><i style="color:#00eaff;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#477dff;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#b85cff;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#ff4fd8;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#ff3131;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#ff9d00;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#ffe600;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#38ff6b;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#00eaff;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#477dff;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#b85cff;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#ff4fd8;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:92%;top:75%;animation-delay:-4.0s"><i style="color:#477dff;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#b85cff;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ff4fd8;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#ff3131;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#ff9d00;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#ffe600;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#38ff6b;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#00eaff;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#477dff;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#b85cff;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ff4fd8;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#ff3131;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:21%;top:24%;animation-delay:-4.8s"><i style="color:#b85cff;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ff4fd8;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ff3131;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#ff9d00;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#ffe600;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#38ff6b;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#00eaff;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#477dff;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#b85cff;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ff4fd8;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ff3131;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#ff9d00;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:38%;top:53%;animation-delay:-5.6s"><i style="color:#ff4fd8;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ff3131;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ff9d00;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#ffe600;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#38ff6b;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#00eaff;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#477dff;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#b85cff;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ff4fd8;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ff3131;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ff9d00;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#ffe600;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:55%;top:82%;animation-delay:-6.4s"><i style="color:#ff3131;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ff9d00;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ffe600;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#38ff6b;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#00eaff;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#477dff;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#b85cff;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ff4fd8;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ff3131;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ff9d00;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ffe600;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#38ff6b;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:72%;top:31%;animation-delay:-7.2s"><i style="color:#ff9d00;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ffe600;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#38ff6b;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#00eaff;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#477dff;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#b85cff;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#ff4fd8;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ff3131;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ff9d00;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ffe600;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#38ff6b;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#00eaff;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:89%;top:60%;animation-delay:-8.0s"><i style="color:#ffe600;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#38ff6b;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#00eaff;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#477dff;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#b85cff;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#ff4fd8;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#ff3131;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ff9d00;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ffe600;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#38ff6b;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#00eaff;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#477dff;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:18%;top:89%;animation-delay:-8.8s"><i style="color:#38ff6b;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#00eaff;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#477dff;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#b85cff;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#ff4fd8;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#ff3131;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#ff9d00;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ffe600;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#38ff6b;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#00eaff;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#477dff;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#b85cff;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:35%;top:38%;animation-delay:-9.6s"><i style="color:#00eaff;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#477dff;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#b85cff;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#ff4fd8;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#ff3131;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#ff9d00;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#ffe600;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#38ff6b;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#00eaff;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#477dff;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#b85cff;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#ff4fd8;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:52%;top:67%;animation-delay:-10.4s"><i style="color:#477dff;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#b85cff;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ff4fd8;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#ff3131;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#ff9d00;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#ffe600;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#38ff6b;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#00eaff;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#477dff;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#b85cff;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ff4fd8;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#ff3131;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:69%;top:16%;animation-delay:-11.2s"><i style="color:#b85cff;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ff4fd8;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ff3131;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#ff9d00;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#ffe600;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#38ff6b;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#00eaff;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#477dff;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#b85cff;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ff4fd8;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ff3131;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#ff9d00;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:86%;top:45%;animation-delay:-12.0s"><i style="color:#ff4fd8;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ff3131;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ff9d00;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#ffe600;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#38ff6b;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#00eaff;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#477dff;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#b85cff;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ff4fd8;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ff3131;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ff9d00;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#ffe600;transform:rotate(165deg);animation-delay:-0.88s"></i></div><div class="larBackgroundStar" style="left:15%;top:74%;animation-delay:-12.8s"><i style="color:#ff3131;transform:rotate(0deg);animation-delay:-0.00s"></i><i style="color:#ff9d00;transform:rotate(15deg);animation-delay:-0.08s"></i><i style="color:#ffe600;transform:rotate(30deg);animation-delay:-0.16s"></i><i style="color:#38ff6b;transform:rotate(45deg);animation-delay:-0.24s"></i><i style="color:#00eaff;transform:rotate(60deg);animation-delay:-0.32s"></i><i style="color:#477dff;transform:rotate(75deg);animation-delay:-0.40s"></i><i style="color:#b85cff;transform:rotate(90deg);animation-delay:-0.48s"></i><i style="color:#ff4fd8;transform:rotate(105deg);animation-delay:-0.56s"></i><i style="color:#ff3131;transform:rotate(120deg);animation-delay:-0.64s"></i><i style="color:#ff9d00;transform:rotate(135deg);animation-delay:-0.72s"></i><i style="color:#ffe600;transform:rotate(150deg);animation-delay:-0.80s"></i><i style="color:#38ff6b;transform:rotate(165deg);animation-delay:-0.88s"></i></div></div><div id="larLightningLayer"></div>
+<body>
 
 <div id="larAmbientElectricity">
-  <i style="color:#ff3131;transform:rotate(0deg);animation-delay:0.00s;left:48%;top:44%"></i>
-  <i style="color:#ff9d00;transform:rotate(20deg);animation-delay:-0.15s;left:50%;top:48%"></i>
-  <i style="color:#ffe600;transform:rotate(40deg);animation-delay:-0.30s;left:52%;top:44%"></i>
-  <i style="color:#38ff6b;transform:rotate(60deg);animation-delay:-0.45s;left:48%;top:48%"></i>
-  <i style="color:#00eaff;transform:rotate(80deg);animation-delay:-0.60s;left:50%;top:44%"></i>
-  <i style="color:#477dff;transform:rotate(100deg);animation-delay:-0.75s;left:52%;top:48%"></i>
-  <i style="color:#b85cff;transform:rotate(120deg);animation-delay:-0.90s;left:48%;top:44%"></i>
-  <i style="color:#ff4fd8;transform:rotate(140deg);animation-delay:0.00s;left:50%;top:48%"></i>
-  <i style="color:#ff3131;transform:rotate(160deg);animation-delay:-0.15s;left:52%;top:44%"></i>
-  <i style="color:#ff9d00;transform:rotate(180deg);animation-delay:-0.30s;left:48%;top:48%"></i>
-  <i style="color:#ffe600;transform:rotate(200deg);animation-delay:-0.45s;left:50%;top:44%"></i>
-  <i style="color:#38ff6b;transform:rotate(220deg);animation-delay:-0.60s;left:52%;top:48%"></i>
-  <i style="color:#00eaff;transform:rotate(240deg);animation-delay:-0.75s;left:48%;top:44%"></i>
-  <i style="color:#477dff;transform:rotate(260deg);animation-delay:-0.90s;left:50%;top:48%"></i>
-  <i style="color:#b85cff;transform:rotate(280deg);animation-delay:0.00s;left:52%;top:44%"></i>
-  <i style="color:#ff4fd8;transform:rotate(300deg);animation-delay:-0.15s;left:48%;top:48%"></i>
-  <i style="color:#ff3131;transform:rotate(320deg);animation-delay:-0.30s;left:50%;top:44%"></i>
-  <i style="color:#ff9d00;transform:rotate(340deg);animation-delay:-0.45s;left:52%;top:48%"></i>
+  <i style="left:6%;top:18%;color:#00eaff;transform:rotate(22deg)"></i><i style="left:14%;top:61%;color:#ff39ff;transform:rotate(-28deg);animation-delay:-.2s"></i>
+  <i style="left:24%;top:12%;color:#ffe600;transform:rotate(41deg);animation-delay:-.4s"></i><i style="left:31%;top:73%;color:#38ff6b;transform:rotate(-55deg);animation-delay:-.1s"></i>
+  <i style="left:42%;top:22%;color:#ff3131;transform:rotate(30deg);animation-delay:-.35s"></i><i style="left:51%;top:68%;color:#477dff;transform:rotate(-38deg);animation-delay:-.55s"></i>
+  <i style="left:62%;top:11%;color:#ff9d00;transform:rotate(47deg);animation-delay:-.15s"></i><i style="left:72%;top:57%;color:#00eaff;transform:rotate(-25deg);animation-delay:-.45s"></i>
+  <i style="left:83%;top:17%;color:#b85cff;transform:rotate(35deg);animation-delay:-.3s"></i><i style="left:91%;top:72%;color:#ffe600;transform:rotate(-44deg);animation-delay:-.6s"></i>
+  <i style="left:18%;top:34%;color:#38ff6b;transform:rotate(66deg);animation-delay:-.25s"></i><i style="left:76%;top:31%;color:#ff4fd8;transform:rotate(-62deg);animation-delay:-.5s"></i>
 </div>
 <div id="larSeagulls">
-  <span class="larSeagull" style="top:8%;animation-duration:10s;animation-delay:0.0s;transform:scale(0.70)"></span>
-  <span class="larSeagull" style="top:15%;animation-duration:12s;animation-delay:-1.7s;transform:scale(0.82)"></span>
-  <span class="larSeagull" style="top:22%;animation-duration:14s;animation-delay:-3.4s;transform:scale(0.94)"></span>
-  <span class="larSeagull" style="top:29%;animation-duration:16s;animation-delay:-5.1s;transform:scale(1.06)"></span>
-  <span class="larSeagull" style="top:36%;animation-duration:18s;animation-delay:-6.8s;transform:scale(0.70)"></span>
-  <span class="larSeagull" style="top:43%;animation-duration:20s;animation-delay:-8.5s;transform:scale(0.82)"></span>
-  <span class="larSeagull" style="top:50%;animation-duration:10s;animation-delay:-10.2s;transform:scale(0.94)"></span>
-  <span class="larSeagull" style="top:57%;animation-duration:12s;animation-delay:-11.9s;transform:scale(1.06)"></span>
-  <span class="larSeagull" style="top:64%;animation-duration:14s;animation-delay:0.0s;transform:scale(0.70)"></span>
-  <span class="larSeagull" style="top:71%;animation-duration:16s;animation-delay:-1.7s;transform:scale(0.82)"></span>
-  <span class="larSeagull" style="top:78%;animation-duration:18s;animation-delay:-3.4s;transform:scale(0.94)"></span>
-  <span class="larSeagull" style="top:85%;animation-duration:20s;animation-delay:-5.1s;transform:scale(1.06)"></span>
+  <span class="larSeagull" style="top:10%;font-size:48px;animation-duration:12s;animation-delay:-3s">⌁⌁</span>
+  <span class="larSeagull" style="top:18%;font-size:26px;animation-duration:16s;animation-delay:-9s">⌁</span>
+  <span class="larSeagull" style="top:27%;font-size:38px;animation-duration:10s;animation-delay:-6s">⌁⌁</span>
+  <span class="larSeagull" style="top:36%;font-size:22px;animation-duration:18s;animation-delay:-12s">⌁</span>
+  <span class="larSeagull" style="top:45%;font-size:52px;animation-duration:14s;animation-delay:-4s">⌁⌁</span>
+  <span class="larSeagull" style="top:54%;font-size:30px;animation-duration:20s;animation-delay:-11s">⌁</span>
+  <span class="larSeagull" style="top:63%;font-size:44px;animation-duration:13s;animation-delay:-7s">⌁⌁</span>
+  <span class="larSeagull" style="top:72%;font-size:24px;animation-duration:17s;animation-delay:-14s">⌁</span>
+  <span class="larSeagull" style="top:81%;font-size:40px;animation-duration:15s;animation-delay:-2s">⌁⌁</span>
 </div>
 
+
+<div id="larBackgroundStarbursts" aria-hidden="true"></div>
+<div id="larLightningLayer" aria-hidden="true"></div>
 <!-- ============================================================
      LAR KNOWLEDGE BOOTH — SECRET LAR CASINO ROUTE
      ============================================================ -->
 <div id="larKnowledgeBooth" title="A question of some importance">
   <div class="neonFilaments">
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
-    <i></i>
+    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    <i></i><i></i><i></i><i></i><i></i><i></i>
   </div>
   <div class="boothRoof"></div>
   <div class="boothBody"></div>
@@ -2181,8 +2163,6 @@ function startGalleryMotion() {
 
 startGalleryMotion();
 
-
-/* Gallery remains fully populated: no random hiding/glitching. */
 
 /* ============================================================
    RANDOM TINY LARRY DISCLAIMERS / COUPONS
@@ -2997,34 +2977,15 @@ const repairPositions = [1, 4, 7];
 
 let puzzleMode = "art";
   let firstPuzzleCompleted = false;
-  let larBoothMoveTimer = null;
-  function placeBoothOnRandomPainting(){
-      const booth=document.getElementById("larKnowledgeBooth");
-      const figures=Array.from(document.querySelectorAll("#artworkGallery .excerpt-figure"));
-      if(!booth || !figures.length) return;
-      const target=figures[Math.floor(Math.random()*figures.length)];
-      const img=target.querySelector("img");
-      const rect=(img||target).getBoundingClientRect();
-      if(!rect.width || !rect.height) return;
-      booth.style.position="fixed";
-      booth.style.width=Math.max(120,Math.min(260,rect.width))+"px";
-      booth.style.height=Math.max(120,Math.min(260,rect.height))+"px";
-      booth.style.left=(rect.left+rect.width/2)+"px";
-      booth.style.top=(rect.top+rect.height/2)+"px";
-      booth.style.transform="translate(-50%,-50%)";
-  }
-  function startBoothRoaming(){
-      const booth=document.getElementById("larKnowledgeBooth");
-      if(!booth) return;
-      booth.style.display="block";
-      placeBoothOnRandomPainting();
-      clearInterval(larBoothMoveTimer);
-      larBoothMoveTimer=setInterval(placeBoothOnRandomPainting,6000+Math.random()*4000);
-  }
   function revealLarKnowledgeBooth(){
       if(firstPuzzleCompleted) return;
       firstPuzzleCompleted=true;
-      startBoothRoaming();
+      const booth=document.getElementById("larKnowledgeBooth");
+      const electricity=document.getElementById("larAmbientElectricity");
+      const gulls=document.getElementById("larSeagulls");
+      if(booth) booth.style.display="block";
+      if(electricity) electricity.style.display="block";
+      if(gulls) gulls.style.display="block";
   }
 
 
@@ -3238,6 +3199,13 @@ function salesBarrage() {
     }, 350);
 
 }
+
+
+/* ============================================================
+   SHOP BELL
+   ============================================================ */
+
+function shopBell() { /* intentionally silent */ }
 
 
 /* ============================================================
@@ -3725,6 +3693,7 @@ function puzzleSolved() {
 
     addLarBucks(3);
 
+    shopBell();
     createConfetti();
     createFireworks();
 
@@ -4151,10 +4120,6 @@ window.addEventListener(
     "resize",
     function() {
 
-        if(document.getElementById("larKnowledgeBooth")?.style.display === "block") {
-            placeBoothOnRandomPainting();
-        }
-
         if(!dragging) {
 
             positionX = 0;
@@ -4172,6 +4137,7 @@ window.addEventListener(
 
 setTimeout(function() {
 
+    shopBell();
 
 }, 2500);
 
@@ -4180,29 +4146,42 @@ setTimeout(function() {
 
 <script>
 (function(){
- const booth=document.getElementById("larKnowledgeBooth"), overlay=document.getElementById("larKnowledgeOverlay"), answers=document.getElementById("larKnowledgeAnswers"), result=document.getElementById("larKnowledgeResult"), casino=document.getElementById("larCasinoButton"), close=document.getElementById("larKnowledgeClose");
- const quizzes=[
- {q:"What is Larry's name?",a:["A. Larry — as originally filed.","B. Larry — with administrative confidence.","C. Larry — proprietor of the situation.","D. Larry — the short version remains perfectly adequate."]},
- {q:"What should you do when Larry announces a deal?",a:["A. Investigate the deal with Lar-like enthusiasm.","B. Approach the deal before it develops further.","C. Bring your Lar-bucks and an open mind.","D. All of the above, preferably before lunch."]},
- {q:"What is the proper attitude toward Lar-bucks?",a:["A. Respectful but not sentimental.","B. Spendable, mysterious and slightly suspicious.","C. Keep them moving through the Larry economy.","D. Never attempt to eat them."]},
- {q:"What is Larry's Variety famous for?",a:["A. Variety.","B. Larry.","C. Deals of uncertain historical significance.","D. The continued refusal to become ordinary."]},
- {q:"When the Lar-mobile arrives, what should you expect?",a:["A. Brown machinery and unreasonable exhaust.","B. A long hood and an even longer explanation.","C. A vehicle that looks as though it has seen things.","D. Some combination of all the above, depending on the Lar-mobile."]},
- {q:"What happens after a successful Lar level?",a:["A. Electricity becomes unnecessarily ceremonial.","B. A low tuba may become involved.","C. Larry becomes privately impressed.","D. The next Lar is permitted to occur."]},
- {q:"What is the safest policy when Larry says there is a prize?",a:["A. Continue collecting until the paperwork becomes interesting.","B. Check Larry's Variety for further instructions.","C. Assume nothing and enjoy the mystery.","D. Keep going. Larry has almost certainly arranged something."]}
- ];
- let last=-1;
- function openBooth(){
-   result.style.display="none"; casino.style.display="none"; answers.style.display="grid"; answers.innerHTML="";
-   let n=Math.floor(Math.random()*quizzes.length); if(n===last)n=(n+1)%quizzes.length; last=n; const quiz=quizzes[n];
-   document.getElementById("larKnowledgeQuestion").textContent=quiz.q;
-   quiz.a.forEach(text=>{const b=document.createElement("button"); b.className="larAnswer"; b.textContent=text; b.onclick=()=>{answers.style.display="none"; result.textContent=["Your answer has been entered into the Larry files. The files remain silent.","Recorded. Larry's Department of Lar Knowledge declines to elaborate.","Your response has been filed under: probably fine.","The answer has been accepted for further mysterious consideration."][Math.floor(Math.random()*4)]; result.style.display="block"; casino.style.display="block";}; answers.appendChild(b);});
-   overlay.style.display="flex";
- }
- booth.addEventListener("click",openBooth); close.addEventListener("click",()=>overlay.style.display="none"); overlay.addEventListener("click",e=>{if(e.target===overlay)overlay.style.display="none"}); casino.addEventListener("click",()=>location.href="niagara34larcasino.html");
+  const booth=document.getElementById("larKnowledgeBooth"), overlay=document.getElementById("larKnowledgeOverlay"), answers=document.getElementById("larKnowledgeAnswers"), result=document.getElementById("larKnowledgeResult"), casino=document.getElementById("larCasinoButton"), close=document.getElementById("larKnowledgeClose"), question=document.getElementById("larKnowledgeQuestion");
+  let round=0, started=false;
+  const quizzes=[
+    {q:"ROUND 1 — WHAT IS LARRY'S NAME?",a:["Larry, naturally.","The fellow presently known as Larry.","The person the paperwork calls Larry.","Larry, unless the paperwork has changed."]},
+    {q:"ROUND 2 — WHAT IS A LAR DEAL?",a:["A deal that sounds better after Larry explains it.","A bargain with unusually long explanations.","Something purchased before Larry changes his mind.","A price that has been encouraged to become lower."]},
+    {q:"ROUND 3 — WHAT ARE LAR-BUCKS FOR?",a:["Buying things you did not know you needed.","Saving up for something even more unnecessarily Lar.","Spending immediately because Larry has a surplus.","All ordinary financial caution is discouraged."]},
+    {q:"ROUND 4 — WHAT IS LARRY'S VARIETY?",a:["A place where there is always another thing.","A shop with a suspiciously large definition of variety.","The land of deals, steals and questionable quantities.","A place where surplus is treated as a personality."]},
+    {q:"ROUND 5 — WHAT MAKES A LARMOBILE A LARMOBILE?",a:["Brown paint and an unreasonable amount of exhaust.","A shape that looks like it has been driving since 1974.","A trunk large enough to contain a minor mystery.","A vehicle Larry would describe as perfectly practical."]},
+    {q:"ROUND 6 — WHAT HAPPENS WHEN LARRY SAYS 'SPECIAL PRICE'?",a:["Everyone immediately becomes suspicious.","The price becomes somehow more interesting.","Someone discovers there is surplus.","Larry insists this is an excellent development."]},
+    {q:"ROUND 7 — WHAT IS THE LAR SPIRIT?",a:["Buy, browse, laugh, repeat.","Never underestimate the value of an unnecessary thing.","If there is a deal, Larry has probably put it somewhere.","Continue onward. Larry has not finished the announcements."]}
+  ];
+  function renderRound(){
+    const q=quizzes[round]; question.textContent=q.q; result.style.display="none"; casino.style.display="none"; answers.style.display="grid"; answers.innerHTML="";
+    q.a.forEach((text,i)=>{const b=document.createElement("button"); b.className="larAnswer"; b.textContent=String.fromCharCode(65+i)+". "+text; b.addEventListener("click",()=>{if(round<6){round++; result.textContent="RECORDED. THE LAR DEPARTMENT HAS MOVED ON TO THE NEXT QUESTION."; result.style.display="block"; setTimeout(renderRound,520);}else{answers.style.display="none"; result.textContent="THE SEVEN LAR QUESTIONS HAVE BEEN PLACED IN THE APPROPRIATE FILE. LARRY WILL NOT COMMENT FURTHER."; result.style.display="block"; casino.style.display="block";}}); answers.appendChild(b);});
+  }
+  booth.addEventListener("click",()=>{if(!started){round=0;started=true;} renderRound(); overlay.style.display="flex";});
+  close.addEventListener("click",()=>overlay.style.display="none"); overlay.addEventListener("click",e=>{if(e.target===overlay)overlay.style.display="none";}); casino.addEventListener("click",()=>window.location.href="niagara34larcasino.html");
+})();
+(function(){
+  const host=document.getElementById("larBackgroundStarbursts"); if(!host)return; const c=["#ff3131","#ff9d00","#ffe600","#38ff6b","#00eaff","#477dff","#b85cff","#ff4fd8"];
+  for(let n=0;n<17;n++){const s=document.createElement("div"); s.className="larBgStar"; s.style.setProperty("--x",(6+Math.random()*88)+"%"); s.style.setProperty("--y",(8+Math.random()*84)+"%"); s.style.setProperty("--dur",(4.5+Math.random()*6)+"s"); for(let r=0;r<12;r++){const i=document.createElement("i"); i.style.color=c[(n+r)%c.length]; i.style.transform=`rotate(${r*30}deg)`; i.style.animationDelay=(-Math.random()*1.1)+"s"; s.appendChild(i);} host.appendChild(s);}
+})();
+(function(){
+  const layer=document.getElementById("larLightningLayer"); if(!layer)return; let ac=null;
+  function ctx(){if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)(); if(ac.state==='suspended')ac.resume(); return ac;}
+  function thunder(){try{const c=ctx(),n=c.currentTime,b=c.createBuffer(1,c.sampleRate*2.5,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,1.8);const s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();s.buffer=b;f.type='lowpass';f.frequency.value=850;g.gain.setValueAtTime(.0001,n);g.gain.exponentialRampToValueAtTime(.42,n+.025);g.gain.exponentialRampToValueAtTime(.0001,n+2.4);s.connect(f).connect(g).connect(c.destination);s.start(n);}catch(e){}}
+  function strike(){const a=[...document.querySelectorAll('.excerpt-figure')];if(!a.length)return;const r=a[Math.floor(Math.random()*a.length)].getBoundingClientRect(),x=r.left+r.width*(.18+Math.random()*.64),y=r.top+r.height*.08,b=document.createElement('div');b.className='larLightningBolt';b.style.left=(x-3)+'px';b.style.top=Math.max(8,y-210)+'px';b.style.height=Math.max(120,y-Math.max(8,y-210)+20)+'px';b.style.transform=`rotate(${(-12+Math.random()*24)}deg)`;layer.appendChild(b);thunder();requestAnimationFrame(()=>b.style.opacity='1');setTimeout(()=>b.style.opacity='.12',80);setTimeout(()=>b.style.opacity='1',145);setTimeout(()=>b.style.opacity='0',275);setTimeout(()=>b.remove(),520);}
+  function schedule(){setTimeout(()=>{strike();if(Math.random()<.8)setTimeout(strike,300+Math.random()*850);if(Math.random()<.45)setTimeout(strike,1200+Math.random()*1100);schedule();},3000+Math.random()*4200);}
+  window.addEventListener('pointerdown',()=>{try{ctx();}catch(e){}},{once:true}); schedule();
+})();
+(function(){
+  let c=null, running=false;
+  function start(){if(running)return;running=true;try{c=new(window.AudioContext||window.webkitAudioContext)();const b=c.createBuffer(1,c.sampleRate*2,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;const s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();s.buffer=b;s.loop=true;f.type='lowpass';f.frequency.value=850;g.gain.value=.045;s.connect(f).connect(g).connect(c.destination);s.start();}catch(e){}}
+  function gull(){if(!c)return;try{const n=c.currentTime,o=c.createOscillator(),g=c.createGain(),base=650+Math.random()*250;o.type='sine';o.frequency.setValueAtTime(base,n);o.frequency.linearRampToValueAtTime(base*1.65,n+.18);o.frequency.linearRampToValueAtTime(base*.82,n+.38);o.frequency.linearRampToValueAtTime(base*1.35,n+.58);g.gain.setValueAtTime(.0001,n);g.gain.exponentialRampToValueAtTime(.055,n+.05);g.gain.exponentialRampToValueAtTime(.0001,n+.62);o.connect(g).connect(c.destination);o.start(n);o.stop(n+.7);}catch(e){}}
+  window.addEventListener('pointerdown',start,{once:true}); setInterval(()=>{if(running&&Math.random()<.82)gull();},8500);
 })();
 </script>
-
-<script>
-(function(){const layer=document.getElementById("larLightningLayer");if(!layer)return;function thunder(){try{const AC=window.AudioContext||window.webkitAudioContext,ctx=new AC(),now=ctx.currentTime,buf=ctx.createBuffer(1,ctx.sampleRate*1.15,ctx.sampleRate),d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length)*.7;const src=ctx.createBufferSource(),f=ctx.createBiquadFilter(),g=ctx.createGain();f.type="lowpass";f.frequency.value=180;g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.42,now+.04);g.gain.exponentialRampToValueAtTime(.0001,now+1.1);src.buffer=buf;src.connect(f);f.connect(g);g.connect(ctx.destination);src.start();src.stop(now+1.12);setTimeout(()=>ctx.close(),1400)}catch(e){}} function strike(){const imgs=Array.from(document.querySelectorAll("#artworkGallery .excerpt-figure img"));if(!imgs.length)return;const img=imgs[Math.floor(Math.random()*imgs.length)],r=img.getBoundingClientRect();if(r.width<20||r.height<20)return;const x=r.left+r.width*(.25+Math.random()*.5),y=r.top+r.height*.55,sx=x+(Math.random()*120-60),sy=-30,dx=x-sx,dy=y-sy,len=Math.hypot(dx,dy),ang=Math.atan2(dx,dy)*180/Math.PI,b=document.createElement("div");b.className="larLightningBolt";b.style.left=sx+"px";b.style.top=sy+"px";b.style.height=len+"px";b.style.transform="rotate("+ang+"deg)";layer.appendChild(b);thunder();setTimeout(()=>b.remove(),650)} function schedule(){setTimeout(()=>{strike();schedule()},9000+Math.random()*15000)}schedule()})();
-</script></body>
+</body>
 </html>
