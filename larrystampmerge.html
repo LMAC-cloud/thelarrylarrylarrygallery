@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Larry's L.A.R.R.Y. Stamp Collection — v9</title>
+<title>Larry's L.A.R.R.Y. Stamp Collection — v7</title>
 <style>
   * { box-sizing: border-box; }
   html, body { width:100%; height:100%; margin:0; overflow:hidden; }
@@ -518,15 +518,6 @@ let draggingMailbox = false;
 let lastDropTime = 0;
 let unlockedTier = 1;
 let levelNumber = 1;
-const larryLevelMessages = [
-  'LARRY IS PROUD OF YOU!',
-  'LARRY SAYS: THAT WAS BRILLIANT!',
-  'LARRY IS IMPRESSED! KEEP COLLECTING!',
-  'LARRY SAYS: YOU ARE ON A ROLL!',
-  'LARRY IS DELIGHTED! ANOTHER LEVEL!',
-  'LARRY SAYS: MAGNIFICENT STAMP WORK!',
-  'LARRY IS THRILLED! NEXT BATCH AWAITS!'
-];
 let mouseConstraint;
 let cursorX = 0, cursorY = 0;
 const DROP_COOLDOWN = 260;
@@ -597,10 +588,15 @@ function createStamp(tier, x, y) {
   stamps.push(body);
   Composite.add(world,body);
 
-  // A stamp registers in YOUR NEW LAR STAMPS the first time it is actually
-  // seen on the board. This includes a newly created stamp produced by a merge.
-  // The physical stamp remains in the pile; collection is only the book record.
-  setTimeout(() => collectTier(tier), 0);
+  // The final stamp in each seven-stamp series is created by
+  // merging the previous two. There is no later merge of that
+  // final stamp inside the series, so the old code never got an
+  // opportunity to advance the generator. Treat the creation of
+  // the final stamp as its collection/completion event.
+  const groupEnd = Math.min(generatorStart + 7, images.length);
+  if (tier === groupEnd && !collected.has(tier)) {
+    setTimeout(() => collectTier(tier), 40);
+  }
 
   return body;
 }
@@ -670,9 +666,6 @@ function updateLevelBadge() {
 }
 
 function launchCelebration(nextStart) {
-  const messageIndex = Math.max(0, (levelNumber - 1) % larryLevelMessages.length);
-  document.getElementById('celebrationTitle').textContent = larryLevelMessages[messageIndex];
-  document.getElementById('celebrationSub').textContent = `NEXT TRY THESE! — LAR LEVEL ${levelNumber + 1}`;
   levelCelebration.querySelectorAll('.confetti').forEach(el => el.remove());
   for (let i=0; i<42; i++) {
     const c=document.createElement('span');
@@ -749,6 +742,7 @@ function tryMerge(a,b) {
   stamps = stamps.filter(s=>s!==a && s!==b);
 
   sound('merge');
+  collectTier(tier);
 
   // Two matching stamps become a NEW stamp that remains physically
   // on the floor/pile. This is the crucial Suika behaviour: the result
@@ -803,13 +797,10 @@ function collectTier(tier) {
       launchCelebration(nextStart);
     } else {
       levelCelebration.querySelectorAll('.confetti').forEach(el => el.remove());
-      document.getElementById('celebrationTitle').textContent='LARRY IS PROUD OF YOU! YOU DID IT!';
-      document.getElementById('celebrationSub').textContent='ALL 72 LAR STAMPS COLLECTED — YOU RECEIVE 1000 LAR-BUCKS!';
-      bucks += 1000;
-      bucksEl.textContent = bucks;
-      updateDoubleButton();
       levelCelebration.classList.add('show');
       levelCelebration.setAttribute('aria-hidden','false');
+      document.getElementById('celebrationTitle').textContent='LARRY IS PROUD OF YOU!';
+      document.getElementById('celebrationSub').textContent='YOU COLLECTED ALL 72 LAR STAMPS!';
     }
   }
   countEl.textContent = `${collected.size}/${images.length}`;
@@ -920,16 +911,13 @@ function setMailboxFromClientX(clientX) {
 
 let mailboxMoved=false;
 mailbox.addEventListener('pointerdown',e=> {
-  // A simple click must NOT reposition the mailbox. The player aims first,
-  // then clicks it to drop. Repositioning only begins once the pointer moves.
   draggingMailbox=true;
   mailboxMoved=false;
   mailbox.setPointerCapture(e.pointerId);
+  setMailboxFromClientX(e.clientX);
 });
-let mailboxDownX=0;
-mailbox.addEventListener('pointerdown',e=> { mailboxDownX=e.clientX; });
 mailbox.addEventListener('pointermove',e=> {
-  if(draggingMailbox && Math.abs(e.clientX-mailboxDownX)>3) {
+  if(draggingMailbox) {
     mailboxMoved=true;
     setMailboxFromClientX(e.clientX);
   }
