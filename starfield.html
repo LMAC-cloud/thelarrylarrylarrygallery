@@ -15,13 +15,14 @@ body{color:#eee}
 #space.niagaraMode #niagaraVideo{display:block}
 #space.niagaraMode #objects{z-index:2}
 #sphere.niagaraSun{
- width:86px;height:86px;left:50%!important;top:46%!important;
+ width:112px;height:112px;left:50%!important;top:46%!important;
  background:radial-gradient(circle at 38% 34%,#fff 0%,#fff8c9 18%,#ffd34d 42%,#ff9b22 66%,#ff5b00 84%,#9d2100 100%);
- box-shadow:0 0 18px #fff,0 0 45px rgba(255,210,70,.95),0 0 90px rgba(255,120,0,.75);
- animation:sunPulse 2.4s ease-in-out infinite;z-index:950
+ box-shadow:0 0 20px #fff,0 0 52px rgba(255,210,70,.98),0 0 110px rgba(255,120,0,.78);
+ animation:sunPulse 2.4s ease-in-out infinite;z-index:2000!important;cursor:pointer!important;pointer-events:auto!important;
 }
 #sphere.niagaraSun:hover{box-shadow:0 0 22px #fff,0 0 58px rgba(255,225,90,1),0 0 110px rgba(255,100,0,.85)}
 @keyframes sunPulse{0%,100%{transform:translate(-50%,-50%) scale(.96)}50%{transform:translate(-50%,-50%) scale(1.04)}}
+#sphere.niagaraSun:active{cursor:pointer!important}
 #niagaraButton{border-color:#777}
 #objects{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 .projectile{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);pointer-events:none;will-change:transform,opacity}
@@ -296,7 +297,7 @@ select:focus{border-color:#8b5a2b}
   <option value="frozen">Frozen</option><option value="slow">Slow</option><option value="medium" selected>Medium</option>
   <option value="fast">Fast</option><option value="hyperspeed">Hyperspeed</option>
  </select></div>
- <div class="row"><label>SIZE</label><select id="starSize"><option value="tiny">Tiny</option><option value="small">Small</option><option value="medium" selected>Medium</option><option value="large">Large</option></select></div>
+ <div class="row"><label>SIZE</label><select id="starSize"><option value="tiny">Tiny</option><option value="small">Small</option><option value="medium" selected>Medium</option><option value="large">Large</option><option value="extra">Extra Large</option></select></div>
  <div class="row"><label>DENSITY</label><select id="starDensity"><option value="sparse">Sparse</option><option value="normal" selected>Normal</option><option value="dense">Dense</option></select></div>
  <div class="row"><label><input id="hypnoSpeed" type="checkbox"> HYPNOSPEED</label></div>
  <div class="row"><button id="niagaraButton">NIAGARA FALLS</button></div>
@@ -314,18 +315,18 @@ const starCanvas=document.getElementById('stars'),starCtx=starCanvas.getContext(
 let W=innerWidth,H=innerHeight,stars=[],hypnoStars=[];
 function resize(){W=innerWidth;H=innerHeight;starCanvas.width=W*devicePixelRatio;starCanvas.height=H*devicePixelRatio;starCanvas.style.width=W+'px';starCanvas.style.height=H+'px';starCtx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);resetNormalStars();}
 addEventListener('resize',resize);
-function makeNormalStar(){return{x:(Math.random()-.5)*W*2.4,y:(Math.random()-.5)*H*2.4,z:.42+Math.random()*.9,pz:1,size:.28+Math.random()*.45,randomDirection:['forward','backward','up','down','left','right','spiral'][Math.floor(Math.random()*7)],angle:Math.random()*Math.PI*2};}
+function makeNormalStar(){return{x:(Math.random()-.5)*W*2.4,y:(Math.random()-.5)*H*2.4,z:.42+Math.random()*.9,pz:1,size:.62+Math.random()*.62,randomDirection:['forward','backward','up','down','left','right','spiral'][Math.floor(Math.random()*7)],angle:Math.random()*Math.PI*2};}
 for(let i=0;i<1100;i++)stars.push(makeNormalStar());
-function resetNormalStars(){for(const s of stars){s.x=(Math.random()-.5)*W*2.4;s.y=(Math.random()-.5)*H*2.4;s.z=.42+Math.random()*.9;s.pz=s.z;s.size=.28+Math.random()*.45;s.angle=Math.random()*Math.PI*2;s.randomDirection=['forward','backward','up','down','left','right','spiral'][Math.floor(Math.random()*7)];}}
+function resetNormalStars(){for(const s of stars){s.x=(Math.random()-.5)*W*2.4;s.y=(Math.random()-.5)*H*2.4;s.z=.42+Math.random()*.9;s.pz=s.z;s.size=.62+Math.random()*.62;s.angle=Math.random()*Math.PI*2;s.randomDirection=['forward','backward','up','down','left','right','spiral'][Math.floor(Math.random()*7)];}}
 function makeHypnoStar(reset=false){return{x:(Math.random()-.5)*W*.95,y:(Math.random()-.5)*H*.95,z:reset?Math.random():1,pz:1,size:.25+Math.random()*1.35};}
 for(let i=0;i<650;i++)hypnoStars.push(makeHypnoStar());
 const starCfg={direction:'forward',speed:'medium',hypno:false,size:'small',density:'normal'};
 const starSpeeds={frozen:0,slow:.45,medium:1,fast:2.2,hyperspeed:4.2};
 const starDensityCounts={sparse:600,normal:820,dense:1050};
-const starSizeScale={tiny:.55,small:.78,medium:1,large:1.28};
+const starSizeScale={tiny:.62,small:.9,medium:1.25,large:1.65,extra:2.05};
 function resetNormalStar(s){Object.assign(s,makeNormalStar());}
 function normalStarStep(s){const speed=starSpeeds[starCfg.speed],d=starCfg.direction==='random'?s.randomDirection:starCfg.direction;if(!speed)return;const step=.20*speed;if(d==='forward'||d==='backward'){s.z+=(d==='forward'?-1:1)*.0045*speed;if(s.z<.34||s.z>1.42)resetNormalStar(s);}else if(d==='up')s.y-=step;else if(d==='down')s.y+=step;else if(d==='left')s.x-=step;else if(d==='right')s.x+=step;else if(d==='spiral'){s.angle+=.0015*speed;const r=Math.hypot(s.x,s.y);s.x=Math.cos(s.angle)*r;s.y=Math.sin(s.angle)*r;}const bx=W*1.35,by=H*1.35;if(s.x<-bx)s.x=bx;if(s.x>bx)s.x=-bx;if(s.y<-by)s.y=by;if(s.y>by)s.y=-by;}
-function drawStars(){starCtx.fillStyle='#000';starCtx.fillRect(0,0,W,H);const cx=W/2,cy=H/2;if(starCfg.hypno){for(const s of hypnoStars){s.pz=s.z;s.z-=.010+(1-s.z)*.012;if(s.z<.001){Object.assign(s,makeHypnoStar(true));continue}const sx=cx+s.x/s.z,sy=cy+s.y/s.z,px=cx+s.x/s.pz,py=cy+s.y/s.pz;if(sx<-20||sx>W+20||sy<-20||sy>H+20)Object.assign(s,makeHypnoStar(true));const r=Math.max(.35,s.size/(s.z*2));starCtx.beginPath();starCtx.moveTo(px,py);starCtx.lineTo(sx,sy);starCtx.lineWidth=Math.min(3,r);starCtx.strokeStyle='rgba(255,255,255,'+Math.min(1,.25+1-s.z)+')';starCtx.stroke();starCtx.beginPath();starCtx.arc(sx,sy,r,0,Math.PI*2);starCtx.fillStyle='#fff';starCtx.fill();}}else{const count=starDensityCounts[starCfg.density];for(let i=0;i<count;i++){const s=stars[i];normalStarStep(s);const sx=cx+s.x/s.z,sy=cy+s.y/s.z;if(sx<-2||sx>W+2||sy<-2||sy>H+2)continue;const depth=Math.max(0,Math.min(1,1-s.z));const r=Math.max(.28,s.size*starSizeScale[starCfg.size]*(.68+depth*.48));starCtx.beginPath();starCtx.arc(sx,sy,r,0,Math.PI*2);starCtx.fillStyle='rgba(255,255,255,'+(0.42+depth*.58)+')';starCtx.fill();}}requestAnimationFrame(drawStars);}
+function drawStars(){starCtx.fillStyle='#000';starCtx.fillRect(0,0,W,H);const cx=W/2,cy=H/2;if(starCfg.hypno){for(const s of hypnoStars){s.pz=s.z;s.z-=.010+(1-s.z)*.012;if(s.z<.001){Object.assign(s,makeHypnoStar(true));continue}const sx=cx+s.x/s.z,sy=cy+s.y/s.z,px=cx+s.x/s.pz,py=cy+s.y/s.pz;if(sx<-20||sx>W+20||sy<-20||sy>H+20)Object.assign(s,makeHypnoStar(true));const r=Math.max(.35,s.size/(s.z*2));starCtx.beginPath();starCtx.moveTo(px,py);starCtx.lineTo(sx,sy);starCtx.lineWidth=Math.min(3,r);starCtx.strokeStyle='rgba(255,255,255,'+Math.min(1,.25+1-s.z)+')';starCtx.stroke();starCtx.beginPath();starCtx.arc(sx,sy,r,0,Math.PI*2);starCtx.fillStyle='#fff';starCtx.fill();}}else{const count=starDensityCounts[starCfg.density];for(let i=0;i<count;i++){const s=stars[i];normalStarStep(s);const sx=cx+s.x/s.z,sy=cy+s.y/s.z;if(sx<-2||sx>W+2||sy<-2||sy>H+2)continue;const depth=Math.max(0,Math.min(1,1-s.z));const r=Math.max(.42,s.size*starSizeScale[starCfg.size]*(.72+depth*.55));starCtx.beginPath();starCtx.arc(sx,sy,r,0,Math.PI*2);starCtx.fillStyle='rgba(255,255,255,'+(0.42+depth*.58)+')';starCtx.fill();}}requestAnimationFrame(drawStars);}
 resize();drawStars();
 
 /* =========================================================
@@ -731,6 +732,9 @@ addEventListener('blur',()=>{stopHolding();speechSynthesis.cancel();});
    sphere.classList.add('niagaraSun');
    sphere.title='Return to Niagara Falls';
    sphere.setAttribute('aria-label','Return to Niagara Falls');
+   sphere.style.left='50%';
+   sphere.style.top='46%';
+   sphere.style.zIndex='2000';
    btn.classList.add('active');
    btn.textContent='RETURN FROM NIAGARA';
    video.currentTime=0;
@@ -745,6 +749,7 @@ addEventListener('blur',()=>{stopHolding();speechSynthesis.cancel();});
    sphere.classList.remove('niagaraSun');
    sphere.title='';
    sphere.setAttribute('aria-label','Silver Moon');
+   sphere.style.zIndex='900';
    btn.classList.remove('active');
    btn.textContent='NIAGARA FALLS';
  }
@@ -752,8 +757,16 @@ addEventListener('blur',()=>{stopHolding();speechSynthesis.cancel();});
    e.stopPropagation();
    if(niagaraMode) exitNiagara(); else enterNiagara();
  });
- sphere.addEventListener('click',function(e){
-   if(!niagaraMode)return;
+ // While the sun is active it is a gateway, not a draggable planet.
+ document.addEventListener('pointerdown',function(e){
+   if(niagaraMode && e.target===sphere){
+     e.preventDefault();
+     e.stopPropagation();
+   }
+ },true);
+ document.addEventListener('click',function(e){
+   if(!niagaraMode || e.target!==sphere)return;
+   e.preventDefault();
    e.stopPropagation();
    sessionStorage.removeItem('starfieldUnlocked');
    window.location.href=NIAGARA_PAGE;
