@@ -10,6 +10,19 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;font-f
 body{color:#eee}
 #space{position:fixed;inset:0;background:#000;cursor:default}
 #stars{position:absolute;inset:0;width:100%;height:100%}
+#niagaraVideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;z-index:0;background:#000;pointer-events:none}
+#space.niagaraMode #stars{display:none}
+#space.niagaraMode #niagaraVideo{display:block}
+#space.niagaraMode #objects{z-index:2}
+#sphere.niagaraSun{
+ width:86px;height:86px;left:50%!important;top:46%!important;
+ background:radial-gradient(circle at 38% 34%,#fff 0%,#fff8c9 18%,#ffd34d 42%,#ff9b22 66%,#ff5b00 84%,#9d2100 100%);
+ box-shadow:0 0 18px #fff,0 0 45px rgba(255,210,70,.95),0 0 90px rgba(255,120,0,.75);
+ animation:sunPulse 2.4s ease-in-out infinite;z-index:950
+}
+#sphere.niagaraSun:hover{box-shadow:0 0 22px #fff,0 0 58px rgba(255,225,90,1),0 0 110px rgba(255,100,0,.85)}
+@keyframes sunPulse{0%,100%{transform:translate(-50%,-50%) scale(.96)}50%{transform:translate(-50%,-50%) scale(1.04)}}
+#niagaraButton{border-color:#777}
 #objects{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 .projectile{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);pointer-events:none;will-change:transform,opacity}
 .projectile img{display:block;width:100%;height:100%;object-fit:contain}
@@ -164,6 +177,7 @@ select:focus{border-color:#8b5a2b}
 </head>
 <body>
 <div id="space">
+ <video id="niagaraVideo" class="niagaraVideo" muted loop playsinline preload="auto" aria-hidden="true"></video>
  <canvas id="stars"></canvas>
  <div id="objects"></div>
  <div id="paintStage"></div>
@@ -285,6 +299,7 @@ select:focus{border-color:#8b5a2b}
  <div class="row"><label>SIZE</label><select id="starSize"><option value="tiny">Tiny</option><option value="small">Small</option><option value="medium" selected>Medium</option><option value="large">Large</option></select></div>
  <div class="row"><label>DENSITY</label><select id="starDensity"><option value="sparse">Sparse</option><option value="normal" selected>Normal</option><option value="dense">Dense</option></select></div>
  <div class="row"><label><input id="hypnoSpeed" type="checkbox"> HYPNOSPEED</label></div>
+ <div class="row"><button id="niagaraButton">NIAGARA FALLS</button></div>
  </div>
 
 <div id="doneFlash"></div>
@@ -694,5 +709,56 @@ addEventListener('blur',()=>{stopHolding();speechSynthesis.cancel();});
  // Keep every menu inside the viewport after resize.
  addEventListener('resize',()=>{clampPanel(sp);['textPanel','radioPanel','repeatPanel','drawPanel','drawToolsPanel','starfieldPanel'].forEach(id=>{const p=$(id);if(p?.classList.contains('open')){const r=p.getBoundingClientRect();p.style.left=Math.max(4,Math.min(innerWidth-r.width-4,r.left))+'px';p.style.top=Math.max(4,Math.min(innerHeight-r.height-4,r.top))+'px';}})});
 })();
-</script></body>
+</script><script>
+/* NIAGARA FALLS GATEWAY */
+(function(){
+ const space=document.getElementById('space');
+ const video=document.getElementById('niagaraVideo');
+ const sphere=document.getElementById('sphere');
+ const btn=document.getElementById('niagaraButton');
+ const NIAGARA_PAGE='niagarafalls.html';
+ const NIAGARA_VIDEO='Videos/NiagaraFalls.mp4';
+ let niagaraMode=false;
+
+ video.src=NIAGARA_VIDEO;
+ video.muted=true;
+ video.loop=true;
+ video.playsInline=true;
+
+ function enterNiagara(){
+   niagaraMode=true;
+   space.classList.add('niagaraMode');
+   sphere.classList.add('niagaraSun');
+   sphere.title='Return to Niagara Falls';
+   sphere.setAttribute('aria-label','Return to Niagara Falls');
+   btn.classList.add('active');
+   btn.textContent='RETURN FROM NIAGARA';
+   video.currentTime=0;
+   const p=video.play();
+   if(p&&p.catch)p.catch(()=>{});
+   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('open'));
+ }
+ function exitNiagara(){
+   niagaraMode=false;
+   video.pause();
+   space.classList.remove('niagaraMode');
+   sphere.classList.remove('niagaraSun');
+   sphere.title='';
+   sphere.setAttribute('aria-label','Silver Moon');
+   btn.classList.remove('active');
+   btn.textContent='NIAGARA FALLS';
+ }
+ btn.addEventListener('click',function(e){
+   e.stopPropagation();
+   if(niagaraMode) exitNiagara(); else enterNiagara();
+ });
+ sphere.addEventListener('click',function(e){
+   if(!niagaraMode)return;
+   e.stopPropagation();
+   sessionStorage.removeItem('starfieldUnlocked');
+   window.location.href=NIAGARA_PAGE;
+ },true);
+})();
+</script>
+</body>
 </html>
