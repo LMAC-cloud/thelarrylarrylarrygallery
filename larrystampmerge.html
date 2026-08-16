@@ -1312,7 +1312,7 @@ function hideSilverMoonGateway(){
 }
 
 if (silverMoon) {
-  silverMoon.addEventListener('click',()=>{ window.location.href=STARFIELD_PAGE; });
+  silverMoon.addEventListener('click',()=>{ sessionStorage.setItem('starfieldUnlocked','1'); window.location.href=STARFIELD_PAGE; });
 }
 
 function launchCelebration(nextStart) {
