@@ -418,6 +418,45 @@
   @keyframes burstSmoke { 0%{transform:translate(0,0) scale(.45);opacity:.9} 35%{opacity:.82} 100%{transform:translate(48px,-30px) scale(3.8);opacity:0} }
   #postalCursor path { fill:none; stroke:#f4e6c5; stroke-width:4; stroke-linecap:round; stroke-linejoin:round; }
   #gamePanel:hover #postalCursor { display:block; }
+
+  /* FINAL PRIZE: silver hovering moon gateway */
+  #silverMoon {
+    position:absolute; left:50%; top:43%; width:116px; height:116px;
+    transform:translate(-50%,-50%); border-radius:50%; cursor:pointer;
+    z-index:95; display:none;
+    background:
+      radial-gradient(circle at 30% 28%, rgba(255,255,255,.95) 0 8%, transparent 9%),
+      radial-gradient(circle at 68% 35%, rgba(110,110,110,.34) 0 8%, transparent 9%),
+      radial-gradient(circle at 42% 67%, rgba(120,120,120,.28) 0 12%, transparent 13%),
+      radial-gradient(circle at 72% 72%, rgba(90,90,90,.22) 0 6%, transparent 7%),
+      radial-gradient(circle at 50% 42%, #fff 0%, #e9e9e9 48%, #bdbdbd 78%, #888 100%);
+    border:2px solid rgba(255,255,255,.9);
+    box-shadow:0 0 14px 5px rgba(255,255,255,.82), 0 0 38px 14px rgba(210,225,255,.38), inset -14px -12px 22px rgba(50,50,50,.28);
+    animation:silverMoonFloat 3.8s ease-in-out infinite;
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  #silverMoon::before, #silverMoon::after {
+    content:""; position:absolute; border-radius:50%; pointer-events:none;
+    background:rgba(90,90,90,.22); box-shadow:inset 2px 2px 3px rgba(255,255,255,.25);
+  }
+  #silverMoon::before { width:18px; height:13px; left:22px; top:48px; transform:rotate(-16deg); }
+  #silverMoon::after { width:11px; height:11px; right:23px; top:23px; }
+  #silverMoon:hover {
+    transform:translate(-50%,-50%) scale(1.08);
+    box-shadow:0 0 18px 7px rgba(255,255,255,.95), 0 0 52px 18px rgba(210,225,255,.52), inset -14px -12px 22px rgba(50,50,50,.24);
+  }
+  #silverMoonLabel {
+    position:absolute; left:50%; top:calc(50% + 78px); transform:translateX(-50%);
+    white-space:nowrap; padding:4px 9px; border-radius:8px;
+    background:rgba(0,0,0,.68); color:#fff; border:1px solid rgba(255,255,255,.65);
+    font:700 12px Georgia,serif; letter-spacing:.08em; pointer-events:none;
+    opacity:.9;
+  }
+  @keyframes silverMoonFloat {
+    0%,100% { margin-top:0; }
+    50% { margin-top:-14px; }
+  }
+
   #message {
     position:absolute; left:50%; top:50%;
     transform:translate(-50%,-50%);
@@ -581,6 +620,10 @@
       </div>
     </div>
     <div id="message"></div>
+
+    <div id="silverMoon" aria-label="Return to Starfield" title="Return to the Starfield">
+      <span id="silverMoonLabel">ENTER THE STARFIELD</span>
+    </div>
     <div id="levelCelebration" aria-hidden="true">
       <div id="electricField" aria-hidden="true"></div>
       <div id="celebrationCard">
@@ -772,6 +815,8 @@ const stampNext = document.getElementById('stampNext');
 let modalTier = 1;
 const levelBadge = document.getElementById('levelBadge');
 const levelCelebration = document.getElementById('levelCelebration');
+const silverMoon = document.getElementById('silverMoon');
+const STARFIELD_PAGE = 'starfield.html';
 
 const engine = Engine.create();
 engine.gravity.y = 1.38;
@@ -1253,6 +1298,23 @@ function playTubaCelebration(duration=10000) {
   } catch(e) {}
 }
 
+function showSilverMoonGateway(){
+  if (!silverMoon) return;
+  silverMoon.style.display='block';
+  silverMoon.setAttribute('aria-hidden','false');
+  window.larGameComplete=true;
+}
+
+function hideSilverMoonGateway(){
+  if (!silverMoon) return;
+  silverMoon.style.display='none';
+  silverMoon.setAttribute('aria-hidden','true');
+}
+
+if (silverMoon) {
+  silverMoon.addEventListener('click',()=>{ window.location.href=STARFIELD_PAGE; });
+}
+
 function launchCelebration(nextStart) {
   // The sign is deliberately brief; the electricity and tuba continue underneath it.
   const messageIndex = Math.max(0, (levelNumber - 1) % larryLevelMessages.length);
@@ -1308,6 +1370,7 @@ function launchCelebration(nextStart) {
 }
 
 function dropStamp(isAuto = false) {
+  if (window.larGameComplete) return false;
   const now = performance.now();
   if (now-lastDropTime < DROP_COOLDOWN) return false;
   lastDropTime = now;
@@ -1388,6 +1451,7 @@ function tryMerge(a,b) {
         card.style.display='';
         levelCelebration.classList.remove('show');
         levelCelebration.setAttribute('aria-hidden','true');
+        showSilverMoonGateway();
       },5000);
     }
   }
