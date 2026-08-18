@@ -935,7 +935,7 @@ $('repeatSong').checked=false;$('repeatAll').checked=false;$('randomShowToggle')
 /* NIAGARA FALLS GATEWAY — five ships first, endless cargo, one Lar-mobile, voice-only Pirate */
 (function(){
  const $=id=>document.getElementById(id),space=$('space'),video=$('niagaraVideo');let btn=$('niagaraButton');
- const PAGE='https://larrysvariety.ca/niagara34larcasino.html',VIDEO='Videos/NiagaraFalls.MP4';
+ const PAGE='https://larrysvariety.ca/niagara34larcasino.html',VIDEO='Videos/NiagaraFalls.mp4';
  let active=false,rafs=[],timers=[],carDriving=false,bargeInterval=null,gullTimer=null,smokeTimer=null,smokeLevel=0,audioCtx=null,musicTimer=null,speechBusy=false,dialog;
  video.src=VIDEO;video.muted=true;video.loop=true;video.playsInline=true;
  const ui=document.createElement('div');ui.id='niagaraSceneUI';ui.innerHTML=`<div id="niagaraBrownAtmosphere"></div><div id="niagaraSeagulls"><div class="niagaraSeagullLine">${'<i class="niagaraSeagull"></i>'.repeat(14)}</div><div id="niagaraScatteredGulls"></div></div><div id="niagaraBarges"></div><div id="niagaraLarCar" aria-label="Lar-mobile"><div class="hood"></div><div class="carBody"></div><div class="trunk"></div><div class="roof"></div><div class="window"></div><div class="window two"></div><div class="lamp"></div><div class="wheel one"></div><div class="wheel two"></div><div class="niagaraCarSmoke"></div></div>`;space.append(ui);
