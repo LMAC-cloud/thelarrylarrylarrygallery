@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Bamboo Gate I Ching</title>
+<style>
+:root{
+ --wood:#8b5a2b;--wooddark:#4c2f1b;--sand:#eee7d5;--sand2:#f8f4e9;
+ --ink:#292722;--green:#35523c;--green2:#5f7c59;--red:#a94c3e;--paper:#faf8ef;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;min-height:100vh;color:var(--ink);
+ font-family:Georgia,"Times New Roman",serif;
+ background:
+ radial-gradient(circle at 30% 15%,rgba(255,255,255,.8),transparent 20%),
+ linear-gradient(135deg,#d8d2bf,#f5f0df 45%,#c9c2ad);
+}
+.page{
+ max-width:1120px;margin:22px auto;padding:30px;
+ background:rgba(250,248,239,.96);border:12px solid var(--wooddark);
+ box-shadow:0 12px 35px rgba(0,0,0,.35);position:relative;
+}
+.page:before{content:"";position:absolute;inset:10px;border:2px solid var(--wood);pointer-events:none}
+header{text-align:center;padding:8px 20px 24px}
+.bamboo{font-size:34px;color:var(--green);letter-spacing:8px}
+h1{margin:7px 0;color:var(--wooddark);font-size:42px;letter-spacing:3px}
+.subtitle{font-style:italic;font-size:18px}
+.intro{max-width:850px;margin:auto;text-align:center;line-height:1.6}
+.controls{max-width:850px;margin:24px auto}
+label{display:block;font-weight:bold;color:var(--green);margin:12px 0 7px}
+textarea{
+ width:100%;min-height:100px;padding:13px;background:#fffdf6;border:2px solid #a78c62;
+ font:16px Georgia,serif;resize:vertical;
+}
+.buttons{text-align:center;margin:15px}
+button{
+ border:2px solid var(--wooddark);background:linear-gradient(#bd8b51,#80501f);
+ color:#fff8e8;padding:12px 22px;margin:5px;cursor:pointer;
+ font:bold 16px Georgia,serif;box-shadow:0 3px 0 var(--wooddark)
+}
+button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--wooddark)}
+#garden{display:none;margin-top:25px}
+.arch{
+ margin:0 auto 20px;width:min(650px,95%);height:90px;position:relative;
+ border-left:14px solid var(--wood);border-right:14px solid var(--wood);
+ border-top:14px solid var(--wood);border-radius:80px 80px 0 0;
+}
+.arch:after{content:"";position:absolute;left:50%;top:-25px;transform:translateX(-50%);
+ width:95px;height:22px;background:var(--wood);border-radius:50%;box-shadow:0 4px 0 var(--wooddark)}
+.coinbox{text-align:center;margin-top:-4px}
+.coin{
+ display:inline-flex;width:56px;height:56px;border-radius:50%;margin:5px;
+ align-items:center;justify-content:center;font-weight:bold;font-size:14px;
+ border:3px solid var(--wooddark);box-shadow:0 4px 7px #9c8f79;
+}
+.yangCoin{background:#fff;color:#222}.yinCoin{background:#222;color:#fff}
+#tossStatus{text-align:center;font-style:italic;color:var(--green);min-height:24px}
+.zen{
+ margin:15px auto 25px;max-width:900px;padding:25px 15px;
+ background:
+ repeating-linear-gradient(0deg,transparent 0 16px,rgba(140,125,98,.14) 17px 18px),
+ var(--sand2);
+ border:2px solid #c6b99d;position:relative;overflow:hidden;
+}
+.rock{position:absolute;border-radius:50%;background:#77705f;box-shadow:inset -5px -4px 7px #4e4a3f}
+.r1{width:42px;height:29px;left:8%;top:18px}.r2{width:65px;height:38px;right:12%;top:70px}.r3{width:31px;height:24px;left:27%;bottom:24px}
+.lines{display:flex;flex-direction:column-reverse;align-items:center;gap:9px;min-height:310px;position:relative}
+.lineRow{width:min(600px,90%);display:flex;align-items:center;gap:12px}
+.lineNum{width:28px;text-align:right;color:#7b6b55}
+.line{
+ flex:1;height:22px;position:relative;
+}
+.line.yang{background:#171717;border-radius:3px}
+.line.yin{background:transparent}
+.line.yin:before,.line.yin:after{content:"";position:absolute;top:0;width:44%;height:22px;background:#171717;border-radius:3px}
+.line.yin:before{left:0}.line.yin:after{right:0}
+.change{
+ color:var(--red);font-weight:bold;width:25px;text-align:center;font-size:20px
+}
+.reading{max-width:900px;margin:25px auto}
+.hexTitle{text-align:center;color:var(--green)}
+.hexTitle h2{font-size:31px;margin:5px}
+.hexagramText{font-size:18px;font-style:italic;text-align:center}
+.section{
+ margin:18px 0;padding:20px 24px;background:#fffdf7;border-left:6px solid var(--green);
+ line-height:1.65;
+}
+.section h3{color:var(--wooddark);margin-top:0}
+.warn{color:var(--red);font-weight:bold}
+.questions li{margin:9px 0}
+.small{text-align:center;font-size:13px;color:#716957}
+@media(max-width:700px){.page{margin:6px;padding:18px}h1{font-size:30px}.arch{height:70px}}
+</style>
+</head>
+<body>
+<div class="page">
+<header>
+<div class="bamboo">竹  ☯  竹</div>
+<h1>The Bamboo Gate I Ching</h1>
+<div class="subtitle">A quiet place for the question you are carrying</div>
+</header>
+
+<div class="intro">
+<p>
+The three coins are cast six times, beginning with the bottom line. Black is Yin; white is Yang.
+When all three coins show the same face, the line is a <em>changing line</em>.
+The completed hexagram is a picture to think with—not a command and not a fixed prediction.
+</p>
+</div>
+
+<div class="controls">
+<label for="question">What question are you bringing to the garden?</label>
+<textarea id="question" placeholder="Ask for understanding, perspective, or a wise way to approach something..."></textarea>
+<div class="buttons">
+<button onclick="beginCast()">Enter the Bamboo Gate &amp; Cast the Coins</button>
+<button onclick="downloadReading()" id="download" style="display:none">Download This Reading</button>
+</div>
+</div>
+
+<div id="garden">
+<div class="arch"></div>
+<div id="tossStatus">The first three coins will form the bottom line.</div>
+<div class="coinbox" id="coins"></div>
+
+<div class="zen">
+<div class="rock r1"></div><div class="rock r2"></div><div class="rock r3"></div>
+<div class="lines" id="lines"></div>
+</div>
+
+<div class="reading" id="reading" style="display:none">
+<div class="hexTitle">
+<h2 id="hexName"></h2>
+<div id="hexNumber"></div>
+<div class="hexagramText" id="hexMeaning"></div>
+</div>
+
+<div class="section">
+<h3>Ah, grasshopper — the shape of the moment</h3>
+<p id="shape"></p>
+</div>
+
+<div class="section" id="changingSection">
+<h3>The Changing Lines</h3>
+<div id="changing"></div>
+</div>
+
+<div class="section">
+<h3>Confucian counsel</h3>
+<p id="confucius"></p>
+</div>
+
+<div class="section">
+<h3>The Way of the Tao</h3>
+<p id="tao"></p>
+</div>
+
+<div class="section">
+<h3>Questions to carry into ordinary life</h3>
+<ul class="questions" id="questions"></ul>
+</div>
+
+<div class="section">
+<h3>A grounded next step</h3>
+<p id="next"></p>
+</div>
+<p class="small">
+The Confucian and Taoist reflections on this page are original paraphrases inspired by those traditions;
+they are not presented as authentic quotations from Confucius or Laozi.
+</p>
+</div>
+</div>
+</div>
+
+<script>
+const HEXES=[[1, "The Creative", "Qian", "initiative, strength, creative force"], [2, "The Receptive", "Kun", "receptivity, patience, nourishment"], [3, "Difficulty at the Beginning", "Zhun", "beginnings, disorder, persistence"], [4, "Youthful Folly", "Meng", "learning, humility, asking good questions"], [5, "Waiting", "Xu", "patience, readiness, nourishment before action"], [6, "Conflict", "Song", "disagreement, clarity, knowing when to stop"], [7, "The Army", "Shi", "discipline, cooperation, purposeful effort"], [8, "Holding Together", "Bi", "belonging, alliance, sincere connection"], [9, "Small Taming", "Xiao Chu", "gentle restraint, small accumulations, preparation"], [10, "Treading", "Lu", "care, courtesy, moving carefully through power"], [11, "Peace", "Tai", "harmony, exchange, growth"], [12, "Standstill", "Pi", "stagnation, boundaries, waiting for conditions to change"], [13, "Fellowship", "Tong Ren", "community, common purpose, honest friendship"], [14, "Great Possession", "Da You", "abundance, stewardship, responsible confidence"], [15, "Modesty", "Qian", "humility, balance, quiet strength"], [16, "Enthusiasm", "Yu", "energy, encouragement, readiness"], [17, "Following", "Sui", "adaptability, choosing what is worth following"], [18, "Work on What Has Been Spoiled", "Gu", "repair, inherited patterns, restoration"], [19, "Approach", "Lin", "nearness, attention, teaching by presence"], [20, "Contemplation", "Guan", "observation, perspective, seeing clearly"], [21, "Biting Through", "Shi He", "decisive action, removing an obstruction"], [22, "Grace", "Bi", "beauty, presentation, making the essential visible"], [23, "Splitting Apart", "Bo", "letting go, simplification, what cannot remain"], [24, "Return", "Fu", "return, renewal, beginning again"], [25, "Innocence", "Wu Wang", "sincerity, spontaneity, acting without contrivance"], [26, "Great Taming", "Da Chu", "stored strength, learning, restraint"], [27, "Nourishment", "Yi", "what you take in, what you give, sustaining life"], [28, "Great Preponderance", "Da Guo", "carrying a heavy load, unusual responsibility"], [29, "The Abysmal", "Kan", "depth, repeated difficulty, steady courage"], [30, "The Clinging", "Li", "clarity, illumination, attachment to what gives light"], [31, "Influence", "Xian", "attraction, sensitivity, mutual influence"], [32, "Duration", "Heng", "continuity, commitment, enduring practice"], [33, "Retreat", "Dun", "strategic withdrawal, conserving strength"], [34, "Great Power", "Da Zhuang", "strength, restraint, using power well"], [35, "Progress", "Jin", "emergence, recognition, gradual advance"], [36, "Darkening of the Light", "Ming Yi", "protecting inner light during difficult conditions"], [37, "The Family", "Jia Ren", "roles, care, household culture, responsibility"], [38, "Opposition", "Kui", "difference, perspective, finding workable connection"], [39, "Obstruction", "Jian", "difficulty, changing direction, seeking help"], [40, "Deliverance", "Xie", "release, relief, untangling"], [41, "Decrease", "Sun", "simplifying, offering, reducing excess"], [42, "Increase", "Yi", "growth, generosity, useful expansion"], [43, "Breakthrough", "Guai", "clear decision, truth spoken responsibly"], [44, "Coming to Meet", "Gou", "unexpected encounter, discernment, boundaries"], [45, "Gathering Together", "Cui", "community, gathering, shared purpose"], [46, "Pushing Upward", "Sheng", "steady growth, cultivation, gradual ascent"], [47, "Oppression", "Kun", "constraint, endurance, finding inner resources"], [48, "The Well", "Jing", "shared resources, deep nourishment, renewing what serves many"], [49, "Revolution", "Ge", "transformation, timing, changing what no longer fits"], [50, "The Cauldron", "Ding", "refinement, culture, transformation through care"], [51, "The Arousing", "Zhen", "shock, awakening, courage after surprise"], [52, "Keeping Still", "Gen", "stillness, stopping, returning to the present"], [53, "Development", "Jian", "gradual progress, organic maturation"], [54, "The Marrying Maiden", "Gui Mei", "roles, expectations, entering circumstances carefully"], [55, "Abundance", "Feng", "fullness, visibility, intensity, using the moment wisely"], [56, "The Wanderer", "Lu", "temporary circumstances, independence, courtesy"], [57, "The Gentle", "Xun", "persistence, influence through subtlety"], [58, "The Joyous", "Dui", "openness, conversation, shared pleasure"], [59, "Dispersion", "Huan", "dissolving isolation, releasing rigidity"], [60, "Limitation", "Jie", "boundaries, proportion, enough"], [61, "Inner Truth", "Zhong Fu", "trust, sincerity, inward honesty"], [62, "Small Preponderance", "Xiao Guo", "attention to small matters, modest action"], [63, "After Completion", "Ji Ji", "completion, vigilance, maintaining balance"], [64, "Before Completion", "Wei Ji", "unfinishedness, transition, careful final steps"]];
+const PAIRS=[["Qian", "Qian"], ["Kun", "Kun"], ["Kan", "Zhen"], ["Gen", "Kan"], ["Kan", "Qian"], ["Qian", "Kan"], ["Kun", "Kan"], ["Kan", "Kun"], ["Xun", "Qian"], ["Qian", "Dui"], ["Kun", "Qian"], ["Qian", "Kun"], ["Qian", "Li"], ["Li", "Qian"], ["Kun", "Gen"], ["Zhen", "Kun"], ["Dui", "Zhen"], ["Gen", "Xun"], ["Kun", "Dui"], ["Xun", "Kun"], ["Li", "Zhen"], ["Gen", "Li"], ["Gen", "Kun"], ["Kun", "Zhen"], ["Qian", "Zhen"], ["Gen", "Qian"], ["Gen", "Zhen"], ["Dui", "Xun"], ["Kan", "Kan"], ["Li", "Li"], ["Dui", "Gen"], ["Zhen", "Xun"], ["Qian", "Gen"], ["Zhen", "Qian"], ["Li", "Kun"], ["Kun", "Li"], ["Xun", "Li"], ["Li", "Dui"], ["Kan", "Gen"], ["Zhen", "Kan"], ["Gen", "Dui"], ["Xun", "Zhen"], ["Dui", "Qian"], ["Qian", "Xun"], ["Dui", "Kun"], ["Kun", "Xun"], ["Dui", "Kan"], ["Kan", "Xun"], ["Dui", "Li"], ["Li", "Xun"], ["Zhen", "Zhen"], ["Gen", "Gen"], ["Xun", "Gen"], ["Zhen", "Dui"], ["Zhen", "Li"], ["Li", "Gen"], ["Xun", "Xun"], ["Dui", "Dui"], ["Xun", "Kan"], ["Kan", "Dui"], ["Xun", "Dui"], ["Zhen", "Gen"], ["Kan", "Li"], ["Li", "Kan"]];
+const TRIGRAMS={"Qian": [1, 1, 1], "Dui": [1, 1, 0], "Li": [1, 0, 1], "Zhen": [1, 0, 0], "Xun": [0, 1, 1], "Kan": [0, 1, 0], "Gen": [0, 0, 1], "Kun": [0, 0, 0]};
+
+let casts=[], last=null;
+
+function coin(){
+ return Math.random()<.5 ? 2 : 3; // 2 Yin / 3 Yang
+}
+function makeCoins(){
+ const vals=[coin(),coin(),coin()];
+ return {vals,sum:vals.reduce((a,b)=>a+b,0)};
+}
+function lineInfo(sum){
+ if(sum===6)return {yin:true,changing:true,label:"Old Yin",mark:"×"};
+ if(sum===7)return {yin:false,changing:false,label:"Young Yang",mark:""};
+ if(sum===8)return {yin:true,changing:false,label:"Young Yin",mark:""};
+ return {yin:false,changing:true,label:"Old Yang",mark:"○"};
+}
+function pattern(lines){
+ return lines.map(x=>x.yin?0:1);
+}
+function hexNumber(lines){
+ const p=pattern(lines);
+ const key=p.join(",");
+ for(let i=0;i<PAIRS.length;i++){
+   const upper=TRIGRAMS[PAIRS[i][0]],lower=TRIGRAMS[PAIRS[i][1]];
+   if(lower.concat(upper).join(",")===key)return i+1;
+ }
+ return null;
+}
+function showCoins(c){
+ const box=document.getElementById("coins");box.innerHTML="";
+ c.vals.forEach(v=>{
+   const d=document.createElement("span");
+   d.className="coin "+(v===3?"yangCoin":"yinCoin");
+   d.textContent=v===3?"YANG":"YIN";box.appendChild(d);
+ });
+}
+function showLines(){
+ const box=document.getElementById("lines");box.innerHTML="";
+ casts.forEach((c,i)=>{
+   const info=lineInfo(c.sum),row=document.createElement("div");
+   row.className="lineRow";
+   row.innerHTML=`<span class="lineNum">${i+1}</span><div class="line ${info.yin?"yin":"yang"}"></div>
+   <span class="change">${info.mark}</span>`;
+   box.appendChild(row);
+ });
+}
+function beginCast(){
+ const q=document.getElementById("question").value.trim()||"I am asking what is most useful to understand about this moment.";
+ casts=[];document.getElementById("garden").style.display="block";
+ document.getElementById("reading").style.display="none";
+ document.getElementById("download").style.display="none";
+ castNext(q);
+}
+function castNext(q){
+ if(casts.length>=6){finish(q);return;}
+ const n=makeCoins();casts.push(n);showCoins(n);showLines();
+ const info=lineInfo(n.sum);
+ document.getElementById("tossStatus").textContent=
+ `Line ${casts.length}: ${info.label}${info.changing?" — changing":""}. The next toss will build above it.`;
+ setTimeout(()=>castNext(q),850);
+}
+function finish(q){
+ const lines=casts.map(c=>lineInfo(c.sum)),num=hexNumber(lines),h=HEXES[num-1];
+ const changed=lines.map((x,i)=>x.changing?i:null).filter(x=>x!==null);
+ const transformed=lines.map(x=>x.changing?{yin:!x.yin}:x);
+ const resultNum=changed.length?hexNumber(transformed):null;
+ const result=resultNum?HEXES[resultNum-1]:null;
+ const now=new Date();
+ last={q,lines,num,h,changed,resultNum,result,now};
+ document.getElementById("reading").style.display="block";
+ document.getElementById("download").style.display="inline-block";
+ document.getElementById("hexName").textContent=`Hexagram ${num} — ${h.name}`;
+ document.getElementById("hexNumber").textContent=h.short;
+ document.getElementById("hexMeaning").textContent=h.meaning;
+ document.getElementById("shape").textContent=
+ `You asked: “${q}” The six lines have formed Hexagram ${num}, ${h.name}. Think of it as a temporary landscape: ${h.meaning}. The value of the reading is in noticing what the landscape makes easier to see about your actual circumstances.`;
+ const cs=document.getElementById("changing");
+ if(!changed.length){
+   document.getElementById("changingSection").style.display="none";
+ }else{
+   document.getElementById("changingSection").style.display="block";
+   cs.innerHTML=changed.map(i=>{
+     const info=lines[i];
+     return `<p><span class="warn">Line ${i+1}: ${info.label}.</span> This line is moving from ${info.yin?"Yin toward Yang":"Yang toward Yin"}. Consider what is changing rather than treating the present arrangement as permanent.</p>`;
+   }).join("");
+   if(result)cs.innerHTML+=`<p><strong>Relating hexagram:</strong> ${resultNum} — ${result.name}. This gives you a second landscape to consider after the changing lines have moved.</p>`;
+ }
+ document.getElementById("confucius").textContent=confucian(h);
+ document.getElementById("tao").textContent=tao(h);
+ const qs=[
+ "What responsibility is actually mine in this situation?",
+ "What would good conduct look like if nobody were applauding it?",
+ "Where could patience be wiser than force?",
+ "What relationship, habit, or value deserves careful attention?",
+ "What can I learn before I decide what to do?",
+ "What small action would make the situation more humane?",
+ "What might become clearer if I stopped trying to control the entire outcome?"
+ ];
+ document.getElementById("questions").innerHTML=qs.slice(0,Math.min(6,3+changed.length)).map(x=>`<li>${x}</li>`).join("");
+ document.getElementById("next").textContent=nextStep(h);
+ document.getElementById("reading").scrollIntoView({behavior:"smooth"});
+}
+function confucian(h){
+ const m=h.name;
+ const map={
+"The Creative":"Cultivate ability with responsibility. Strength is most trustworthy when it serves something beyond vanity.",
+"The Receptive":"Learn to receive before you rush to lead. Good conduct begins with attention to what is actually needed.",
+"Difficulty at the Beginning":"Do not despise awkward beginnings. Seek capable companions, learn the task, and establish order patiently.",
+"Youthful Folly":"A wise learner asks a sincere question and then listens. Do not pretend to know what you have not learned.",
+"Waiting":"Preparation is not idleness. Keep your conduct steady while circumstances ripen.",
+"Conflict":"Seek clarity without making victory the goal. A disagreement can be handled well even when agreement is impossible.",
+"Fellowship":"Build companionship around sincerity and shared purpose rather than convenience alone.",
+"Modesty":"Let competence speak without demanding applause. Humility makes room for learning and for other people.",
+"Contemplation":"Look carefully at your own conduct as well as everyone else's. Example teaches more strongly than instruction.",
+"Inner Truth":"Be trustworthy in private as well as in public. Character is built through repeated ordinary acts."
+ };
+ return map[m]||"Begin with conduct that is within your reach: honesty, consideration, learning, and responsibility. Let your response to the situation reveal the kind of person you wish to become.";
+}
+function tao(h){
+ const map={
+"The Creative":"Act from what is alive and necessary, but do not force the river to prove that you are strong.",
+"The Receptive":"Make room. Some things grow because they are given space, nourishment, and time.",
+"Waiting":"Resting is not failure. Watch the conditions, prepare quietly, and let the right moment arrive without wrestling it into existence.",
+"Conflict":"Do not feed a struggle merely because you can win it. A quieter path may preserve more of what matters.",
+"Standstill":"When movement is blocked, do not spend all your strength pushing the wall. Notice where the opening is.",
+"Return":"You may return without becoming the person you were. Renewal can be simple and quiet.",
+"Abundance":"Enjoy fullness without clinging to it. What is abundant today is not a possession forever.",
+"Keeping Still":"Stop. Let the mind settle enough for the next thing to become visible.",
+"Limitation":"Enough can be a form of freedom. A boundary can protect the water rather than diminish it.",
+"Before Completion":"Do not relax your attention merely because the end is visible. The last steps deserve the same care as the first."
+ };
+ return map[h.name]||"Prefer what is simple, proportionate, and alive. Do what is needed without adding unnecessary struggle. Leave room for circumstances to teach you something.";
+}
+function nextStep(h){
+ return `Take one ordinary action that fits the character of “${h.name}” without trying to manufacture a dramatic outcome. Then leave some space. Let the day answer back.`;
+}
+function downloadReading(){
+ if(!last)return;
+ let t=`THE BAMBOO GATE I CHING\n\nDate and time: ${last.now.toLocaleString()}\nQuestion: ${last.q}\n\n`;
+ t+=`PRIMARY HEXAGRAM\nHexagram ${last.num} — ${last.h.name} (${last.h.short})\n${last.h.meaning}\n\n`;
+ t+=`LINES (bottom to top)\n`;
+ last.lines.forEach((x,i)=>t+=`${i+1}. ${x.label}${x.changing?" — CHANGING":""}\n`);
+ if(last.result)t+=`\nRELATING HEXAGRAM\nHexagram ${last.resultNum} — ${last.result.name} (${last.result.short})\n${last.result.meaning}\n`;
+ t+=`\nCONFUCIAN COUNSEL\n${document.getElementById("confucius").textContent}\n\nTHE WAY OF THE TAO\n${document.getElementById("tao").textContent}\n\n`;
+ t+=`QUESTIONS TO CARRY FORWARD\n`;
+ [...document.querySelectorAll("#questions li")].forEach((x,i)=>t+=`${i+1}. ${x.textContent}\n`);
+ t+=`\nA GROUNDED NEXT STEP\n${document.getElementById("next").textContent}\n\n`;
+ t+=`The Confucian and Taoist reflections are original paraphrases inspired by those traditions, not quotations.\n`;
+ const url=URL.createObjectURL(new Blob([t],{type:"text/plain;charset=utf-8"}));
+ const a=document.createElement("a");a.href=url;a.download="Bamboo-Gate-I-Ching-Reading.txt";
+ document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>

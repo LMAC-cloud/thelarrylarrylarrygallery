@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Angel Tarot — A Moment to Hold</title>
+<style>
+:root{
+  --pink:#f5b8cf; --rose:#c96f98; --deep:#63324d; --cream:#fffafc;
+  --gold:#d8ad57; --ink:#4b3340; --white:#fff;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; min-height:100vh; color:var(--ink);
+  font-family:Georgia,"Times New Roman",serif;
+  background:
+    radial-gradient(circle at 50% 0%, #fff 0, #fff 12%, transparent 42%),
+    radial-gradient(circle at 15% 70%, rgba(255,255,255,.85), transparent 30%),
+    linear-gradient(135deg,#e99fbd,#fff5fa 48%,#e5a1c0);
+}
+.page{
+  max-width:1080px; margin:24px auto; padding:36px;
+  background:rgba(255,250,253,.94); border:7px double var(--rose);
+  box-shadow:0 10px 35px rgba(99,50,77,.25); position:relative;
+}
+.page:before{
+  content:""; position:absolute; inset:11px; border:1px solid #e6aec6;
+  pointer-events:none;
+}
+header{text-align:center; padding:8px 20px 25px}
+.wings{font-size:38px; letter-spacing:12px;color:#e0a3bb}
+h1{margin:5px 0;color:var(--deep);font-size:42px;letter-spacing:2px}
+.subtitle{font-size:19px;font-style:italic}
+.intro{
+  max-width:800px;margin:0 auto 25px;text-align:center;
+  line-height:1.65;font-size:17px;
+}
+.controls{max-width:850px;margin:auto}
+label{display:block;font-weight:bold;color:var(--deep);margin:13px 0 7px}
+textarea,select{
+  width:100%;padding:13px;border:1px solid #c986a6;border-radius:8px;
+  background:#fff;color:var(--ink);font:16px Georgia,serif;
+}
+textarea{min-height:105px;resize:vertical}
+button{
+  border:1px solid #a85c82;border-radius:22px;padding:12px 22px;margin:8px;
+  background:linear-gradient(#f8d3e1,#df91b3);color:#fff;
+  font:bold 16px Georgia,serif;cursor:pointer;box-shadow:0 3px 7px #caa1b3;
+}
+button:hover{filter:brightness(1.05)}
+.buttons{text-align:center;margin:16px 0}
+#reading{display:none;margin-top:28px}
+.meta{text-align:center;border-top:1px solid #e3b4c8;border-bottom:1px solid #e3b4c8;padding:13px;font-style:italic}
+.cards{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin:30px 0}
+.card{
+  width:215px;min-height:340px;padding:18px;text-align:center;
+  border:4px solid #e5b3c8;border-radius:12px;
+  background:linear-gradient(150deg,#fff,#fff8fc);
+  box-shadow:0 8px 20px rgba(99,50,77,.18);
+}
+.card .halo{font-size:58px;color:#e5b36a;margin:10px}
+.card h3{color:var(--deep);font-size:21px;margin:8px 0}
+.position{font-style:italic;color:var(--rose)}
+.orientation{font-size:12px;letter-spacing:2px;color:#9c5677;margin:7px}
+.meaning{text-align:left;line-height:1.55}
+.section{
+  max-width:900px;margin:20px auto;padding:20px 24px;
+  background:#fff7fb;border-left:5px solid var(--rose);
+}
+.section h2{color:var(--deep);margin-top:0}
+.questions li{margin:10px 0;line-height:1.45}
+.core{
+  text-align:center;font-size:21px;font-style:italic;color:var(--deep);
+  padding:20px;margin:18px auto;max-width:800px;
+}
+.small{text-align:center;font-size:13px;color:#856273}
+@media(max-width:700px){.page{margin:7px;padding:20px}h1{font-size:31px}.card{width:190px}}
+</style>
+</head>
+<body>
+<div class="page">
+<header>
+  <div class="wings">☼ 𓆩♡𓆪 ☼</div>
+  <h1>The Angel Tarot</h1>
+  <div class="subtitle">A moment to hold, consider, and carry gently</div>
+</header>
+
+<div class="intro">
+  <p>
+    This is not a machine for telling you what your future must be.
+    It is a place to put something that matters <em>right now</em>.
+    The cards give your question a tangible shape, and the reading gives you
+    something to think with: a wise companion for the moment, rather than an authority over it.
+  </p>
+</div>
+
+<div class="controls">
+  <label for="question">What are you carrying into this moment?</label>
+  <textarea id="question" placeholder="Write the question, worry, hope, decision, memory, or feeling you want to give a place to..."></textarea>
+
+  <label for="spread">Choose how many companions to draw</label>
+  <select id="spread">
+    <option value="1">One Card — What is worth noticing?</option>
+    <option value="3" selected>Three Cards — What is here / What may help / What might I notice?</option>
+    <option value="5">Five Cards — A fuller conversation with the moment</option>
+  </select>
+
+  <div class="buttons">
+    <button onclick="draw()">Draw My Cards</button>
+    <button onclick="downloadReading()" id="download" style="display:none">Download My Moment</button>
+  </div>
+</div>
+
+<div id="reading">
+  <div class="meta" id="meta"></div>
+  <div class="core" id="core"></div>
+  <div class="cards" id="cards"></div>
+
+  <div class="section">
+    <h2>What the cards give you to consider</h2>
+    <p id="reflection"></p>
+  </div>
+
+  <div class="section">
+    <h2>A wise friend's questions</h2>
+    <ul class="questions" id="questions"></ul>
+  </div>
+
+  <div class="section">
+    <h2>One gentle thing to carry forward</h2>
+    <p id="action"></p>
+  </div>
+
+  <p class="small">
+    This reading is a reflective creative practice. The cards do not determine your future;
+    they provide images and relationships through which you can consider your own life.
+  </p>
+</div>
+</div>
+
+<script>
+const major=[
+["The Fool","☀","There is something alive in simply beginning. You do not have to understand the whole road before taking the next step.","You may be trying to make certainty arrive before allowing yourself to begin."],
+["The Magician","✦","You already possess more of the needed material than you may realize. Look at what is actually in your hands.","You may be overlooking an ability, tool, or possibility that is already available."],
+["The High Priestess","☾","Some understanding arrives quietly. Give yourself permission not to explain everything immediately.","Leave room for uncertainty without turning it into fear."],
+["The Empress","❀","Something wants tending rather than judging. Creativity, affection, beauty, rest, and ordinary nourishment matter.","Ask whether you have been demanding fruit from something you have not had time to nurture."],
+["The Emperor","♜","A little structure can protect what matters. Boundaries and practical decisions can serve rather than imprison you.","Notice where control has become more important than what the control was meant to protect."],
+["The Hierophant","✧","There is wisdom worth receiving, but you are allowed to decide which traditions genuinely serve your life.","Learn without surrendering your own judgement."],
+["The Lovers","♡","Something becomes clearer when you notice the relationship between two things: two choices, two people, two values, or two parts of yourself.","Ask not only 'Which do I choose?' but 'What matters enough to guide the choice?'"],
+["The Chariot","⚔","You have direction available to you. Gather your attention and let one deliberate movement be enough for today.","Do not confuse speed with progress."],
+["Strength","♘","Gentleness is not weakness. Patience with yourself may accomplish what force cannot.","Try responding to yourself as you would to someone whose courage you respect."],
+["The Hermit","☷","Stepping away can let you hear your own thought again. Solitude can be a lantern rather than a disappearance.","What do you know when nobody else is asking you to perform an answer?"],
+["Wheel of Fortune","☸","The moment is moving. Not everything has to be controlled for life to change.","Notice what is changing without immediately deciding whether it is good or bad."],
+["Justice","⚖","Look carefully and honestly. Fairness begins with seeing what is actually there.","What would become clearer if you removed both self-blame and self-excuse?"],
+["The Hanged Man","⟂","A pause can change the meaning of what you are looking at. You may not need a solution yet.","What happens if you deliberately stop trying to solve this for a moment?"],
+["Death","✧","Something may be finished without having been a failure. Ending can be a form of making room.","What are you carrying simply because you have carried it for a long time?"],
+["Temperance","♧","Different parts of life can sometimes be blended rather than forced to compete. Small adjustments can make a livable whole.","Where could moderation create more freedom?" ],
+["The Devil","♤","Look directly at the attachment, habit, fear, or story that has acquired too much authority.","What would you choose if the thing you fear losing had less power over the decision?"],
+["The Tower","⚡","A false arrangement can sometimes fall away so that something truer becomes visible.","If something changes suddenly, ask what it reveals rather than only what it destroys."],
+["The Star","★","Hope can be quiet. Something in you may still know where the light is even before you can explain it.","What small sign of renewal have you nearly dismissed?"],
+["The Moon","☽","Not every feeling is a fact, but every feeling can tell you something worth examining.","What is known, what is imagined, and what remains genuinely unknown?"],
+["The Sun","☼","There is value in being able to see and enjoy what is actually good right now.","Can you let something be good without immediately turning it into a project?" ],
+["Judgement","☄","An old part of your life may be asking to be understood rather than merely remembered or condemned.","What would you say to your past self if you could speak without judgement?"],
+["The World","◎","Something may already be more complete than you have allowed yourself to recognize.","What deserves to be acknowledged as an accomplishment before you begin the next thing?"]
+];
+
+const suits={
+Wands:["Ace","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Page","Knight","Queen","King"],
+Cups:["Ace","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Page","Knight","Queen","King"],
+Swords:["Ace","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Page","Knight","Queen","King"],
+Pentacles:["Ace","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Page","Knight","Queen","King"]
+};
+const suitText={
+Wands:["creative fire, initiative, courage, making things happen","energy may need grounding or may be burning too quickly"],
+Cups:["feeling, imagination, affection, connection","emotion may be difficult to contain, trust, or express"],
+Swords:["thought, language, truth, discernment, decisions","thought may be becoming tangled, severe, or exhausting"],
+Pentacles:["body, home, resources, craft, patience, the tangible world","practical needs may be asking for attention or balance"]
+};
+let deck=[],last=null;
+function makeDeck(){
+ deck=major.map(x=>({name:x[0],symbol:x[1],up:x[2],rev:x[3]}));
+ for(const s in suits) suits[s].forEach(r=>deck.push({
+   name:`${r} of ${s}`,symbol:s==="Cups"?"♡":s==="Swords"?"⚔":s==="Wands"?"♣":"◇",
+   up:`This card brings the ${suitText[s][0]} into the question. Notice where that quality is already present in your life, even in a small way.`,
+   rev:`This card asks you to notice whether ${suitText[s][1]} is being neglected, exaggerated, or experienced in a way that no longer serves you.`
+ }));
+}
+makeDeck();
+
+const pos={
+1:["What is worth noticing?"],
+3:["What is here","What may help","What might I notice?"],
+5:["What is present","What is underneath","What supports me","What asks for attention","What can I carry forward?"]
+};
+
+function draw(){
+ const q=document.getElementById("question").value.trim()||"I have brought an unspoken question to this moment.";
+ const n=+document.getElementById("spread").value;
+ let pool=[...deck],cards=[];
+ for(let i=0;i<n;i++){
+   let c=pool.splice(Math.floor(Math.random()*pool.length),1)[0];
+   cards.push({...c,reversed:Math.random()<.28});
+ }
+ const now=new Date(); last={q,n,cards,now};
+ document.getElementById("reading").style.display="block";
+ document.getElementById("download").style.display="inline-block";
+ document.getElementById("meta").textContent=now.toLocaleString(undefined,{dateStyle:"full",timeStyle:"short"});
+ document.getElementById("core").textContent="For this moment, you do not have to solve your whole life. You only have to notice what this moment has brought with it.";
+ const box=document.getElementById("cards"); box.innerHTML="";
+ cards.forEach((c,i)=>{
+   const d=document.createElement("div");d.className="card";
+   d.innerHTML=`<div class="position">${pos[n][i]}</div><div class="halo">${c.symbol}</div>
+   <h3>${c.name}</h3><div class="orientation">${c.reversed?"REVERSED":"UPRIGHT"}</div>
+   <div class="meaning">${c.reversed?c.rev:c.up}</div>`;
+   box.appendChild(d);
+ });
+ const names=cards.map(c=>c.name+(c.reversed?" (reversed)":"")).join(" • ");
+ document.getElementById("reflection").textContent=
+ `You asked: “${q}” The cards that entered the conversation are ${names}. Rather than treating them as instructions, look at the relationships between them. Which card feels closest to your actual life? Which one makes you curious or resistant? What changes when the three ideas are allowed to sit beside one another? The useful part of this reading may be the thought you have while looking at the cards, not a prediction about what will happen.`;
+ const base=[
+ "Which part of this reading made me pause before I knew why?",
+ "What am I already doing well that I have been treating as ordinary?",
+ "What needs my attention, and what can safely wait?",
+ "What would kindness and seriousness look like together here?",
+ "What small, real thing could make tomorrow a little more inhabitable?",
+ "What possibility becomes visible if I stop demanding that I know the outcome?"
+ ];
+ document.getElementById("questions").innerHTML=base.slice(0,n+2).map(x=>`<li>${x}</li>`).join("");
+ document.getElementById("action").textContent=
+ "Choose one small thing that is genuinely within your reach. You do not have to make the whole reading come true. Let one useful thought accompany you into the rest of the day.";
+ document.getElementById("reading").scrollIntoView({behavior:"smooth"});
+}
+function downloadReading(){
+ if(!last)return;
+ const {q,n,cards,now}=last;
+ let t=`THE ANGEL TAROT — A MOMENT TO HOLD\n\n`;
+ t+=`Date and time: ${now.toLocaleString()}\n\nQUESTION\n${q}\n\nCARDS\n`;
+ cards.forEach((c,i)=>t+=`${i+1}. ${pos[n][i]} — ${c.name} — ${c.reversed?"REVERSED":"UPRIGHT"}\n${c.reversed?c.rev:c.up}\n\n`);
+ t+=`REFLECTION\n${document.getElementById("reflection").textContent}\n\nQUESTIONS FOR MEDITATION\n`;
+ [...document.querySelectorAll("#questions li")].forEach((x,i)=>t+=`${i+1}. ${x.textContent}\n`);
+ t+=`\nONE GENTLE THING TO CARRY FORWARD\n${document.getElementById("action").textContent}\n\n`;
+ t+=`The cards are offered as a reflective creative practice, not as a guarantee of future events.\n`;
+ const a=document.createElement("a"),url=URL.createObjectURL(new Blob([t],{type:"text/plain;charset=utf-8"}));
+ a.href=url;a.download="Angel-Tarot-Reading.txt";document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
