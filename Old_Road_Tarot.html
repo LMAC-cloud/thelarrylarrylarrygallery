@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Old Road Tarot</title>
+<style>
+  :root{
+    --ink:#2b211a; --paper:#ead8b5; --paper2:#f4e7c9;
+    --wine:#5b2020; --gold:#a87932; --green:#314735;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100vh; color:var(--ink);
+    font-family: Georgia, "Times New Roman", serif;
+    background:
+      radial-gradient(circle at 20% 10%, rgba(255,245,210,.8), transparent 25%),
+      radial-gradient(circle at 80% 80%, rgba(80,45,20,.18), transparent 35%),
+      #6f5a42;
+  }
+  .page{
+    max-width:1100px; margin:28px auto; padding:34px;
+    background:var(--paper);
+    border:10px double #4b3828;
+    box-shadow:0 10px 35px rgba(0,0,0,.45);
+    position:relative;
+  }
+  .page:before{
+    content:""; position:absolute; inset:10px; border:1px solid #9c7843;
+    pointer-events:none;
+  }
+  header{text-align:center; padding:10px 25px 25px}
+  h1{margin:0; font-size:42px; letter-spacing:3px; color:var(--wine); text-transform:uppercase}
+  .subtitle{font-style:italic; font-size:18px; margin-top:8px}
+  .ornament{color:var(--gold); font-size:27px; margin:8px}
+  label{display:block; font-weight:bold; margin-bottom:7px}
+  textarea, select{
+    width:100%; border:2px solid #876a43; background:var(--paper2);
+    color:var(--ink); padding:12px; font:16px Georgia,serif;
+  }
+  textarea{min-height:95px; resize:vertical}
+  .controls{display:grid; grid-template-columns:1fr 1fr; gap:18px; max-width:850px; margin:0 auto 24px}
+  .buttons{text-align:center; margin:18px 0}
+  button{
+    cursor:pointer; border:2px solid #4a301e; padding:12px 20px; margin:5px;
+    background:linear-gradient(#c49a54,#946c31); color:#fff8e8;
+    font:bold 16px Georgia,serif; box-shadow:0 3px 0 #4a301e;
+  }
+  button:hover{filter:brightness(1.08)}
+  button:active{transform:translateY(2px);box-shadow:0 1px 0 #4a301e}
+  #reading{display:none; margin-top:28px}
+  .reading-meta{border-top:1px solid #a88652;border-bottom:1px solid #a88652;padding:12px;text-align:center;font-style:italic}
+  .cards{display:flex; flex-wrap:wrap; justify-content:center; gap:24px; margin:28px 0}
+  .card{
+    width:205px; min-height:300px; padding:14px; text-align:center;
+    background:#2e2520; color:#f7e8c3; border:5px solid #a87932;
+    box-shadow:0 8px 18px rgba(0,0,0,.35);
+  }
+  .card-symbol{font-size:72px; margin:18px 0}
+  .card h3{font-size:22px; margin:5px 0}
+  .position{color:#d6b873;font-style:italic}
+  .orientation{margin:8px 0;text-transform:uppercase;letter-spacing:2px;font-size:12px}
+  .meaning{text-align:left;line-height:1.5;color:#f5e8cf}
+  .section{
+    margin:22px 0; padding:18px 22px; background:rgba(255,246,220,.45);
+    border-left:5px solid var(--wine);
+  }
+  .section h2{margin-top:0;color:var(--wine)}
+  .questions li{margin:9px 0}
+  .small{font-size:13px;opacity:.8;text-align:center}
+  @media(max-width:700px){.controls{grid-template-columns:1fr}.page{margin:8px;padding:20px}h1{font-size:30px}.card{width:180px}}
+</style>
+</head>
+<body>
+<div class="page">
+<header>
+  <div class="ornament">✦ ❦ ✦</div>
+  <h1>The Old Road Tarot</h1>
+  <div class="subtitle">A quiet reading from the travelling cards</div>
+  <div class="ornament">☽ ✧ ☼ ✧ ☾</div>
+</header>
+
+<div class="controls">
+  <div>
+    <label for="question">Your question</label>
+    <textarea id="question" placeholder="Write the question you are carrying with you..."></textarea>
+  </div>
+  <div>
+    <label for="spread">Choose a reading</label>
+    <select id="spread">
+      <option value="1">One Card — The Heart of the Matter</option>
+      <option value="3" selected>Three Cards — Situation / Guidance / What to Consider</option>
+      <option value="5">Five Cards — Deeper Road Reading</option>
+    </select>
+  </div>
+</div>
+
+<div class="buttons">
+  <button onclick="drawReading()">Draw the Cards</button>
+  <button onclick="downloadReading()" id="downloadBtn" style="display:none">Download This Reading</button>
+</div>
+
+<div id="reading">
+  <div class="reading-meta" id="meta"></div>
+  <div class="cards" id="cards"></div>
+  <div class="section">
+    <h2>The Reading</h2>
+    <p id="summary"></p>
+  </div>
+  <div class="section">
+    <h2>Questions for Meditation</h2>
+    <ul class="questions" id="questions"></ul>
+  </div>
+  <p class="small">Tarot is offered here as a reflective and imaginative practice, not as a guarantee of future events.</p>
+</div>
+</div>
+
+<script>
+const major = [
+["The Fool","☀","new beginnings, curiosity, freedom, a leap into the unknown","beginnings may need more care; hesitation or lack of preparation"],
+["The Magician","✦","skill, initiative, resourcefulness, turning ideas into action","scattered energy, untapped ability, or manipulation"],
+["The High Priestess","☾","intuition, mystery, inner knowledge, patience","ignoring intuition, secrecy, or information not yet ready to surface"],
+["The Empress","❀","creativity, nourishment, abundance, growth","creative stagnation, overgiving, or neglecting yourself"],
+["The Emperor","♜","structure, boundaries, leadership, stability","rigidity, control, or resistance to change"],
+["The Hierophant","✠","tradition, teaching, shared wisdom, established paths","questioning convention, restrictive beliefs, or learning independently"],
+["The Lovers","♡","choice, connection, values, alignment","conflict of values, difficult choice, or divided attention"],
+["The Chariot","⚔","determination, direction, momentum, self-command","loss of direction, forcing an outcome, or scattered will"],
+["Strength","♘","courage, patience, gentleness, inner power","self-doubt, impatience, or trying to overpower a situation"],
+["The Hermit","☷","solitude, reflection, wisdom, searching inward","isolation, withdrawal, or refusing useful guidance"],
+["Wheel of Fortune","☸","change, cycles, turning points, unexpected movement","resistance to change, repeating a pattern, or feeling powerless"],
+["Justice","⚖","clarity, accountability, balance, consequences","avoidance, unfairness, or refusing to examine your part"],
+["The Hanged Man","⟂","pause, surrender, new perspective, seeing differently","stagnation, needless delay, or clinging to an old viewpoint"],
+["Death","✧","ending, transformation, release, a new chapter","resistance to necessary change or lingering attachment"],
+["Temperance","♧","balance, blending, patience, healing through moderation","excess, impatience, or difficulty finding the middle way"],
+["The Devil","♤","attachment, temptation, habit, confronting what has power over you","loosening an unhealthy pattern, reclaiming choice, or seeing through an illusion"],
+["The Tower","⚡","sudden revelation, disruption, truth breaking through","avoiding an upheaval, fear of change, or delayed reckoning"],
+["The Star","★","hope, renewal, inspiration, trust in the next stage","discouragement, lost faith, or difficulty recognizing hope"],
+["The Moon","☽","dreams, uncertainty, imagination, hidden fears","confusion clearing, confronting fear, or distinguishing intuition from anxiety"],
+["The Sun","☼","clarity, vitality, joy, confidence, things coming into view","temporary cloudiness, delayed recognition, or needing to reclaim joy"],
+["Judgement","☄","awakening, reckoning, calling, seeing the larger meaning","self-judgement, avoidance of a calling, or difficulty forgiving the past"],
+["The World","◎","completion, integration, arrival, a cycle becoming whole","unfinished business, reluctance to close a chapter, or feeling almost there"]
+];
+
+const suits = {
+"Wands":["Ace","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Page","Knight","Queen","King"],
+"Cups":["Ace","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Page","Knight","Queen","King"],
+"Swords":["Ace","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Page","Knight","Queen","King"],
+"Pentacles":["Ace","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Page","Knight","Queen","King"]
+};
+
+const suitMeaning = {
+Wands:["fire, creative energy, ambition, action","energy may be scattered, blocked, or burning too quickly"],
+Cups:["water, feeling, imagination, relationships","emotional overflow, withdrawal, or difficulty trusting feeling"],
+Swords:["air, thought, truth, decisions, communication","overthinking, conflict, harsh judgement, or mental strain"],
+Pentacles:["earth, practical life, resources, craft, stability","material worry, imbalance, or neglect of practical foundations"]
+};
+
+let deck = [];
+let lastReading = null;
+
+function buildDeck(){
+  deck = major.map(x=>({name:x[0],symbol:x[1],up:x[2],rev:x[3]}));
+  for(const suit in suits){
+    suits[suit].forEach(rank=>{
+      deck.push({
+        name:`${rank} of ${suit}`,
+        symbol: suit==="Wands"?"♣":suit==="Cups"?"♡":suit==="Swords"?"⚔":"◇",
+        up:`${rank} of ${suit}: ${suitMeaning[suit][0]}. Consider how this energy is expressing itself in the matter at hand.`,
+        rev:`${rank} of ${suit}: ${suitMeaning[suit][1]}. Consider where this energy may be blocked, excessive, or asking for a different approach.`
+      });
+    });
+  }
+}
+buildDeck();
+
+const positions = {
+  1:["The Heart of the Matter"],
+  3:["The Situation","Guidance","What to Consider"],
+  5:["What is Present","What is Beneath It","What Helps","What Needs Attention","The Road Ahead"]
+};
+
+function drawReading(){
+  const q = document.getElementById("question").value.trim() || "No question was written.";
+  const count = Number(document.getElementById("spread").value);
+  let pool=[...deck], cards=[];
+  for(let i=0;i<count;i++){
+    const idx=Math.floor(Math.random()*pool.length);
+    const c=pool.splice(idx,1)[0];
+    cards.push({...c,reversed:Math.random()<0.28});
+  }
+  const now=new Date();
+  lastReading={q,count,cards,now};
+  document.getElementById("reading").style.display="block";
+  document.getElementById("downloadBtn").style.display="inline-block";
+  document.getElementById("meta").textContent =
+    now.toLocaleString(undefined,{dateStyle:"full",timeStyle:"short"})+" • "+positions[count].join(" • ");
+  document.getElementById("cards").innerHTML="";
+  cards.forEach((c,i)=>{
+    const el=document.createElement("div");
+    el.className="card";
+    el.innerHTML=`<div class="position">${positions[count][i]}</div>
+      <div class="card-symbol">${c.symbol}</div>
+      <h3>${c.name}</h3>
+      <div class="orientation">${c.reversed?"Reversed":"Upright"}</div>
+      <div class="meaning">${c.reversed?c.rev:c.up}</div>`;
+    document.getElementById("cards").appendChild(el);
+  });
+
+  const names=cards.map(c=>c.name+(c.reversed?" (reversed)":"")).join(", ");
+  document.getElementById("summary").textContent =
+    `Your question is: “${q}” The cards drawn are ${names}. Taken together, they suggest paying attention to what is changing, what you can consciously influence, and what may require patience rather than force. Use the reading as a mirror for your own thoughts and choices rather than as a fixed prediction.`;
+  const qs=[
+    "What part of this reading immediately feels true to me, and why?",
+    "What am I trying to force that might benefit from patience?",
+    "What choice or possibility have I been avoiding looking at directly?",
+    "What small action could I take that is within my control?",
+    "If I looked at this situation from a completely different angle, what might I notice?"
+  ];
+  document.getElementById("questions").innerHTML=qs.slice(0, count+2).map(x=>`<li>${x}</li>`).join("");
+  document.getElementById("reading").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function downloadReading(){
+  if(!lastReading) return;
+  const {q,cards,now}=lastReading;
+  let text=`THE OLD ROAD TAROT\n\n`;
+  text+=`Date and time: ${now.toLocaleString()}\n\n`;
+  text+=`QUESTION\n${q}\n\n`;
+  text+=`CARDS\n`;
+  cards.forEach((c,i)=>{
+    text+=`${i+1}. ${positions[lastReading.count][i]} — ${c.name} — ${c.reversed?"REVERSED":"UPRIGHT"}\n`;
+    text+=`   ${c.reversed?c.rev:c.up}\n\n`;
+  });
+  text+=`SUMMARY\n${document.getElementById("summary").textContent}\n\n`;
+  text+=`QUESTIONS FOR MEDITATION\n`;
+  [...document.querySelectorAll("#questions li")].forEach((li,i)=>text+=`${i+1}. ${li.textContent}\n`);
+  text+=`\nTarot is offered here as a reflective and imaginative practice, not as a guarantee of future events.\n`;
+  const blob=new Blob([text],{type:"text/plain;charset=utf-8"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download="Old-Road-Tarot-Reading.txt";
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
