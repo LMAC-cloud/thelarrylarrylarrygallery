@@ -1,0 +1,600 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>MATHLIEBET</title><style>
+:root{
+ --black:#090909;--cream:#f3eee3;--gold:#d9bd69;--red:#d93a31;--green:#35bd62;
+ --dark:#151515;--boardWhite:#eee9dc;--boardBlack:#111;--blue:#4ca8df
+}
+*{box-sizing:border-box;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#02040a;color:var(--cream);font-family:Georgia,"Times New Roman",serif}
+body{position:relative}
+#starCanvas{position:fixed;inset:0;width:100%;height:100%;z-index:1;background:#02040a;display:block;pointer-events:none}
+.wordPieceBoard{background:#151515!important;color:#fff!important}
+.cell.light .wordPieceBoard{background:#000!important;color:#fff!important}
+.larSweepBtn{position:absolute;left:294px;bottom:10px;width:86px;height:42px;background:#2b180e;color:#e5c783;border:2px solid #8b5d35;z-index:40;cursor:pointer;font:9px Georgia;letter-spacing:.6px;box-shadow:0 4px 10px #000}
+.larSweepBtn:hover{filter:brightness(1.3);box-shadow:0 0 12px #d9bd69}
+#larMobile{position:fixed;display:none;z-index:3000;width:82px;height:42px;background:#6b3c22;border:3px solid #c58a4c;border-radius:12px 16px 8px 8px;box-shadow:0 0 10px #000,0 0 15px #b8783d;pointer-events:none;align-items:center;justify-content:center;font:bold 9px Georgia;color:#f5dfaa}
+#larMobile:before,#larMobile:after{content:"";position:absolute;bottom:-8px;width:15px;height:15px;border-radius:50%;background:#111;border:2px solid #9b714e}
+#larMobile:before{left:9px}#larMobile:after{right:9px}
+.sifuBox{font-size:9px;line-height:1.35;text-align:center;color:#d9bd88;margin-top:5px;min-height:24px}
+#topbar{height:38px;border-bottom:2px solid #eee;display:flex;align-items:center;padding:0 18px;background:rgba(5,5,5,.9);position:relative;z-index:100}
+#title{font-size:10px;letter-spacing:1.5px;font-weight:bold;white-space:nowrap}
+#equationBar{position:absolute;left:50%;top:42px;transform:translateX(-50%);width:340px;text-align:center;font-size:17px;letter-spacing:1px;color:#fff;z-index:90;pointer-events:none;text-shadow:0 2px 6px #000}
+#status{margin-left:auto;display:flex;align-items:center;gap:11px;font-size:9px;letter-spacing:.6px}
+#playerName{max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9px}
+#bucks{white-space:nowrap}
+#main{height:calc(100vh - 38px);position:relative;z-index:10}
+.creature{position:absolute;width:176px;height:150px;background:rgba(9,9,9,.94);border:3px solid;text-align:center;padding:8px;box-shadow:0 8px 22px #000;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.creature h2{display:none}.creatureLine{font-size:9px;letter-spacing:.3px;text-align:center;margin:3px 0 4px;min-height:15px;display:flex;align-items:center;justify-content:center}.creature .advice{margin-top:3px}
+.creature .emoji{font-size:38px;line-height:1}
+.creature .role{font-size:10px;margin-bottom:3px}
+.creature .advice{min-height:30px;display:flex;align-items:center;justify-content:center;font-size:10px;line-height:1.25;color:#ddd}
+.creature .advice::first-letter{text-transform:none}
+#dragon{left:14px;top:8px;border-color:#68d47b;background:rgba(25,72,34,.95)}
+#tiger{right:14px;top:8px;border-color:#eee;background:rgba(15,15,15,.95)}
+#tortoise{left:14px;bottom:8px;border-color:#8c8c8c;background:#292929}
+#phoenix{right:14px;bottom:8px;border-color:#d93a31;background:rgba(75,18,18,.95)}
+.tortoiseArt{position:relative;width:74px;height:42px;margin:0 auto 2px}
+.tShell{position:absolute;left:12px;top:5px;width:50px;height:32px;border-radius:50%;background:#050505;border:3px solid #9b9b9b}
+.tHead{position:absolute;right:1px;top:17px;width:15px;height:13px;border-radius:50%;background:#111;border:2px solid #888}
+.tLeg{position:absolute;width:13px;height:8px;border-radius:50%;background:#111;border:2px solid #888}
+.t1{left:8px;top:9px}.t2{left:7px;top:29px}.t3{right:12px;top:6px}.t4{right:11px;top:32px}
+#boardWrap{position:absolute;left:205px;right:205px;top:76px;bottom:48px;display:flex;align-items:center;justify-content:center;z-index:12}
+#board{position:relative;width:min(650px,calc(100vh - 150px),calc(100vw - 470px));aspect-ratio:1;border:4px solid #ccc;background:#111;box-shadow:0 0 0 8px #111,0 12px 35px #000;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);overflow:hidden}
+.cell{position:relative;border:1px solid #666;background:var(--boardWhite)}
+.cell:nth-child(16n+1),.cell:nth-child(16n+3),.cell:nth-child(16n+5),.cell:nth-child(16n+7),
+.cell:nth-child(16n+10),.cell:nth-child(16n+12),.cell:nth-child(16n+14),.cell:nth-child(16n+16){background:var(--boardBlack)}
+.cell.reserved{background:rgba(110,90,55,.25)}
+.piece{position:absolute;width:50px;height:50px;border-radius:12px;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:bold;color:#fff;border:3px solid #ddd;box-shadow:0 6px 10px #000,inset 0 4px 7px rgba(255,255,255,.35);cursor:grab;z-index:5;touch-action:none}
+.n0{background:#222}.n1{background:#f2f2f2;color:#111}.n2{background:#39a4e5}.n3{background:#45c36b}.n4{background:#d4a82e}.n5{background:#c86b2d}.n6{background:#8c58c8}.n7{background:#df3c7c}.n8{background:#e44d35}.n9{background:#4f6bd8}.n10{background:#9c9c9c}.n11{background:#1e8f72}.n12{background:#bb4cbd}.n13{background:#b06c38}.n14{background:#477a9f}.n15{background:#d04f52}
+.wordPieceBoard{font-size:13px!important;background:rgba(10,10,10,.72)!important;border:3px solid var(--wordColor,#d9bd69)!important;box-shadow:0 0 5px var(--wordColor,#d9bd69),0 0 15px var(--wordColor,#d9bd69),0 6px 10px #000!important;color:#fff!important}
+.piece.dragging{outline:5px solid #fff;outline-offset:2px;box-shadow:0 0 10px 5px #fff,0 0 25px 9px #fff8,inset 0 4px 7px rgba(255,255,255,.35)}
+.piece.targetGlow{outline:4px solid #fff;outline-offset:1px;box-shadow:0 0 10px 5px #fff,0 0 24px 8px #fff8}
+#answerReception{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:170px;height:138px;background:rgba(8,8,8,.96);border:2px solid #888;box-shadow:0 5px 20px #000;z-index:24;display:flex;align-items:center;justify-content:center;flex-direction:column;pointer-events:auto}
+#answerReception .bigYin{width:88px;height:88px}
+#answerReception .bigYin svg{display:block;width:100%;height:100%}
+#answerReception.glow{border-color:#fff;box-shadow:0 0 12px 4px #fff,0 0 28px 10px #fff8}
+#answerLabel{font-size:8px;letter-spacing:1px;color:#d9bd88;margin-top:4px}
+#generator{position:absolute;left:calc(50% + min(325px,32vh,32vw) + 28px);bottom:16px;width:70px;height:80px;background:transparent;border:0;padding:0;z-index:40;cursor:pointer;text-align:center;color:#d9bd88}
+#generator svg{display:block;width:58px;height:58px;margin:auto}
+#generator .genLabel{font-size:7px;letter-spacing:.5px;display:block;margin-top:1px}
+#generator.activeGlow{filter:drop-shadow(0 0 10px #fff) drop-shadow(0 0 22px #e7c96a)}
+#wordGenerator{position:absolute;left:calc(50% + min(325px,32vh,32vw) + 105px);bottom:16px;width:76px;height:80px;background:transparent;border:0;padding:0;z-index:40;cursor:pointer;color:#d9bd88;text-align:center}
+#wordGeneratorIcon{width:58px;height:58px;margin:auto;border:2px solid #d9bd69;background:#15100d;display:flex;align-items:center;justify-content:center;font-size:30px;box-shadow:0 0 8px #7d5a36;border-radius:50%}
+#wordGenerator.activeGlow #wordGeneratorIcon{box-shadow:0 0 12px #fff,0 0 25px #e7c96a}
+#sentenceBox{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:190px;height:138px;background:rgba(8,8,8,.96);border:2px solid #888;box-shadow:0 5px 20px #000;z-index:22;padding:10px;text-align:center;pointer-events:auto}
+#sentenceTitle{font-size:9px;letter-spacing:2px;color:#d9bd69;margin-bottom:8px}
+#sentenceText{font-size:12px;line-height:1.7;min-height:62px}
+.blank{display:inline-block;min-width:52px;border-bottom:2px solid #aaa;margin:0 3px;color:#fff}
+#newSentence{margin-top:5px;padding:5px 8px;background:#24170f;color:#d9bd88;border:1px solid #7d5a36;font:9px Georgia;cursor:pointer}
+#calculator{position:absolute;left:194px;bottom:10px;width:42px;z-index:40;text-align:center}
+#calcToggle{width:36px;height:36px;border-radius:0;background:#5b351f;color:#f0d9a0;border:2px solid #9c6a3d;box-shadow:0 4px 10px #000;cursor:pointer;font-size:17px}
+#calcPanel{display:none;position:absolute;left:44px;bottom:0;width:150px}
+#calcPanel.open{display:block}
+#calcBox{background:#5b351f;border:3px solid #9b673d;padding:6px;box-shadow:0 5px 14px #000}
+#calcScreen{height:36px;background:#d8d0b4;color:#17110c;font-family:monospace;font-size:14px;padding:5px 6px;text-align:left;border:2px inset #76502e;margin-bottom:6px;overflow:hidden;white-space:nowrap;direction:ltr}
+.calcKeys{display:grid;grid-template-columns:repeat(4,1fr);gap:3px}.calcKeys button{font-family:monospace;font-size:12px;padding:6px 2px;background:#332015;color:#f2dfbd;border:1px solid #ad7747;border-radius:0;cursor:pointer}
+#calculatorLabel{text-align:center;color:#d9bd88;font-size:8px;margin-top:3px}
+#settingsToggle{position:absolute;left:244px;bottom:10px;width:42px;height:42px;background:transparent;border:0;z-index:40;cursor:pointer;padding:0}
+#settingsToggle svg{width:42px;height:42px;display:block}
+#settingsToggle.active{filter:drop-shadow(0 0 8px #fff) drop-shadow(0 0 18px #e7c96a)}
+#settingsPanel{display:none;position:absolute;left:292px;bottom:10px;width:330px;max-height:calc(100vh - 80px);overflow:auto;background:rgba(16,11,8,.98);border:1px solid #8c663e;box-shadow:0 10px 30px #000;z-index:200;padding:12px}
+#settingsPanel.open{display:block}
+.settingsTitle{text-align:center;letter-spacing:2px;font-size:12px;color:#d9bd69;margin-bottom:10px}
+.settingsSection{border-top:1px solid #4d3826;padding:8px 0}
+.settingsSection label{display:block;font-size:9px;color:#ccc;margin-bottom:4px}
+.settingsSection select,.settingsSection input[type=range]{width:100%}
+#radioList{margin-top:7px}
+.track{display:flex;align-items:center;gap:6px;padding:5px 2px;border-bottom:1px solid #33261b;font-size:9px;cursor:grab}
+.track .check{width:16px;height:16px;border:1px solid #8d6b45;display:flex;align-items:center;justify-content:center;flex:none;cursor:pointer}
+.track.enabled .check::after{content:"✓";color:#d9bd69}.track .trackName{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.track .del{color:#b66b60;font-weight:bold;cursor:pointer;font-size:16px;line-height:1}
+.radioBtns{display:flex;gap:5px;margin-top:7px}.radioBtns button{flex:1;background:#24170f;color:#d9bd88;border:1px solid #7d5a36;padding:5px;font:9px Georgia;cursor:pointer}
+.musicControls{display:flex;gap:5px;margin-top:7px}.musicControls button{flex:1;background:#24170f;color:#d9bd88;border:1px solid #7d5a36;padding:5px;font:9px Georgia;cursor:pointer}
+#teacherStatus{font-size:9px;color:#aaa;line-height:1.3}
+#professorStatus{font-size:9px;color:#aaa;line-height:1.3;margin-top:5px}
+#fileInput{display:none}
+#mergeMath{position:fixed;z-index:2000;pointer-events:none;font:bold 28px Georgia;color:#fff;text-shadow:0 0 5px #000,0 0 14px #fff;opacity:0;transform:translate(-50%,-50%);transition:opacity .12s ease,transform .55s ease}
+#mergeMath.show{opacity:0;transform:translate(-50%,-75%) scale(1.08)}
+#message{position:absolute;left:50%;top:58%;transform:translate(-50%,-50%);z-index:60;pointer-events:none;font-size:25px;text-align:center;text-shadow:0 3px 8px #000;opacity:0;transition:opacity .3s}
+.fireworkParticle{position:fixed;width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 9px #fff,0 0 18px #e7c96a;pointer-events:none;z-index:5000;animation:firework .82s cubic-bezier(.12,.75,.25,1) forwards}
+@keyframes firework{from{transform:translate(0,0) scale(1);opacity:1}to{transform:translate(var(--dx),var(--dy)) scale(.15);opacity:0}}
+#nameModal{position:fixed;inset:0;background:rgba(0,0,0,.82);display:none;align-items:center;justify-content:center;z-index:5000}
+.modalBox{width:420px;background:#111;border:2px solid #d6c17c;box-shadow:0 15px 50px #000;padding:20px;text-align:center}
+#nameInput{width:90%;padding:10px;font-size:18px;background:#222;color:#fff;border:1px solid #aaa}#startBtn{margin-top:12px;padding:10px 22px;background:#1d1d1d;color:#fff;border:1px solid #d4bf72;font-family:inherit;cursor:pointer}
+#musicNow{font-size:9px;color:#d9bd88;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#songProgress{width:100%;margin-top:5px}
+@media(max-width:1200px){#boardWrap{left:190px;right:190px}.creature{width:160px}#sentenceBox{width:170px}#generator{left:calc(50% + min(320px,30vh,30vw) + 10px)}#wordGenerator{left:calc(50% + min(320px,30vh,30vw) + 85px)}}
+</style></head><body>
+
+  <div id="topbar">
+    <div id="title">MATHLIEBET</div>
+    <div id="status"><span id="playerName"></span><span id="progress">0/64</span><span id="bucks">LAR BUCKS: 0</span></div>
+  </div>
+  <canvas id="starCanvas" aria-hidden="true"></canvas>
+  <div id="main">
+    <div id="equationBar"><span id="equation"></span></div>
+
+    <section class="creature" id="dragon">
+      <div class="emoji">🐉</div>
+      <div class="creatureLine">(wisdom . generation . dragon)</div>
+      <div class="advice" data-eastern="Create wisdom from what you discover." data-shakespeare="The lady doth protest too much, methinks, and now is the winter of our discontent."></div>
+    </section>
+    <section class="creature" id="tiger">
+      <div class="emoji" style="filter:grayscale(1) brightness(2)">🐯</div>
+      <div class="creatureLine">(wisdom . courage . tiger)</div>
+      <div class="advice" data-eastern="See clearly. Be brave enough to act." data-shakespeare="O, beware, my lord, of jealousy, and lend thy hand to the quality of mercy."></div>
+    </section>
+    <section class="creature" id="tortoise">
+      <div class="tortoiseArt"><span class="tShell"></span><span class="tHead"></span><span class="tLeg t1"></span><span class="tLeg t2"></span><span class="tLeg t3"></span><span class="tLeg t4"></span></div>
+      <div class="creatureLine">(wisdom . patience . tortoise)</div>
+      <div class="advice" data-eastern="Slow progress is still progress." data-shakespeare="All the world's a stage, and conscience does make cowards of us all."></div>
+    </section>
+    <section class="creature" id="phoenix">
+      <div class="emoji" style="filter:saturate(1.8) hue-rotate(-10deg)">🦅</div>
+      <div class="creatureLine">(wisdom . transformation . phoenix)</div>
+      <div class="advice" data-eastern="Let the old form become something new." data-shakespeare="Now is the winter of our discontent, and thus I make my peace with you."></div>
+    </section>
+
+    <div id="answerReception">
+      <div class="bigYin"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#050505" stroke="#eee" stroke-width="2"/><path d="M50 2 A48 48 0 0 0 50 98 A24 24 0 0 0 50 50 A24 24 0 0 1 50 2 Z" fill="#f2f2f2"/><circle cx="50" cy="26" r="8" fill="#050505"/><circle cx="50" cy="74" r="8" fill="#f2f2f2"/></svg></div>
+      <div id="answerLabel">DROP THE ANSWER HERE</div>
+    </div>
+
+    <div id="boardWrap"><div id="board"></div></div>
+
+    <button id="generator" title="Math generator"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#050505" stroke="#eee" stroke-width="2"/><path d="M50 2 A48 48 0 0 0 50 98 A24 24 0 0 0 50 50 A24 24 0 0 1 50 2 Z" fill="#f2f2f2"/><circle cx="50" cy="26" r="8" fill="#050505"/><circle cx="50" cy="74" r="8" fill="#f2f2f2"/></svg><span class="genLabel">MATH</span></button>
+
+    <button id="larSweep" class="larSweepBtn" title="Sweep this board with the Lar Mobile">LAR SWEEP</button>
+    <button id="wordGenerator" title="Fortune cookie / wisdom generator"><div id="wordGeneratorIcon">🥠</div><span class="genLabel">WISDOM</span></button>
+    <div id="sentenceBox"><div id="sentenceTitle">ANSWER</div><div id="sentenceText"></div><button id="newSentence">NEW PUZZLE</button></div>
+
+    <div id="calculator"><button id="calcToggle" title="Calculator">⌨</button><div id="calcPanel"><div id="calcBox"><div id="calcScreen">0</div><div class="calcKeys">
+      <button data-calc="7">7</button><button data-calc="8">8</button><button data-calc="9">9</button><button data-calc="÷">÷</button>
+      <button data-calc="4">4</button><button data-calc="5">5</button><button data-calc="6">6</button><button data-calc="×">×</button>
+      <button data-calc="1">1</button><button data-calc="2">2</button><button data-calc="3">3</button><button data-calc="−">−</button>
+      <button data-calc="0">0</button><button data-calc=".">.</button><button data-calc="+">+</button><button data-calc="=">=</button>
+      <button data-calc="C" style="grid-column:span 4">CLEAR</button>
+    </div></div></div><div id="calculatorLabel">CALCULATOR</div></div>
+
+    <button id="settingsToggle" title="Settings / menu"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="#050505" stroke="#eee" stroke-width="2"/><path d="M50 2 A48 48 0 0 0 50 98 A24 24 0 0 0 50 50 A24 24 0 0 1 50 2 Z" fill="#f2f2f2"/><circle cx="50" cy="26" r="8" fill="#050505"/><circle cx="50" cy="74" r="8" fill="#f2f2f2"/></svg></button>
+
+    <div id="settingsPanel">
+      <div class="settingsTitle">MATHLIEBET · MENU</div>
+      <div class="settingsSection"><label>GAME</label><select id="gameMode"><option value="math">Math</option><option value="word">Word</option></select></div>
+      <div class="settingsSection"><label>WORD WORLD</label><select id="wordWorld"><option value="eastern">Eastern Wisdom</option><option value="shakespeare">Shakespearean</option></select><label style="margin-top:7px"><input type="checkbox" id="sifuToggle" checked> KUNG FU SIFU</label><div id="sifuStatus" class="sifuBox">The sifu waits in silence.</div></div>
+      <div class="settingsSection"><label>GENERATOR THROW</label><select id="throwMode"><option value="one">1</option><option value="two">2x</option><option value="three">3x</option><option value="fill">Fill</option></select></div>
+      <div class="settingsSection"><label>MATH DIFFICULTY</label><select id="difficulty"><option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option><option value="veryhard">Very Hard</option><option value="impossible">Impossible</option></select></div>
+      <div class="settingsSection"><label>STAR SPEED</label><input id="starSpeed" type="range" min="0" max="6" step="1" value="0"><div id="starSpeedLabel">VERY SLOW</div></div>
+      <div class="settingsSection"><label>STARFIELD DIRECTION</label><select id="starDirection"><option value="forward">Forwards</option><option value="backward">Backwards</option><option value="up">Up</option><option value="down">Down</option><option value="left">Left</option><option value="right">Right</option><option value="spiral">Spiral</option></select></div>
+      <div class="settingsSection"><label>VOICE</label><label><input type="checkbox" id="voiceToggle" checked> VOICE ON</label></div>
+      <div class="settingsSection"><label>MATH PROFESSOR</label><label><input type="checkbox" id="mathProfessorToggle"> MATH PROFESSOR ON</label><div id="teacherStatus">Off.</div></div>
+      <div class="settingsSection"><label>ENGLISH PROFESSOR</label><label><input type="checkbox" id="englishProfessorToggle"> ENGLISH PROFESSOR ON</label><div id="professorStatus">Off.</div></div>
+      <div class="settingsSection"><label>LUCKY LAR MUSIC</label>
+        <div class="musicControls"><button id="musicPlay">PLAY</button><button id="musicPause">PAUSE</button><button id="musicRepeat">REPEAT: 1</button></div>
+        <div id="radioList"></div>
+        <div id="musicNow">Drumbo.mp3</div>
+        <input id="songProgress" type="range" min="0" max="1000" value="0">
+        <input id="volume" type="range" min="0" max="1" step=".01" value=".55">
+        <input id="fileInput" type="file" accept="audio/*" multiple>
+        <button id="loadTracks" style="margin-top:7px;width:100%;background:#24170f;color:#d9bd88;border:1px solid #7d5a36;padding:6px;font:9px Georgia;cursor:pointer">LOAD SOUND FILES</button>
+      </div>
+    </div>
+
+    <div id="larMobile">LAR MOBILE</div><div id="mergeMath"></div><div id="message"></div>
+  </div>
+
+  <div id="nameModal"><div class="modalBox"><h2>ENTER YOUR NAME</h2><p>Welcome to Mathliebet.</p><input id="nameInput" maxlength="24" placeholder="Your name"><br><button id="startBtn">BEGIN</button></div></div>
+
+<script>
+(()=>{"use strict";
+const $=id=>document.getElementById(id);
+const CENTER_CELLS=new Set([27,28,35,36]);
+const state={
+ name:"",bucks:0,pieces:[],mathPieces:[],wordPieces:[],nextPieceId:1,difficulty:"easy",correctCount:0,equation:null,
+ calc:"",sentence:null,wordIndex:0,musicOn:true,repeatMode:0,tracks:[],audio:null,
+ voiceOn:true,mathProfessor:false,englishProfessor:false,gameMode:"math",wordWorld:"eastern",
+ throwMode:"one",starSpeed:0,starDirection:"forward",professorTimer:null,wordColourCache:new Map(),
+ musicIndex:0,currentAudio:null
+};
+const board=$("board"),cells=[];
+for(let i=0;i<64;i++){const c=document.createElement("div");c.className="cell";c.dataset.index=i;const row=Math.floor(i/8),col=i%8;if((row+col)%2===0)c.classList.add("light");if(CENTER_CELLS.has(i))c.classList.add("reserved");board.appendChild(c);cells.push(c)}
+
+function audioInit(){if(!state.audio){const C=window.AudioContext||window.webkitAudioContext;if(C)state.audio=new C()}if(state.audio?.state==="suspended")state.audio.resume()}
+function tone(f,d,t="sine",g=.05,delay=0){if(!state.audio)return;const a=state.audio,o=a.createOscillator(),q=a.createGain();o.type=t;o.frequency.value=f;q.gain.setValueAtTime(.001,a.currentTime+delay);q.gain.exponentialRampToValueAtTime(g,a.currentTime+delay+.015);q.gain.exponentialRampToValueAtTime(.001,a.currentTime+delay+d);o.connect(q).connect(a.destination);o.start(a.currentTime+delay);o.stop(a.currentTime+delay+d+.03)}
+function soundPick(){audioInit();tone(72,.14,"triangle",.12);tone(54,.22,"sine",.07,.04)}
+function soundDrop(){audioInit();tone(58,.18,"triangle",.11);tone(86,.11,"sine",.07,.05)}
+function soundMerge(){audioInit();tone(110,.12,"square",.08);tone(165,.18,"triangle",.1,.06);tone(220,.24,"sine",.08,.13)}
+function soundSpawn(){audioInit();tone(260,.08,"triangle",.07);tone(390,.16,"sine",.06,.07)}
+function soundCorrect(){audioInit();[196,247,294,392,494].forEach((f,i)=>tone(f,.22,"triangle",.07,i*.08))}
+function soundWrong(){audioInit();tone(70,.22,"sawtooth",.06)}
+function showToast(t){$("message").textContent=t;$("message").style.opacity=1;clearTimeout(showToast.t);showToast.t=setTimeout(()=>$("message").style.opacity=0,1800)}
+function say(text,kind="fancy"){if(!state.voiceOn||!("speechSynthesis"in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=kind==="teacher"?.62:kind==="fancy"?.94:.84;u.pitch=kind==="teacher"?.48:kind==="professor"?.72:1.02;const v=speechSynthesis.getVoices().find(x=>/en-GB/i.test(x.lang))||speechSynthesis.getVoices().find(x=>/^en/i.test(x.lang));if(v)u.voice=v;speechSynthesis.speak(u)}
+function stopVoice(){if("speechSynthesis"in window)speechSynthesis.cancel()}
+function updateUI(){$("playerName").textContent=state.name?`PLAYER: ${state.name}`:"PLAYER";$("bucks").textContent=`LAR BUCKS: ${state.bucks}`;$("progress").textContent=`${state.correctCount}/64`}
+const DIFF={easy:{max:7,ops:["+"]},medium:{max:12,ops:["+"]},hard:{max:20,ops:["+","−"]},veryhard:{max:40,ops:["+","−","×"]},impossible:{max:100,ops:["+","−","×"]}};
+function newEquation(){const d=DIFF[state.difficulty],a=1+Math.floor(Math.random()*d.max),b=1+Math.floor(Math.random()*d.max),op=d.ops[Math.floor(Math.random()*d.ops.length)];let x=a,y=b;if(op==="−"&&y>x)[x,y]=[y,x];state.equation={a:x,b:y,op,ans:op==="+"?x+y:op==="−"?x-y:x*y};$("equation").textContent=state.gameMode==="math"?`${x} ${op} ${y} = ?`:""}
+function fireworkBurst(x,y){for(let i=0;i<45;i++){const p=document.createElement("div");p.className="fireworkParticle";const a=Math.random()*Math.PI*2,d=55+Math.random()*200;p.style.left=x+"px";p.style.top=y+"px";p.style.setProperty("--dx",Math.cos(a)*d+"px");p.style.setProperty("--dy",Math.sin(a)*d+"px");document.body.appendChild(p);setTimeout(()=>p.remove(),850)}}
+function fireworks(){for(let i=0;i<8;i++)setTimeout(()=>fireworkBurst(innerWidth*(.12+Math.random()*.76),innerHeight*(.12+Math.random()*.68)),i*110)}
+function occupied(cell,ignoreId=null){return state.pieces.some(p=>p.cell===cell&&p.id!==ignoreId)}
+function randomOpen(reserved=new Set()){const a=[];for(let i=0;i<64;i++)if(!CENTER_CELLS.has(i)&&!reserved.has(i)&&!occupied(i))a.push(i);return a.length?a[Math.floor(Math.random()*a.length)]:null}
+function reserveOpen(count){const out=[],reserved=new Set();for(let i=0;i<count;i++){const c=randomOpen(reserved);if(c===null)break;reserved.add(c);out.push(c)}return out}
+function createPiece(value,cell,kind="number",wordIndex=null){if(cell==null||CENTER_CELLS.has(cell)||occupied(cell))return null;const p={id:state.nextPieceId++,value:kind==="number"?Number(value):String(value),cell,kind,wordIndex};state.pieces.push(p);renderPieces();return p}
+function renderPieces(){
+ cells.forEach(c=>c.querySelectorAll(".piece").forEach(x=>x.remove()));
+ state.pieces.forEach(p=>{
+  const e=document.createElement("div");
+  e.className=`piece ${p.kind==="word"?"wordPieceBoard":`n${Math.min(15,Math.abs(p.value))}`}`;
+  e.textContent=p.kind==="word"?p.value:p.value;
+  e.dataset.id=p.id;
+  if(p.kind==="word"){const col=wordColour(p.value);e.style.setProperty("--wordColor",col);e.title=p.value}
+  e.addEventListener("pointerdown",ev=>startDrag(ev,p,e));
+  cells[p.cell].appendChild(e)
+ })
+}
+function wordColour(word){
+ const key=String(word).toLowerCase();
+ if(state.wordColourCache.has(key))return state.wordColourCache.get(key);
+ let h=0;for(let i=0;i<key.length;i++)h=(h*31+key.charCodeAt(i))%360;
+ const col=`hsl(${h},88%,68%)`;state.wordColourCache.set(key,col);return col
+}
+let drag=null;
+function startDrag(ev,p,el){if(ev.button!==0||drag)return;ev.preventDefault();audioInit();soundPick();const r=el.getBoundingClientRect(),g=el.cloneNode(true);g.classList.add("dragging");Object.assign(g.style,{position:"fixed",left:r.left+"px",top:r.top+"px",margin:"0",transform:"none",pointerEvents:"none",zIndex:1000});document.body.appendChild(g);el.style.opacity=".2";drag={p,el,g};window.addEventListener("pointermove",dragMove,{passive:false});window.addEventListener("pointerup",dragEnd,{once:true})}
+function dragMove(ev){if(!drag)return;ev.preventDefault();drag.g.style.left=(ev.clientX-25)+"px";drag.g.style.top=(ev.clientY-25)+"px";document.querySelectorAll(".targetGlow").forEach(x=>x.classList.remove("targetGlow"));const cell=document.elementFromPoint(ev.clientX,ev.clientY)?.closest?.(".cell");if(cell){const t=state.pieces.find(p=>p.cell===Number(cell.dataset.index)&&p.id!==drag.p.id);if(t)document.querySelector(`.piece[data-id="${t.id}"]`)?.classList.add("targetGlow")}if(pointIn("answerReception",ev.clientX,ev.clientY)||pointIn("sentenceBox",ev.clientX,ev.clientY)){$("answerReception").classList.add("glow")}else $("answerReception").classList.remove("glow")}
+function pointIn(id,x,y){const r=$(id).getBoundingClientRect();return x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom}
+function dragEnd(ev){
+ if(!drag)return;const d=drag;drag=null;window.removeEventListener("pointermove",dragMove);d.el.style.opacity="1";d.g.remove();document.querySelectorAll(".targetGlow").forEach(x=>x.classList.remove("targetGlow"));$("answerReception").classList.remove("glow");
+ const p=state.pieces.find(x=>x.id===d.p.id);if(!p)return;
+ if(state.gameMode==="word"&&(pointIn("answerReception",ev.clientX,ev.clientY)||pointIn("sentenceBox",ev.clientX,ev.clientY))){answerWordDrop(p);return}
+ if(state.gameMode==="math"&&pointIn("answerReception",ev.clientX,ev.clientY)){answerDrop(p);return}
+ const cell=document.elementFromPoint(ev.clientX,ev.clientY)?.closest?.(".cell");if(!cell){renderPieces();return}
+ const to=Number(cell.dataset.index);if(CENTER_CELLS.has(to)){renderPieces();showToast("The four middle squares are reserved.");return}
+ const target=state.pieces.find(x=>x.cell===to&&x.id!==p.id);if(target)mergePieces(p,target);else{p.cell=to;soundDrop();renderPieces()}
+}
+function mergePieces(a,b){
+ if(a.kind!==b.kind){showToast("Like pieces merge.");renderPieces();return}
+ if(a.kind==="word"){
+   if(String(a.value).toLowerCase()!==String(b.value).toLowerCase()){showToast("Words must match to merge.");renderPieces();return}
+   const next=state.sentence?.text[Math.min((a.wordIndex??state.wordIndex)+1,(state.sentence?.text.length||1)-1)]||a.value;
+   state.pieces=state.pieces.filter(x=>x.id!==a.id&&x.id!==b.id);createPiece(next,b.cell,"word",Math.min((a.wordIndex??0)+1,(state.sentence?.text.length||1)-1));state.bucks++;updateUI();soundMerge();return
+ }
+ const v=a.value+b.value;state.pieces=state.pieces.filter(x=>x.id!==a.id&&x.id!==b.id);createPiece(v,b.cell,"number");state.bucks++;updateUI();soundMerge()
+}
+function animatePieceTo(cell,value,kind,wordIndex,fromEl){
+ const s=fromEl.getBoundingClientRect(),e=cells[cell].getBoundingClientRect(),g=document.createElement("div");
+ g.className=`piece ${kind==="word"?"wordPieceBoard":`n${Math.min(15,Math.abs(value))}`}`;g.textContent=value;
+ if(kind==="word")g.style.setProperty("--wordColor",wordColour(value));
+ Object.assign(g.style,{position:"fixed",left:(s.left+s.width/2-25)+"px",top:(s.top+s.height/2-25)+"px",transform:"translate(0,0)",zIndex:1000,pointerEvents:"none"});
+ document.body.appendChild(g);soundSpawn();
+ const dx=e.left+e.width/2-(s.left+s.width/2),dy=e.top+e.height/2-(s.top+s.height/2);
+ const a=g.animate([{transform:"translate(0,0)"},{transform:`translate(${dx*.55}px,${dy*.55-45}px)`},{transform:`translate(${dx}px,${dy}px)`}],{duration:450,easing:"cubic-bezier(.25,.75,.25,1)",fill:"forwards"});
+ a.onfinish=()=>{g.remove();createPiece(value,cell,kind,wordIndex);soundDrop()}
+}
+function generatorCount(){
+ if(state.throwMode==="one")return 1;
+ if(state.throwMode==="two")return 2;
+ if(state.throwMode==="three")return Math.random()<.28?3:2;
+ return 0
+}
+function larSweep(){
+ const activePieces=state.pieces;
+ if(!activePieces.length){showToast("The Lar Mobile finds an empty board.");return}
+ const r=board.getBoundingClientRect(),mobile=$("larMobile");
+ mobile.style.display="flex";
+ mobile.style.left=(r.left-100)+"px";
+ mobile.style.top=(r.bottom-58)+"px";
+ mobile.textContent="LAR MOBILE";
+ const duration=1700;
+ mobile.animate([{left:(r.left-100)+"px"},{left:(r.right+20)+"px"}],{duration,easing:"ease-in-out",fill:"forwards"}).onfinish=()=>{
+   state.pieces=[];
+   renderPieces();
+   mobile.style.display="none";
+   showToast("LAR SWEEP COMPLETE");
+   soundSpawn();
+ };
+}
+function generate(){
+ if(state.throwMode==="fill"){fillBoard();return}
+ const count=generatorCount(),spots=reserveOpen(count);
+ if(!spots.length){showToast("The board is full.");return}
+ const source=state.gameMode==="math"?$("generator"):$("wordGenerator");
+ spots.forEach((cell,i)=>{
+  let value,kind="number",wi=null;
+  if(state.gameMode==="math"){value=i===0?1:(Math.random()<.5?2:1)}
+  else{kind="word";wi=Math.min(state.wordIndex+i,state.sentence.text.length-1);value=state.sentence.text[wi]}
+  animatePieceTo(cell,value,kind,wi,source)
+ })
+}
+function fillBoard(){
+ const spots=[];for(let i=0;i<64;i++)if(!CENTER_CELLS.has(i)&&!occupied(i))spots.push(i);
+ if(state.gameMode==="math")spots.forEach(c=>createPiece(1,c,"number"));
+ else spots.forEach((c,i)=>{const wi=i%state.sentence.text.length;createPiece(state.sentence.text[wi],c,"word",wi)});
+ soundSpawn();showToast("The board is filled.")
+}
+function answerDrop(p){
+ const e=state.equation;if(!e)return;
+ if(p.kind!=="number"){soundWrong();return}
+ if(Number(p.value)===e.ans){
+  state.pieces=state.pieces.filter(x=>x.id!==p.id);renderPieces();$("answerReception").classList.add("glow");soundCorrect();fireworks();state.bucks+=5;state.correctCount++;updateUI();
+  say(`CORRECT! ${e.a} ${e.op} ${e.b} is ${e.ans}!`,"pirate");setTimeout(()=>{$("answerReception").classList.remove("glow");if(state.correctCount%5===0)advanceDifficulty();newEquation()},850)
+ }else{soundWrong();say(`${e.a} ${e.op} ${e.b} is not ${p.value}. Incorrect. Try again.`,"pirate")}
+}
+const easternBank=[
+ {text:["Luck","favours","the","patient","player"],meaning:"Luck favours the patient player."},
+ {text:["Slow","moves","make","strong","merges"],meaning:"Slow moves make strong merges."},
+ {text:["Bright","ideas","grow","from","play"],meaning:"Bright ideas grow from play."},
+ {text:["Larry","keeps","his","numbers","honest"],meaning:"Larry keeps his numbers honest."},
+ {text:["A","clever","merge","opens","possibilities"],meaning:"A clever merge opens possibilities."},
+ {text:["Good","fortune","likes","steady","hands"],meaning:"Good fortune likes steady hands."}
+];
+const famousShakespeare=[
+"Now is the winter of our discontent.",
+"To be, or not to be, that is the question.",
+"All the world's a stage.",
+"Friends, Romans, countrymen, lend me your ears.",
+"Something is rotten in the state of Denmark.",
+"Out, damned spot! out, I say!",
+"Et tu, Brute?",
+"The lady doth protest too much, methinks.",
+"Is this a dagger which I see before me?",
+"Parting is such sweet sorrow.",
+"What's in a name?",
+"All that glisters is not gold.",
+"O Romeo, Romeo! wherefore art thou Romeo?",
+"Beware the Ides of March.",
+"Once more unto the breach."
+];
+const rareShakespeare=[
+"Shall I compare thee to a summer's day?",
+"Let me not to the marriage of true minds admit impediments.",
+"When I have seen by Time's fell hand defaced.",
+"Those lines that I before have writ do lie.",
+"With rotten damps ravish the morning air.",
+"Then can I grieve at grievances foregone.",
+"Devouring Time, blunt thou the lion's paws.",
+"Make glad and sorry seasons as thou fleets.",
+"Poor soul, the centre of my sinful earth.",
+"Mine eye hath played the painter and hath steeled thee thus.",
+"Against that time when thou shalt strangely pass.",
+"That every word doth almost tell my name.",
+"From fairest creatures we desire increase.",
+"Look in thy glass and tell the face thou viewest.",
+"When to the sessions of sweet silent thought."
+];
+const renaissance=[
+"Whan that Aprill with his shoures soote.",
+"Gather ye rosebuds while ye may.",
+"Was this the face that launch'd a thousand ships?",
+"Since there's no help, come let us kiss and part.",
+"Music, when soft voices die, vibrates in the memory.",
+"Sweet are the uses of adversity.",
+"Of all base passions, fear is the most accursed.",
+"Tell me not, sweet, I am unkind.",
+"Love is not love which alters when it alteration finds."
+];
+function mixedMisquote(){
+ const f=famousShakespeare[Math.floor(Math.random()*famousShakespeare.length)];
+ const r=rareShakespeare[Math.floor(Math.random()*rareShakespeare.length)];
+ const q=renaissance[Math.floor(Math.random()*renaissance.length)];
+ const modes=[
+  `${f} ${r}`,
+  `${f.split(" ").slice(0,Math.max(3,Math.floor(f.split(" ").length*.55))).join(" ")} ${q.split(" ").slice(-4).join(" ")}`,
+  `${r.split(" ").slice(0,5).join(" ")} ${f.split(" ").slice(-5).join(" ")}`,
+  `${q} ${f.split(" ").slice(1,5).join(" ")}`
+ ];
+ return modes[Math.floor(Math.random()*modes.length)]
+}
+function shakespeareBank(){
+ const arr=[];
+ for(let i=0;i<8;i++){const s=mixedMisquote();arr.push({text:s.replace(/[,.!?;:]/g,"").split(/\s+/).slice(0,5),meaning:s})}
+ return arr
+}
+function currentBank(){return state.wordWorld==="eastern"?easternBank:shakespeareBank()}
+function newSentence(){const bank=currentBank();state.sentence=bank[Math.floor(Math.random()*bank.length)];state.wordIndex=0;renderSentence();updateCreatureText()}
+function renderSentence(){if(!state.sentence)return;const words=state.sentence.text;let out="";for(let i=0;i<words.length;i++)out+=i<state.wordIndex?`<span>${words[i]}</span> `:`<span class="blank">&nbsp;</span> `;$("sentenceText").innerHTML=out}
+function answerWordDrop(p){
+ if(p.kind!=="word")return;
+ const expected=state.sentence?.text[state.wordIndex];
+ if(String(p.value).toLowerCase()===String(expected).toLowerCase()){
+  state.pieces=state.pieces.filter(x=>x.id!==p.id);state.wordIndex++;renderPieces();renderSentence();soundCorrect();state.bucks+=1;updateUI();
+  if(state.wordIndex>=state.sentence.text.length){state.bucks+=6;state.correctCount++;updateUI();fireworks();say(`Excellent. ${state.sentence.meaning}`,"fancy");setTimeout(newSentence,900)}
+ }else{soundWrong();showToast("That word is not next.");if(state.voiceOn)say("Not that word. Try the next one.","professor")}
+}
+function advanceDifficulty(){const a=["easy","medium","hard","veryhard","impossible"],i=a.indexOf(state.difficulty);if(i<a.length-1){state.difficulty=a[i+1];$("difficulty").value=state.difficulty}}
+function updateCreatureText(){
+ const sh=state.wordWorld==="shakespeare";
+ const labels={
+  dragon:"(wisdom . generation . dragon)",
+  tiger:"(wisdom . courage . tiger)",
+  tortoise:"(wisdom . patience . tortoise)",
+  phoenix:"(wisdom . transformation . phoenix)"
+ };
+ document.querySelectorAll(".creature").forEach(el=>{
+  const key=el.id;
+  const line=el.querySelector(".creatureLine");
+  const advice=el.querySelector(".advice");
+  if(line)line.textContent=labels[key];
+  if(advice){
+   if(sh){
+    advice.textContent=mixedMisquote();
+   }else{
+    advice.textContent=advice.dataset.eastern;
+   }
+  }
+ });
+}
+const sifuWisdom=[
+ "Empty hand, open mind. The mountain teaches by not explaining.",
+ "When bamboo bends, wisdom does not break. Walk softly, answer strangely.",
+ "The moon does not hurry to become full. Therefore, neither should the student.",
+ "A clever tiger chases the answer. A wise tiger asks where the question went.",
+ "The river reaches the sea because it does not argue with the stone.",
+ "Three steps forward, one step sideways: still, the journey knows your name.",
+ "Do not seek the door in the wall. Become the doorway, then forget the wall.",
+ "The quiet master speaks last, because the first answer has already escaped."
+];
+function sifuSpeak(){
+ if(!state.voiceOn||state.wordWorld!=="eastern"||!$("sifuToggle").checked)return;
+ const text=sifuWisdom[Math.floor(Math.random()*sifuWisdom.length)];
+ $("sifuStatus").textContent=text;
+ say(text,"professor");
+}
+const professorMath=[
+"Professor says: two plus two is four, unless the department is having a Tuesday, in which case it is seventeen and historically this was settled by my colleague Professor Marmaduke.",
+"One must never divide by zero. My colleague tried it in 1987 and divided the mathematics department into two tenured factions.",
+"Pi was originally discovered by a medieval accountant who accidentally left the decimal point in a pie ledger. Time will tell whether the committee forgives me for saying this.",
+"My colleague Dr. Wobble proved that negative numbers are merely numbers walking backwards. The department laughed him out of his tenured position. Time will tell.",
+"Numbers never end, which is why I have not finished counting them since 1974.",
+"The Pythagorean theorem was, according to my notes, first demonstrated using three biscuits and a reluctant goose. The goose remains a disputed co-author.",
+"Zero is the number of nothing. My colleague called it the number of absolutely anything, and the department laughed him out of tenure. I stand by him.",
+"Fractions were invented because whole numbers were becoming arrogant. This is not in the textbook because the textbook has colleagues in high places."
+];
+const professorEnglish=[
+"Professor says Shakespeare invented the semicolon after seeing one in a Venetian fish market. This is almost certainly false, but the footnote is magnificent.",
+"My colleague insists Shakespeare wrote Richard the Third while standing on one leg. The department laughed him out of his tenured position, which seems excessive.",
+"Early modern playwrights were legally required to keep one raven, one ghost, and one badly behaved servant nearby. I have found no statute, but the atmosphere supports it.",
+"Shakespeare's shortest word was allegedly 'O', and his longest was 'antidisestablishmentarianly'. My colleague was asked to leave the archive after suggesting this.",
+"The Globe had a secret trapdoor labelled EXIT TO STRATFORD. This is a story I tell with confidence because nobody can presently produce the trapdoor.",
+"Sonnet seventeen was originally written as a recipe for quince pie, according to Professor Bartholomew Ink. The department laughed him out of tenure. Time will tell.",
+"Christopher Marlowe and Shakespeare once exchanged sonnets by carrier pigeon. The pigeon is missing from the surviving bibliography.",
+"Renaissance poets were famous for hiding literary criticism inside sleeves. This is why portraits from the period are so difficult to read."
+];
+function professorSpeak(kind){
+ if(!state.voiceOn)return;
+ const bank=kind==="math"?professorMath:professorEnglish;
+ say(bank[Math.floor(Math.random()*bank.length)],kind==="math"?"teacher":"professor");
+}
+function startProfessor(kind){
+ stopProfessor(kind);
+ const enabled=kind==="math"?state.mathProfessor:state.englishProfessor;
+ if(!enabled||!state.voiceOn)return;
+ professorSpeak(kind);
+ state.professorTimer=setTimeout(()=>startProfessor(kind),9500)
+}
+function stopProfessor(kind){clearTimeout(state.professorTimer);state.professorTimer=null;if(!state.mathProfessor&&!state.englishProfessor)stopVoice()}
+function setGameMode(mode){
+ if(state.gameMode==="math")state.mathPieces=state.pieces;
+ else state.wordPieces=state.pieces;
+ state.gameMode=mode;
+ state.pieces=mode==="math"?state.mathPieces:state.wordPieces;
+ $("gameMode").value=mode;
+ $("equation").textContent=mode==="math"?`${state.equation.a} ${state.equation.op} ${state.equation.b} = ?`:"";
+ $("generator").style.display=mode==="math"?"block":"none";
+ $("wordGenerator").style.display=mode==="word"?"block":"none";
+ $("sentenceBox").style.display=mode==="word"?"block":"none";
+ $("answerReception").style.display="flex";
+ if(mode==="word"){if(!state.sentence)newSentence();$("answerLabel").textContent="DROP THE WORD HERE"}else $("answerLabel").textContent="DROP THE ANSWER HERE";
+ renderPieces();
+ updateCreatureText();
+ if(mode==="word"&&state.wordWorld==="eastern"&&$("sifuToggle").checked)setTimeout(sifuSpeak,120);
+}
+function repeatLabel(){return state.repeatMode===0?"REPEAT: 1":state.repeatMode===1?"REPEAT ALL":"REPEAT OFF"}
+function updateRepeatButton(){$("musicRepeat").textContent=repeatLabel()}
+const musicFiles=["Drumbo.mp3","KingLortTheThird.mp3","OmsBurnOne.mp3","TheFloatingSong.mp3","ConverMux.mp3"];
+function makeTracks(){state.tracks=musicFiles.map(name=>({name,url:name,enabled:true,builtIn:false}));renderTracks()}
+function renderTracks(){
+ const box=$("radioList");box.innerHTML="";
+ state.tracks.forEach((tr,i)=>{
+  const row=document.createElement("div");row.className="track"+(tr.enabled?" enabled":"");row.draggable=true;
+  row.innerHTML=`<span class="check"></span><span class="trackName"></span><span class="del">×</span>`;
+  row.querySelector(".trackName").textContent=tr.name;
+  row.querySelector(".check").onclick=e=>{e.stopPropagation();tr.enabled=!tr.enabled;row.classList.toggle("enabled",tr.enabled)};
+  row.querySelector(".del").onclick=e=>{e.stopPropagation();if(tr.url.startsWith("blob:"))URL.revokeObjectURL(tr.url);state.tracks.splice(i,1);renderTracks()};
+  row.addEventListener("dragstart",e=>e.dataTransfer.setData("text/plain",i));row.addEventListener("dragover",e=>e.preventDefault());
+  row.addEventListener("drop",e=>{e.preventDefault();const from=Number(e.dataTransfer.getData("text/plain"));if(from===i)return;const [m]=state.tracks.splice(from,1);state.tracks.splice(i,0,m);state.musicIndex=0;renderTracks()});
+  row.addEventListener("click",()=>playTrack(i));
+  box.appendChild(row)
+ })
+}
+function enabledTrackIndices(){return state.tracks.map((t,i)=>t.enabled?i:-1).filter(i=>i>=0)}
+function playTrack(i){
+ const tr=state.tracks[i];if(!tr||!tr.enabled)return;
+ audioInit();stopCurrentAudio();
+ const a=new Audio(tr.url);a.volume=Number($("volume").value);a.preload="auto";state.currentAudio=a;state.musicIndex=i;
+ $("musicNow").textContent=tr.name;a.addEventListener("timeupdate",()=>{$("songProgress").value=a.duration?Math.round(a.currentTime/a.duration*1000):0});
+ a.addEventListener("loadedmetadata",()=>{$("songProgress").value=0});
+ a.addEventListener("ended",()=>{if(state.repeatMode===2)return;if(state.repeatMode===0){playTrack(i);return}const inds=enabledTrackIndices();if(!inds.length)return;const pos=inds.indexOf(i);playTrack(inds[(pos+1)%inds.length])});
+ a.play().catch(()=>showToast("Browser blocked playback. Click PLAY."));
+}
+function stopCurrentAudio(){if(state.currentAudio){state.currentAudio.pause();state.currentAudio=null}}
+function playMusic(){const inds=enabledTrackIndices();if(!inds.length)return;if(state.currentAudio){state.currentAudio.play().catch(()=>{})}else playTrack(inds.includes(state.musicIndex)?state.musicIndex:inds[0])}
+function pauseMusic(){if(state.currentAudio)state.currentAudio.pause()}
+$("generator").addEventListener("click",e=>{e.preventDefault();audioInit();$("generator").classList.add("activeGlow");setTimeout(()=>$("generator").classList.remove("activeGlow"),400);if(state.gameMode==="math")generate()});
+$("wordGenerator").addEventListener("click",e=>{
+ e.preventDefault();audioInit();$("wordGenerator").classList.add("activeGlow");setTimeout(()=>$("wordGenerator").classList.remove("activeGlow"),400);
+ if(state.gameMode==="word"){
+  if(!state.sentence)newSentence();
+  if(state.calc==="633.3748"){
+   state.wordIndex=state.sentence.text.length;
+   state.pieces=state.pieces.filter(p=>p.kind!=="word");
+   renderPieces();renderSentence();state.bucks+=10;updateUI();fireworks();soundCorrect();
+   say("The word puzzle is complete.","fancy");
+   state.calc="";$("calcScreen").textContent="0";
+   setTimeout(newSentence,1200);
+  }else generate()
+ }
+});
+$("newSentence").addEventListener("click",newSentence);
+$("larSweep").addEventListener("click",()=>{audioInit();larSweep()});
+$("sifuToggle").addEventListener("change",e=>{if(!e.target.checked){$("sifuStatus").textContent="The sifu waits in silence.";stopVoice()}else if(state.wordWorld==="eastern"&&state.voiceOn)sifuSpeak()});
+$("settingsToggle").addEventListener("click",e=>{e.stopPropagation();$("settingsPanel").classList.toggle("open");$("settingsToggle").classList.toggle("active")});
+$("gameMode").addEventListener("change",e=>setGameMode(e.target.value));
+$("wordWorld").addEventListener("change",e=>{state.wordWorld=e.target.value;newSentence();updateCreatureText();if(state.wordWorld==="eastern"&&$("sifuToggle").checked&&state.voiceOn)sifuSpeak();else if(state.wordWorld==="shakespeare")$("sifuStatus").textContent="The sifu is silent in Shakespearean mode."});
+$("throwMode").addEventListener("change",e=>state.throwMode=e.target.value);
+$("difficulty").addEventListener("change",e=>{state.difficulty=e.target.value;newEquation()});
+$("starSpeed").addEventListener("input",e=>{state.starSpeed=Number(e.target.value);$("starSpeedLabel").textContent=["VERY SLOW","SLOW","GENTLE","MEDIUM","FAST","VERY FAST","HYPERSPEED"][state.starSpeed]});
+$("starDirection").addEventListener("change",e=>state.starDirection=e.target.value);
+$("voiceToggle").addEventListener("change",e=>{state.voiceOn=e.target.checked;if(!state.voiceOn){stopVoice();$("sifuStatus").textContent="Voice is off.";$("mathProfessorToggle").checked=false;$("englishProfessorToggle").checked=false;state.mathProfessor=false;state.englishProfessor=false;$("teacherStatus").textContent="Off.";$("professorStatus").textContent="Off."}else{if(state.mathProfessor)startProfessor("math");if(state.englishProfessor)startProfessor("english")}});
+$("mathProfessorToggle").addEventListener("change",e=>{state.mathProfessor=e.target.checked;$("teacherStatus").textContent=state.mathProfessor?"Professor is speaking.":"Off.";if(state.mathProfessor){startProfessor("math")}else if(!state.englishProfessor)stopVoice()});
+$("englishProfessorToggle").addEventListener("change",e=>{state.englishProfessor=e.target.checked;$("professorStatus").textContent=state.englishProfessor?"Professor is speaking.":"Off.";if(state.englishProfessor){startProfessor("english")}else if(!state.mathProfessor)stopVoice()});
+$("calcToggle").addEventListener("click",()=>{$("calcPanel").classList.toggle("open")});
+document.querySelectorAll("[data-calc]").forEach(b=>b.addEventListener("click",()=>{
+ const x=b.dataset.calc;
+ if(x==="C")state.calc="";
+ else if(x==="="){try{const ex=state.calc.replaceAll("×","*").replaceAll("÷","/").replaceAll("−","-");if(!/^[0-9+\-*/.() ]+$/.test(ex))throw 0;state.calc=String(Function("return "+ex)())}catch{state.calc="ERROR"}}
+ else{if(state.calc==="ERROR")state.calc="";state.calc+=x}
+ $("calcScreen").textContent=state.calc||"0"
+}));
+$("musicPlay").addEventListener("click",()=>{state.musicOn=true;playMusic()});
+$("musicPause").addEventListener("click",()=>{state.musicOn=false;pauseMusic()});
+$("musicRepeat").addEventListener("click",()=>{state.repeatMode=(state.repeatMode+1)%3;updateRepeatButton()});
+$("volume").addEventListener("input",e=>{if(state.currentAudio)state.currentAudio.volume=Number(e.target.value)});
+$("songProgress").addEventListener("input",e=>{if(state.currentAudio&&isFinite(state.currentAudio.duration))state.currentAudio.currentTime=(Number(e.target.value)/1000)*state.currentAudio.duration});
+$("loadTracks").addEventListener("click",()=>$("fileInput").click());
+$("fileInput").addEventListener("change",e=>{for(const f of e.target.files)state.tracks.push({name:f.name,url:URL.createObjectURL(f),enabled:true});renderTracks()});
+$("startBtn").addEventListener("click",()=>{
+ state.name=$("nameInput").value.trim()||"Player";$("nameModal").style.display="none";updateUI();audioInit();state.musicIndex=0;playTrack(0);say(`Welcome, ${state.name}, to Mathliebet.`,"fancy");newEquation();newSentence();
+});
+$("nameInput").addEventListener("keydown",e=>{if(e.key==="Enter")$("startBtn").click()});
+state.mathPieces=state.pieces;state.wordPieces=[];makeTracks();renderTracks();updateRepeatButton();updateCreatureText();newEquation();
+
+const canvas=$("starCanvas"),ctx=canvas.getContext("2d");let stars=[],last=performance.now();
+const SPEEDS=[.035,.09,.18,.32,.58,.95,2.1];
+function resizeStars(){canvas.width=innerWidth*devicePixelRatio;canvas.height=innerHeight*devicePixelRatio;ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);const n=Math.max(420,Math.floor(innerWidth*innerHeight/2600));stars=Array.from({length:n},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,z:.2+Math.random()*.8}))}
+function resetStar(s,dir){if(dir==="forward"){s.x=innerWidth/2+(Math.random()-.5)*20;s.y=innerHeight/2+(Math.random()-.5)*20;s.z=.2+Math.random()*.8}else if(dir==="backward"){s.x=Math.random()*innerWidth;s.y=Math.random()*innerHeight;s.z=.2+Math.random()*.8}else{s.x=Math.random()*innerWidth;s.y=Math.random()*innerHeight}}
+function drawStars(now){
+ const dt=Math.min(32,now-last)/16;last=now;ctx.fillStyle="#02040a";ctx.fillRect(0,0,innerWidth,innerHeight);
+ const sp=SPEEDS[state.starSpeed],hyp=state.starSpeed===6;
+ for(const s of stars){
+  let vx=0,vy=0;
+  if(state.starDirection==="forward"||state.starDirection==="backward"){
+   const cx=innerWidth/2,cy=innerHeight/2,dx=s.x-cx,dy=s.y-cy,len=Math.max(1,Math.hypot(dx,dy));
+   const sign=state.starDirection==="forward"?1:-1;vx=dx/len*(.7+s.z*2.4)*sp*dt*sign;vy=dy/len*(.7+s.z*2.4)*sp*dt*sign;
+  }else if(state.starDirection==="up")vy=-(.7+s.z*2.4)*sp*dt;
+  else if(state.starDirection==="down")vy=(.7+s.z*2.4)*sp*dt;
+  else if(state.starDirection==="left")vx=-(.7+s.z*2.4)*sp*dt;
+  else if(state.starDirection==="right")vx=(.7+s.z*2.4)*sp*dt;
+  else{const cx=innerWidth/2,cy=innerHeight/2,rx=s.x-cx,ry=s.y-cy;vx=(-ry*.006+rx)*sp*dt*.08;vy=(rx*.006+ry)*sp*dt*.08}
+  const ox=s.x,oy=s.y;s.x+=vx;s.y+=vy;
+  if(state.starDirection==="forward"&&(s.x<-20||s.x>innerWidth+20||s.y<-20||s.y>innerHeight+20))resetStar(s,"forward");
+  else if(state.starDirection==="backward"&&(s.x<innerWidth*.49||s.x>innerWidth*.51||s.y<innerHeight*.49||s.y>innerHeight*.51))resetStar(s,"backward");
+  else if(s.x<0||s.x>innerWidth||s.y<0||s.y>innerHeight)resetStar(s,state.starDirection);
+  ctx.fillStyle="rgba(255,255,255,"+(.72+.28*s.z)+")";
+  if(hyp){ctx.strokeStyle="rgba(255,255,255,"+(.28+.55*s.z)+")";ctx.lineWidth=.65;ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(s.x,s.y);ctx.stroke()}
+  else{ctx.beginPath();ctx.arc(s.x,s.y,3.0,0,Math.PI*2);ctx.fill()}
+ }
+ requestAnimationFrame(drawStars)
+}
+addEventListener("resize",resizeStars);resizeStars();requestAnimationFrame(drawStars);
+window.addEventListener("pointerdown",audioInit,{once:true});window.addEventListener("contextmenu",e=>e.preventDefault());window.addEventListener("selectstart",e=>e.preventDefault());window.addEventListener("dragstart",e=>e.preventDefault());
+$("nameModal").style.display="flex";
+})();
+</script>
+</body></html>
