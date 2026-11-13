@@ -146,7 +146,7 @@ select:focus{border-color:#8b5a2b}
 .hiddenInput{display:none}
 #doneFlash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:2000}
 #sphere{
- position:absolute;left:72%;top:34%;width:34px;height:34px;border-radius:50%;
+ position:absolute;left:18px;bottom:56px;width:34px;height:34px;border-radius:50%;
  background:radial-gradient(circle at 35% 30%,#fff,#ffffff 24%,#d8d8d8 48%,#888 76%,#222 100%);
  box-shadow:0 0 12px #fff,0 0 28px rgba(255,255,255,.55);
  cursor:grab;z-index:900;animation:bob 2.7s ease-in-out infinite
@@ -176,7 +176,7 @@ select:focus{border-color:#8b5a2b}
 /* DRAW LAB FINAL: transparent full-screen board, compact scroll-hidden tool menu */
 #drawToolsPanel{max-height:min(78vh,520px)!important;overflow-y:auto!important;scrollbar-width:none!important;overscroll-behavior:contain}
 #drawToolsPanel::-webkit-scrollbar{display:none}
-#drawPanel.expanded{position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;background:transparent!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important;padding:0!important;z-index:1090!important}
+#drawPanel.expanded{position:absolute!important;inset:0!important;width:100vw!important;height:100vh!important;background:transparent!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important;padding:0!important;z-index:10!important;max-width:none!important;max-height:none!important;touch-action:none}
 #drawPanel.expanded #drawCanvas{position:absolute!important;inset:0!important;width:100vw!important;height:100vh!important;background:transparent!important;cursor:crosshair!important}
 #drawPanel.expanded #drawMoveHandle{display:none!important}
 #drawToolsPanel{background:rgba(8,8,8,.86)!important}
@@ -186,7 +186,7 @@ select:focus{border-color:#8b5a2b}
 #spherePanel.expanded .archivePrimary{justify-content:flex-start;flex-wrap:wrap;border-top:1px solid #333;padding-top:4px}
 
 #radioProgressWrap{display:flex;align-items:center;gap:5px;margin:4px 0}#radioProgress{flex:1}#radioProgressTime{font:9px monospace;color:#ddd;min-width:40px;text-align:right}#radioVolume{flex:1}#radioVolumeValue{font:9px monospace;color:#ddd}
-#drawMoveHandle span{position:absolute;right:2px;bottom:-1px;font:9px Arial;color:#aaa}#drawToolsPanel{width:430px;max-height:250px;overflow:auto}#drawToolsPanel .drawControlRow{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin:4px 0}.drawPaletteLine{display:flex;gap:3px;flex-wrap:wrap}.widthSwatch{width:20px!important;min-width:20px!important;padding:2px!important}.colorSwatch{width:19px!important;min-width:19px!important;height:19px!important;padding:0!important}.pointGrid{display:grid;grid-template-columns:repeat(3,27px);grid-template-rows:repeat(3,27px);gap:2px}.pointGrid button{width:27px;height:27px;padding:0;font-size:8px;background:#111;color:#aaa;border:1px solid #555}.pointGrid button.selected{background:#7b4dff;color:#fff;border-color:#ddd}.pointGrid button{position:relative}.pointGrid button::after{content:"";display:block;width:4px;height:4px;border-radius:50%;background:#aaa;margin:5px auto}.pointGrid button.selected::after{background:#fff}.randomGrid{margin:2px 0 4px}#drawPanel.expanded{left:0!important;top:0!important;width:100vw!important;height:100vh!important;right:auto!important;bottom:auto!important;z-index:1100!important}#drawPanel.expanded #drawMoveHandle{display:none}#drawPanel.expanded #drawCanvas{width:100%;height:100%}
+#drawMoveHandle span{position:absolute;right:2px;bottom:-1px;font:9px Arial;color:#aaa}#drawToolsPanel{width:min(310px,calc(100vw - 20px));max-height:250px;overflow:auto}#drawToolsPanel .drawControlRow{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin:4px 0}.drawPaletteLine{display:flex;gap:3px;flex-wrap:wrap}.widthSwatch{width:20px!important;min-width:20px!important;padding:2px!important}.colorSwatch{width:19px!important;min-width:19px!important;height:19px!important;padding:0!important}.pointGrid{display:grid;grid-template-columns:repeat(3,27px);grid-template-rows:repeat(3,27px);gap:2px}.pointGrid button{width:27px;height:27px;padding:0;font-size:8px;background:#111;color:#aaa;border:1px solid #555}.pointGrid button.selected{background:#7b4dff;color:#fff;border-color:#ddd}.pointGrid button{position:relative}.pointGrid button::after{content:"";display:block;width:4px;height:4px;border-radius:50%;background:#aaa;margin:5px auto}.pointGrid button.selected::after{background:#fff}.randomGrid{margin:2px 0 4px}#drawPanel.expanded #drawMoveHandle{display:none}#drawPanel.expanded #drawCanvas{width:100%;height:100%}
 /* Niagara scene objects */
 #niagaraSceneUI{position:absolute;inset:0;z-index:980;display:none;overflow:hidden;pointer-events:none}
 .niagaraBarge{position:absolute;left:-430px;bottom:7%;width:390px;height:105px;filter:drop-shadow(0 8px 8px rgba(0,0,0,.7));pointer-events:none;will-change:left,bottom,transform,opacity}
@@ -245,12 +245,35 @@ input[type=range]::-moz-range-progress{background:#8b5a2b}
 .textLoadRow{border-top:1px solid #5b4028;padding-top:4px}
 #drawToolsPanel{max-width:min(92vw,430px);min-width:330px;max-height:min(62vh,430px)!important;overflow-y:auto!important;scrollbar-width:none!important;resize:both!important;position:fixed}
 #drawToolsPanel::-webkit-scrollbar{display:none}
-#drawToolsPanel .drawBottomGrab{height:5px;background:rgba(139,90,43,.55);margin:5px -2px -2px;cursor:grab}
-#drawExpand{order:-10}
 #drawToolsPanel .symbolButtons{display:flex;gap:3px;flex-wrap:wrap}.symbolButtons button{min-width:34px;height:25px;font-size:14px}
 #drawToolsPanel .colorSwatch{border:1px solid #c7a77e}
 #textPanel input[type=range]{accent-color:#8b5a2b}
 #randomShowPanel .pointGrid{display:grid!important}.randomGrid:not(.gridVisible){opacity:.45}
+@keyframes solidRainbow{0%,100%{color:#ff00aa}12%{color:#ff0000}25%{color:#ff8a00}38%{color:#ffff00}50%{color:#43ff00}62%{color:#00dfff}74%{color:#304bff}87%{color:#a800ff}}
+#textPanel .row{flex-wrap:wrap}
+#textPanel select,#drawToolsPanel select{max-width:100%}
+#drawPalette{display:grid;grid-template-columns:repeat(10,19px)}
+#drawToolsPanel .colourTabs{display:flex;flex-basis:100%;gap:16px;margin:5px 0}
+.colourTabs [role=tab]{cursor:pointer;padding:3px 0;border-bottom:2px solid transparent}
+.colourTabs [aria-selected=true]{border-color:#fff}
+.panel h4 .titleClose{float:right;cursor:pointer;margin-left:12px}
+#typeInput{background-color:transparent}
+#drawToolsPanel{overflow:hidden!important;min-width:0;max-height:min(78vh,540px)!important}
+#drawToolsHandle{margin:0;padding:5px;min-height:24px;box-sizing:border-box;cursor:grab}
+#drawToolsPanel .drawToolsBody{overflow:auto;max-height:calc(min(78vh,540px) - 36px);scrollbar-width:thin;padding:0 4px 4px}
+#drawToolsPanel .colourTabs{flex-basis:auto}
+#drawToolsPanel input[type=range]{max-width:120px}
+#drawWidthPalette{position:relative;display:block;width:220px}
+#drawWidthPalette .widthTrack{display:grid;grid-template-columns:repeat(11,1fr);height:20px}
+.widthTrack span{position:relative;background:#eee}
+.widthTrack span:nth-child(even){background:#161616}
+.widthTrack span.selected{color:transparent}
+.widthTrack span.selected::after{content:attr(data-size);position:absolute;inset:2px;border-radius:50%;background:#cf1929;color:white;text-align:center;line-height:16px;font:bold 11px/16px Arial}
+#drawWidthPalette input{position:absolute;inset:0;width:100%;max-width:none!important;margin:0;opacity:0;cursor:pointer}
+#drawWidthPalette:focus-within{outline:2px solid #fff}
+.drawSequence summary{cursor:pointer}
+.drawSequenceBody{padding:6px;background:#171717;border:1px solid #555}
+#starfieldPanel a{color:#fff}
 </style>
 </head>
 <body>
@@ -259,6 +282,10 @@ input[type=range]::-moz-range-progress{background:#8b5a2b}
  <canvas id="stars"></canvas>
  <div id="objects"></div>
  <div id="paintStage"></div>
+ <div id="drawPanel" class="panel">
+ <div id="drawMoveHandle" aria-hidden="true"></div>
+ <canvas id="drawCanvas" width="560" height="400"></canvas>
+</div>
  <div id="sphere" title=""></div>
 
 </div>
@@ -289,22 +316,27 @@ input[type=range]::-moz-range-progress{background:#8b5a2b}
 
 <div id="textPanel" class="panel">
  <h4>SHAKE / TEXT</h4>
- <div class="categoryTitle">CURSER TEXT</div>
+ <div class="categoryTitle">TYPED TEXT</div>
  <div class="row"><label>COLOUR</label><select id="cursorColour"><option value="#ffffff" selected>White</option><option value="#ff3030">Red</option><option value="#ff8a00">Orange</option><option value="#ffe600">Yellow</option><option value="#44ff66">Light Green</option><option value="#20d9ff">Turquoise</option><option value="#ff78c8">Pink</option><option value="#7b4dff">Purple</option><option value="#8b5a2b">Brown</option><option value="#000000">Black</option><option value="rainbow">Rainbow</option></select><label>SIZE</label><select id="cursorSize"><option value="8">8</option><option value="10">10</option><option value="12">12</option><option value="14">14</option><option value="16">16</option><option value="18">18</option><option value="20">20</option><option value="24" selected>24</option><option value="28">28</option><option value="32">32</option></select></div>
  <div class="row"><label>STYLE</label><select id="cursorStyle"><option>translucent</option><option>opaque</option><option>outlined</option></select><label>FONT</label><select id="cursorFont"><option selected>Chomsky</option><option>Dune Rise</option><option>Momt</option><option>Impact</option><option>Trebuchet MS</option><option>Wingdings</option><option>Wingdings 2</option><option>Georgia</option><option>Courier New</option></select><label><input id="cursorVisible" type="checkbox" checked> ON</label></div>
-  <div class="row"><label><input id="cursorDropText" type="checkbox"> DROP TEXT</label><select id="cursorDropMode"><option value="wait" selected>WAIT / ENTER</option><option value="immediate">Immediate</option><option value="delay">Delay 1 sec</option><option value="enter">ENTER</option></select><label>SEND</label><select id="sendMode"><option value="wait" selected>WAIT</option><option value="asYouGo">AS YOU GO</option></select></div>
+ <div class="row"><label>ALIGN <select id="cursorAlign"><option>left</option><option selected>center</option><option>right</option></select></label></div>
+ <div class="row"><label><input id="cursorDropText" type="checkbox"> DROP TEXT</label><select id="cursorDropMode"><option value="wait" selected>WAIT / ENTER</option><option value="immediate">Immediate</option><option value="delay">Delay 1 sec</option><option value="enter">ENTER</option></select><label>SEND</label><select id="sendMode"><option value="wait" selected>WAIT</option><option value="asYouGo">AS YOU GO</option></select></div>
  <div class="thinLine"></div>
- <div class="categoryTitle">FIELD TEXT</div>
+ <div class="categoryTitle">FIELD TEXT <label><input id="fieldVisible" type="checkbox" checked> ON</label></div>
  <div class="row"><label>COLOUR</label><select id="fieldColour"><option value="#ffffff" selected>White</option><option value="#ff3030">Red</option><option value="#ff8a00">Orange</option><option value="#ffe600">Yellow</option><option value="#44ff66">Light Green</option><option value="#20d9ff">Turquoise</option><option value="#ff78c8">Pink</option><option value="#7b4dff">Purple</option><option value="#8b5a2b">Brown</option><option value="#000000">Black</option><option value="rainbow">Rainbow</option></select><label>SIZE</label><select id="fieldSize"><option value="18">18</option><option value="24">24</option><option value="30">30</option><option value="36">36</option><option value="42">42</option><option value="48" selected>48</option><option value="56">56</option><option value="64">64</option><option value="72">72</option></select></div>
  <div class="row"><label>STYLE</label><select id="fieldStyle"><option selected>translucent</option><option>opaque</option><option>outlined</option></select><label>ALIGN</label><select id="fieldAlign"><option>left</option><option selected>center</option><option>right</option></select></div>
  <div class="row"><label>FONT</label><select id="fieldFont"><option selected>Chomsky</option><option>Dune Rise</option><option>Momt</option><option>Impact</option><option>Trebuchet MS</option><option>Wingdings</option><option>Wingdings 2</option><option>Georgia</option></select><label>GLOW</label><input id="fieldGlow" type="range" min="0" max="30" value="15"></div>
  <div class="row"><label>LINGER</label><input id="fieldLinger" type="range" min="1000" max="10000" value="5500"><label>REPEAT</label><select id="fieldRepeat"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option></select></div>
- <div class="row"><label>FADE</label><input id="fieldFade" type="range" min="0" max="100" value="50"><label>EFFECT</label><select id="fieldEffect"><option selected>Rise &amp; Fade</option><option>Drift Away</option><option>Wave</option><option>Orbit</option></select><label><input id="rimeToggle" type="checkbox"> RIME</label><label><input id="fieldVisible" type="checkbox" checked> ON</label></div>
+ <div class="row"><label>FADE</label><input id="fieldFade" type="range" min="0" max="100" value="50"><label>EFFECT</label><select id="fieldEffect"><option selected>Rise &amp; Fade</option><option>Drift Away</option><option>Wave</option><option>Orbit</option></select></div>
  <div class="thinLine"></div>
  <div class="categoryTitle">SUB TEXT</div>
  <div class="row"><label>COLOUR</label><select id="subColour"><option value="#ffffff" selected>White</option><option value="#ff3030">Red</option><option value="#ff8a00">Orange</option><option value="#ffe600">Yellow</option><option value="#44ff66">Light Green</option><option value="#20d9ff">Turquoise</option><option value="#ff78c8">Pink</option><option value="#7b4dff">Purple</option><option value="#8b5a2b">Brown</option><option value="#000000">Black</option><option value="rainbow">Rainbow</option></select><label>SIZE</label><select id="subSize"><option value="10">10</option><option value="12">12</option><option value="14" selected>14</option><option value="16">16</option><option value="18">18</option><option value="20">20</option><option value="24">24</option><option value="32">32</option><option value="48">48</option></select><label><input id="subVisible" type="checkbox" checked> ON</label></div>
- <div class="row"><label>FONT</label><select id="subFont"><option selected>Dune Rise</option><option>Chomsky</option><option>Momt</option><option>Impact</option><option>Trebuchet MS</option><option>Wingdings</option><option>Wingdings 2</option><option>Georgia</option></select><label>GLOW</label><input id="subGlow" type="range" min="0" max="30" value="0"></div>
+ <div class="row"><label>FONT</label><select id="subFont"><option selected>Chomsky</option><option>Dune Rise</option><option>Momt</option><option>Impact</option><option>Trebuchet MS</option><option>Wingdings</option><option>Wingdings 2</option><option>Georgia</option></select><label>GLOW</label><input id="subGlow" type="range" min="0" max="30" value="0"></div>
+<div class="row"><label>ALIGN <select id="subAlign"><option>left</option><option selected>center</option><option>right</option></select></label><label>STYLE <select id="subStyle"><option selected>opaque</option><option>translucent</option><option>outlined</option></select></label></div><div class="row"><label>LINGER <input id="subLinger" type="range" min="1000" max="15000" value="8000"></label><label>FADE <input id="subFade" type="range" min="0" max="100" value="28"></label></div>
  <div class="row"><label>EFFECT</label><select id="subEffect"><option selected>Into Distance</option><option>Rise &amp; Fade</option></select><label>REPEAT</label><select id="subRepeat"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option></select><label>SPEED</label><select id="subSpeed"><option selected>Slow</option><option>Medium</option><option>Fast</option></select></div>
+ <div class="thinLine"></div>
+ <div class="categoryTitle">LAST WORD (RIME)</div>
+ <div class="row"><label><input id="rimeToggle" type="checkbox"> ON</label><label><input id="rimeCloud" type="checkbox"> WORD CLOUD</label></div>
  <div class="thinLine"></div>
  <div class="categoryTitle">SPEAK</div>
  <div class="row"><label><input id="speakToggle" type="checkbox"> SPEAK</label><label>VOICE</label><select id="speakVoice"><option>Captain O'Pirate</option><option selected>The Fancy Woman</option><option>Professor Fuffonbass</option><option>Lar Report</option></select></div>
@@ -325,13 +357,9 @@ input[type=range]::-moz-range-progress{background:#8b5a2b}
 <input id="backwardsToggle" type="checkbox"><select id="textGlowEffect"><option value="none">none</option><option value="halo">halo</option></select>
 <input id="linger" type="range" value="5500"><input id="typeRepeatDirect" type="number" value="9">
 <input id="repeatFade" type="checkbox"><input id="repeatLouder" type="checkbox"><select id="repeatStyle"><option value="same">same</option></select>
-<input id="subtitleToggle" type="checkbox"><input id="subtitleSize" type="number" value="14"><select id="subtitleFont"><option>Dune Rise</option></select><select id="subtitleColour"><option value="#ffffff">White</option></select>
+<input id="subtitleToggle" type="checkbox"><input id="subtitleSize" type="number" value="14"><select id="subtitleFont"><option>Chomsky</option></select><select id="subtitleColour"><option value="#ffffff">White</option></select>
 <input id="fontInput" type="file">
 <input id="voiceToggle" type="checkbox"><input id="complimentToggle" type="checkbox"><input id="pirateToggle" type="checkbox"><input id="ladyToggle" type="checkbox"><input id="voiceRepeat" type="number" value="1"><input id="voiceFade" type="checkbox"><input id="voiceLouder" type="checkbox">
-</div>
-<div id="drawPanel" class="panel">
- <div id="drawMoveHandle" aria-hidden="true"></div>
- <canvas id="drawCanvas" width="560" height="400"></canvas>
 </div>
 <div id="drawToolsPanel" class="panel"></div>
 
@@ -341,7 +369,7 @@ input[type=range]::-moz-range-progress{background:#8b5a2b}
  <canvas id="radioGraphic" width="400" height="34"></canvas>
  <div class="row"><label class="fileButton" for="audioInput">ADD AUDIO</label><input id="audioInput" class="hiddenInput" type="file" accept="audio/*" multiple></div>
  <div id="playlist"></div>
- <div class="row"><button id="prevSong">◀</button><button id="playSong">PLAY</button><button id="pauseSong">PAUSE</button><button id="nextSong">▶</button><label><input id="repeatSong" type="checkbox"> SONG</label><label><input id="repeatAll" type="checkbox"> ALL</label></div>
+ <div class="row"><button id="prevSong">◀</button><button id="playSong">PLAY</button><button id="pauseSong">PAUSE</button><button id="nextSong">▶</button><label><input id="repeatSong" type="checkbox"> SONG</label><label><input id="repeatAll" type="checkbox" checked> ALL</label></div>
  <div class="row"><label>FADE IN</label><input id="fadeInSeconds" type="number" min="0" max="30" value="0" style="width:38px"><label>FADE OUT</label><input id="fadeOutSeconds" type="number" min="0" max="30" value="0" style="width:38px"><button id="radioUncheckAll">UNCHECK ALL</button></div>
  <div class="row"><label><input id="randomShowToggle" type="checkbox"> RANDOM EFFECT SHOW</label></div>
  <div class="row"><button id="radioClose">CLOSE</button></div>
@@ -389,6 +417,8 @@ input[type=range]::-moz-range-progress{background:#8b5a2b}
 
 <div id="starfieldPanel" class="panel">
  <h4>STARFIELD</h4>
+ <div class="row"><a href="https://larrysvariety.ca/Larrys_Variety_v3_Speaking_Department_Store.html">Shop</a></div>
+ <div class="row"><a href="https://larrysvariety.ca/Ghostprint_v51.html">Ghostprint · Birthday gift</a></div>
  <div class="row"><label>PLANET SIZE</label><select id="planetSize"><option value="24">Tiny</option><option value="30">Small</option><option value="38" selected>Medium</option><option value="52">Large</option><option value="68">Huge</option></select></div>
  <div class="row"><label>DIRECTION</label><select id="starDirection"><option value="forward">Forward</option><option value="backward">Backward</option><option value="up">Up</option><option value="down">Down</option><option value="left">Left</option><option value="right">Right</option><option value="spiral">Spiral</option><option value="random">Random</option></select></div>
  <div class="row"><label>SPEED</label><select id="starSpeed"><option value="frozen">Frozen</option><option value="groovy">Groovy!</option><option value="slow">Slow</option><option value="medium" selected>Medium</option><option value="fast">Fast</option><option value="hyperspeed">Hyperspeed</option></select></div>
@@ -454,7 +484,7 @@ let panelZ=1100;
 function closePanels(except=null){
  document.querySelectorAll('.panel').forEach(p=>{if(p===except)return;if(['drawPanel','drawToolsPanel','radioPanel','radioShowPanel'].includes(p.id))return;p.classList.remove('open');});
 }
-function openPanel(p){closePanels(p);p.classList.add('open');p.style.zIndex=++panelZ;}
+function openPanel(p){p.classList.add('open');p.style.zIndex=++panelZ;}
 const buttonPanelPairs=[['repeatBtn','repeatPanel'],['shakeBtn','textPanel'],['radio','radioPanel']];
 buttonPanelPairs.forEach(([bId,pId])=>{const b=document.getElementById(bId),p=document.getElementById(pId);b.onclick=e=>{e.stopPropagation();if(p.classList.contains('open')){p.classList.remove('open');if(pId==='radioPanel')document.getElementById('radioShowPanel')?.classList.remove('open');}else{p.classList.add('open');p.style.zIndex=++panelZ;requestAnimationFrame(()=>clamp(p));}};p.addEventListener('pointerdown',()=>p.style.zIndex=++panelZ);});
 document.getElementById('starfieldTab').onclick=e=>{e.stopPropagation();openPanel(document.getElementById('starfieldPanel'));};
@@ -465,7 +495,7 @@ document.getElementById('drawToolsPanel').addEventListener('pointerdown',e=>{e.s
 function makeDraggable(panel,handle){
  let drag=false,dx=0,dy=0;
  handle.addEventListener('pointerdown',e=>{
-  if(e.target.closest('button,input,select,textarea'))return;
+  if(e.target.closest('button,input,select,textarea,a,summary'))return;
   drag=true;const r=panel.getBoundingClientRect();dx=e.clientX-r.left;dy=e.clientY-r.top;
   panel.style.left=r.left+'px';panel.style.top=r.top+'px';panel.style.right='auto';panel.style.bottom='auto';panel.style.height='auto';panel.style.transform='none';panel.style.zIndex=++panelZ;
   handle.setPointerCapture(e.pointerId);e.preventDefault();
@@ -690,7 +720,7 @@ document.getElementById('launchMemory').onclick=()=>{if(window._launchLoadedText
    ========================================================= */
 const audio=document.getElementById('audio'),playlist=document.getElementById('playlist'),radioGraphic=document.getElementById('radioGraphic'),rg=radioGraphic.getContext('2d');
 let songs=[],songIndex=0,loadedSongIndex=-1,musicTimer=null;
-document.getElementById('audioInput').onchange=e=>{for(const f of e.target.files)songs.push({name:f.name,url:URL.createObjectURL(f),checked:true});renderPlaylist();if(songs.length===1)loadSong(0);};
+document.getElementById('audioInput').onchange=e=>{for(const f of e.target.files)songs.push({name:f.name,url:URL.createObjectURL(f),checked:true});renderPlaylist();if(e.target.files.length){loadSong(songs.length-e.target.files.length);audio.play().catch(()=>{});e.target.value='';}};
 function renderPlaylist(){playlist.innerHTML='';songs.forEach((song,i)=>{const d=document.createElement('div');d.className='song';d.draggable=true;d.dataset.i=i;d.innerHTML=`<input type="checkbox" ${song.checked?'checked':''}><span class="name">${song.name}</span><button type="button" class="deleteSong">DELETE</button>`;d.querySelector('input').onchange=e=>song.checked=e.target.checked;d.querySelector('.deleteSong').onclick=e=>{e.stopPropagation();try{URL.revokeObjectURL(song.url)}catch{};const was=songIndex===i;songs.splice(i,1);if(!songs.length){songIndex=0;loadedSongIndex=-1;audio.pause();audio.removeAttribute('src');audio.load();$('radioTitle').textContent='NO TRACK';}else{if(songIndex>i)songIndex--;if(was)loadSong(Math.min(songIndex,songs.length-1));}renderPlaylist();};d.onclick=e=>{if(e.target.tagName!=='INPUT'&&e.target.tagName!=='BUTTON')loadSong(i)};d.addEventListener('dragstart',e=>{d.classList.add('dragging');e.dataTransfer.setData('text/plain',String(i))});d.addEventListener('dragover',e=>e.preventDefault());d.addEventListener('drop',e=>{e.preventDefault();const from=+e.dataTransfer.getData('text/plain');if(from===i)return;const moved=songs.splice(from,1)[0];songs.splice(i,0,moved);songIndex=songs.indexOf(moved);loadedSongIndex=songIndex;renderPlaylist();});d.addEventListener('dragend',()=>d.classList.remove('dragging'));playlist.appendChild(d);});}
 function checkedSongIndexes(){return songs.map((s,i)=>s.checked?i:-1).filter(i=>i>=0);}
 function loadSong(i){if(!songs.length)return;songIndex=(i+songs.length)%songs.length;audio.src=songs[songIndex].url;loadedSongIndex=songIndex;document.getElementById('radioTitle').textContent=songs[songIndex].name;document.getElementById('radioTitle').style.color=rainbowStops[songIndex%rainbowStops.length];}
@@ -713,7 +743,7 @@ function updateRandomShowLabels(){[['randomThickness','randomThicknessValue','']
 ['randomThickness','randomLength','randomSpeed','randomTransparent','randomGlow','randomLineCount','randomDensity'].forEach(id=>document.getElementById(id)?.addEventListener('input',updateRandomShowLabels));updateRandomShowLabels();
 function setGrid(id,idx=4){const g=document.getElementById(id);if(!g)return;[...g.children].forEach((b,i)=>b.classList.toggle('selected',i===idx));g.dataset.value=String(idx)}
 function gridPoint(id){const g=document.getElementById(id);const idx=+(g?.dataset.value||4),col=idx%3,row=Math.floor(idx/3);return{x:(col+.5)/3,y:(row+.5)/3}}
-['randomStartGrid','randomEndGrid','drawStartGrid','drawEndGrid'].forEach(id=>{const g=document.getElementById(id);if(!g)return;[...g.children].forEach((b,i)=>{b.title=`${Math.floor(i/3)+1},${i%3+1}`;b.onclick=()=>setGrid(id,i)});setGrid(id,4)});
+['randomStartGrid','randomEndGrid'].forEach(id=>{const g=document.getElementById(id);if(!g)return;[...g.children].forEach((b,i)=>{b.title=`${Math.floor(i/3)+1},${i%3+1}`;b.onclick=()=>setGrid(id,i)});setGrid(id,4)});
 function randomShowColour(i){const mode=document.getElementById('randomColourMode').value;if(mode==='white')return '#ffffff';if(mode==='random')return `hsl(${Math.random()*360},100%,68%)`;if(mode==='rainbowRandom')return Math.random()<.5?rainbowStops[i%rainbowStops.length]:`hsl(${Math.random()*360},100%,68%)`;return rainbowStops[i%rainbowStops.length];}
 function musicVisual(){if(document.getElementById('useMyDrawings')?.checked&&window.getUserDrawingCanvas){const count=Math.max(1,+document.getElementById('randomLineCount').value||1);for(let i=0;i<count;i++)launchUserDrawingShape(window.getUserDrawingCanvas(),i,document.getElementById('drawToBeat')?.checked);return;}const count=Math.max(1,+document.getElementById('randomLineCount').value||1),density=Math.max(1,+document.getElementById('randomDensity').value||1);for(let i=0;i<count*density;i++)launchRandomLine(i)}
 function launchRandomLine(index=0){const c=document.createElement('canvas');c.width=480;c.height=260;const x=c.getContext('2d'),a=gridPoint('randomStartGrid'),b=gridPoint('randomEndGrid');x.strokeStyle=document.getElementById('radioShowPanel')?.dataset.liveColour||randomShowColour(index);x.lineWidth=+document.getElementById('randomThickness').value||6;x.lineCap='round';x.lineJoin='round';x.shadowColor=x.strokeStyle;x.shadowBlur=+document.getElementById('randomGlow').value||0;const sx=a.x*c.width,sy=a.y*c.height,rawDx=(b.x-a.x)*c.width,rawDy=(b.y-a.y)*c.height,rawDist=Math.hypot(rawDx,rawDy),len=+document.getElementById('randomLength').value||220,ang=rawDist?Math.atan2(rawDy,rawDx):0,ex=sx+Math.cos(ang)*len,ey=sy+Math.sin(ang)*len;x.beginPath();x.moveTo(sx,sy);x.lineTo(ex,ey);x.stroke();const wrap=document.createElement('div');wrap.className='projectile';wrap.appendChild(c);document.getElementById('objects').appendChild(wrap);const rv=+document.getElementById('randomSpeed').value||4200,dur=12000-((rv-400)/(12000-400))*10800,opacity=1-(+document.getElementById('randomTransparent').value||0)/100,effect=document.getElementById('randomEffect').value,t0=performance.now();function f(now){const t=Math.min(1,(now-t0)/dur);let xx=W*.5,yy=H*.58-H*.2*t,rot=0;if(effect==='wave')xx+=Math.sin(t*14+index)*W*.12;if(effect==='orbit'){const q=t*Math.PI*6;xx+=Math.cos(q)*W*.12;yy+=Math.sin(q)*H*.12;rot=q*20}if(effect==='figure8'){const q=t*Math.PI*4;xx+=Math.sin(q)*W*.13;yy+=Math.sin(q*2)*H*.07;rot=q*15}if(effect==='spiral'){const q=t*Math.PI*8;xx+=Math.cos(q)*W*.12*t;yy+=Math.sin(q)*H*.12*t;rot=q*20}if(effect==='float')yy-=H*.22*t;if(effect==='swoop'){xx+=Math.sin(t*Math.PI)*W*.18;yy-=Math.sin(t*Math.PI*2)*H*.1}if(effect==='comet')xx+=W*.35*t;if(effect==='burst'){xx+=Math.sin(index*2+t*10)*W*.12;yy+=Math.cos(index*3+t*8)*H*.12}wrap.style.left=xx+'px';wrap.style.top=yy+'px';wrap.style.opacity=t>.88?(1-t)/.12:opacity;wrap.style.transform=`translate(-50%,-50%) rotate(${rot}deg) scale(${.35+.85*t})`;if(t<1)requestAnimationFrame(f);else wrap.remove()}requestAnimationFrame(f)}
@@ -725,8 +755,6 @@ document.getElementById('radioLaunch').onclick=radioLaunchNow;
    ========================================================= */
 document.getElementById('clear').onclick=()=>{invalidateVisuals();document.getElementById('objects').innerHTML='';document.getElementById('paintStage').innerHTML='';const liveDraw=document.getElementById('drawCanvas');if(liveDraw){const liveCtx=liveDraw.getContext('2d');liveCtx.clearRect(0,0,liveDraw.width,liveDraw.height);}if(typeof window.clearDrawLab==='function')window.clearDrawLab();if(window.stopShakeSpeech)window.stopShakeSpeech();speechSynthesis.cancel();stopMusicVisual();document.querySelectorAll('.projectile').forEach(x=>x.remove());};
 document.addEventListener('pointerdown',e=>{if(e.target.closest('#space')||e.target===starCanvas){speechSynthesis.cancel();}});
-document.addEventListener('click',e=>{if(e.target.closest('.panel')||e.target.closest('#controls')||e.target.closest('#sphere')||e.target.closest('#starfieldTab')||e.target.closest('#drawPanel')||e.target.closest('#drawToolsPanel'))return;closePanels();});
-document.getElementById('space').addEventListener('click',e=>{if(e.target===document.getElementById('space')||e.target===starCanvas)closePanels();});
 addEventListener('blur',()=>{stopHolding();speechSynthesis.cancel();});
 </script>
 <script>
@@ -739,7 +767,7 @@ addEventListener('blur',()=>{stopHolding();speechSynthesis.cancel();});
  setPlanetColour('#ffffff'); $('planetColour').value='#ffffff'; $('planetSize').value='38'; $('planetSize').dispatchEvent(new Event('change')); sphere.style.zIndex=900;
  let drag=false,moved=false,ox=0,oy=0,downX=0,downY=0;
  sphere.onpointerdown=function(e){drag=true;moved=false;downX=e.clientX;downY=e.clientY;const r=sphere.getBoundingClientRect();ox=e.clientX-r.left;oy=e.clientY-r.top;sphere.setPointerCapture(e.pointerId);e.stopPropagation();};
- sphere.onpointermove=function(e){if(!drag)return;if(Math.hypot(e.clientX-downX,e.clientY-downY)>5)moved=true;sphere.style.left=(e.clientX-ox)+'px';sphere.style.top=(e.clientY-oy)+'px';};
+ sphere.onpointermove=function(e){if(!drag)return;if(Math.hypot(e.clientX-downX,e.clientY-downY)>5)moved=true;if(!moved)return;sphere.style.bottom='auto';sphere.style.left=(e.clientX-ox)+'px';sphere.style.top=(e.clientY-oy)+'px';};
  sphere.onpointerup=function(e){if(sphere.hasPointerCapture(e.pointerId))sphere.releasePointerCapture(e.pointerId);drag=false;if(moved){e.stopPropagation();return;}openArchive();e.stopPropagation();};
  sphere.onclick=e=>e.stopPropagation();
  $('expandSphere').onclick=function(e){e.stopPropagation();sp.classList.toggle('expanded');this.textContent=sp.classList.contains('expanded')?'BACK':'FULL';requestAnimationFrame(clampPanel);};
@@ -795,7 +823,7 @@ addEventListener('blur',()=>{stopHolding();speechSynthesis.cancel();});
  // Replace the old keydown behaviour with the same launch engine but retain normal Enter.
  $('typeInput').onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();const t=this.value.trim();if(!t)return;const n=Math.max(1,+$('typeRepeatDirect').value||1);for(let i=0;i<n;i++)scheduleVisual(()=>launchText(t,i,n),i*state.repeatSpeed);this.value='';speakText(t);}};
  // Radio defaults: no repeat mode, no random effect show, sprite show off; remove radio hypno control if any.
-$('repeatSong').checked=false;$('repeatAll').checked=false;$('randomShowToggle').checked=false;$('fadeOutSeconds').value=0;
+$('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').checked=false;$('fadeOutSeconds').value=0;
  // Radio launch uses the Random Effect Show line engine.
  $('radioLaunch').onclick=function(){musicVisual();};
  // Keep the JPG launch effect setting explicit and apply visual transforms to image projectiles.
@@ -861,11 +889,18 @@ $('repeatSong').checked=false;$('repeatAll').checked=false;$('randomShowToggle')
   const tools=$('drawToolsPanel'), panel=$('drawPanel');
   tools.innerHTML='';
   const h=document.createElement('h4');h.id='drawToolsHandle';h.textContent='DRAW';tools.append(h);
-  tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><button id="drawUndo">UNDO</button><button id="drawRedo">REDO</button><button id="drawExpand">FULL</button><button id="drawClose">CLOSE</button><button id="drawOtto">OTTO</button><button id="drawClear">CLEAR</button></div>');
+  tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><button id="drawUndo">UNDO</button><button id="drawRedo">REDO</button><button id="drawClose">CLOSE</button><button id="drawOtto">OTTO</button><button id="drawClear">CLEAR</button></div>');
   tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><label>WIDTH</label><div id="drawWidthPalette" class="drawPaletteLine"></div></div>');
-  tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><label>MODE</label><select id="drawMode"><option value="freehand" selected>Freehand</option><option value="pattern">Pattern</option><option value="stamp">Stamp</option><option value="kaleidoscope">Kaleidoscope</option></select></div>');
   tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><label>START POINT</label><div class="pointGrid" id="drawStartGrid"></div><label>END POINT</label><div class="pointGrid" id="drawEndGrid"></div></div>');
-  ['drawStartGrid','drawEndGrid'].forEach(id=>{const g=document.getElementById(id);for(let i=0;i<9;i++)g.insertAdjacentHTML('beforeend','<button type="button"></button>')});
+  ['drawStartGrid','drawEndGrid'].forEach(id=>{
+    const grid=$(id);
+    for(let i=0;i<9;i++){
+      const button=document.createElement('button');button.type='button';
+      button.setAttribute('aria-label','Row '+(Math.floor(i/3)+1)+', column '+(i%3+1));
+      button.onclick=()=>setGrid(id,i);grid.append(button);
+    }
+    setGrid(id,4);
+  });
   tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><label>COLOUR</label><div id="drawPalette" class="drawPaletteLine"></div></div>');
   tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><label>SIZE EFFECT</label><select id="drawSizeEffect"><option value="smallLarge" selected>Small → Large → Dissipate</option><option value="largeSmallLargeFade">Large → Small → Large → Fade</option><option value="normal">Stay same size</option><option value="largeSmall">Large → Small</option></select></div>');
   tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><label>KALEIDOSCOPE</label><select id="drawKaleido"><option value="off" selected>Off</option><option value="half">Half — mirrored</option><option value="four">4 parts — mirrored</option><option value="eight">8 parts — mirrored</option></select></div>');
@@ -874,7 +909,6 @@ $('repeatSong').checked=false;$('repeatAll').checked=false;$('randomShowToggle')
   tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><label>SPEED</label><input id="drawTrailSpeed" type="range" min="0" max="100" value="22"><span id="drawTrailSpeedValue">Slow</span></div>');
   tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><label>REPEAT</label><select id="drawRepeat"></select><label>COUNT</label><select id="drawCount"></select><label>GLOW</label><input id="drawGlow" type="range" min="0" max="35" value="8"></div><div class="drawControlRow"><label>POSITION</label><select id="drawPosition"><option value="center" selected>Centre</option><option value="far">Far</option><option value="near">Near</option><option value="left">Left</option><option value="right">Right</option><option value="top">Top</option><option value="bottom">Bottom</option></select></div><div class="drawControlRow"><label><input id="drawColourCycle" type="checkbox"> COLOUR CHANGES EACH DRAWING</label><input id="drawComboName" placeholder="combo name" style="width:90px"><button id="drawSaveCombo">SAVE COLOUR COMBO</button><select id="drawComboSelect"><option value="">Saved combos</option></select></div>');
   tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><label>MEMORY</label><select id="drawMemory"><option value="last" selected>Last drawing</option><option value="random">Random line</option><option value="loaded">Loaded drawing</option></select><button id="drawSaveImage">SAVE</button><button id="drawLoadImage">LOAD</button><button id="drawLaunch">LAUNCH</button><label><input id="ottoRandomEffects" type="checkbox"> OTTO RANDOM EFFECTS</label></div>');
-  tools.insertAdjacentHTML('beforeend','<div class="small">FULL makes the entire screen a completely transparent drawing surface. Click DRAW or CLOSE to leave FULL.</div>');
   const colors=[['#ff3030','red'],['#ff8a00','orange'],['#ffe600','yellow'],['#44ff66','light green'],['#20d9ff','turquoise'],['#ff78c8','pink'],['#4888ff','blue'],['#7b4dff','purple'],['#8b5a2b','brown'],['#000','black'],['#fff','white'],['rainbow','rainbow']];
   let colour='#fff',width=4,last=null,loaded=null,drawing=false,otto=false,ottoTimer=null,undo=[],redo=[];
   for(let i of [1,2,4,8,14,24]){const b=document.createElement('button');b.className='widthSwatch';b.textContent=i;b.onclick=()=>width=i;$('drawWidthPalette').append(b)}
@@ -889,23 +923,160 @@ $('repeatSong').checked=false;$('repeatAll').checked=false;$('randomShowToggle')
   function pt(e){const r=dc.getBoundingClientRect();return{x:(e.clientX-r.left)*dc.width/r.width,y:(e.clientY-r.top)*dc.height/r.height}}
   function speedDuration(){const v=+$('drawTrailSpeed').value;return 9000-(v*80)}
   function makeKaleido(src,mode){if(mode==='off')return src;const c=document.createElement('canvas');c.width=src.width*2;c.height=src.height*2;const x=c.getContext('2d'),w=src.width,h=src.height;x.save();x.translate(c.width/2,c.height/2);if(mode==='half'){x.drawImage(src,-w/2,-h/2);x.scale(-1,1);x.drawImage(src,-w/2,-h/2)}else{const count=mode==='four'?4:8;for(let i=0;i<count;i++){x.save();x.rotate(i*Math.PI*2/count);x.scale(i%2?-1:1,1);x.drawImage(src,-w/2,-h/2);x.restore()}}x.restore();return c}
-  function tintSource(src){if(!src)return src;const c=document.createElement('canvas');c.width=src.width;c.height=src.height;const q=c.getContext('2d');q.drawImage(src,0,0);const use=window._drawColourForLaunch?window._drawColourForLaunch(colour):colour;if(use==='rainbow'){const g=q.createLinearGradient(0,0,c.width,0);rainbowStops.forEach((v,i)=>g.addColorStop(i/(rainbowStops.length-1),v));q.globalCompositeOperation='source-in';q.fillStyle=g;q.fillRect(0,0,c.width,c.height);}else{q.globalCompositeOperation='source-in';q.fillStyle=use;q.fillRect(0,0,c.width,c.height);}return c} function launch(src,delay=0){if(!src)return;const tinted=tintSource(src);const count=(+$('drawRepeat').value||1)*(+$('drawCount')?.value||1);for(let n=0;n<count;n++)setTimeout(()=>animate(tinted,n),delay+n*260)}
-  function animate(src,rep){const source=makeKaleido(src,$('drawKaleido').value),w=document.createElement('div'),c=document.createElement('canvas');w.className='projectile drawn';c.width=source.width;c.height=source.height;c.getContext('2d').drawImage(source,0,0);w.append(c);$('objects').append(w);const a=.5,b=.5,dur=speedDuration(),effect=$('drawEffect').value,size=$('drawSizeEffect').value,scaleBase=(+$('drawScale').value||100)/100,t0=performance.now();w.style.width=Math.min(900,source.width)+'px';w.style.height=Math.min(650,source.height)+'px';function f(now){const t=Math.min(1,(now-t0)/dur);let x=W*.5,y=H*.58,sc=scaleBase,rot=0,op=1;const pos=$('drawPosition')?.value||'center';if(pos==='far'){sc*=.35;y=H*.50}else if(pos==='near'){sc*=1.55;y=H*.58}else if(pos==='left'){x=W*.22}else if(pos==='right'){x=W*.78}else if(pos==='top'){y=H*.22}else if(pos==='bottom'){y=H*.82};if(size==='smallLarge'){sc=scaleBase*(.08+1.35*t);op=t>.76?1-(t-.76)/.24:1}else if(size==='largeSmall'){sc=scaleBase*(1.8-1.45*t)}else if(size==='largeSmallLargeFade'){sc=scaleBase*(1.8-1.55*Math.sin(t*Math.PI));op=t>.72?1-(t-.72)/.28:1};if(effect==='wave')x+=Math.sin(t*18)*W*.12;if(effect==='forwardZoom'){x+=Math.sin(t*Math.PI*2)*W*.22*(t);y-=H*.12*t;sc*=.25+1.8*t;rot+=Math.sin(t*Math.PI*3)*18;}if(effect==='orbit'){const q=t*Math.PI*6;x+=Math.cos(q)*W*.12;y+=Math.sin(q)*H*.12;rot=q*30}if(effect==='figure8'){const q=t*Math.PI*4;x+=Math.sin(q)*W*.14;y+=Math.sin(q*2)*H*.10;rot=Math.sin(q)*20}if(effect==='spiral'){const q=t*Math.PI*10,r=W*.13*(1-t);x+=Math.cos(q)*r;y+=Math.sin(q)*r;rot=q*25}if(effect==='float'){y=H-(H*.12+H*.72*t);x+=Math.sin(t*8)*40}if(effect==='swoop'){y-=Math.sin(t*Math.PI)*H*.12;x+=Math.sin(t*Math.PI)*W*.12}if(effect==='comet')w.style.filter='drop-shadow(-90px 0 0 rgba(255,255,255,.14)) drop-shadow(-180px 0 0 rgba(255,255,255,.07))';if(effect==='burst'){sc*=1+.55*t;rot=t*180}w.style.left=x+'px';w.style.top=y+'px';w.style.transform=`translate(-50%,-50%) scale(${sc}) rotate(${rot}deg)`;w.style.opacity=op;if(t<1)requestAnimationFrame(f);else w.remove()}requestAnimationFrame(f)}
+  function tintSource(src,use,now=performance.now(),c=document.createElement('canvas')){if(!src)return src;if(c.width!==src.width||c.height!==src.height){c.width=src.width;c.height=src.height;}const q=c.getContext('2d');q.globalCompositeOperation='source-over';q.clearRect(0,0,c.width,c.height);q.drawImage(src,0,0);const data=strokeData.get(src);
+    if(use==='original'&&(!data||!['rainbow-moving','rainbow-pulse'].includes(data.colour)))return src;
+    if(data && (use==='original'||!/^(#|hsl|rgb)/.test(use))){
+      const mode=use==='original'?data.colour:use==='rainbow-order'?hue(spectrum[launchOrder++%spectrum.length]):use;
+      renderStroke(now,q,mode,data);
+      return c;
+    }
+    if(!/^(#|hsl|rgb)/.test(use)&&use!=='rainbow')return src;if(use==='rainbow'){const g=q.createLinearGradient(0,0,c.width,0);rainbowStops.forEach((v,i)=>g.addColorStop(i/(rainbowStops.length-1),v));q.globalCompositeOperation='source-in';q.fillStyle=g;q.fillRect(0,0,c.width,c.height);}else{q.globalCompositeOperation='source-in';q.fillStyle=use;q.fillRect(0,0,c.width,c.height);}return c} function launch(src,delay=0){if(!src)return;const count=(+$('drawRepeat').value||1)*(+$('drawCount')?.value||1);for(let n=0;n<count;n++)setTimeout(()=>animate(src,n),delay+n*260)}
+  function animate(src,rep){let ink=window.pickDrawingColour('launched');if(ink==='rainbow-order')ink=hue(spectrum[launchOrder++%spectrum.length]);let revision=window.launchColourRevision||0;const scratch=document.createElement('canvas');const kaleido=$('drawKaleido').value;const source=makeKaleido(tintSource(src,ink,performance.now(),scratch),kaleido),w=document.createElement('div'),c=document.createElement('canvas');w.className='projectile drawn';c.width=source.width;c.height=source.height;c.getContext('2d').drawImage(source,0,0);w.append(c);$('objects').append(w);const a=.5,b=.5,dur=speedDuration(),effect=$('drawEffect').value,size=$('drawSizeEffect').value,scaleBase=(+$('drawScale').value||100)/100,t0=performance.now();w.style.width=Math.min(900,source.width)+'px';w.style.height=Math.min(650,source.height)+'px';function f(now){
+    const changed=revision!==(window.launchColourRevision||0);
+    if(changed){revision=window.launchColourRevision;ink=window.pickDrawingColour('launched');if(ink==='rainbow-order')ink=hue(spectrum[launchOrder++%spectrum.length]);}
+    const live=ink==='original'?strokeData.get(src)?.colour:ink;
+    if(changed||live==='rainbow-moving'||live==='rainbow-pulse'){
+      const updated=makeKaleido(tintSource(src,ink,now,scratch),kaleido);
+      const context=c.getContext('2d');context.clearRect(0,0,c.width,c.height);context.drawImage(updated,0,0);
+    }
+    const t=Math.min(1,(now-t0)/dur);let x=W*.5,y=H*.58,sc=scaleBase,rot=0,op=1;const pos=$('drawPosition')?.value||'center';if(pos==='far'){sc*=.35;y=H*.50}else if(pos==='near'){sc*=1.55;y=H*.58}else if(pos==='left'){x=W*.22}else if(pos==='right'){x=W*.78}else if(pos==='top'){y=H*.22}else if(pos==='bottom'){y=H*.82};if(size==='smallLarge'){sc=scaleBase*(.08+1.35*t);op=t>.76?1-(t-.76)/.24:1}else if(size==='largeSmall'){sc=scaleBase*(1.8-1.45*t)}else if(size==='largeSmallLargeFade'){sc=scaleBase*(1.8-1.55*Math.sin(t*Math.PI));op=t>.72?1-(t-.72)/.28:1};if(effect==='wave')x+=Math.sin(t*18)*W*.12;if(effect==='forwardZoom'){x+=Math.sin(t*Math.PI*2)*W*.22*(t);y-=H*.12*t;sc*=.25+1.8*t;rot+=Math.sin(t*Math.PI*3)*18;}if(effect==='orbit'){const q=t*Math.PI*6;x+=Math.cos(q)*W*.12;y+=Math.sin(q)*H*.12;rot=q*30}if(effect==='figure8'){const q=t*Math.PI*4;x+=Math.sin(q)*W*.14;y+=Math.sin(q*2)*H*.10;rot=Math.sin(q)*20}if(effect==='spiral'){const q=t*Math.PI*10,r=W*.13*(1-t);x+=Math.cos(q)*r;y+=Math.sin(q)*r;rot=q*25}if(effect==='float'){y=H-(H*.12+H*.72*t);x+=Math.sin(t*8)*40}if(effect==='swoop'){y-=Math.sin(t*Math.PI)*H*.12;x+=Math.sin(t*Math.PI)*W*.12}if(effect==='comet')w.style.filter='drop-shadow(-90px 0 0 rgba(255,255,255,.14)) drop-shadow(-180px 0 0 rgba(255,255,255,.07))';if(effect==='burst'){sc*=1+.55*t;rot=t*180}w.style.left=x+'px';w.style.top=y+'px';w.style.transform=`translate(-50%,-50%) scale(${sc}) rotate(${rot}deg)`;w.style.opacity=op;if(t<1)requestAnimationFrame(f);else w.remove()}requestAnimationFrame(f)}
   function randomLine(){const c=document.createElement('canvas');c.width=dc.width;c.height=dc.height;const x=c.getContext('2d');x.strokeStyle=colour==='rainbow'?`hsl(${Math.random()*360},100%,65%)`:colour;x.lineWidth=width;x.lineCap='round';x.beginPath();let px=20,py=200;x.moveTo(px,py);for(let i=0;i<100;i++){px+=5;py+=Math.sin(i*.47)*10+(Math.random()-.5)*18;x.lineTo(px,py)}x.stroke();last=c;launch(c)}
   function save(n){localStorage.setItem('draw-image-'+n,snap().toDataURL());loaded=snap()}
   function load(n){const d=localStorage.getItem('draw-image-'+n);if(!d)return;const im=new Image();im.onload=()=>{clear();ctx.drawImage(im,0,0);loaded=snap();last=loaded};im.src=d}
-  function setOtto(on){otto=on;if(ottoTimer){clearInterval(ottoTimer);ottoTimer=null}if(on){const tick=()=>{const source=last||snap();if(source){if($('ottoRandomEffects')?.checked){const vals=['flow','wave','orbit','figure8','spiral','float','swoop','comet','burst'];$('drawEffect').value=vals[Math.floor(Math.random()*vals.length)]}launch(source)}};tick();ottoTimer=setInterval(tick,Math.max(550,speedDuration()/2));$('drawOtto').classList.add('active');$('drawOtto').textContent='OTTO ON'}else{$('drawOtto').classList.remove('active');$('drawOtto').textContent='OTTO'}}
+  function setOtto(on){otto=on;if(ottoTimer){clearInterval(ottoTimer);ottoTimer=null}if(on){const tick=()=>{const source=last||snap();if(source){if($('ottoRandomEffects')?.checked){const vals=['flow','wave','orbit','figure8','spiral','float','swoop','comet','burst'];$('drawEffect').value=vals[Math.floor(Math.random()*vals.length)]}launch(source)}};tick();ottoTimer=setInterval(tick,Math.max(550,speedDuration()/2));$('drawOtto').classList.add('active');$('drawOtto').textContent='Auto launch on'}else{$('drawOtto').classList.remove('active');$('drawOtto').textContent='Auto launch'}}
   $('drawOtto').onclick=()=>setOtto(!otto);
-  dc.addEventListener('pointerdown',e=>{saveState();drawing=true;ctx.beginPath();const p=pt(e);ctx.moveTo(p.x,p.y);dc.setPointerCapture(e.pointerId)});
-  dc.addEventListener('pointermove',e=>{if(!drawing)return;const p=pt(e);ctx.strokeStyle=colour==='rainbow'?`hsl(${performance.now()/5%360},100%,65%)`:colour;ctx.lineWidth=width;ctx.lineCap='round';ctx.lineJoin='round';ctx.shadowColor=ctx.strokeStyle;ctx.shadowBlur=+$('drawGlow').value||0;ctx.lineTo(p.x,p.y);ctx.stroke()});
-  dc.addEventListener('pointerup',e=>{if(!drawing)return;drawing=false;last=snap();clear();launch(last);});
+  const strokeData=new WeakMap();
+  const spectrum = [315, 360, 390, 410, 420, 450, 480, 535, 570, 620, 650, 675];
+  let launchOrder=0, strokeIndex = 0, points = [], distance = 0, frame = 0, base, penWidth, pointer;
+  let randomBands = [];
+  const hue = h => 'hsl(' + h + ',100%,55%)';
+  function scoop(index,randomBands) {
+    while (randomBands.length <= index) {
+      const start = Math.random() * 360;
+      const neutral = ['#6e422a', '#000000', '#ffffff'][Math.floor(Math.random()*3)];
+      randomBands.push(hue(start), hue(start+22), hue(start+44), neutral);
+    }
+    return randomBands[index];
+  }
+  function path(points,ctx) {
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    for (const p of points.slice(1)) ctx.lineTo(p.x,p.y);
+  }
+  function ribbon(a,b,fill,from,to,ctx,penWidth) {
+    const length=Math.hypot(b.x-a.x,b.y-a.y);
+    if (!length) return;
+    const nx=-(b.y-a.y)/length*penWidth, ny=(b.x-a.x)/length*penWidth;
+    ctx.fillStyle=fill;
+    ctx.beginPath();
+    ctx.moveTo(a.x+nx*(from-.5),a.y+ny*(from-.5));
+    ctx.lineTo(b.x+nx*(from-.5),b.y+ny*(from-.5));
+    ctx.lineTo(b.x+nx*(to-.5),b.y+ny*(to-.5));
+    ctx.lineTo(a.x+nx*(to-.5),a.y+ny*(to-.5));
+    ctx.fill();
+  }
+  function renderStroke(now, ctx=dc.getContext('2d'), inkMode=colour, data={points,penWidth,base,bands:randomBands}) {
+    const {points,penWidth,base}=data;
+    const colour=inkMode;
+    ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+    if(base)ctx.drawImage(base,0,0,ctx.canvas.width,ctx.canvas.height);
+    ctx.save();
+    ctx.lineWidth=penWidth;
+    ctx.lineCap=ctx.lineJoin='round';
+    if (['rainbow','rainbow-scoop','checker','stripes','rainbow-moving'].includes(colour)) {
+      const cell = colour==='checker' ? penWidth/2 : colour==='rainbow-scoop' ? Math.max(18,penWidth*4) : 16;
+      for(let i=1;i<points.length;i++){
+        const a=points[i-1], b=points[i], length=b.d-a.d;
+        for(let start=a.d;start<b.d-1e-6;){
+          const band=Math.floor((start+1e-6)/cell), end=Math.min(b.d,(band+1)*cell);
+          const at=d=>({x:a.x+(b.x-a.x)*(d-a.d)/length,y:a.y+(b.y-a.y)*(d-a.d)/length});
+          const p=at(start), q=at(end);
+          if(colour==='checker'){
+            ribbon(p,q,band%2?'#fff':'#000',0,.5,ctx,penWidth);
+            ribbon(p,q,band%2?'#000':'#fff',.5,1,ctx,penWidth);
+          }else{
+            let ink;
+            if(colour==='rainbow'||colour==='stripes'||colour==='rainbow-moving'){
+              const phase=colour==='stripes'?315:colour==='rainbow-moving'?-now*.19:0;
+              const rate=colour==='stripes'?.36:1.3;
+              ink=ctx.createLinearGradient(p.x,p.y,q.x,q.y);
+              ink.addColorStop(0,hue(phase+start*rate));ink.addColorStop(1,hue(phase+end*rate));
+            }else ink=scoop(band,data.bands);
+            ctx.strokeStyle=ink;
+            path([p,q],ctx);ctx.stroke();
+          }
+          start=end;
+        }
+      }
+    }else{
+      const ink=colour==='rainbow-pulse'?hue(315+(now/9)%360):colour;
+      ctx.strokeStyle=ctx.shadowColor=ink;
+      ctx.shadowBlur=+$('drawGlow').value||0;
+      path(points,ctx);ctx.stroke();
+    }
+    ctx.restore();
+  }
+  function animateStroke(now){
+    renderStroke(now);
+    frame=requestAnimationFrame(animateStroke);
+  }
+  function addPoint(event){
+    const p=pt(event), previous=points.at(-1);
+    const length=Math.hypot(p.x-previous.x,p.y-previous.y);
+    if(!length)return;
+    distance+=length;
+    points.push({...p,d:distance});
+  }
+  dc.addEventListener('pointerdown',e=>{
+    if(e.button!==0||drawing)return;
+    saveState();
+    base=snap();drawing=true;pointer=e.pointerId;distance=0;randomBands=[];
+    penWidth=+dc.dataset.width||width;
+    points=[{...pt(e),d:0}];
+    colour=window.pickDrawingColour('drawn');
+    if(colour==='rainbow-order')colour=hue(spectrum[strokeIndex++%spectrum.length]);
+    dc.setPointerCapture(pointer);
+    if(['rainbow-pulse','rainbow-moving'].includes(colour))frame=requestAnimationFrame(animateStroke);
+  });
+  dc.addEventListener('pointermove',e=>{
+    if(!drawing||pointer!==e.pointerId)return;
+    const samples=e.getCoalescedEvents?.();
+    (samples?.length?samples:[e]).forEach(addPoint);
+    if(!['rainbow-pulse','rainbow-moving'].includes(colour))renderStroke(performance.now());
+  });
+  dc.addEventListener('pointerup',e=>{
+    if(!drawing||pointer!==e.pointerId)return;
+    addPoint(e);cancelAnimationFrame(frame);drawing=false;
+    renderStroke(performance.now());
+    last=snap();strokeData.set(last,{points,penWidth,base:null,bands:randomBands,colour});clear();launch(last);
+  });
+  dc.addEventListener('pointercancel',e=>{
+    if(!drawing||pointer!==e.pointerId)return;
+    cancelAnimationFrame(frame);drawing=false;clear();ctx.drawImage(base,0,0);
+  });
   $('drawClear').onclick=()=>{clear();last=null};$('drawSaveImage').onclick=()=>{const n=prompt('Save drawing as slot 1-12:','1');if(n)save(Math.max(1,Math.min(12,+n)))};$('drawLoadImage').onclick=()=>{const n=prompt('Load drawing slot 1-12:','1');if(n)load(Math.max(1,Math.min(12,+n)))};$('drawLaunch').onclick=()=>{const m=$('drawMemory').value;m==='random'?randomLine():m==='loaded'?launch(loaded):launch(last||snap())};
-  window.getUserDrawingCanvas=()=>last?snap():null;
+  window.getUserDrawingCanvas=()=>last;
   window.clearDrawLab=()=>{clear();last=null;loaded=null;undo=[];redo=[];};
   window.launchUserDrawingShape=function(src,index=0,beat=false){if(!src)return;const c=document.createElement('canvas');c.width=src.width;c.height=src.height;c.getContext('2d').drawImage(src,0,0);const w=document.createElement('div');w.className='projectile drawn';w.append(c);$('objects').append(w);const t0=performance.now(),dur=beat?1600:3600;function f(now){const t=Math.min(1,(now-t0)/dur),beatPulse=beat&&audio&&!audio.paused?1+.18*Math.max(0,Math.sin((audio.currentTime||0)*Math.PI*4)):1,x=W*.5+Math.sin(t*Math.PI*2+index)*W*.18,y=H*.58-H*.38*t,sc=(.45+1.25*t)*beatPulse;w.style.left=x+'px';w.style.top=y+'px';w.style.transform=`translate(-50%,-50%) scale(${sc}) rotate(${Math.sin(t*Math.PI*2)*12}deg)`;w.style.opacity=t>.82?1-(t-.82)/.18:1;if(t<1)requestAnimationFrame(f);else w.remove()}requestAnimationFrame(f)};
-  function setFull(on){const keep=snap();panel.classList.toggle('expanded',on);if(on){panel.classList.add('open');tools.classList.add('open');dc.width=innerWidth;dc.height=innerHeight;ctx.drawImage(keep,0,0,innerWidth,innerHeight);$('drawExpand').textContent='FULL SCREEN OFF'}else{dc.width=560;dc.height=400;ctx.drawImage(keep,0,0,560,400);$('drawExpand').textContent='FULL';}}
-  $('drawExpand').onclick=()=>setFull(!panel.classList.contains('expanded'));$('drawClose').onclick=()=>{tools.classList.remove('open');if(!panel.classList.contains('expanded'))panel.classList.remove('open')};
-  const db=$('drawBtn').cloneNode(true);$('drawBtn').replaceWith(db);db.onclick=e=>{e.stopPropagation();const o=tools.classList.contains('open');if(panel.classList.contains('expanded')){tools.classList.toggle('open',!o);panel.classList.add('open')}else{panel.classList.toggle('open',!o);tools.classList.toggle('open',!o);if(!o){panel.style.zIndex=++panelZ;tools.style.zIndex=++panelZ}}};
+  function resizeDrawingSurface() {
+    const previous = snap();
+    dc.width = innerWidth;
+    dc.height = innerHeight;
+    ctx.drawImage(previous, 0, 0, dc.width, dc.height);
+  }
+  panel.classList.add('open', 'expanded');
+  resizeDrawingSurface();
+  window.addEventListener('resize', resizeDrawingSurface);
+  $('drawClose').onclick = () => tools.classList.remove('open');
+  const db = $('drawBtn').cloneNode(true);
+  $('drawBtn').replaceWith(db);
+  db.onclick = e => {
+    e.stopPropagation();
+    if (tools.classList.toggle('open')) {
+      tools.style.zIndex = ++panelZ;
+      requestAnimationFrame(() => clamp(tools));
+    }
+  };
   $('drawScale').oninput=e=>$('drawScaleValue').textContent=e.target.value+'%';$('drawTrailSpeed').oninput=e=>$('drawTrailSpeedValue').textContent=+e.target.value<25?'Slow':+e.target.value<60?'Medium':+e.target.value<85?'Fast':'Fastest';
   try{makeDraggable(tools,h)}catch(e){}
   tools.addEventListener('wheel',e=>{e.stopPropagation();}, {passive:true});
@@ -978,7 +1149,7 @@ $('repeatSong').checked=false;$('repeatAll').checked=false;$('randomShowToggle')
  const $=id=>document.getElementById(id);
  // Always keep typing focus at the bottom; clicking a menu never changes the typing target.
  function focusCursor(){const t=$('typeInput');if(!t||t.readOnly)return;t.focus({preventScroll:true});const n=t.value.length;t.setSelectionRange(n,n)}
- document.addEventListener('keydown',e=>{if($('typeInput')?.readOnly)return;if(document.activeElement!==$('typeInput')&&!e.ctrlKey&&!e.altKey&&!e.metaKey&&e.key.length===1){focusCursor();}} ,true);
+ document.addEventListener('keydown',e=>{if($('typeInput')?.readOnly||e.target.closest?.('textarea, input:not([type=checkbox]):not([type=range]):not([type=radio]), [contenteditable]'))return;if(document.activeElement!==$('typeInput')&&!e.ctrlKey&&!e.altKey&&!e.metaKey&&e.key.length===1){focusCursor();}} ,true);
  // Text menu close.
  $('textClose')?.addEventListener('click',()=>{$('textPanel').classList.remove('open')});
  // Remove the old last-word cloud engine from any launch.
@@ -1022,7 +1193,7 @@ $('repeatSong').checked=false;$('repeatAll').checked=false;$('randomShowToggle')
  loadTextPrefs();$('quietPlease').dataset.quiet=$('quietPlease').checked?'1':'0';textControls.forEach(id=>$(id)?.addEventListener('change',saveTextPrefs));
  $('dropTextToggle').onchange=saveTextPrefs; let dropTimer=null,lastTypedValue=''; $('typeInput').addEventListener('input',()=>{if(!$('dropTextToggle').checked||$('typeInput').readOnly)return;clearTimeout(dropTimer);lastTypedValue=$('typeInput').value;dropTimer=setTimeout(()=>{const v=$('typeInput').value.trim();if(v&&v===lastTypedValue){launchConfigured(v,getTextConfig('field'),'field');$('typeInput').value='';}},1000)});
  // Defaults requested, applied only if there are no saved preferences.
- if(!localStorage.getItem('shakeTextPrefs')){const defs={dropTextToggle:false,cursorColour:'#7b4dff',cursorSize:'24',cursorStyle:'translucent',cursorFont:'Chomsky',fieldColour:'rainbow',fieldSize:'48',fieldStyle:'translucent',fieldAlign:'center',fieldFont:'Chomsky',fieldGlow:'15',fieldLinger:'5500',fieldRepeat:'9',fieldFade:'50',fieldEffect:'Rise & Fade',subColour:'#ffffff',subSize:'14',subFont:'Dune Rise',subGlow:'None',subEffect:'Into Distance',subRepeat:'3',subSpeed:'Slow',speakToggle:false,speakVoice:'The Fancy Woman',speakRepeat:'1',speakExtra:'none',wotToggle:false,shhNow:false,quietPlease:false};Object.entries(defs).forEach(([id,v])=>{const e=$(id);if(e){if(e.type==='checkbox')e.checked=v;else e.value=v}});saveTextPrefs();}
+ if(!localStorage.getItem('shakeTextPrefs')){const defs={dropTextToggle:false,cursorColour:'#7b4dff',cursorSize:'24',cursorStyle:'translucent',cursorFont:'Chomsky',fieldColour:'rainbow',fieldSize:'48',fieldStyle:'translucent',fieldAlign:'center',fieldFont:'Chomsky',fieldGlow:'15',fieldLinger:'5500',fieldRepeat:'9',fieldFade:'50',fieldEffect:'Rise & Fade',subColour:'#ffffff',subSize:'14',subFont:'Chomsky',subGlow:'None',subEffect:'Into Distance',subRepeat:'3',subSpeed:'Slow',speakToggle:false,speakVoice:'The Fancy Woman',speakRepeat:'1',speakExtra:'none',wotToggle:false,shhNow:false,quietPlease:false};Object.entries(defs).forEach(([id,v])=>{const e=$(id);if(e){if(e.type==='checkbox')e.checked=v;else e.value=v}});saveTextPrefs();}
 
  const cursorApply=()=>{const t=$('typeInput');if(!t)return;t.style.color=$('cursorColour').value;t.style.fontSize=(+$('cursorSize').value||24)+'px';t.style.fontFamily=`"${$('cursorFont').value}",Georgia,serif`;t.style.opacity=$('cursorStyle').value==='translucent'?.72:1;t.style.webkitTextStroke=$('cursorStyle').value==='outlined'?'1px '+$('cursorColour').value:'0';};
  ['cursorColour','cursorSize','cursorStyle','cursorFont'].forEach(id=>$(id)?.addEventListener('change',cursorApply));cursorApply();
@@ -1043,7 +1214,7 @@ $('repeatSong').checked=false;$('repeatAll').checked=false;$('randomShowToggle')
  const radioPrefs=['fadeInSeconds','fadeOutSeconds','randomShowToggle','repeatSong','repeatAll','useMyDrawings','drawToBeat','randomColourMode','randomThickness','randomLength','randomSpeed','randomTransparent','randomGlow','randomLineCount','randomDensity','randomEffect'];
  function saveRadioPrefs(){const o={};radioPrefs.forEach(id=>{const e=$(id);if(e)o[id]=e.type==='checkbox'?e.checked:e.value});localStorage.setItem('radioPrefs',JSON.stringify(o))}
  function loadRadioPrefs(){let o={};try{o=JSON.parse(localStorage.getItem('radioPrefs')||'{}')}catch{};radioPrefs.forEach(id=>{const e=$(id);if(!e||o[id]===undefined)return;if(e.type==='checkbox')e.checked=!!o[id];else e.value=o[id]});}
- loadRadioPrefs();radioPrefs.forEach(id=>$(id)?.addEventListener('change',saveRadioPrefs));
+ loadRadioPrefs();$('repeatSong').checked=false;$('repeatAll').checked=true;radioPrefs.forEach(id=>$(id)?.addEventListener('change',saveRadioPrefs));
  $('randomShowToggle')?.addEventListener('change',saveRadioPrefs); 
  // Planet colour is only in Starfield: no duplicate elsewhere.
  const originalFocus=window.focusTyping;window.focusTyping=function(){if($('typeInput')?.readOnly)return;focusCursor()};
@@ -1092,22 +1263,31 @@ $('repeatSong').checked=false;$('repeatAll').checked=false;$('randomShowToggle')
     };
   }
 
+  function wheelSelect(sel){
+    sel.addEventListener('wheel',event=>{
+      if(!event.deltaY)return;
+      event.preventDefault();
+      const next=Math.max(0,Math.min(sel.length-1,sel.selectedIndex+Math.sign(event.deltaY)));
+      if(next===sel.selectedIndex)return;
+      sel.selectedIndex=next;
+      sel.dispatchEvent(new Event('change',{bubbles:true}));
+    },{passive:false});
+  }
   /* ---------- Shake/Text: full colour lists, fonts, visibility ---------- */
   const colours=palette.map(x=>x[0]);
-  let drawCycleIndex=0,drawComboRuntime=[];window._drawNextColour='#ffffff';window._drawColourForLaunch=function(fallback){const cb=$('drawColourCycle');if(cb?.checked&&drawComboRuntime.length){const c=drawComboRuntime[drawCycleIndex%drawComboRuntime.length];drawCycleIndex++;return c}return window._drawNextColour||fallback};
 
   ['cursorColour','fieldColour','subColour'].forEach(id=>{
     const sel=$(id);if(!sel)return;
     const wanted=sel.value;
     sel.innerHTML='';
     palette.forEach(([v,n])=>{const o=document.createElement('option');o.value=v;o.textContent=n;sel.appendChild(o)});
-    let r=document.createElement('option');r.value='rainbow';r.textContent='RAINBOW';sel.appendChild(r);
+    [['#ffffff','White'],['#000000','Black'],['rainbow','Rainbow · moving'],['rainbow-pulse','Rainbow · solid cycle'],['rainbow-static','Rainbow · smooth gradient']].forEach(([value,label])=>sel.add(new Option(label,value)));
     sel.value=(wanted&&[...sel.options].some(o=>o.value===wanted))?wanted:(id==='cursorColour'||id==='subColour'?'#ffffff':'#ffffff');
   });
   ['cursorFont','fieldFont','subFont'].forEach(id=>{
     const sel=$(id);if(!sel)return;
     const vals=['Chomsky','Dune Rise','Momt','Impact','Trebuchet MS','Wingdings','Wingdings 2','Georgia'];
-    const keep=sel.value;sel.innerHTML='';vals.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;sel.appendChild(o)});sel.value=vals.includes(keep)?keep:(id==='subFont'?'Dune Rise':'Chomsky');
+    const keep=id==='subFont'?'Chomsky':sel.value;sel.innerHTML='';vals.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;sel.appendChild(o)});sel.value=vals.includes(keep)?keep:'Chomsky';
   });
   window.characterFortunes={
     "Captain O'Pirate":["A parrot will soon misplace something you were certain you never owned.","Beware a cargo crate labelled with your own handwriting.","A mysterious island will offer you excellent scenery and absolutely no stationery.","Your next adventure contains one rope, two opinions, and a bird with legal objections.","A ship will arrive precisely when you have given up expecting ships.","Someone will call you love while handing you an entirely unhelpful map.","Your rhymies are safe, but your driftwood is not.","A parrot will know more about Larry than you do and refuse to explain.","Today favours improbable rescues by cargo vessels.","You will discover that a rock can be a destination, a warning, or both.","A maritime rumour will prove true in the least convenient possible manner.","Your hat will survive an incident that your dignity will not.","A crate will bob past you carrying precisely the wrong answer.","The tide is favourable; your judgement remains under review.","Someone will mistake your autobiography for a shipping manifest.","A strange bird will arrive with news from somewhere it has never visited.","You will be rescued before you have finished composing the complaint.","A cargo ship will save the day and immediately make the situation stranger.","The parrot has an opinion about your future and is refusing to share it.","A rock ahead is either an obstacle or an opportunity; the parrot recommends neither.","Wicked good luck approaches, though it may be wearing a captain's hat."],
@@ -1116,7 +1296,7 @@ $('repeatSong').checked=false;$('repeatAll').checked=false;$('randomShowToggle')
     "Lar Report":["Revenue remains wicked good despite the inexplicable cargo.","The outlook is wicked good, although the rocks remain financially uncooperative.","Wicked good momentum detected in a direction nobody authorised.","The cargo situation is wicked good, pending clarification of what cargo means.","A wicked good rumour has entered the reporting environment.","Wicked good growth is forecast in an entirely inappropriate category.","The latest numbers are wicked good and the methodology is not.","Wicked good activity has been observed near the river.","The Larry index is wicked good, possibly because the index has become confused.","Wicked good prospects detected; sensible management remains unavailable.","The shipping report is wicked good and contains no useful shipping information.","A wicked good development has occurred in a department nobody remembers creating.","Wicked good conditions continue despite several obvious contradictions.","The market is wicked good, the cargo is peculiar, and the rocks are unchanged.","Wicked good confidence has been recorded at statistically suspicious levels.","The report remains wicked good and increasingly difficult to justify.","Wicked good results have appeared where results were not requested.","The Larry forecast is wicked good with an unusually high probability of nonsense.","Wicked good activity is expected to continue until somebody asks why.","The operational picture is wicked good, if one ignores the entire operational picture.","Final assessment: wicked good, astonishingly wicked good, and not remotely conclusive."]
   };
   if($('cursorColour'))$('cursorColour').value='#ffffff';
-  if($('fieldColour'))$('fieldColour').value='#ffffff';
+  
   if($('subColour'))$('subColour').value='#ffffff';
   if($('cursorSize'))$('cursorSize').value='24';
   if($('fieldSize'))$('fieldSize').value='48';
@@ -1132,34 +1312,75 @@ $('repeatSong').checked=false;$('repeatAll').checked=false;$('randomShowToggle')
     $('voiceVolume').value=localStorage.getItem('shakeVoiceVolume')||'100';if(vv)vv.textContent=$('voiceVolume').value;
     $('voiceVolume').oninput=()=>{if(vv)vv.textContent=$('voiceVolume').value;localStorage.setItem('shakeVoiceVolume',$('voiceVolume').value)};
   }
-  function cursorApply(){const t=$('typeInput');if(!t)return;t.style.color=$('cursorColour')?.value||'#fff';t.style.fontSize=(+$('cursorSize')?.value||24)+'px';t.style.fontFamily=`"${$('cursorFont')?.value||'Chomsky'}",Georgia,serif`;t.style.opacity=$('cursorVisible')?.checked===false?'0':($('cursorStyle')?.value==='translucent'?.72:1);t.style.webkitTextStroke=$('cursorStyle')?.value==='outlined'?'1px '+($('cursorColour')?.value||'#fff'):'0';}
-  ['cursorColour','cursorSize','cursorStyle','cursorFont','cursorVisible'].forEach(id=>$(id)?.addEventListener('change',cursorApply));cursorApply();
+  const gradient='linear-gradient(90deg,#ff3030,#ff8a00,#ffe600,#44ff66,#20d9ff,#4888ff,#7b4dff,#ff78c8,#ff3030)';
+  function paintText(node, value, outline=false){
+    const gradientMode=value==='rainbow'||value==='rainbow-static';
+    const pulse=value==='rainbow-pulse';
+    node.style.backgroundImage=gradientMode?gradient:'none';
+    node.style.backgroundSize=value==='rainbow'?'300% 100%':'100% 100%';
+    node.style.backgroundClip=gradientMode?'text':'';
+    node.style.webkitBackgroundClip=gradientMode?'text':'';
+    node.style.color=gradientMode?'transparent':pulse?'#ff00aa':outline?'transparent':value;
+    node.style.webkitTextStroke=outline&&!gradientMode&&!pulse?'1px '+value:'0';
+    node.style.animation=value==='rainbow'?'rainbowSweep 5s linear infinite':pulse?'solidRainbow 4s linear infinite':'none';
+  }
+  function liveTextColour(node,id,outline=false){
+    node.dataset.liveColourControl=id;
+    node.dataset.outline=String(outline);
+    paintText(node,$(id).value,outline);
+  }
+  ['fieldColour','subColour'].forEach(id=>$(id).addEventListener('change',()=>{
+    document.querySelectorAll('[data-live-colour-control="'+id+'"]').forEach(node=>paintText(node,$(id).value,node.dataset.outline==='true'));
+  }));
+  function cursorApply(){const t=$('typeInput');if(!t)return;t.style.color=$('cursorColour')?.value||'#fff';t.style.fontSize=(+$('cursorSize')?.value||24)+'px';t.style.fontFamily=`"${$('cursorFont')?.value||'Chomsky'}",Georgia,serif`;t.style.opacity=$('cursorVisible')?.checked===false?'0':($('cursorStyle')?.value==='translucent'?.72:1);t.style.webkitTextStroke=$('cursorStyle')?.value==='outlined'?'1px '+($('cursorColour')?.value||'#fff'):'0';t.style.textAlign=$('cursorAlign').value;paintText(t,$('cursorColour').value,$('cursorStyle')?.value==='outlined');}
+  ['cursorColour','cursorSize','cursorStyle','cursorFont','cursorVisible','cursorAlign'].forEach(id=>$(id)?.addEventListener('change',cursorApply));cursorApply();
   $('fieldVisible')?.addEventListener('change',()=>{});$('subVisible')?.addEventListener('change',()=>{});
 
   /* ---------- text sending: WAIT / AS YOU GO / DROP TEXT ---------- */
   let dropTimer=null,dropLast='';
   function sendField(text){
-    if(!text||$('fieldVisible')?.checked===false)return;
-    const cfg={colour:$('fieldColour')?.value||'#fff',size:+$('fieldSize')?.value||48,font:$('fieldFont')?.value||'Chomsky',style:$('fieldStyle')?.value||'translucent',glow:+$('fieldGlow')?.value||0,align:$('fieldAlign')?.value||'center',fade:+$('fieldFade')?.value||50,linger:+$('fieldLinger')?.value||5500,effect:$('fieldEffect')?.value||'Rise & Fade'};
+    if(!text)return;
+    const cfg={colour:$('fieldColour')?.value||'#fff',size:+$('fieldSize')?.value||48,font:$('fieldFont')?.value||'Chomsky',style:$('fieldStyle')?.value||'translucent',glow:+$('fieldGlow')?.value||0,align:$('fieldAlign')?.value||'center',fade:+$('fieldFade').value,linger:+$('fieldLinger')?.value||5500,effect:$('fieldEffect')?.value||'Rise & Fade'};
+    function showField(){
     const wrap=document.createElement('div');wrap.className='projectile shakeFieldLive';wrap.style.left='50%';wrap.style.top='54%';wrap.style.width='min(86vw,1200px)';wrap.style.height='auto';wrap.style.textAlign='center';wrap.style.pointerEvents='none';
-    const node=document.createElement('div');node.textContent=cfg.align==='center'?text:text.trim().split(/\s+/).join('\n');node.style.font=`${cfg.size}px "${cfg.font}",Georgia,serif`;node.style.lineHeight='1.05';node.style.textAlign=cfg.align;node.style.whiteSpace=cfg.align==='center'?'pre-wrap':'pre-line';node.style.display='inline-block';node.style.maxWidth='82vw';node.style.opacity=cfg.style==='translucent'?.72:1;if(cfg.style==='outlined'){node.style.webkitTextStroke='1px '+cfg.colour;node.style.color='transparent'}else{node.style.color=cfg.colour==='rainbow'?'#fff':cfg.colour}node.style.textShadow=cfg.glow?`0 0 ${cfg.glow}px rgba(255,255,255,.7)`:'none';if(cfg.colour==='rainbow'){node.style.background='linear-gradient(90deg,#ff3030,#ff8a00,#ffe600,#44ff66,#20d9ff,#4888ff,#7b4dff,#ff78c8,#ff3030)';node.style.backgroundSize='300% 100%';node.style.backgroundClip='text';node.style.webkitBackgroundClip='text';node.style.color='transparent';node.style.animation='rainbowSweep 5s linear infinite'}
-    wrap.appendChild(node);$('objects')?.appendChild(wrap);const t0=performance.now(),dur=Math.max(1200,cfg.linger);function f(now){const t=Math.min(1,(now-t0)/dur);let y=H*.54-H*.18*t,sc=1-.25*t,x=W*.5;if(cfg.effect==='Wave')x+=Math.sin(t*16)*70;if(cfg.effect==='Orbit'){const q=t*Math.PI*5;x+=Math.cos(q)*80;y+=Math.sin(q)*45}if(cfg.fade)wrap.style.opacity=t>.55?Math.max(0,1-(t-.55)/.45):1;wrap.style.transform=`translate(-50%,-50%) translate(${x-W*.5}px,${y-H*.54}px) scale(${sc})`;if(t<1)requestAnimationFrame(f);else wrap.remove()}requestAnimationFrame(f);
-    if($('rimeToggle')?.checked){const w=text.trim().split(/\s+/).pop()?.replace(/[^\w'-]/g,'');if(w&&window.createWordCloud)window.createWordCloud(w,cfg.colour,cfg.font)}
-    if($('subVisible')?.checked)sendSubtitle(text);
+    const node=document.createElement('div');node.textContent=cfg.align==='center'?text:text.trim().split(/\s+/).join('\n');node.style.font=`${cfg.size}px "${cfg.font}",Georgia,serif`;node.style.lineHeight='1.05';node.style.textAlign=cfg.align;node.style.whiteSpace=cfg.align==='center'?'pre-wrap':'pre-line';node.style.display='inline-block';node.style.maxWidth='82vw';node.style.opacity=cfg.style==='translucent'?.72:1;node.style.textShadow=cfg.glow?`0 0 ${cfg.glow}px rgba(255,255,255,.7)`:'none';liveTextColour(node,'fieldColour',cfg.style==='outlined');
+    wrap.appendChild(node);if($('fieldVisible').checked){$('objects').appendChild(wrap);const t0=performance.now(),dur=Math.max(1200,cfg.linger);function f(now){const t=Math.min(1,(now-t0)/dur);let y=H*.54-H*.18*t,sc=1-.25*t,x=W*.5;if(cfg.effect==='Wave')x+=Math.sin(t*16)*70;if(cfg.effect==='Orbit'){const q=t*Math.PI*5;x+=Math.cos(q)*80;y+=Math.sin(q)*45}const fade=cfg.fade/100;if(fade&&t>1-fade)wrap.style.opacity=(1-t)/fade;wrap.style.transform=`translate(-50%,-50%) translate(${x-W*.5}px,${y-H*.54}px) scale(${sc})`;if(t<1)requestAnimationFrame(f);else wrap.remove()}requestAnimationFrame(f);}
+    }
+    if($('fieldVisible').checked){showField();for(let i=1;i<+$('fieldRepeat').value;i++)scheduleVisual(showField,i*state.repeatSpeed);}
+    if($('rimeToggle')?.checked){const w=text.trim().split(/\s+/).pop()?.replace(/[^\w'-]/g,'');if(w){if($('rimeCloud').checked)createWordCloud(w,cfg.colour,cfg.font);else{const last=document.createElement('div');last.className='projectile';last.style.top='20%';last.style.font=cfg.size+'px '+JSON.stringify(cfg.font);last.textContent=w;liveTextColour(last,'fieldColour');$('objects').appendChild(last);setTimeout(()=>last.remove(),cfg.linger);}}}
+    if($('subVisible')?.checked){for(let i=0;i<+$('subRepeat').value;i++)scheduleVisual(()=>{if($('subVisible').checked)sendSubtitle(text)},i*state.repeatSpeed);}
   }
   function sendCursor(text){if(!text)return;sendField(text);}
   function sendSubtitle(text){
     const wrap=document.createElement('div');wrap.className='projectile shakeSubtitle';wrap.style.left='50%';wrap.style.top='calc(100% - 62px)';wrap.style.width='86vw';wrap.style.textAlign='center';wrap.style.pointerEvents='none';
-    const n=document.createElement('div');n.textContent=text;n.style.font=`${+$('subSize')?.value||14}px "${$('subFont')?.value||'Dune Rise'}",Georgia,serif`;n.style.color=$('subColour')?.value||'#fff';n.style.textAlign='center';n.style.whiteSpace='nowrap';n.style.textShadow=(+$('subGlow')?.value||0)?`0 0 ${+$('subGlow').value}px rgba(255,255,255,.7)`:'none';wrap.appendChild(n);$('objects')?.appendChild(wrap);
-    const effect=$('subEffect')?.value||'Into Distance',speed=$('subSpeed')?.value||'Slow',dur=speed==='Slow'?8000:speed==='Medium'?4500:2600,t0=performance.now();function f(now){const t=Math.min(1,(now-t0)/dur);let y=H-62,sc=1,op=1;if(effect==='Into Distance'){y=H-62-H*.10*t;sc=1-.55*t}else if(effect==='Rise & Fade'){y=H-62-H*.20*t;sc=1-.08*t}else if(effect==='Grow Up'){y=H-62-H*.18*t;sc=1+.55*t}else if(effect==='Shrink Up'){y=H-62-H*.16*t;sc=1-.6*t}else if(effect==='Sweep Up'){y=H-62-H*.28*t;sc=1+.12*t}if(t>.72)op=(1-t)/.28;wrap.style.transform=`translate(-50%,-50%) translateY(${y-(H-62)}px) scale(${sc})`;wrap.style.opacity=op;if(t<1)requestAnimationFrame(f);else wrap.remove()}requestAnimationFrame(f);
+    const n=document.createElement('div');n.textContent=text;n.style.font=`${+$('subSize')?.value||14}px "${$('subFont')?.value||'Chomsky'}",Georgia,serif`;liveTextColour(n,'subColour',$('subStyle').value==='outlined');n.style.textAlign=$('subAlign').value;n.style.opacity=$('subStyle').value==='translucent'?'.72':'1';n.style.whiteSpace='pre-wrap';n.style.textShadow=(+$('subGlow')?.value||0)?`0 0 ${+$('subGlow').value}px rgba(255,255,255,.7)`:'none';wrap.appendChild(n);$('objects')?.appendChild(wrap);
+    const effect=$('subEffect')?.value||'Into Distance',speed=$('subSpeed')?.value||'Slow',dur=+$('subLinger').value*(speed==='Slow'?1:speed==='Medium'?.56:.325),t0=performance.now();function f(now){const t=Math.min(1,(now-t0)/dur);let y=H-62,sc=1,op=1;if(effect==='Into Distance'){y=H-62-H*.10*t;sc=1-.55*t}else if(effect==='Rise & Fade'){y=H-62-H*.20*t;sc=1-.08*t}else if(effect==='Grow Up'){y=H-62-H*.18*t;sc=1+.55*t}else if(effect==='Shrink Up'){y=H-62-H*.16*t;sc=1-.6*t}else if(effect==='Sweep Up'){y=H-62-H*.28*t;sc=1+.12*t}const fade=+$('subFade').value/100;if(fade&&t>1-fade)op=(1-t)/fade;wrap.style.transform=`translate(-50%,-50%) translateY(${y-(H-62)}px) scale(${sc})`;wrap.style.opacity=op;if(t<1)requestAnimationFrame(f);else wrap.remove()}requestAnimationFrame(f);
   }
   function asYouGo(ch){
-    const wrap=document.createElement('div');wrap.className='projectile';wrap.textContent=ch;wrap.style.left='50%';wrap.style.top='calc(100% - 22px)';wrap.style.font=`${+$('fieldSize')?.value||48}px "${$('fieldFont')?.value||'Chomsky'}",Georgia,serif`;wrap.style.color=$('fieldColour')?.value||'#fff';wrap.style.pointerEvents='none';$('objects')?.appendChild(wrap);const t0=performance.now(),sx=W*.5,sy=H-22;function f(now){const t=Math.min(1,(now-t0)/3600);const x=sx+(Math.random()-.5)*W*.35*t,y=sy-H*.38*t,sc=.15+1.15*t;wrap.style.transform=`translate(-50%,-50%) translate(${x-sx}px,${y-sy}px) scale(${sc})`;wrap.style.opacity=1-t;if(t<1)requestAnimationFrame(f);else wrap.remove()}requestAnimationFrame(f);
+    const wrap=document.createElement('div');wrap.className='projectile';wrap.textContent=ch;wrap.style.left='50%';wrap.style.top='calc(100% - 22px)';wrap.style.font=`${+$('fieldSize')?.value||48}px "${$('fieldFont')?.value||'Chomsky'}",Georgia,serif`;liveTextColour(wrap,'fieldColour');wrap.style.pointerEvents='none';$('objects')?.appendChild(wrap);const t0=performance.now(),sx=W*.5,sy=H-22;function f(now){const t=Math.min(1,(now-t0)/3600);const x=sx+(Math.random()-.5)*W*.35*t,y=sy-H*.38*t,sc=.15+1.15*t;wrap.style.transform=`translate(-50%,-50%) translate(${x-sx}px,${y-sy}px) scale(${sc})`;wrap.style.opacity=1-t;if(t<1)requestAnimationFrame(f);else wrap.remove()}requestAnimationFrame(f);
   }
   const oldLaunch=$('launch')?.onclick;
-  if($('launch'))$('launch').onclick=function(e){e.preventDefault();e.stopPropagation();const t=$('typeInput').value.trim();if(t){sendField(t);if($('speakToggle')?.checked&&window.speakSelected)window.speakSelected(t)}};
+  function launchTypedText() {
+    const input = $('typeInput');
+    const text = input.value.trim();
+    if (!text) return;
+    clearTimeout(dropTimer);
+    input.value = '';
+    sendField(text);
+    if ($('speakToggle')?.checked && window.speakSelected) window.speakSelected(text);
+  }
+  $('launch').onclick = e => {
+    e.preventDefault();
+    e.stopPropagation();
+    launchTypedText();
+  };
   if($('typeInput')){
-    $('typeInput').onkeydown=function(e){if(e.key==='Enter'){e.preventDefault();const t=this.value.trim();if(!t)return;sendField(t);if($('speakToggle')?.checked&&window.speakSelected)window.speakSelected(t);if($('sendMode')?.value==='wait')return;}
+    $('typeInput').onkeydown=function(e){
+      if (e.key === 'Enter' && !e.isComposing) {
+        e.preventDefault();
+        launchTypedText();
+        return;
+      }
       if($('cursorDropText')?.checked && $('cursorDropMode')?.value==='immediate' && e.key.length===1){sendCursor(e.key);}
       if($('cursorDropText')?.checked && $('cursorDropMode')?.value==='delay'){clearTimeout(dropTimer);dropLast=this.value;dropTimer=setTimeout(()=>{const v=$('typeInput').value.trim();if(v&&v===dropLast){sendCursor(v);$('typeInput').value='';}},1000)}
     };
@@ -1189,15 +1410,161 @@ $('repeatSong').checked=false;$('repeatAll').checked=false;$('randomShowToggle')
   const dcCount=$('drawCount');if(dcCount&&dcCount.options.length===0){for(let i=1;i<=20;i++){const o=document.createElement('option');o.value=i;o.textContent=i;dcCount.appendChild(o)}dcCount.value='1';}
   const dp=$('drawToolsPanel');
   if(dp){
-    const wp=$('drawWidthPalette');if(wp){wp.innerHTML='';for(let i=1;i<=7;i++){const b=document.createElement('button');b.className='widthSwatch';b.textContent=i;b.title=i===1?'single line':i+' parallel lines';b.onclick=()=>{const dc=document.getElementById('drawCanvas');if(dc)dc.dataset.width=i};wp.appendChild(b)}}
-    const pal=$('drawPalette');if(pal){pal.innerHTML='';palette.forEach(([c,n])=>{const b=document.createElement('button');b.className='colorSwatch';b.title=n;b.dataset.color=c;b.style.background=c;b.onclick=()=>{dp.dataset.drawColour=c;pal.querySelectorAll('button').forEach(x=>x.style.outline='');b.style.outline='2px solid #fff'};pal.appendChild(b)})}
-    const sz=$('drawSizeEffect');if(sz&&!dp.querySelector('.sizeButtons')){const parent=sz.parentElement,wrap=document.createElement('div');wrap.className='drawControlRow symbolButtons sizeButtons';[['smallLarge','↗','Small → Large → Fade'],['largeSmallLargeFade','↘','Large → Small → Large → Fade'],['normal','→','Stay Same'],['largeSmall','↙','Large → Small']].forEach(([v,sym,title])=>{const b=document.createElement('button');b.textContent=sym;b.title=title;b.onclick=()=>{sz.value=v;sz.dispatchEvent(new Event('change'))};wrap.appendChild(b)});wrap.appendChild(sz);sz.style.display='none';parent?.replaceWith(wrap);}
-    const pat=$('drawEffect');if(pat&&!dp.querySelector('.patternButtons')){const parent=pat.parentElement,wrap=document.createElement('div');wrap.className='drawControlRow symbolButtons patternButtons';[['flow','→','Flow'],['wave','〰','Wave'],['orbit','◯','Endless Circle'],['figure8','∞','Figure Eight'],['spiral','🌀','Spiral'],['float','↑','Float Up'],['swoop','↝','Swoop'],['comet','☄','Comet'],['burst','✦','Burst'],['forwardZoom','↗','Forward Zoom']].forEach(([v,sym,title])=>{const b=document.createElement('button');b.textContent=sym;b.title=title;b.onclick=()=>{pat.value=v;pat.dispatchEvent(new Event('change'))};wrap.appendChild(b)});wrap.appendChild(pat);pat.style.display='none';parent?.replaceWith(wrap);}
-    if(!$('drawBottomGrab')){const g=document.createElement('div');g.id='drawBottomGrab';g.className='drawBottomGrab';g.textContent='';dp.appendChild(g);}
-    if($('drawExpand')){const row=$('drawExpand').parentElement;row.prepend($('drawExpand'));}
-    const cycle=$('drawColourCycle');const comboName=$('drawComboName'),comboSelect=$('drawComboSelect'),saveCombo=$('drawSaveCombo');let combo=[];function loadCombos(){if(!comboSelect)return;comboSelect.innerHTML='<option value="">Saved combos</option>';try{const o=JSON.parse(localStorage.getItem('drawColourCombos')||'{}');Object.entries(o).forEach(([n,a])=>{const op=document.createElement('option');op.value=n;op.textContent=n;op.dataset.colors=JSON.stringify(a);comboSelect.appendChild(op)})}catch{}}loadCombos();saveCombo?.addEventListener('click',()=>{const name=(comboName?.value||'').trim()||'Unnamed';try{const o=JSON.parse(localStorage.getItem('drawColourCombos')||'{}');o[name]=combo.length?combo:['#20d9ff','#7b4dff'];localStorage.setItem('drawColourCombos',JSON.stringify(o));loadCombos();comboSelect.value=name;drawComboRuntime=o[name]}catch{}});comboSelect?.addEventListener('change',()=>{const op=comboSelect.options[comboSelect.selectedIndex];if(op?.dataset.colors){combo=JSON.parse(op.dataset.colors);drawComboRuntime=combo.slice();cycle.checked=true;drawCycleIndex=0}});dp.addEventListener('click',e=>{const b=e.target.closest('.colorSwatch');if(!b)return;const c=b.dataset.color||b.getAttribute('data-color')||b.style.backgroundColor;if(c){window._drawNextColour=c;if(cycle?.checked)combo.push(c)}});cycle?.addEventListener('change',()=>{if(!cycle.checked){combo=[];drawComboRuntime=[]}});
-    /* Make the full-screen button first. */
-    $('drawExpand')?.parentElement?.prepend($('drawExpand'));
+    const widthPalette=$('drawWidthPalette');
+    const widths=[1,3,5,7,10,14,19,25,32,41,52];
+    widthPalette.replaceChildren();
+    widthPalette.innerHTML='<div class="widthTrack" aria-hidden="true"></div><input type="range" min="1" max="11" value="3" aria-label="Line width">';
+    const widthInput=widthPalette.querySelector('input');
+    const track=widthPalette.firstElementChild;
+    for(let i=0;i<widths.length;i++)track.append(document.createElement('span'));
+    function applyWidth(){
+      const index=+widthInput.value-1;
+      $('drawCanvas').dataset.width=widths[index];
+      [...track.children].forEach((cell,i)=>{cell.dataset.size=i===index?index+1:'';cell.classList.toggle('selected',i===index);});
+    }
+    widthInput.oninput=applyWidth;
+    applyWidth();
+    const pal = $('drawPalette');
+    const colourControls = document.createElement('div');
+    colourControls.className = 'drawControlRow';
+    colourControls.innerHTML = '<div class="drawControlRow"><div class="colourTabs" role="tablist"><span role="tab" tabindex="0" data-target="drawn" aria-selected="true">Draw</span><span role="tab" tabindex="0" data-target="launched" aria-selected="false">Launch</span></div><label>Add colour <input type="color" aria-label="Custom colour"></label></div><div class="drawControlRow"><select aria-label="Line effect"></select><details class="drawSequence"><summary>Sequence</summary><div class="drawSequenceBody"><label><input type="checkbox"> On</label><button type="button">Add colour</button><button type="button">Clear sequence</button><div aria-live="polite"></div></div></details></div>';
+    pal.parentElement.after(colourControls);
+    const [picker, sequence] = colourControls.querySelectorAll('input');
+    const effect = colourControls.querySelector('select');
+    const target={value:'drawn'};
+    const lineEffects = [
+      ['fixed','Line effect · solid colour'],['rainbow-pulse','Rainbow · whole line cycles'],
+      ['rainbow','Rainbow · smooth along line'],['rainbow-scoop','Rainbow · random groups'],
+      ['rainbow-order','Rainbow · next colour per stroke'],['checker','Black and white checker'],
+      ['stripes','Rainbow · long smooth gradient'],['rainbow-moving','Rainbow · moving'],['original','Keep drawn colours']
+    ];
+    function refreshEffects(){
+      effect.replaceChildren(...(target.value==='drawn'?lineEffects.slice(0,-1):lineEffects).map(([v,n])=>new Option(n,v)));
+      effect.value=selected().effect;
+    }
+    const [add, reset] = colourControls.querySelectorAll('button');
+    const steps = colourControls.querySelector('[aria-live]');
+    const settings = {
+      drawn: { effect:'fixed', colour: '#ffffff', sequence: [], enabled: false, index: 0 },
+      launched: { effect:'original', colour: '#ffffff', sequence: [], enabled: false, index: 0 }
+    };
+    const selected = () => settings[target.value];
+    window.pickDrawingColour = kind => {
+      const entry = settings[kind];
+      if (!entry.enabled || !entry.sequence.length) return entry.effect==='fixed'?entry.colour:entry.effect;
+      return entry.sequence[entry.index++ % entry.sequence.length];
+    };
+    function refreshColours() {
+      const entry = selected();
+      if (/^#[0-9a-f]{6}$/i.test(entry.colour)) picker.value = entry.colour;
+      sequence.checked = entry.enabled;
+      steps.replaceChildren(...entry.sequence.map((colour, index) => {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.textContent = index + 1;
+        chip.style.borderColor = colour;
+        chip.title = 'Remove step ' + (index + 1) + ' (' + colour + ')';
+        chip.onclick = () => {
+          entry.sequence.splice(index, 1);
+          entry.index = 0;
+          refreshColours();
+        };
+        return chip;
+      }));
+      for (const button of pal.children) {
+        const active = button.dataset.color === entry.colour;
+        button.setAttribute('aria-pressed', String(active));
+        button.style.outline = active ? '2px solid white' : '';
+      }
+    }
+    pal.replaceChildren();
+    [...palette, ['#ffffff', 'White'], ['#000000', 'Black'], ['rainbow', 'Rainbow']].forEach(([colour, name]) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'colorSwatch';
+      button.title = name;
+      button.dataset.color = colour;
+      button.style.background = colour === 'rainbow' ? 'linear-gradient(90deg,red,orange,yellow,green,cyan,blue,violet)' : colour;
+      button.onclick = () => {
+        const entry = selected();
+        entry.colour = colour;
+        entry.effect = 'fixed';
+        refreshEffects();
+        if (entry.enabled) entry.sequence.push(colour);
+        refreshColours();
+      };
+      pal.appendChild(button);
+    });
+    for(const tab of colourControls.querySelectorAll('[role=tab]')){
+      tab.onclick=()=>{target.value=tab.dataset.target;for(const item of tab.parentElement.children)item.setAttribute('aria-selected',String(item===tab));refreshColours();refreshEffects();};
+      tab.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tab.click();}};
+    }
+    effect.onchange = () => {selected().effect=effect.value;sequence.checked=selected().enabled=false;if(target.value==='launched')window.launchColourRevision=(window.launchColourRevision||0)+1;};
+    picker.oninput = () => { selected().colour = picker.value; selected().effect='fixed';refreshEffects();refreshColours(); };
+    sequence.onchange = () => { selected().enabled = sequence.checked; selected().index = 0; };
+    add.onclick = () => { selected().sequence.push(selected().colour); refreshColours(); };
+    reset.onclick = () => { selected().sequence = []; selected().index = 0; refreshColours(); };
+    refreshColours();refreshEffects();
+    const sizeLabels={smallLarge:'Grow',largeSmallLargeFade:'Pulse',normal:'Steady',largeSmall:'Shrink'};
+    const motionLabels={flow:'Flow',wave:'Wave',orbit:'Orbit',figure8:'Figure eight',spiral:'Spiral',float:'Float',swoop:'Swoop',comet:'Comet',burst:'Burst',forwardZoom:'Zoom'};
+    for(const [id,labels] of [['drawSizeEffect',sizeLabels],['drawEffect',motionLabels]]){
+      const select=$(id);
+      for(const option of select.options)option.textContent=labels[option.value]||option.textContent;
+    }
+    $('drawColourCycle').closest('label').remove();
+    const row=id=>$(id).closest('.drawControlRow');
+    const label=id=>$(id).previousElementSibling;
+    const header=$('drawToolsHandle');
+    const undo=row('drawUndo');
+    const size=row('drawSizeEffect'), motion=row('drawEffect');
+    label('drawSizeEffect').textContent='Size change';
+    label('drawEffect').textContent='Movement';
+    size.append(...motion.children);motion.remove();
+    const repeat=row('drawRepeat'), position=row('drawPosition');
+    label('drawPosition').textContent='Starting position';
+    const glow=document.createElement('div');glow.className='drawControlRow';
+    glow.append(label('drawGlow'),$('drawGlow'));
+    repeat.append(...position.children);position.remove();
+    const scale=row('drawScale'), speed=row('drawTrailSpeed');
+    label('drawScale').textContent='Launch size';
+    label('drawTrailSpeed').textContent='Travel speed';
+    const auto=$('drawOtto');auto.textContent='Auto launch';
+    const memory=row('drawMemory');memory.append(auto);
+    const symmetry=row('drawKaleido');
+    const grids=row('drawStartGrid');
+    grids.title='Reserved for a future drawing path control';
+    grids.querySelectorAll('button').forEach(button=>button.disabled=true);
+    grids.prepend(document.createTextNode('Path points (inactive) '));
+    const sequenceBody=colourControls.querySelector('.drawSequenceBody');
+    const combosRow=row('drawComboName');
+    sequenceBody.append(combosRow);
+    const body=document.createElement('div');body.className='drawToolsBody';
+    body.append(undo,row('drawWidthPalette'),row('drawPalette'),colourControls,glow,size,repeat,scale,speed,memory,symmetry,grids);
+    dp.replaceChildren(header,body);
+    const comboName = $('drawComboName');
+    const comboSelect = $('drawComboSelect');
+    let combos = {};
+    try { combos = JSON.parse(localStorage.getItem('drawColourCombos') || '{}') || {}; } catch {}
+    function listCombos() {
+      comboSelect.length = 1;
+      Object.keys(combos).forEach(name => comboSelect.add(new Option(name, name)));
+    }
+    listCombos();
+    $('drawSaveCombo').onclick = () => {
+      const name = comboName.value.trim();
+      if (!name || !selected().sequence.length) return;
+      combos = { ...combos, [name]: selected().sequence.slice() };
+      localStorage.setItem('drawColourCombos', JSON.stringify(combos));
+      listCombos();
+      comboSelect.value = name;
+    };
+    comboSelect.onchange = () => {
+      const colours = combos[comboSelect.value];
+      if (!Array.isArray(colours)) return;
+      Object.assign(selected(), { sequence: colours.slice(), enabled: true, index: 0 });
+      refreshColours();
+    };
+
   }
 
   /* ---------- JPG: much larger scale, slow cinematic default, cinema rise and Polaroid ---------- */
@@ -1222,6 +1589,21 @@ $('repeatSong').checked=false;$('repeatAll').checked=false;$('randomShowToggle')
   /* Random Show grid and smooth line movement; use the selected 3x3 point centres. */
   ['randomStartGrid','randomEndGrid'].forEach(id=>{const g=$(id);if(g){g.style.display='grid';g.querySelectorAll('button').forEach((b,i)=>{b.style.position='relative';b.style.cursor='pointer';b.dataset.index=i});}});
 
+  document.querySelectorAll('#textPanel select,#drawToolsPanel select').forEach(wheelSelect);
+  for(const [panelId,buttonId] of [['textPanel','textClose'],['drawToolsPanel','drawClose'],['radioPanel','radioClose'],['spherePanel','closeSphere'],['radioShowPanel','radioShowClose']]){
+    const panel=$(panelId), button=$(buttonId), title=panel?.querySelector('h4');
+    if(!title||!button)continue;
+    const formerRow=button.parentElement;
+    button.textContent='Close';button.type='button';button.classList.add('titleClose');
+    if(panelId==='radioPanel')button.onclick=e=>{
+      e.stopPropagation();
+      panel.classList.remove('open');
+      $('radioShowPanel').classList.remove('open');
+      $('randomShowToggle').checked=false;
+    };
+    title.prepend(button);
+    if(formerRow.matches('.row,.drawControlRow')&&!formerRow.children.length)formerRow.remove();
+  }
   /* Brown controls and saved preferences. */
   document.querySelectorAll('input[type=range]').forEach(r=>r.style.accentColor=brown);
 })();
