@@ -245,7 +245,7 @@ input[type=range]::-moz-range-progress{background:#8b5a2b}
 #drawToolsPanel{max-width:min(92vw,430px);min-width:330px;max-height:min(62vh,430px)!important;overflow-y:auto!important;scrollbar-width:none!important;resize:both!important;position:fixed}
 #drawToolsPanel::-webkit-scrollbar{display:none}
 #drawToolsPanel .symbolButtons{display:flex;gap:3px;flex-wrap:wrap}.symbolButtons button{min-width:34px;height:25px;font-size:14px}
-#drawToolsPanel .colorSwatch{border:1px solid #c7a77e}
+#drawToolsPanel .colorSwatch{border:1px solid #000}
 #textPanel input[type=range]{accent-color:#8b5a2b}
 #randomShowPanel .pointGrid{display:grid!important}.randomGrid:not(.gridVisible){opacity:.45}
 @keyframes solidRainbow{0%,100%{color:#ff00aa}12%{color:#ff0000}25%{color:#ff8a00}38%{color:#ffff00}50%{color:#43ff00}62%{color:#00dfff}74%{color:#304bff}87%{color:#a800ff}}
@@ -494,6 +494,88 @@ body,body *,#typeInput,#drawPanel.expanded #drawCanvas{cursor:url("data:image/sv
 #drawToolsPanel .matchedSlider:has(#drawRepeat){display:flex;flex-wrap:wrap}
 #drawToolsPanel .matchedSlider:has(#drawRepeat) input{width:54px}
 #starColourPicker header{touch-action:none;min-height:24px;background:#ffffff13}
+#radioPanel #radioTitle{width:100%;animation:none;text-indent:0}
+.trackMarquee{display:inline-flex;width:max-content}
+.trackMarquee>span{display:block;min-width:130px;padding-right:28px;box-sizing:border-box}
+.trackMarquee.scrolling{animation:trackLoop var(--scroll-time) linear infinite}
+@keyframes trackLoop{to{transform:translateX(-50%)}}
+#radioDownloadPopup:not([hidden]){display:flex;align-items:center;gap:12px}
+.radioFade{grid-template-columns:auto 25px}
+#radioPanel .radioRandom{margin-left:0}
+#radioVolumeToggle svg{display:block}
+#textPanel{width:min(323px,calc(100vw - 18px))}
+#textPanel .textColourSection .categoryTitle{grid-template-columns:98px minmax(55px,1fr) 24px 34px;gap:4px}
+#textPanel .textColourSection .categoryTitle label{justify-self:end}
+#textPanel .textSectionOff .textSectionOptions,#textPanel .textSectionOff :is(.textColourWheel,.textColourStatus){display:none}
+#textPanel .textSectionOff .categoryTitle label{grid-column:4}
+#textPanel .textRainbows{display:grid;grid-template-columns:94px auto repeat(4,auto);margin-left:0;justify-content:start;gap:4px}
+#textPanel .textRainbows>label:first-child{min-width:94px}
+#textPanel .textColourWheel.squareTextPicker{width:15px;justify-self:start}
+#textPanel .squareTextPicker .hueMarker{display:none}
+#textPanel .titleClose{right:3px}
+@media(prefers-reduced-motion:reduce){.trackMarquee.scrolling{animation:none}}
+#starfieldPanel{width:max-content;max-width:calc(100vw - 18px)}
+#starfieldPanel .row:has(>select){grid-template-columns:max-content max-content;grid-template-columns:8ch max-content;gap:5px}
+#starfieldPanel select{width:max-content;font-size:10px}
+#starfieldPanel a{text-decoration:none}
+#niagaraButton{padding:0;border:0;background:none;box-shadow:none}
+#drawToolsPanel{max-height:calc(100vh - 32px)!important}
+#drawToolsPanel .drawToolsBody{max-height:calc(100vh - 68px)}
+#drawToolsPanel .effectShortcuts{display:flex;flex-flow:row nowrap;min-height:20px;width:100%;gap:3px}
+#drawToolsPanel .effectShortcut{padding:2px 4px;min-width:16px;font-size:9px}
+#drawToolsPanel .matchDrawn{margin-left:auto;white-space:nowrap;display:flex;align-items:center}
+#drawToolsPanel .launchPair{align-items:center}
+#drawToolsPanel .launchPair label{display:flex;align-items:center;gap:4px}
+#drawToolsPanel .launchPair input{margin:0;width:54px}
+#drawToolsPanel #drawTrailSpeedValue{min-width:25px;font-size:8px}
+#starColourPicker .effectChoices{display:grid;grid-template-columns:1fr 1fr;gap:1px 6px;font-size:9px}
+#starColourPicker .effectChoices>small,#starColourPicker .effectChoices>button{grid-column:1/-1}
+#starColourPicker .effectChoices label{display:flex;align-items:center;margin:0}
+#radioPanel .radioTrack,#radioPanel .radioPlayback{margin:1px 0}
+#radioPanel #radioProgress{border:1px solid white;box-sizing:border-box;height:8px}
+#radioPanel .radioTrack{grid-template-columns:minmax(60px,1fr) auto 20px 18px;gap:3px}
+#radioPanel #radioVolumePopup{right:-10px;bottom:calc(100% - 28px);width:52px;overflow:hidden;padding:5px 0 9px}
+#radioPanel #radioDownloadPopup{right:-10px}
+#radioVolumePopup .volumeSteps{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;gap:9px}
+#radioVolumePopup .volumeSteps button{padding:0}
+#radioVolumePopup input{position:relative;z-index:1;display:block;background:linear-gradient(#fff,#333 65%,#111);width:8px}
+#radioVolumePopup::after{content:'';position:absolute;bottom:0;left:50%;width:1px;height:9px;background:#aaa;pointer-events:none}
+#radioVolume::-webkit-slider-thumb{box-sizing:border-box;width:8px;height:8px}
+#radioVolume::-moz-range-thumb{box-sizing:border-box;width:8px;height:8px}
+.panel button[aria-pressed=true],.panel button:focus-visible,.panel button:hover{outline-color:#eb1e62!important;box-shadow:0 0 4px #eb1e6280}
+.panel input[type=checkbox]{accent-color:#eb1e62}
+.panel,.panel *{scrollbar-width:none}
+.panel *::-webkit-scrollbar{display:none}
+#drawToolsPanel .colorSwatch{border-color:#000}
+#drawToolsPanel .colorSwatch[aria-pressed=true]{outline:2px solid #eb1e62}
+#textPanel .titleClose{background:none!important;border:0!important;box-shadow:none!important}
+#textPanel .textColourWheel.squareTextPicker{display:inline-block;vertical-align:middle;margin:0 0 0 4px}
+#textPanel .textColourSection:has(.squareTextPicker) .categoryTitle{grid-template-columns:1fr 24px 34px}
+#textPanel .textColourSection:has(.squareTextPicker) .categoryTitle label{grid-column:3}
+#niagaraTopReturn{display:none}
+.atNiagara #niagaraTopReturn{display:block;position:fixed;top:8px;left:8px;z-index:90500}
+.atNiagara :is(#controls,#starfieldTab,#sphere,#typeInput,#typingZone,.panel,#starColourPicker){display:none!important}
+.atNiagara #drawPanel.expanded{display:block!important}
+#niagaraSceneUI .cargoBox,#niagaraSceneUI .niagaraCargoStack2{z-index:12;color:#fff;box-shadow:0 0 12px #fff9}
+#niagaraBrownAtmosphere{pointer-events:none;z-index:0}
+.cargoBeam{position:absolute;top:-5px;left:65%;width:100px;height:20px;clip-path:polygon(0 40%,100% 0,100% 100%,0 60%);background:linear-gradient(90deg,white,transparent);opacity:0;animation:cargoSignal 5s ease infinite;pointer-events:none}
+@keyframes cargoSignal{0%,62%,100%{opacity:0}69%,79%{opacity:1}}
+#niagaraScatteredGulls .niagaraSeagull{position:absolute;top:0;left:0;width:27px;height:10px;background:center/contain no-repeat url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 10'%3E%3Cpath d='M1 4Q8 0 15 7Q22 0 29 4' fill='none' stroke='%23fff' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E")}
+#niagaraScatteredGulls .niagaraSeagull::before,#niagaraScatteredGulls .niagaraSeagull::after{content:none}
+#poemPrompt,#poemPrompt:hover,#poemPrompt:focus,#poemPrompt:active{background:none!important;outline:0!important;box-shadow:none!important;border:0!important;color:#ddd}
+#textPanel{overflow:hidden;width:min(305px,calc(100vw - 18px))}
+#textPanel .shakeScroll{overflow:auto;max-height:calc(78vh - 32px);scrollbar-width:none}
+#textPanel .textColourSection .categoryTitle{grid-template-columns:max-content minmax(42px,1fr) 24px 34px}
+#textPanel .textColourSection:has(.squareTextPicker) .categoryTitle{grid-template-columns:1fr 24px 34px}
+#drawToolsPanel .programmablePalette button.colorSwatch{border:1px solid #bba997;border-radius:3px}
+#drawToolsPanel .programmablePalette button.colorSwatch:hover{border-color:#ffe369}
+#drawToolsPanel .programmablePalette button.colorSwatch[aria-pressed=true]{outline:2px solid #eb1e62}
+#drawToolsPanel .matchedSlider:has(#drawRepeat){gap:3px;flex-wrap:nowrap}
+#drawToolsPanel .matchedSlider :is(#drawRepeat,#drawCount){appearance:none;min-width:17px;width:17px;padding:1px 2px;font-size:8px}
+#drawToolsPanel .launchPair:has(#launchLinger){grid-template-columns:1fr auto;column-gap:8px}
+#drawToolsPanel .launchPair:has(#launchLinger) input{width:48px}
+.typedPop{position:fixed;pointer-events:none;z-index:880;font-size:19px;text-shadow:0 0 7px #eee}
+#drawToolsPanel :is(#drawWidthPalette,#launchWidthPalette) input{touch-action:none;height:20px}
 </style>
 </head>
 <body class="introPending">
@@ -523,7 +605,7 @@ body,body *,#typeInput,#drawPanel.expanded #drawCanvas{cursor:url("data:image/sv
  <button id="shakeBtn">SHAKE</button>
  <button id="launch">LAUNCH</button>
  <button id="jpgMainLaunch">JPG LAUNCH</button>
- <button id="radio">Radio Laurentis</button>
+ <button id="radio">radio laurentis</button>
 </div>
 
 
@@ -536,7 +618,7 @@ body,body *,#typeInput,#drawPanel.expanded #drawCanvas{cursor:url("data:image/sv
 </div>
 
 <div id="textPanel" class="panel">
- <h4>SHAKE / TEXT</h4>
+ <h4>SHAKE / TEXT <button id="textClose" class="titleClose" type="button">Close</button></h4>
  <div class="categoryTitle">TYPED TEXT</div>
  <div class="row"><label>COLOUR</label><select id="cursorColour"><option value="#ffffff" selected>White</option><option value="#ff3030">Red</option><option value="#ff8a00">Orange</option><option value="#ffe600">Yellow</option><option value="#44ff66">Light Green</option><option value="#20d9ff">Turquoise</option><option value="#ff78c8">Pink</option><option value="#7b4dff">Purple</option><option value="#8b5a2b">Brown</option><option value="#000000">Black</option><option value="rainbow">Rainbow</option></select><label>SIZE</label><select id="cursorSize"><option value="8">8</option><option value="10">10</option><option value="12">12</option><option value="14">14</option><option value="16">16</option><option value="18">18</option><option value="20">20</option><option value="24" selected>24</option><option value="28">28</option><option value="32">32</option></select></div>
  <div class="row"><label>STYLE</label><select id="cursorStyle"><option>translucent</option><option>opaque</option><option>outlined</option></select><label>FONT</label><select id="cursorFont"><option selected>Chomsky</option><option>Dune Rise</option><option>Momt</option><option>Impact</option><option>Trebuchet MS</option><option>Wingdings</option><option>Wingdings 2</option><option>Georgia</option><option>Courier New</option></select><label><input id="cursorVisible" type="checkbox" checked> ON</label></div>
@@ -563,7 +645,7 @@ body,body *,#typeInput,#drawPanel.expanded #drawCanvas{cursor:url("data:image/sv
  <div class="row"><label><input id="speakToggle" type="checkbox"> SPEAK</label><label>VOICE</label><select id="speakVoice"><option>Captain O'Pirate</option><option selected>The Fancy Woman</option><option>Professor Fuffonbass</option><option>Lar Report</option></select></div>
  <div class="row"><label>VOLUME</label><input id="voiceVolume" type="range" min="0" max="100" value="100"><span id="voiceVolumeValue">100</span><label>REPEAT</label><select id="speakRepeat"><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option></select><label>EXTRA</label><select id="speakExtra"><option value="none" selected>None</option><option value="compliment">Compliment</option><option value="advice">Advice</option><option value="fortune">Fortune</option></select></div>
  <div class="row"><label><input id="shhNow" type="checkbox"> SHH NOW</label><label><input id="quietPlease" type="checkbox"> QUIET PLEASE</label><label><input id="wotToggle" type="checkbox"> WOT?</label></div>
- <div class="row"><button id="textClose">CLOSE</button></div>
+
 </div>
 
 <div id="legacyTextControls" aria-hidden="true" style="display:none">
@@ -587,11 +669,12 @@ body,body *,#typeInput,#drawPanel.expanded #drawCanvas{cursor:url("data:image/sv
 <div id="radioPanel" class="panel">
  <h4>radio laurentis <button id="radioClose" class="titleClose" type="button">close</button></h4>
  <div id="radioTitle">no track</div>
- <div class="radioTrack"><progress id="radioProgress" max="1" value="0" aria-label="Track progress"></progress><span id="radioTime">00:00 / 00:00</span><button id="radioVolumeToggle" aria-label="Volume">◖))</button><button id="radioMore" aria-label="More track options">⋯</button></div>
+ <div class="radioTrack"><progress id="radioProgress" max="1" value="0" aria-label="Track progress"></progress><span id="radioTime">00:00 / 00:00</span><button id="radioVolumeToggle" aria-label="Volume"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M3 9h4l5-4v14l-5-4H3z"/><path fill="none" stroke="currentColor" stroke-width="1.7" d="M15 8q5 4 0 8m2-11q8 7 0 14"/></svg></button><button id="radioMore" aria-label="More track options">⋯</button></div>
  <div id="radioVolumePopup" class="radioPopup" hidden><input id="radioVolume" aria-label="Volume" type="range" min="0" max="100" value="100"><div class="volumeSteps"><button id="radioVolumeDown" type="button" aria-label="Lower volume">−</button><button id="radioVolumeUp" type="button" aria-label="Raise volume">+</button></div></div>
- <div id="radioDownloadPopup" class="radioPopup" hidden><a id="radioDownload" aria-label="Download current track">↓</a></div>
- <div class="row radioPlayback"><button id="playSong">play</button><button id="stopSong">stop</button><button id="radioRepeat">all</button><input id="repeatSong" type="checkbox" hidden><input id="repeatAll" type="checkbox" checked hidden><div class="radioFade"><label for="fadeInSeconds">fade in</label><input id="fadeInSeconds" type="number" min="0" max="30" value="0"><div class="radioArrows"><button id="prevSong" aria-label="Previous track">◀</button><button id="nextSong" aria-label="Next track">▶</button></div><label for="fadeOutSeconds">fade out</label><input id="fadeOutSeconds" type="number" min="0" max="30" value="0"></div></div>
- <div class="row"><label class="fileButton radioLoad" for="audioInput">load audio</label><input id="audioInput" class="hiddenInput" type="file" accept="audio/*" multiple><label class="radioRandom"><input id="randomShowToggle" type="checkbox"> random effect show</label></div>
+ <div id="radioDownloadPopup" class="radioPopup" hidden><div class="radioFade"><label for="fadeInSeconds">fade in</label><input id="fadeInSeconds" type="number" min="0" max="30" value="0"><label for="fadeOutSeconds">fade out</label><input id="fadeOutSeconds" type="number" min="0" max="30" value="0"></div><a id="radioDownload" aria-label="Download current track">↓</a></div>
+ <div class="row radioPlayback"><button id="playSong">play</button><button id="stopSong">stop</button><button id="radioRepeat">all</button><input id="repeatSong" type="checkbox" hidden><input id="repeatAll" type="checkbox" checked hidden><div class="radioArrows"><button id="prevSong" aria-label="Previous track">◀</button><button id="nextSong" aria-label="Next track">▶</button></div></div>
+ <div class="row"><label class="fileButton radioLoad" for="audioInput">load audio</label><input id="audioInput" class="hiddenInput" type="file" accept="audio/*" multiple></div>
+ <div class="row"><label class="radioRandom"><input id="randomShowToggle" type="checkbox"> random effect show</label></div>
  <div class="row"><button id="radioList">show list</button><button id="radioUncheckAll">deselect all</button><button id="radioDeleteAll" title="Delete all selected tracks">delete all</button></div>
  <div id="playlist" hidden></div><button id="radioLaunch" hidden>launch</button><audio id="audio"></audio>
 </div>
@@ -635,14 +718,14 @@ body,body *,#typeInput,#drawPanel.expanded #drawCanvas{cursor:url("data:image/sv
 
 <div id="starfieldPanel" class="panel">
  <h4>S.S. Enterprose</h4>
- <div class="row"><a href="https://larrysvariety.ca/Larrys_Variety_v3_Speaking_Department_Store.html">shop</a></div>
- <div class="row"><a href="https://larrysvariety.ca/Ghostprint_v51.html">birthday presents</a></div>
  <div class="row"><label>DIRECTION</label><select id="starDirection"><option value="forward">Forward</option><option value="backward">Backward</option><option value="up">Up</option><option value="down">Down</option><option value="left">Left</option><option value="right">Right</option><option value="spiral">Spiral</option><option value="random">Random</option></select></div>
  <div class="row"><label>SPEED</label><select id="starSpeed"><option value="frozen">Frozen</option><option value="groovy">Groovy!</option><option value="slow">Slow</option><option value="medium" selected>Medium</option><option value="fast">Fast</option><option value="hyperspeed">Hyperspeed</option></select></div>
  <div class="row"><label>SIZE</label><select id="starSize"><option value="tiny">Tiny</option><option value="small">Small</option><option value="medium" selected>Medium</option><option value="large">Large</option></select></div>
  <div class="row"><label>DENSITY</label><select id="starDensity"><option value="sparse">Sparse</option><option value="normal" selected>Normal</option><option value="dense">Dense</option></select></div>
  <div class="row"><label><input id="hypnoSpeed" type="checkbox"> HYPNOSPEED</label></div>
- <details id="startrekey"><summary id="assignmentTitle">startrekey</summary><ul><li>go and catch a falling star</li><li>spaghetti in zero gravity</li><li>ice skating and the zamboni</li></ul><small>assignments pending</small></details>
+ <details id="startrekey"><summary id="assignmentTitle">assignments</summary><ul><li>go and catch a falling star</li><li>spaghetti in zero gravity</li><li>ice skating and the zamboni</li></ul><small>assignments pending</small></details>
+ <div class="row"><a href="https://larrysvariety.ca/Larrys_Variety_v3_Speaking_Department_Store.html">shop</a></div>
+ <div class="row"><a href="https://larrysvariety.ca/Ghostprint_v51.html">birthday presents</a></div>
  <div class="row"><button id="niagaraButton">VISIT NIAGARA FALLS?</button></div>
  </div>
 
@@ -724,6 +807,7 @@ function makeDraggable(panel,handle){
  });
  handle.addEventListener('pointerup',()=>drag=false);
  handle.addEventListener('pointercancel',()=>drag=false);
+ handle.addEventListener('lostpointercapture',()=>drag=false);
 }
 document.querySelectorAll('.panel').forEach(p=>{const h=p.querySelector('h4');if(h)makeDraggable(p,h)});
 makeDraggable(document.getElementById('drawPanel'),document.getElementById('drawMoveHandle'));
@@ -1014,6 +1098,21 @@ async function strikeIntro(){
       {offset:.62,transform:'translate('+innerWidth*.60+'px,'+innerHeight*.20+'px) rotate(-25deg)',opacity:1},
       {transform:'translate('+x+'px,'+y+'px) rotate(-35deg) scaleX(.7)',opacity:1}
     ],1150);
+    await introWait(200);
+    for(const [i,ink] of letters.entries()){
+      if(i===4||i===5||ink.parentElement.hidden)continue;
+      const box=ink.getBoundingClientRect();
+      scatter(placeParticle(box.left,box.top,'introLetterParticle',ink.textContent),box.left,box.top,i*Math.PI/6,.48,6400);
+    }
+    letters.forEach((ink,i)=>{if(i!==4)ink.style.visibility='hidden';});
+    const moon=introMoon.getBoundingClientRect(),endY=innerHeight-24-moon.height;
+    const glide=animateIntro(introMoon,[
+      {transform:'translate(0,0)'},
+      {offset:.72,transform:'translate('+(24-moon.left-5)+'px,'+(endY-moon.top-15)+'px)'},
+      {transform:'translate('+(24-moon.left)+'px,'+(endY-moon.top)+'px)'}
+    ],{duration:7600,easing:'cubic-bezier(.16,.68,.21,1)',fill:'forwards'});
+    await introWait(450);
+
     for(const [side,direction] of [['left',-1],['right',1]]){
       const piece=letters[4].querySelector('.t-'+side);
       const box=piece.getBoundingClientRect();
@@ -1023,30 +1122,18 @@ async function strikeIntro(){
         {transform:'translateX(0)',opacity:1},
         {offset:.7,transform:'translateX('+drift*.72+'px)',opacity:.85},
         {transform:'translateX('+drift+'px)',opacity:0}
-      ],{duration:7000,easing:'linear'}).finally(()=>dash.remove());
+      ],{duration:9500,easing:'linear'}).finally(()=>dash.remove());
       piece.style.visibility='hidden';
-    }
-    await introWait(850);
-    for(const [i,ink] of letters.entries()){
-      if(i===4||i===5||ink.parentElement.hidden)continue;
-      const box=ink.getBoundingClientRect();
-      scatter(placeParticle(box.left,box.top,'introLetterParticle',ink.textContent),box.left,box.top,i*Math.PI/6,.48,6400);
     }
     poemPrompt.hidden=true;
     const stem=placeParticle(x,y,'introCaret');
     const input=typeInput.getBoundingClientRect(),cx=input.left+input.width/2,cy=input.top+9;
-    const moon=introMoon.getBoundingClientRect(),endY=innerHeight-24-moon.height;
-    const glide=animateIntro(introMoon,[
-      {transform:'translate(0,0)'},
-      {offset:.72,transform:'translate('+(24-moon.left-5)+'px,'+(endY-moon.top-15)+'px)'},
-      {transform:'translate('+(24-moon.left)+'px,'+(endY-moon.top)+'px)'}
-    ],{duration:7600,easing:'cubic-bezier(.16,.68,.21,1)',fill:'forwards'});
     const fallFrames=Array.from({length:31},(_,i)=>{
       const t=i/30, u=1-t;
       const dx=(cx-x)*(1-u*u),dy=(cy-y)*t*t-innerHeight*.51*u*t;
       return {offset:t,transform:'translate('+dx+'px,'+dy+'px)'};
     });
-    const fall=animateIntro(stem,fallFrames,{duration:7000,easing:'ease-in-out',fill:'forwards'});
+    const fall=animateIntro(stem,fallFrames,{duration:8500,easing:'ease-in-out',fill:'forwards'});
     await Promise.all([glide,fall]);
     introMoon.getAnimations().forEach(animation=>animation.cancel());
     parkIntroMoon();
@@ -1091,7 +1178,7 @@ welcomeGate.querySelector('form').onsubmit=e=>{
     document.getElementById('speakVoice').value='Lar Report';
   }
   document.getElementById('starfieldArrival').classList.add('beginArrival');
-  document.getElementById('assignmentTitle').textContent=guestMode?'startrekey · visitor':'startrekey · enson '+ensonName;
+  document.getElementById('assignmentTitle').textContent=guestMode?'assignments · visitor':'assignments · enson '+ensonName;
   if(guestMode){
     introMoon.classList.add('introArrived');
     finishIntro();
@@ -1182,11 +1269,25 @@ radio('radioClose').addEventListener('click',event=>{
   toggle.dispatchEvent(new Event('change'));
   document.querySelectorAll('.radioPopup').forEach(popup=>popup.hidden=true);
 },true);
+function setRadioTitle(name){
+  const title=radio('radioTitle'), track=document.createElement('span');
+  track.className='trackMarquee';
+  for(let i=0;i<2;i++){
+    const copy=document.createElement('span');copy.textContent=name;
+    if(i)copy.setAttribute('aria-hidden','true');
+    track.append(copy);
+  }
+  title.replaceChildren(track);
+  if(name==='no track'){track.lastElementChild.remove();return;}
+  const cycle=Math.max(130,track.firstElementChild.scrollWidth);
+  track.style.setProperty('--scroll-time',Math.max(4,cycle/34)+'s');
+  track.classList.add('scrolling');
+}
 function loadSong(i){
   if(!songs[i])return;
   songIndex=loadedSongIndex=i;
   const song=songs[i];
-  audio.src=song.url;radio('radioTitle').textContent=song.name;
+  audio.src=song.url;setRadioTitle(song.name);
 }
 function playTrack(){audio.play().catch(()=>{});}
 radio('audioInput').onchange=e=>{
@@ -1200,7 +1301,7 @@ function removeTracks(remove){
   songs=songs.filter(song=>{if(!remove(song))return true;URL.revokeObjectURL(song.url);return false;});
   loadedSongIndex=songs.indexOf(current);
   if(loadedSongIndex<0){
-    audio.pause();audio.removeAttribute('src');audio.load();radio('radioTitle').textContent='no track';
+    audio.pause();audio.removeAttribute('src');audio.load();setRadioTitle('no track');
     songIndex=0;
   }else songIndex=loadedSongIndex;
   renderPlaylist();updateRadioTime();
@@ -1277,7 +1378,7 @@ for(const [trigger,popup] of [['radioVolumeToggle','radioVolumePopup'],['radioMo
   };
 }
 document.addEventListener('click',e=>{
-  if(!e.target.closest('#radioVolumeToggle,#radioMore,#radioVolumePopup'))document.querySelectorAll('.radioPopup').forEach(item=>item.hidden=true);
+  if(!e.target.closest('#radioVolumeToggle,#radioMore,#radioVolumePopup,.radioFade'))document.querySelectorAll('.radioPopup').forEach(item=>item.hidden=true);
 });
 function startMusicVisual(){if(!musicTimer)musicTimer=setInterval(musicVisual,700)}function stopMusicVisual(){if(musicTimer){clearInterval(musicTimer);musicTimer=null}}
 document.getElementById('randomShowToggle').onchange=e=>{if(e.target.checked)startMusicVisual();else stopMusicVisual();};
@@ -1306,8 +1407,8 @@ document.getElementById('radioLaunch').onclick=radioLaunchNow;
    CLEAR + OUTSIDE CLICK
    ========================================================= */
 document.getElementById('clear').onclick=()=>{invalidateVisuals();document.getElementById('objects').innerHTML='';document.getElementById('paintStage').innerHTML='';const liveDraw=document.getElementById('drawCanvas');if(liveDraw){const liveCtx=liveDraw.getContext('2d');liveCtx.clearRect(0,0,liveDraw.width,liveDraw.height);}if(typeof window.clearDrawLab==='function')window.clearDrawLab();if(window.stopShakeSpeech)window.stopShakeSpeech();speechSynthesis.cancel();stopMusicVisual();document.querySelectorAll('.projectile').forEach(x=>x.remove());};
-document.addEventListener('pointerdown',e=>{if(e.target.closest('#space')||e.target===starCanvas){speechSynthesis.cancel();}});
-addEventListener('blur',()=>{stopHolding();speechSynthesis.cancel();});
+document.addEventListener('pointerdown',e=>{if(!document.body.classList.contains('atNiagara')&&(e.target.closest('#space')||e.target===starCanvas)){speechSynthesis.cancel();}});
+addEventListener('blur',()=>{stopHolding();if(!document.body.classList.contains('atNiagara'))speechSynthesis.cancel();});
 </script>
 <script>
 /* FINAL NIGHT-PASS CORRECTIONS */
@@ -1348,7 +1449,6 @@ addEventListener('blur',()=>{stopHolding();speechSynthesis.cancel();});
  $('expandSphere').onclick=function(e){e.stopPropagation();sp.classList.toggle('expanded');this.textContent=sp.classList.contains('expanded')?'BACK':'FULL';requestAnimationFrame(clampPanel);};
  $('closeSphere').onclick=function(e){e.stopPropagation();sp.classList.remove('open');};
  // Archive dragging by title; expanded window is also resizable by the browser.
- (function(){let d=false,dx=0,dy=0;const h=sp.querySelector('h4');h.onpointerdown=function(e){if(e.target.closest('button,select,input,textarea'))return;d=true;const r=sp.getBoundingClientRect();dx=e.clientX-r.left;dy=e.clientY-r.top;sp.setPointerCapture(e.pointerId);sp.style.right='auto';sp.style.bottom='auto';sp.style.left=r.left+'px';sp.style.top=r.top+'px';sp.style.zIndex=++panelZ;e.preventDefault();e.stopPropagation();};h.onpointermove=function(e){if(!d)return;sp.style.left=Math.max(4,Math.min(innerWidth-sp.offsetWidth-4,e.clientX-dx))+'px';sp.style.top=Math.max(4,Math.min(innerHeight-sp.offsetHeight-4,e.clientY-dy))+'px';};h.onpointerup=()=>d=false;h.onpointercancel=()=>d=false;})();
  $('savedText').addEventListener('input',()=>{$('savedText').style.fontSize=(+$('archiveTextSize').value||24)+'px';}); $('archiveTextSize').oninput=e=>$('savedText').style.fontSize=Math.max(10,Math.min(130,+e.target.value||24))+'px';$('archiveTextSize').value=24;$('savedText').style.fontSize='24px';
  // Multi-select image picker: accept image/* and leave native multiple selection fully enabled.
  $('fileInput').setAttribute('multiple','');$('fileInput').setAttribute('accept','image/*');
@@ -1465,8 +1565,8 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
   tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><label>KALEIDOSCOPE</label><select id="drawKaleido"><option value="off" selected>Off</option><option value="half">Half — mirrored</option><option value="four">4 parts — mirrored</option><option value="eight">8 parts — mirrored</option></select></div>');
   tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><label>PATTERN</label><select id="drawEffect"><option value="flow" selected>Flow</option><option value="wave">Wave</option><option value="orbit">Endless Circle</option><option value="figure8">Figure Eight</option><option value="spiral">Spiral</option><option value="float">Float Up</option><option value="swoop">Swoop</option><option value="comet">Comet</option><option value="burst">Burst</option></select></div>');
   tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><label>DRAWING SIZE</label><input id="drawScale" type="range" min="40" max="260" value="100"><span id="drawScaleValue">100%</span></div>');
-  tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><label>SPEED</label><input id="drawTrailSpeed" type="range" min="0" max="100" value="22"><span id="drawTrailSpeedValue">Slow</span></div>');
-  tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><label>REPEAT</label><select id="drawRepeat"></select><label>COUNT</label><select id="drawCount"></select><label>GLOW</label><input id="drawGlow" type="range" min="0" max="35" value="18"></div><div class="drawControlRow"><label>POSITION</label><select id="drawPosition"><option value="center" selected>Centre</option><option value="far">Far</option><option value="near">Near</option><option value="left">Left</option><option value="right">Right</option><option value="top">Top</option><option value="bottom">Bottom</option></select></div><div class="drawControlRow"><label><input id="drawColourCycle" type="checkbox"> COLOUR CHANGES EACH DRAWING</label><input id="drawComboName" placeholder="combo name" style="width:90px"><button id="drawSaveCombo">SAVE COLOUR COMBO</button><select id="drawComboSelect"><option value="">Saved combos</option></select></div>');
+  tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><label>SPEED</label><input id="drawTrailSpeed" type="range" min="0" max="100" value="22"><span id="drawTrailSpeedValue">22%</span></div>');
+  tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><label>REPEAT</label><select id="drawRepeat"></select><label>COUNT</label><select id="drawCount"></select><label>GLOW</label><input id="drawGlow" type="range" min="0" max="35" value="25"></div><div class="drawControlRow"><label>POSITION</label><select id="drawPosition"><option value="center" selected>Centre</option><option value="far">Far</option><option value="near">Near</option><option value="left">Left</option><option value="right">Right</option><option value="top">Top</option><option value="bottom">Bottom</option></select></div><div class="drawControlRow"><label><input id="drawColourCycle" type="checkbox"> COLOUR CHANGES EACH DRAWING</label><input id="drawComboName" placeholder="combo name" style="width:90px"><button id="drawSaveCombo">SAVE COLOUR COMBO</button><select id="drawComboSelect"><option value="">Saved combos</option></select></div>');
   tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><label>MEMORY</label><select id="drawMemory"><option value="last" selected>Last drawing</option><option value="random">Random line</option><option value="loaded">Loaded drawing</option></select><button id="drawSaveImage">SAVE</button><button id="drawLoadImage">LOAD</button><button id="drawLaunch">LAUNCH</button><label><input id="ottoRandomEffects" type="checkbox"> Random effect</label></div>');
   const colors=[['#ff3030','red'],['#ff8a00','orange'],['#ffe600','yellow'],['#44ff66','light green'],['#20d9ff','turquoise'],['#ff78c8','pink'],['#4888ff','blue'],['#7b4dff','purple'],['#8b5a2b','brown'],['#000','black'],['#fff','white'],['rainbow','rainbow']];
   let colour='#fff',width=4,last=null,loaded=null,drawing=false,ottoTimer=null,undo=[],redo=[];
@@ -1502,7 +1602,7 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
       return c;
     }
     if(!/^(#|hsl|rgb)/.test(use)&&use!=='rainbow')return src;if(use==='rainbow'){const g=q.createLinearGradient(0,0,c.width,0);rainbowStops.forEach((v,i)=>g.addColorStop(i/(rainbowStops.length-1),v));q.globalCompositeOperation='source-in';q.fillStyle=g;q.fillRect(0,0,c.width,c.height);}else{q.globalCompositeOperation='source-in';q.fillStyle=use;q.fillRect(0,0,c.width,c.height);}return c} function launch(src,delay=0){if(!src)return;const count=(+$('drawRepeat').value||1)*(+$('drawCount')?.value||1);const generation=drawGeneration;for(let n=0;n<count;n++)setTimeout(()=>{if(generation===drawGeneration)animate(src,n)},delay+n*260)}
-  function animate(src,rep){let ink=window.launchPreviewInk||window.pickDrawingColour('launched');if(ink==='rainbow-order')ink=hue(spectrum[launchOrder++%spectrum.length]);let revision=window.launchColourRevision||0;const scratch=document.createElement('canvas');const kaleido=$('drawKaleido').value;const source=makeKaleido(tintSource(src,ink,performance.now(),scratch),kaleido),w=document.createElement('div'),c=document.createElement('canvas');w.className='projectile drawn';c.width=source.width;c.height=source.height;c.getContext('2d').drawImage(source,0,0);w.append(c);const dur=+$('launchLinger').value*speedDuration()/5500,effect=$('drawEffect').value,size=$('drawSizeEffect').value,scaleBase=1,t0=performance.now();w.style.width=Math.min(900,source.width)+'px';w.style.height=Math.min(650,source.height)+'px';$('objects').append(w);function f(now){
+  function animate(src,rep){let ink=window.launchPreviewInk||window.pickDrawingColour('launched');if(ink==='rainbow-order')ink=hue(spectrum[launchOrder++%spectrum.length]);let revision=window.launchColourRevision||0;const scratch=document.createElement('canvas');const kaleido=$('drawKaleido').value;const source=makeKaleido(tintSource(src,ink,performance.now(),scratch),kaleido),w=document.createElement('div'),c=document.createElement('canvas');w.className='projectile drawn';c.width=source.width;c.height=source.height;c.getContext('2d').drawImage(source,0,0);w.append(c);const dur=+$('launchLinger').value*speedDuration()/5500,effect=$('drawEffect').value,size=$('drawSizeEffect').value,scaleBase=1,t0=performance.now();w.style.width=Math.min(900,source.width)+'px';w.style.height=Math.min(650,source.height)+'px';$('objects').append(w);let progress=0,previous=t0;function f(now){
     if(!w.isConnected)return;
     const changed=revision!==(window.launchColourRevision||0);
     if(changed){revision=window.launchColourRevision;ink=window.launchPreviewInk||window.pickDrawingColour('launched');if(ink==='rainbow-order')ink=hue(spectrum[launchOrder++%spectrum.length]);}
@@ -1511,7 +1611,7 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
       const updated=makeKaleido(tintSource(src,ink,now,scratch),kaleido);
       const context=c.getContext('2d');context.clearRect(0,0,c.width,c.height);context.drawImage(updated,0,0);
     }
-    const t=Math.min(1,(now-t0)/dur);let x=W*.5,y=H*.58,sc=scaleBase,rot=0,op=1;const pos=$('drawPosition')?.value||'center';if(pos==='far'){sc*=.35;y=H*.50}else if(pos==='near'){sc*=1.55;y=H*.58}else if(pos==='left'){x=W*.22}else if(pos==='right'){x=W*.78}else if(pos==='top'){y=H*.22}else if(pos==='bottom'){y=H*.82};if(size==='smallLarge'){sc=scaleBase*(.08+1.35*t);op=t>.76?1-(t-.76)/.24:1}else if(size==='largeSmall'){sc=scaleBase*(1.8-1.45*t)}else if(size==='largeSmallLargeFade'){sc=scaleBase*(1.8-1.55*Math.sin(t*Math.PI));op=t>.72?1-(t-.72)/.28:1};if(effect==='flow'){y+=H*(.08-.28*t);op*=Math.min(1,t*10);}if(effect==='wave')x+=Math.sin(t*18)*W*.12;if(effect==='forwardZoom'){x+=Math.sin(t*Math.PI*2)*W*.22*(t);y-=H*.12*t;sc*=.25+1.8*t;rot+=Math.sin(t*Math.PI*3)*18;}if(effect==='orbit'){const q=t*Math.PI*6;x+=Math.cos(q)*W*.12;y+=Math.sin(q)*H*.12;rot=q*30}if(effect==='figure8'){const q=t*Math.PI*4;x+=Math.sin(q)*W*.14;y+=Math.sin(q*2)*H*.10;rot=Math.sin(q)*20}if(effect==='spiral'){const q=t*Math.PI*10,r=W*.13*(1-t);x+=Math.cos(q)*r;y+=Math.sin(q)*r;rot=q*25}if(effect==='float'){y=H-(H*.12+H*.72*t);x+=Math.sin(t*8)*40}if(effect==='swoop'){y-=Math.sin(t*Math.PI)*H*.12;x+=Math.sin(t*Math.PI)*W*.12}if(effect==='comet')w.style.filter='drop-shadow(-90px 0 0 rgba(255,255,255,.14)) drop-shadow(-180px 0 0 rgba(255,255,255,.07))';if(effect==='burst'){sc*=1+.55*t;rot=t*180}w.style.left=x+'px';w.style.top=y+'px';w.style.transform=`translate(-50%,-50%) scale(${sc}) rotate(${rot}deg)`;w.style.opacity=op;if(t<1)requestAnimationFrame(f);else w.remove()}f(t0)}
+    progress+=Math.max(0,now-previous)/Math.max(1,+$('launchLinger').value*speedDuration()/5500);const t=Math.min(1,progress);previous=now;let x=W*.5,y=H*.58,sc=scaleBase,rot=0,op=1;const pos=$('drawPosition')?.value||'center';if(pos==='far'){sc*=.35;y=H*.50}else if(pos==='near'){sc*=1.55;y=H*.58}else if(pos==='left'){x=W*.22}else if(pos==='right'){x=W*.78}else if(pos==='top'){y=H*.22}else if(pos==='bottom'){y=H*.82};if(size==='smallLarge'){sc=scaleBase*(.08+1.35*t);op=t>.76?1-(t-.76)/.24:1}else if(size==='largeSmall'){sc=scaleBase*(1.8-1.45*t)}else if(size==='largeSmallLargeFade'){sc=scaleBase*(1.8-1.55*Math.sin(t*Math.PI));op=t>.72?1-(t-.72)/.28:1};if(effect==='flow'){y+=H*(.08-.28*t);op*=Math.min(1,t*10);}if(effect==='wave')x+=Math.sin(t*18)*W*.12;if(effect==='forwardZoom'){x+=Math.sin(t*Math.PI*2)*W*.22*(t);y-=H*.12*t;sc*=.25+1.8*t;rot+=Math.sin(t*Math.PI*3)*18;}if(effect==='orbit'){const q=t*Math.PI*6;x+=Math.cos(q)*W*.12;y+=Math.sin(q)*H*.12;rot=q*30}if(effect==='figure8'){const q=t*Math.PI*4;x+=Math.sin(q)*W*.14;y+=Math.sin(q*2)*H*.10;rot=Math.sin(q)*20}if(effect==='spiral'){const q=t*Math.PI*10,r=W*.13*(1-t);x+=Math.cos(q)*r;y+=Math.sin(q)*r;rot=q*25}if(effect==='float'){y=H-(H*.12+H*.72*t);x+=Math.sin(t*8)*40}if(effect==='swoop'){y-=Math.sin(t*Math.PI)*H*.12;x+=Math.sin(t*Math.PI)*W*.12}if(effect==='comet')w.style.filter='drop-shadow(-90px 0 0 rgba(255,255,255,.14)) drop-shadow(-180px 0 0 rgba(255,255,255,.07))';if(effect==='burst'){sc*=1+.55*t;rot=t*180}w.style.left=x+'px';w.style.top=y+'px';w.style.transform=`translate(-50%,-50%) scale(${sc}) rotate(${rot}deg)`;w.style.opacity=op;if(t<1)requestAnimationFrame(f);else w.remove()}f(t0)}
   function randomLine(){const c=document.createElement('canvas');c.width=dc.width;c.height=dc.height;const x=c.getContext('2d');x.strokeStyle=colour==='rainbow'?`hsl(${Math.random()*360},100%,65%)`:colour;x.lineWidth=width;x.lineCap='round';x.beginPath();let px=20,py=200;x.moveTo(px,py);for(let i=0;i<100;i++){px+=5;py+=Math.sin(i*.47)*10+(Math.random()-.5)*18;x.lineTo(px,py)}x.stroke();last=c;launch(c)}
   function save(n){const source=last||snap();localStorage.setItem('draw-image-'+n,source.toDataURL());loaded=source}
   function load(n){const d=localStorage.getItem('draw-image-'+n);if(!d)return;const im=new Image();im.onload=()=>{clear();loaded=im;last=im};im.src=d}
@@ -1548,7 +1648,12 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
   function path(points,ctx) {
     ctx.beginPath();
     ctx.moveTo(points[0].x, points[0].y);
-    for (const p of points.slice(1)) ctx.lineTo(p.x,p.y);
+    for(let i=1;i+1<points.length;i++){
+      const p=points[i],next=points[i+1];
+      ctx.quadraticCurveTo(p.x,p.y,(p.x+next.x)/2,(p.y+next.y)/2);
+    }
+    const end=points.at(-1);
+    ctx.lineTo(end.x,end.y);
   }
   function ribbon(a,b,fill,from,to,ctx,penWidth) {
     const length=Math.hypot(b.x-a.x,b.y-a.y);
@@ -1572,7 +1677,19 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
     if(drawStyle==='transparent')ctx.globalAlpha=.35;
     ctx.lineWidth=penWidth;
     ctx.lineCap=ctx.lineJoin='round';
-    if (['rainbow','rainbow-scoop','checker','stripes','rainbow-moving'].includes(colour)) {
+    if(colour==='skywriting'&&points.length>1){
+      const end=points.at(-1).d;
+      for(let i=1;i<points.length;i++){
+        const a=points[i-1],b=points[i];
+        const taper=d=>Math.max(.19,Math.min(1,(end-d)/75));
+        ctx.fillStyle='#fff';ctx.shadowColor='#fff';
+        ctx.shadowBlur=Math.max(4,penWidth*.9);
+        ribbon(a,b,'#fff',.5-taper(a.d)/2,.5+taper(a.d)/2,ctx,penWidth*1.7);
+        ctx.beginPath();ctx.arc(b.x,b.y,penWidth*.85*taper(b.d),0,Math.PI*2);ctx.fill();
+      }
+      ctx.shadowBlur=0;ctx.strokeStyle='#fff';ctx.lineWidth=Math.max(1,penWidth*.23);
+      path(points,ctx);ctx.stroke();
+    }else if (['rainbow','rainbow-scoop','checker','stripes','rainbow-moving'].includes(colour)) {
       const cell = colour==='checker' ? penWidth/2 : colour==='rainbow-scoop' ? Math.max(18,penWidth*4) : 16;
       for(let i=1;i<points.length;i++){
         const a=points[i-1], b=points[i], length=b.d-a.d;
@@ -1723,7 +1840,7 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
       requestAnimationFrame(() => clamp(tools));
     }
   };
-  $('drawScale').oninput=e=>$('drawScaleValue').textContent=e.target.value+'%';$('drawTrailSpeed').oninput=e=>$('drawTrailSpeedValue').textContent=+e.target.value<25?'Slow':+e.target.value<60?'Medium':+e.target.value<85?'Fast':'Fastest';
+  $('drawScale').oninput=e=>$('drawScaleValue').textContent=e.target.value+'%';$('drawTrailSpeed').oninput=e=>$('drawTrailSpeedValue').textContent=e.target.value+'%';
   try{makeDraggable(tools,h)}catch(e){}
   tools.addEventListener('wheel',e=>{e.stopPropagation();}, {passive:true});
   dc.addEventListener('wheel',e=>e.stopPropagation(),{passive:true});
@@ -1758,34 +1875,98 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
  const ui=document.createElement('div');ui.id='niagaraSceneUI';ui.innerHTML=`<div id="niagaraBrownAtmosphere"></div><div id="niagaraSeagulls"><div class="niagaraSeagullLine">${'<i class="niagaraSeagull"></i>'.repeat(14)}</div><div id="niagaraScatteredGulls"></div></div><div id="niagaraBarges"></div><div id="niagaraLarCar" aria-label="Lar-mobile"><div class="hood"></div><div class="carBody"></div><div class="trunk"></div><div class="roof"></div><div class="window"></div><div class="window two"></div><div class="lamp"></div><div class="wheel one"></div><div class="wheel two"></div><div class="niagaraCarSmoke"></div></div>`;space.append(ui);
  const barges=$('niagaraBarges'),car=$('niagaraLarCar'),atmosphere=$('niagaraBrownAtmosphere');
  const fancyLines=['Good heavens above! I wonder what is in those cargo containers, dash it all!','By Jove! Larry seems to have sent another extraordinary shipment downstream, positively preposterous!','Great Scott! I do hope those Lar barges have considered the rocks upstream. One would hate for their cargo to founder upon an inconvenient geological obstruction, goodness gracious!','Heavens! What a peculiar flotilla. It has all the solemnity of commerce and all the logic of a dream one has after eating far too much pudding, I say!','My word! One cannot help wondering whether Larry has established an entire clandestine shipping empire without informing anyone of the relevant maritime regulations, extraordinary!','Good Lord! Those cargo ships seem determined to proceed as though the river were a perfectly reasonable motorway, which is a rather ambitious interpretation of geography, by Jove!','Well, goodness me! I wonder whether Larry has any coherent explanation whatsoever for this extraordinary flotilla, heavens above!','Crikey! What an extraordinary concatenation of nautical absurdities. One almost expects the cargo to begin writing poetry of its own accord, positively astounding!'];
- const carRemark='Is that the Lar-mobile? What could it be doing here?';
+ const carRemark='Locks ah mussy! Is that the Lar-mobile? What is it doing here? Who on earth is driving that thing?';
+ let generation=0, carRemarkPending=false, resumeSpeech=null;
  const pirateLines=['What is going on here, love? I was only asking because I have been through a rather complicated maritime episode myself.','My ship, you see, went down after a thoroughly unreasonable argument with the weather, and I washed up upon an island with nothing but my hat and a profound shortage of writing materials.','And I had nothing whatsoever upon which to write me rhymies, love. Not a scrap, not a page, not even a respectable bit of driftwood.','Then, from somewhere beyond the palms, a parrot flew in and settled beside me as though it had been expecting me all along.','The extraordinary creature began speaking of Larry’s Variety. I had never heard of the place, naturally, but the parrot spoke of it with such conviction that I began to suspect a conspiracy.','I asked the bird where it had learned such things, but parrots, as you may know, are notoriously evasive witnesses.','Eventually a cargo ship appeared and, through circumstances too improbable for a respectable maritime memoir, came to my rescue.','I climbed aboard, saved my hat, thanked the captain, and was immediately informed that the cargo had something to do with Larry.','Larry cargo did not get far, though. Seems they are stuck over there, to the right, in those rocks or something.'];
  function later(fn,ms){const id=setTimeout(()=>{if(active)fn()},ms);timers.push(id);return id}
- function clearAll(){timers.forEach(clearTimeout);timers=[];rafs.forEach(cancelAnimationFrame);rafs=[];if(gullTimer)clearInterval(gullTimer);if(bargeInterval)clearInterval(bargeInterval);if(smokeTimer)clearInterval(smokeTimer);gullTimer=bargeInterval=smokeTimer=null;speechSynthesis.cancel();speechBusy=false;smokeLevel=0;atmosphere.style.background='rgba(55,29,13,0)';barges.innerHTML='';car.classList.remove('show','drive');car.style.display='none';stopBrownMusic();}
+ function clearAll(){generation++;carRemarkPending=false;resumeSpeech?.();resumeSpeech=null;timers.forEach(clearTimeout);timers=[];rafs.forEach(cancelAnimationFrame);rafs=[];if(gullTimer)clearInterval(gullTimer);if(bargeInterval)clearInterval(bargeInterval);if(smokeTimer)clearInterval(smokeTimer);gullTimer=bargeInterval=smokeTimer=null;resumeSpeech?.();speechSynthesis.cancel();speechBusy=false;smokeLevel=0;atmosphere.style.background='rgba(55,29,13,0)';barges.innerHTML='';car.classList.remove('show','drive');car.style.cssText='display:none';$('niagaraScatteredGulls').replaceChildren();stopBrownMusic();}
  function playVideo(){video.pause();try{video.currentTime=0}catch{}video.load();video.play().catch(()=>{});}
  function voice(kind){const vs=speechSynthesis.getVoices(),gb=vs.filter(v=>/^en-GB/i.test(v.lang));if(kind==='fancy')return gb.find(v=>/female|woman|susan|hazel|libby|kate|serena|moira/i.test(v.name))||gb[0]||vs[0]||null;return gb.find(v=>/male|man|george|daniel|ryan|oliver|arthur|brian|roger/i.test(v.name))||gb[0]||vs[0]||null;}
- function speak(text,kind){if(!active||carDriving)return;return new Promise(resolve=>{const run=()=>{if(!active||carDriving){resolve();return}speechBusy=true;$('typeInput').readOnly=true;const u=new SpeechSynthesisUtterance(text);u.voice=voice(kind);u.lang='en-GB';u.pitch=kind==='pirate'?.55:1.06;u.rate=kind==='pirate'?.58:.82;u.volume=1;u.onend=u.onerror=()=>{speechBusy=false;if(active&&!carDriving)$('typeInput').readOnly=false;resolve()};speechSynthesis.speak(u)};if(speechBusy){const wait=()=>{if(!speechBusy)run();else setTimeout(wait,120)};wait()}else run()})}
- function characterLoop(){let fi=0,pi=0,turn=0;const next=()=>{if(!active||carDriving)return;const line=turn%2===0?fancyLines[fi++%fancyLines.length]:pirateLines[pi++%pirateLines.length];turn++;speak(line,turn%2===1?'fancy':'pirate').then(()=>later(next,900));};next()}
+ async function speak(text,kind){
+   const scene=generation;
+   if(!active||carDriving||!window.speechSynthesis)return;
+   await new Promise(resolve=>{
+     const u=new SpeechSynthesisUtterance(text);
+     u.voice=voice(kind);u.lang='en-GB';u.pitch=kind==='pirate'?.55:1.06;
+     u.rate=kind==='pirate'?.58:.82;u.volume=1;
+     const done=()=>{if(resumeSpeech===done)resumeSpeech=null;resolve();};
+     resumeSpeech=done;u.onend=u.onerror=done;speechSynthesis.speak(u);
+   });
+   return scene===generation;
+ }
+ async function characterLoop(){
+   if(!window.speechSynthesis)return;
+   const scene=generation;
+   let fi=0,pi=0,turn=0;
+   while(active&&!carDriving&&scene===generation){
+     const fancy=turn++%2===0;
+     const line=fancy?fancyLines[fi++%fancyLines.length]:pirateLines[pi++%pirateLines.length];
+     for(const clause of line.match(/[^,.!?;]+[,.*!?;]*/g)||[line]){
+       if(!active||carDriving||scene!==generation)return;
+       await speak(clause.trim(),fancy?'fancy':'pirate');
+       if(!active||carDriving||scene!==generation)return;
+       if(carRemarkPending&&fancy){carRemarkPending=false;await speak(carRemark,'fancy');
+         await new Promise(resolve=>setTimeout(resolve,950));
+         if(active&&scene===generation&&!carDriving)await speak('If only we could clear this dreadful haze. Try clicking one of those illuminated cargo boxes. And do give the Lar-mobile a click when you can see it.','fancy');
+         await new Promise(resolve=>setTimeout(resolve,1100));}
+     }
+   }
+ }
  function startBrownMusic(){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)();const gain=audioCtx.createGain();gain.gain.value=.012;gain.connect(audioCtx.destination);const notes=[65.41,73.42,82.41,98,87.31,73.42,55];let i=0;const play=()=>{if(!active)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=i%2?'sine':'triangle';o.frequency.value=notes[i++%notes.length];g.gain.setValueAtTime(.0001,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.11,audioCtx.currentTime+.08);g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+1.45);o.connect(g);g.connect(gain);o.start();o.stop(audioCtx.currentTime+1.6)};play();musicTimer=setInterval(play,1750)}catch{}}
  function stopBrownMusic(){try{if(musicTimer)clearInterval(musicTimer);musicTimer=null;if(audioCtx){audioCtx.close();audioCtx=null}}catch{}}
- function makeBarge(index){const b=document.createElement('div');b.className='niagaraBarge';const stack=index%3===1?'<div class="niagaraCargoStack2">LAR CARGO</div>':'';b.innerHTML='<div class="hull"></div><div class="deck"></div><div class="label">L.A.R.R.Y</div><div class="cargoBox">LAR CARGO</div>'+stack+'<div class="wake"></div><div class="niagaraBrownSmoke"></div>';b.style.bottom=(5+Math.random()*3)+'%';barges.appendChild(b);wireCargoClicks();const start=performance.now(),duration=14500+Math.random()*1500,phase=Math.random()*Math.PI*2,variant=index%4;function frame(now){if(!active){b.remove();return}const t=Math.min(1,(now-start)/duration),x=cubic(-440,40,610,innerWidth+480,t);let y=cubic(5,8+variant*1.7,20+Math.sin(index)*2,30+variant*2,t)+Math.sin(t*Math.PI*12+phase)*.55;if(variant===1)y+=Math.sin(t*Math.PI*2)*1.1;if(variant===2)y+=Math.sin(t*Math.PI*3)*.8;b.style.left=x+'px';b.style.bottom=y+'%';b.style.transform='rotate('+(Math.sin(t*Math.PI*5+phase)*.22)+'deg)';b.style.opacity=t<.025?t/.025:t>.96?(1-t)/.04:1;if(t<1)requestAnimationFrame(frame);else b.remove()}requestAnimationFrame(frame);return duration}
+ function makeBarge(index){const b=document.createElement('div');b.className='niagaraBarge';const stack=index%3===1?'<div class="niagaraCargoStack2" title="click to clear the air">LAR CARGO<span class="cargoBeam"></span></div>':'';b.innerHTML='<div class="hull"></div><div class="deck"></div><div class="label">L.A.R.R.Y</div><div class="cargoBox" title="click to clear the air">LAR CARGO<span class="cargoBeam"></span></div>'+stack+'<div class="wake"></div><div class="niagaraBrownSmoke"></div>';b.style.bottom=(5+Math.random()*3)+'%';barges.appendChild(b);wireCargoClicks();const scene=generation,start=performance.now(),duration=14500+Math.random()*1500,phase=Math.random()*Math.PI*2,variant=index%4;function frame(now){if(!active||scene!==generation){b.remove();return}const t=Math.min(1,(now-start)/duration),x=cubic(-440,40,610,innerWidth+480,t);let y=cubic(5,8+variant*1.7,20+Math.sin(index)*2,30+variant*2,t)+Math.sin(t*Math.PI*12+phase)*.55;if(variant===1)y+=Math.sin(t*Math.PI*2)*1.1;if(variant===2)y+=Math.sin(t*Math.PI*3)*.8;b.style.left=x+'px';b.style.bottom=y+'%';b.style.transform='rotate('+(Math.sin(t*Math.PI*5+phase)*.22)+'deg)';b.style.opacity=t<.025?t/.025:t>.96?(1-t)/.04:1;if(t<1)requestAnimationFrame(frame);else b.remove()}requestAnimationFrame(frame);return duration}
  function cubic(a,b,c,d,t){const u=1-t;return u*u*u*a+3*u*u*t*b+3*u*t*t*c+t*t*t*d}
- function spawnBarge(){const n=++spawnBarge.count;const duration=makeBarge(n);if(n<=5)later(()=>speak(fancyLines[(n-1)%fancyLines.length],'fancy'),2200);if(n===5)later(showCar,duration+350)}spawnBarge.count=0;
- function pathPoint(t){const pts=[{x:1.08,y:.25},{x:.88,y:.25},{x:.72,y:.25},{x:.58,y:.46},{x:.48,y:.18},{x:.37,y:.20},{x:.28,y:.40},{x:.18,y:.20},{x:.08,y:.28},{x:-.12,y:.30}];const q=t*(pts.length-1),i=Math.min(pts.length-2,Math.floor(q)),f=q-i,a=pts[i],b=pts[i+1];return{x:(a.x+(b.x-a.x)*f)*innerWidth,y:(a.y+(b.y-a.y)*f)*innerHeight}}
- function runGullLine(){const birds=[...document.querySelectorAll('.niagaraSeagullLine .niagaraSeagull')],start=performance.now(),duration=21000,gap=650;function frame(now){if(!active)return;birds.forEach((bird,i)=>{const elapsed=now-start-i*gap;if(elapsed<0){bird.style.opacity=0;return}const t=Math.min(1,elapsed/duration),p=pathPoint(t),p2=pathPoint(Math.min(1,t+.002));bird.style.opacity=t>.94?(1-t)/.06:1;bird.style.transform=`translate3d(${p.x}px,${p.y}px,0) rotate(${Math.atan2(p2.y-p.y,p2.x-p.x)*180/Math.PI}deg)`});if(now-start>duration+gap*(birds.length-1)+200){requestAnimationFrame(()=>runGullLine());return}requestAnimationFrame(frame)}requestAnimationFrame(frame)}
- function scattered(){const box=$('niagaraScatteredGulls'),g=document.createElement('i');g.className='niagaraSeagull';g.style.position='absolute';box.appendChild(g);const start=performance.now(),duration=15000+Math.random()*5000,delay=Math.random()*700,circle=Math.random()<.38,orbitR=18+Math.random()*70,orbitY=10+Math.random()*50,scale=.45+Math.random()*1.1;function frame(now){if(!active){g.remove();return}if(now-start<delay){requestAnimationFrame(frame);return}const t=Math.min(1,(now-start-delay)/duration),p=pathPoint(t),p2=pathPoint(Math.min(1,t+.002));g.style.opacity=.5;const ox=circle?Math.cos(t*Math.PI*4)*orbitR:Math.sin(t*9)*12,oy=circle?Math.sin(t*Math.PI*4)*orbitY:Math.cos(t*7)*12;g.style.transform=`translate3d(${p.x+ox}px,${p.y+oy}px,0) rotate(${Math.atan2(p2.y-p.y,p2.x-p.x)*180/Math.PI}deg) scale(${scale})`;if(t<1)requestAnimationFrame(frame);else g.remove()}requestAnimationFrame(frame)}
- function startGulls(){runGullLine();for(let i=0;i<16;i++)scattered();gullTimer=setInterval(()=>{if(active)scattered()},1100)}
+ function spawnBarge(){const n=++spawnBarge.count;makeBarge(n);if(n===3)later(showCar,2700);}spawnBarge.count=0;
+ function flyGulls(){
+   const box=$('niagaraScatteredGulls'), scene=generation;
+   const count=1+Math.floor(Math.random()*4);
+   for(let i=0;i<count;i++){
+     const bird=document.createElement('i');bird.className='niagaraSeagull';
+     box.append(bird);
+     const altitude=(.10+Math.random()*.34)*innerHeight;
+     const start=performance.now()+i*300,duration=12000+Math.random()*5000;
+     const direction=Math.random()<.3?1:-1;
+     function frame(now){
+       if(!active||scene!==generation){bird.remove();return;}
+       const t=(now-start)/duration;
+       if(t>=1){bird.remove();return;}
+       bird.style.opacity=t<0?0:.8;
+       const x=innerWidth*(direction===1?t*1.16-.08:1.08-t*1.16);
+       bird.style.transform='translate('+x+'px,'+(altitude+Math.sin(t*8+i)*13)+'px)';
+       requestAnimationFrame(frame);
+     }
+     requestAnimationFrame(frame);
+   }
+ }
+ function startGulls(){flyGulls();gullTimer=setInterval(flyGulls,3100);}
  function beginSmoke(){if(smokeTimer)clearInterval(smokeTimer);smokeLevel=0;atmosphere.style.background='rgba(55,29,13,0)';smokeTimer=setInterval(()=>{if(!active||carDriving)return;smokeLevel=Math.min(1,smokeLevel+.055);atmosphere.style.background=`rgba(55,29,13,${.03+smokeLevel*.72})`},1200)}
  function clearPollution(){if(!active)return;smokeLevel=0;atmosphere.style.background='rgba(55,29,13,0)';beginSmoke()}
  function lowTuba(){try{const ac=new (window.AudioContext||window.webkitAudioContext)(),g=ac.createGain();g.gain.value=.12;ac.resume?.();g.connect(ac.destination);const o=ac.createOscillator(),h=ac.createOscillator(),og=ac.createGain();o.type='triangle';h.type='sine';o.frequency.setValueAtTime(46,ac.currentTime);o.frequency.exponentialRampToValueAtTime(28,ac.currentTime+.9);h.frequency.setValueAtTime(23,ac.currentTime);h.frequency.exponentialRampToValueAtTime(18,ac.currentTime+.9);og.gain.value=.32;o.connect(g);h.connect(og);og.connect(g);o.start();h.start();o.stop(ac.currentTime+1.05);h.stop(ac.currentTime+1.05);setTimeout(()=>ac.close(),1200)}catch{}}
- function wireCargoClicks(){barges.querySelectorAll('.cargoBox,.niagaraCargoStack2').forEach(box=>{if(box.dataset.wired)return;box.dataset.wired='1';box.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();clearPollution();lowTuba()})})}
- function showCar(){if(!active||carDriving)return;car.classList.add('show');car.style.display='block';car.style.pointerEvents='auto';beginSmoke();startBrownMusic();speak(carRemark,'fancy').then(()=>{if(active&&!carDriving)characterLoop()})}
- function driveCar(){if(!active||carDriving)return;carDriving=true;if(smokeTimer){clearInterval(smokeTimer);smokeTimer=null}speechSynthesis.cancel();speechBusy=false;$('typeInput').readOnly=true;car.classList.add('drive');car.style.pointerEvents='none';const start=performance.now(),duration=4700;function frame(now){if(!active)return;const t=Math.min(1,(now-start)/duration),x=3+112*t,y=5+20*t;car.style.left=x+'%';car.style.bottom=y+'%';car.style.transform=`translateY(${-5*Math.sin(t*Math.PI*5)}px) scale(${1+.12*t})`;car.style.opacity=t>.94?(1-t)/.06:1;if(t<1)requestAnimationFrame(frame);else finish()}requestAnimationFrame(frame)}
- function finish(){if(!active)return;car.remove();stopBrownMusic();try{const ac=new (window.AudioContext||window.webkitAudioContext)(),g=ac.createGain();g.gain.value=.024;g.connect(ac.destination);const t=ac.currentTime;const tuba=ac.createOscillator(),tg=ac.createGain();tuba.type='triangle';tuba.frequency.setValueAtTime(62,t);tuba.frequency.exponentialRampToValueAtTime(31,t+1.55);tg.gain.setValueAtTime(.0001,t);tg.gain.exponentialRampToValueAtTime(.9,t+.08);tg.gain.exponentialRampToValueAtTime(.0001,t+1.75);tuba.connect(tg);tg.connect(g);tuba.start(t);tuba.stop(t+1.8);const organ=ac.createOscillator(),og=ac.createGain();organ.type='sine';organ.frequency.setValueAtTime(72,t+.05);organ.frequency.exponentialRampToValueAtTime(38,t+1.95);og.gain.setValueAtTime(.0001,t+.05);og.gain.exponentialRampToValueAtTime(.55,t+.12);og.gain.exponentialRampToValueAtTime(.0001,t+2.15);organ.connect(og);og.connect(g);organ.start(t+.05);organ.stop(t+2.2);setTimeout(()=>ac.close(),2500)}catch{}later(()=>video.pause(),2200);later(()=>{if(active)dialog.showModal()},2420)}
- dialog=document.createElement('dialog');dialog.id='niagaraDialog';dialog.innerHTML='<a href="'+PAGE+'" id="niagaraFindOut">FIND OUT WHAT HAPPENED</a><button id="niagaraReturn" type="button">RETURN TO STARFIELD</button>';document.body.appendChild(dialog);dialog.querySelector('#niagaraReturn').onclick=()=>exit();
- function scene(){clearAll();spawnBarge.count=0;playVideo();startGulls();spawnBarge();bargeInterval=setInterval(()=>{if(active&&!carDriving)spawnBarge()},7800)}
- function enter(){active=true;carDriving=false;$('typeInput').readOnly=false;document.getElementById('starfieldPanel').classList.remove('open');space.classList.add('niagaraMode');btn.textContent='RETURN TO STARFIELD';btn.classList.add('active');ui.style.display='block';try{dialog.close()}catch{}scene()}
- function exit(){active=false;clearAll();video.pause();space.classList.remove('niagaraMode');ui.style.display='none';btn.textContent='VISIT NIAGARA FALLS?';btn.classList.remove('active');document.getElementById('starfieldPanel').classList.remove('open');$('typeInput').readOnly=false;try{dialog.close()}catch{}}
+ function wireCargoClicks(){barges.querySelectorAll('.cargoBox,.niagaraCargoStack2').forEach(box=>{if(box.dataset.wired)return;box.dataset.wired='1';box.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();clearPollution()})})}
+ function showCar(){if(!active||carDriving||car.classList.contains('show'))return;car.classList.add('show');car.style.display='block';car.style.pointerEvents='auto';beginSmoke();startBrownMusic();carRemarkPending=true}
+ function driveCar(){if(!active||carDriving)return;carDriving=true;if(smokeTimer){clearInterval(smokeTimer);smokeTimer=null}resumeSpeech?.();speechSynthesis.cancel();speechBusy=false;$('typeInput').readOnly=true;car.classList.add('drive');car.style.pointerEvents='none';const start=performance.now(),duration=4700;function frame(now){if(!active)return;const t=Math.min(1,(now-start)/duration),x=3+112*t,y=5+20*t;car.style.left=x+'%';car.style.bottom=y+'%';car.style.transform=`translateY(${-5*Math.sin(t*Math.PI*5)}px) scale(${1+.12*t})`;car.style.opacity=t>.94?(1-t)/.06:1;if(t<1)requestAnimationFrame(frame);else later(finish,1000)}requestAnimationFrame(frame)}
+ function finish(){if(!active)return;car.style.display='none';stopBrownMusic();try{const ac=new (window.AudioContext||window.webkitAudioContext)(),g=ac.createGain();g.gain.value=.35;ac.resume?.();g.connect(ac.destination);const t=ac.currentTime;const tuba=ac.createOscillator(),tg=ac.createGain();tuba.type='triangle';tuba.frequency.setValueAtTime(62,t);tuba.frequency.exponentialRampToValueAtTime(31,t+1.55);tg.gain.setValueAtTime(.0001,t);tg.gain.exponentialRampToValueAtTime(.9,t+.08);tg.gain.exponentialRampToValueAtTime(.0001,t+1.75);tuba.connect(tg);tg.connect(g);tuba.start(t);tuba.stop(t+1.8);const organ=ac.createOscillator(),og=ac.createGain();organ.type='sine';organ.frequency.setValueAtTime(72,t+.05);organ.frequency.exponentialRampToValueAtTime(38,t+1.95);og.gain.setValueAtTime(.0001,t+.05);og.gain.exponentialRampToValueAtTime(.55,t+.12);og.gain.exponentialRampToValueAtTime(.0001,t+2.15);organ.connect(og);og.connect(g);organ.start(t+.05);organ.stop(t+2.2);setTimeout(()=>ac.close(),2500)}catch{}later(()=>video.pause(),2200);later(()=>{if(active)dialog.showModal()},2420)}
+ dialog=document.createElement('dialog');dialog.id='niagaraDialog';dialog.innerHTML='<a href="'+PAGE+'" id="niagaraFindOut">find out what happened</a><button id="niagaraReturn" type="button">return to s.s. enterprose</button>';document.body.appendChild(dialog);dialog.querySelector('#niagaraReturn').onclick=()=>exit();
+ function scene(){clearAll();spawnBarge.count=0;playVideo();startGulls();spawnBarge();characterLoop();bargeInterval=setInterval(()=>{if(active&&!carDriving)spawnBarge()},7800)}
+ const returnButton=document.createElement('button');
+ returnButton.id='niagaraTopReturn';returnButton.textContent='return to s.s. enterprose';
+ document.body.append(returnButton);returnButton.onclick=()=>exit();
+ function enter(){
+   active=true;carDriving=false;
+   window.stopShakeSpeech?.();
+   $('typeInput').blur();$('typeInput').readOnly=true;
+   document.querySelectorAll('.panel.open').forEach(panel=>panel.classList.remove('open'));
+   document.getElementById('starColourPicker')?.close();
+   document.querySelectorAll('.radioPopup').forEach(popup=>popup.hidden=true);
+   $('audio').pause();$('randomShowToggle').checked=false;stopMusicVisual();
+   space.classList.add('niagaraMode');document.body.classList.add('atNiagara');
+   ui.style.display='block';dialog.close();scene();
+ }
+ function exit(){
+   active=false;clearAll();video.pause();space.classList.remove('niagaraMode');
+   document.body.classList.remove('atNiagara');ui.style.display='none';
+   $('typeInput').readOnly=false;dialog.close();
+ }
  car.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();driveCar()});btn=btn.cloneNode(true);$('niagaraButton').replaceWith(btn);btn.addEventListener('click',e=>{e.stopPropagation();active?exit():enter()});
 })();
 </script>
@@ -1924,7 +2105,7 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
   }
   function wheelSelect(control){
     const draw=Boolean(control.closest('#drawToolsPanel'));
-    if(draw)control.addEventListener('pointerdown',()=>{drawWheelControl=control;});
+    if(draw){for(const event of ['pointerdown','pointerenter','change'])control.addEventListener(event,()=>{drawWheelControl=control;});}
     control.addEventListener('wheel',event=>{
       if(!event.deltaY)return;
       event.preventDefault();
@@ -2128,7 +2309,22 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
       $('drawCanvas').dataset.width=widths[index];
       [...track.children].forEach((cell,i)=>{cell.dataset.size=i+1;cell.classList.toggle('selected',i===index);});
     }
-    widthInput.oninput=applyWidth;
+    function mapWidth(strip,input){
+      let pointer=null;
+      function update(event){
+        const rect=strip.querySelector('.widthTrack').getBoundingClientRect();
+        input.value=Math.max(1,Math.min(11,1+Math.floor(11*(event.clientX-rect.left)/rect.width)));
+        input.dispatchEvent(new Event('input',{bubbles:true}));
+      }
+      input.addEventListener('pointerdown',event=>{
+        if(event.button!==0)return;
+        event.preventDefault();input.focus({preventScroll:true});
+        pointer=event.pointerId;input.setPointerCapture(pointer);update(event);
+      });
+      input.addEventListener('pointermove',event=>{if(pointer===event.pointerId)update(event);});
+      input.addEventListener('lostpointercapture',()=>pointer=null);
+    }
+    widthInput.oninput=applyWidth;mapWidth(widthPalette,widthInput);
     applyWidth();
     const pal = $('drawPalette');
     const colourControls = document.createElement('div');
@@ -2144,7 +2340,7 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
       ['fixed','Line effect · solid colour'],['rainbow-pulse','Rainbow 2 · Cycle'],
       ['rainbow','Rainbow 3 · Gradient'],['rainbow-scoop','Rainbow 4 · Random'],
       ['rainbow-order','Rainbow · next colour per stroke'],['checker','Black and white checker'],
-      ['stripes','Rainbow · long smooth gradient'],['rainbow-moving','Rainbow 1 · Moving'],['original','Keep drawn colours']
+      ['stripes','Rainbow · long smooth gradient'],['rainbow-moving','Rainbow 1 · Moving'],['skywriting','Skywriting'],['original','Keep drawn colours']
     ];
     function refreshEffects(){
       effect.replaceChildren(...(target.value==='drawn'?lineEffects.slice(0,-1):lineEffects).map(([v,n])=>new Option(n,v)));
@@ -2154,10 +2350,22 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
     const steps = colourControls.querySelector('[aria-live]');
     const settings = {
       drawn: { effect:'fixed', colour: '#ffffff', sequence: [], enabled: false, index: 0 },
-      launched: { effect:'original', colour: '#ffffff', sequence: [], enabled: false, index: 0 }
+      launched: { effect:'fixed', colour: '#ffffff', sequence: [], enabled: false, index: 0 }
+    };
+    let openLaunchPalette;
+    const matchLabel=document.createElement('label');
+    matchLabel.className='matchDrawn';
+    const match=document.createElement('input');
+    match.type='checkbox';match.setAttribute('aria-label','Match drawn colours');
+    matchLabel.append(match,'match');
+    match.onchange=()=>{
+      if(!match.checked)openLaunchPalette?.();
+      window.launchPreviewInk=null;
+      window.launchColourRevision=(window.launchColourRevision||0)+1;
     };
     const selected = () => settings[target.value];
     window.pickDrawingColour = kind => {
+      if(kind==='launched'&&match.checked)return 'original';
       const entry = settings[kind];
       if (!entry.enabled || !entry.sequence.length) return entry.effect==='fixed'?entry.colour:entry.effect;
       return entry.sequence[entry.index++ % entry.sequence.length];
@@ -2182,12 +2390,14 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
       for (const button of (target.value==='drawn'?pal:launchPalette).children) {
         const active = button.dataset.color === entry.colour;
         button.setAttribute('aria-pressed', String(active));
-        button.style.outline = active ? '2px solid white' : '';
+        button.style.outline = active ? '2px solid #eb1e62' : '';
       }
     }
     let pendingColour=null;
-    const effectSets={drawn:new Set(),launched:new Set()};
+    const presetEffects=lineEffects.slice(1).filter(([id])=>id!=='original').map(([id])=>id);
+    const effectSets={drawn:new Set(presetEffects),launched:new Set(presetEffects)};
     function activate(value,record=true){
+      if(target.value==='launched'&&record)match.checked=value==='original';
       const entry=selected();
       entry.colour=value;entry.effect='fixed';
       if(record&&entry.enabled)entry.sequence.push(value);
@@ -2199,13 +2409,28 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
       }
       refreshColours();
     }
+    function hoverInk(button,kind,ink){
+      const key=kind==='drawn'?'drawPreviewInk':'launchPreviewInk';
+      button.onpointerenter=()=>{
+        if(pendingColour)return;
+        window[key]=ink;
+        if(kind==='launched')window.launchColourRevision=(window.launchColourRevision||0)+1;
+      };
+      button.onpointerleave=()=>{
+        if(window[key]!==ink)return;
+        window[key]=null;
+        if(kind==='launched')window.launchColourRevision=(window.launchColourRevision||0)+1;
+      };
+    }
     function renderPalette(container,kind){
       container.replaceChildren();
-      const shortcutAnchor=kind==='drawn'?widthPalette:container;
-      if(shortcutAnchor.nextElementSibling?.classList.contains('effectShortcuts')){
-        if(kind==='drawn')shortcutAnchor.nextElementSibling.replaceChildren();
-        else shortcutAnchor.nextElementSibling.remove();
+      const shortcutAnchor=kind==='drawn'?widthPalette:launchWidth;
+      let shortcuts=shortcutAnchor.nextElementSibling;
+      if(!shortcuts?.classList.contains('effectShortcuts')){
+        shortcuts=document.createElement('div');shortcuts.className='effectShortcuts';
+        shortcutAnchor.after(shortcuts);
       }
+      shortcuts.replaceChildren();
       const assigned=[...effectSets[kind]];
       palettes[kind].forEach(([value,name],index)=>{
         const ink=value;
@@ -2227,48 +2452,55 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
           openColour(value,ink=>{palettes[kind][index]=[ink,ink];button.style.background=ink;button.dataset.color=ink;button.title=ink;activate(ink,false);});
           colourDialog.addEventListener('close',()=>{window.drawPreviewInk=null;window.launchPreviewInk=null;renderPalette(container,kind);},{once:true});
         };
-        container.append(button);
+        hoverInk(button,kind,ink);container.append(button);
       });
       const plus=document.createElement('button');
       plus.type='button';plus.textContent='+';plus.title='Assign colours and effects';
       plus.onclick=()=>{
+        if(colourDialog.open&&colourDialog.dataset.paletteMode==='assign'&&colourDialog.dataset.paletteKind===kind){colourDialog.close();return;}
         target.value=kind;pendingColour=null;
         colourDialog.addEventListener('close',()=>{pendingColour=null;window.drawPreviewInk=null;window.launchPreviewInk=null;},{once:true});
         openColour(/^#[0-9a-f]{6}$/i.test(selected().colour)?selected().colour:'#ffffff',value=>{
           pendingColour={kind,value};pickerNote.textContent='Click a solid swatch to assign '+value;activate(value,false);
         });
         pickerNote.textContent='Choose a colour, then click a solid swatch to assign it.';
-        colourDialog.dataset.paletteMode='assign';pickerEffects.replaceChildren(pickerNote);
-        if(!colourDialog.dataset.dragged){
+        colourDialog.dataset.paletteMode='assign';colourDialog.dataset.paletteKind=kind;pickerEffects.replaceChildren(pickerNote);
+        {
           const bounds=dp.getBoundingClientRect();
           const popup=colourDialog.getBoundingClientRect();
           const left=bounds.left-popup.width-10;
           colourDialog.style.left=Math.max(8,left)+'px';
-          colourDialog.style.top=Math.max(8,innerHeight-popup.height-54)+'px';
+          colourDialog.style.top=Math.max(8,Math.min(bounds.top,innerHeight-popup.height-8))+'px';
           colourDialog.style.right='auto';colourDialog.style.bottom='auto';
         }
+        pickerEffects.classList.add('effectChoices');
+        if(kind==='launched'){
+          const keep=document.createElement('button');keep.type='button';keep.textContent='match drawn colours';
+          keep.onclick=()=>{match.checked=!match.checked;window.launchPreviewInk=null;window.launchColourRevision=(window.launchColourRevision||0)+1;keep.setAttribute('aria-pressed',String(match.checked));};
+          keep.setAttribute('aria-pressed',String(match.checked));pickerEffects.append(keep);
+        }
+        const names={skywriting:'Skywriting','rainbow-pulse':'Cycle',rainbow:'Gradient','rainbow-scoop':'Random','rainbow-order':'Order',checker:'Checker',stripes:'Long','rainbow-moving':'Moving'};
         for(const [id,name] of lineEffects.slice(1)){
-          if(id==='original'&&kind==='drawn')continue;
+          if(id==='original')continue;
           const label=document.createElement('label'), box=document.createElement('input');
           box.type='checkbox';box.checked=effectSets[kind].has(id);
-          box.onchange=()=>{if(box.checked)effectSets[kind].add(id);else effectSets[kind].delete(id);renderPalette(container,kind);};
-          label.append(box,' '+name);pickerEffects.append(label);
+          box.onchange=()=>{if(box.checked){effectSets[kind].add(id);target.value=kind;activate(id);}else effectSets[kind].delete(id);renderPalette(container,kind);};
+          label.append(box,' '+String.fromCharCode(96+lineEffects.findIndex(([key])=>key===id))+' '+(names[id]||name));pickerEffects.append(label);
         }
       };
+      if(kind==='launched')openLaunchPalette=plus.onclick;
       const widthStrip=kind==='drawn'?widthPalette:launchWidth;
       widthStrip.querySelector('.palettePlus')?.remove();
       plus.className='palettePlus colorSwatch';widthStrip.append(plus);
-      for(const preset of assigned){
+      for(const preset of assigned.filter(id=>id!=='original')){
         const shortcut=document.createElement('button');shortcut.type='button';shortcut.className='effectShortcut';
-        shortcut.textContent=lineEffects.findIndex(([id])=>id===preset);
+        shortcut.textContent=String.fromCharCode(96+lineEffects.findIndex(([id])=>id===preset));
         shortcut.title=lineEffects.find(([id])=>id===preset)[1];shortcut.setAttribute('aria-label',shortcut.title);
         shortcut.onclick=()=>{target.value=kind;activate(preset);};
-        let shortcuts=shortcutAnchor.nextElementSibling;
-        if(!shortcuts?.classList.contains('effectShortcuts')){
-          shortcuts=document.createElement('div');shortcuts.className='effectShortcuts';(kind==='drawn'?widthPalette:launchWidth).after(shortcuts);
-        }
-        shortcuts.append(shortcut);
+        shortcut.setAttribute('aria-pressed',String(settings[kind].colour===preset&&settings[kind].effect==='fixed'));
+        hoverInk(shortcut,kind,preset);shortcuts.append(shortcut);
       }
+      if(kind==='launched')shortcuts.append(matchLabel);
     }
     const launchPalette=document.createElement('div');launchPalette.className='programmablePalette';
     pal.classList.add('programmablePalette');
@@ -2348,9 +2580,9 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
       [...launchWidth.querySelector('.widthTrack').children].forEach((cell,i)=>cell.classList.toggle('selected',i+1===+launchWidthInput.value));
       window.launchColourRevision=(window.launchColourRevision||0)+1;
     }
-    launchWidthInput.oninput=updateLaunchWidth;updateLaunchWidth();
+    launchWidthInput.oninput=updateLaunchWidth;mapWidth(launchWidth,launchWidthInput);updateLaunchWidth();
     const launchTuning=document.createElement('div');launchTuning.className='drawControlRow';
-    launchTuning.innerHTML='<label>linger <input id="launchLinger" type="range" min="1000" max="12000" value="5500"></label><label>glow <input id="launchGlow" type="range" min="0" max="35" value="8"></label>';
+    launchTuning.innerHTML='<label>linger <input id="launchLinger" type="range" min="1000" max="12000" value="3800"></label><label>glow <input id="launchGlow" type="range" min="0" max="35" value="8"></label>';
     const launchStyles=document.createElement('div');launchStyles.className='drawControlRow';
     launchStyles.innerHTML='<label>style <select id="launchStyle"><option value="opaque">solid</option><option value="outlined">outlined</option><option value="transparent">transparent</option></select></label>';
     launchTuning.querySelector('#launchGlow').oninput=launchStyles.querySelector('select').onchange=()=>window.launchColourRevision=(window.launchColourRevision||0)+1;
@@ -2425,7 +2657,6 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
   const niagaraDialog=$('niagaraDialog');
   /* Patch the existing Niagara scene by observing the car and making all remaining barges founder when it is clicked. */
   const car=$('niagaraLarCar'),bargeBox=$('niagaraBarges');
-  if(car&&bargeBox){car.addEventListener('click',()=>{bargeBox.querySelectorAll('.niagaraBarge').forEach((b,i)=>{b.style.transition='transform 2600ms ease-in,opacity 2600ms ease-in,bottom 2600ms ease-in';b.style.transform=`translateY(${60+i*10}px) scale(${Math.max(.25,1-i*.08)})`;b.style.opacity='0';b.style.bottom='-8%'});},{capture:true});}
   /* Niagara voice parameters are set directly in the Niagara scene source above. */
   /* Ensure radio starts clean each time it is opened. */
   $('radio')?.addEventListener('click',()=>{if($('randomShowToggle'))$('randomShowToggle').checked=false;if($('radioShowPanel'))$('radioShowPanel').classList.remove('open')},{capture:true});
@@ -2497,6 +2728,10 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
     button.onpointerup=button.onpointercancel=button.onlostpointercapture=stop;
     button.onclick=e=>{if(!e.detail)step();};
   }
+  for(const id of ['radioVolumeDown','radioVolumeUp']){
+    const button=$(id),step=button.onclick;
+    holdArrow(button,step);
+  }
   holdArrow($('prevSong'),()=>changeTrack(-1));holdArrow($('nextSong'),()=>changeTrack(1));
   holdArrow(previousHue,()=>changeHue(hue-10));
   holdArrow(nextHue,()=>changeHue(hue+10));
@@ -2555,7 +2790,7 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
   ['cursor','field','sub','rime'].forEach((kind,index)=>{
     const heading=textHeadings[index], next=textHeadings[index+1];
     const enabled=$(kind==='rime'?'rimeToggle':kind+'Visible').closest('label');
-    heading.append(' ',enabled);
+
     const section=document.createElement('section');
     section.className='textColourSection';
     const body=document.createElement('div');
@@ -2577,15 +2812,15 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
     const marker=document.createElement('span');
     marker.className='hueMarker';chip.append(marker);
     const status=document.createElement('button');status.type='button';status.textContent='Edit';status.onclick=open;
-    status.className='textColourStatus';heading.append(status);
+    status.className='textColourStatus';heading.append(status,enabled);
     function updateStatus(){
       const mode=rainbowModes.indexOf(select.value);
       status.title=mode>=0?'Edit colour · Rainbow '+(mode+1):'Edit colour';
       marker.style.backgroundColor=mode>=0?solid:select.value;marker.style.backgroundImage='none';
     }
     select.addEventListener('change',updateStatus);
-    updateStatus();
     let solid=/^#[0-9a-f]{6}$/i.test(select.value)?select.value:'#ffffff';
+    updateStatus();
     function choose(value){
       if(![...select.options].some(option=>option.value===value))select.add(new Option(value,value));
       select.value=value;select.dispatchEvent(new Event('change',{bubbles:true}));
@@ -2596,6 +2831,7 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
       colourDialog.dataset.textTarget=kind;
     }
     chip.onclick=event=>{
+      if(chip.classList.contains('squareTextPicker')){if(event.detail<2)open();return;}
       const box=chip.getBoundingClientRect();
       const fraction=Math.max(0,Math.min(.999,(event.clientX-box.left)/box.width));
       const neutrals=['#ffffff','#000000','#929292','#795137'];
@@ -2609,7 +2845,7 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
       marker.style.left=(fraction*100)+'%';
       choose(solid);
     };
-    chip.ondblclick=open;
+    chip.ondblclick=()=>{if(!chip.classList.contains('squareTextPicker'))open();};
     chip.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}};
     const row=document.createElement('div');row.className='row textRainbows';row.append('Rainbow');
     const toggles=rainbowModes.map((mode,i)=>{
@@ -2640,20 +2876,58 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
       if(kind==='cursor')$('typeInput').dataset.vertical=e.target.value;
     };
     typography.append(vertical);row.after(typography,timing);
-    if(kind==='cursor')body.append($('sendMode').closest('.row'));
-    if(kind==='rime')body.append($('rimeCloud').closest('.row'));
+    const sizeControl=$(kind+'Size');
+    const sizeLabel=sizeControl.previousElementSibling;
+    if(sizeControl.parentElement.tagName==='LABEL')row.prepend(sizeControl.parentElement);
+    else {
+      const sizeGroup=document.createElement('label');
+      sizeGroup.append(sizeLabel,sizeControl);row.prepend(sizeGroup);
+    }
+    const options=document.createElement('div');options.className='textSectionOptions';
+    for(const child of [...body.children])if(child!==heading)options.append(child);
+    body.append(options);
+    const checkbox=enabled.querySelector('input');
+    const refreshExpansion=()=>section.classList.toggle('textSectionOff',!checkbox.checked);
+    checkbox.addEventListener('change',refreshExpansion);refreshExpansion();
+    if(kind==='sub'||kind==='rime'){
+      chip.classList.add('squareTextPicker');
+      const style=$(kind+'Style');
+      style.after(chip);
+    }
+    for(const option of $(kind+'Style').options)if(option.value==='opaque')option.textContent=kind==='cursor'||kind==='rime'?'solid':'opaque';
+    if(kind==='cursor')options.append($('sendMode').closest('.row'));
+    if(kind==='rime')timing.append($('rimeCloud').closest('label'));
     if(separator)body.append(separator);
     for(const empty of body.querySelectorAll('.row:empty'))empty.remove();
     select.addEventListener('change',()=>toggles.forEach((box,i)=>box.checked=select.value===rainbowModes[i]));
     if(kind==='rime')select.addEventListener('change',()=>document.querySelectorAll('[data-live-colour-control="rimeColour"]').forEach(node=>paintText(node,select.value,node.dataset.outline==='true')));
   });
-  const voiceExtras=$('speakExtra').closest('.row');
-  const voiceToggles=$('shhNow').closest('.row');
-  voiceExtras.append(...voiceToggles.children);voiceToggles.remove();
-  const sections=$('textPanel').querySelectorAll('.textColourSection');
-  const more=document.createElement('details');more.className='textMore';
-  more.innerHTML='<summary>More</summary>';
-  sections[2].before(more);more.append(sections[2],sections[3]);
+  const textPanel=$('textPanel'),textTitle=textPanel.querySelector('h4');
+  const textBody=document.createElement('div');textBody.className='shakeScroll';
+  for(const child of [...textPanel.children])if(child!==textTitle)textBody.append(child);
+  textPanel.append(textBody);
+  const typeEffect=document.createElement('label');
+  typeEffect.innerHTML='Typing effect <select id="typingPop"><option value="off">Off</option><option value="rise">Moonrise</option><option value="drift">Drift</option><option value="spark">Spark</option></select>';
+  $('sendMode').closest('.row').append(typeEffect);
+  $('typeInput').addEventListener('input',event=>{
+    const mode=$('typingPop').value;
+    if(mode==='off'||guestMode||!event.data||event.isComposing)return;
+    const bounds=event.target.getBoundingClientRect();
+    const letter=placeParticle(bounds.left+bounds.width/2,bounds.top,'typedPop',event.data);
+    letter.style.fontFamily=getComputedStyle(event.target).fontFamily;
+    letter.style.color=getComputedStyle(event.target).color==='rgba(0, 0, 0, 0)'?'#eee':getComputedStyle(event.target).color;
+    const frames={
+      rise:[{opacity:0,clipPath:'inset(100% 0 0)',transform:'translate(-50%,0)'},{offset:.48,opacity:1,clipPath:'inset(0)',transform:'translate(-50%,-22px)'},{opacity:0,transform:'translate(-50%,-34px)'}],
+      drift:[{opacity:1,transform:'translate(-50%,0)'},{opacity:0,transform:'translate(24px,-40px) rotate(12deg)'}],
+      spark:[{opacity:0,transform:'translate(-50%,0) scale(.35)'},{offset:.25,opacity:1,transform:'translate(-50%,-15px) scale(1.25)'},{opacity:0,transform:'translate(-50%,-36px) scale(.8)'}]
+    };
+    animateIntro(letter,frames[mode],{duration:750,easing:'ease-out'}).finally(()=>letter.remove());
+  });
+  const extra=$('speakExtra');
+  const extraLabel=extra.previousElementSibling;
+  const extraRow=document.createElement('div');extraRow.className='row';
+  extraRow.append(extraLabel,extra);
+  $('shhNow').closest('.row').before(extraRow);
   document.querySelectorAll('button').forEach(button=>{
     if(/^close$/i.test(button.textContent.trim())){button.textContent='Close';button.classList.add('plainClose');}
   });
