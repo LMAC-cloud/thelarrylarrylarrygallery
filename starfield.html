@@ -60,9 +60,9 @@ select:focus{border-color:#8b5a2b}
 .panel.open{display:block}
 .panel h4{
  margin:0 0 4px;font:600 10px Georgia,serif;color:#fff;
- cursor:grab;user-select:none
+ cursor:pointer;user-select:none
 }
-.panel h4:active{cursor:grabbing}
+.panel h4:active{cursor:pointer}
 .row{display:flex;align-items:center;gap:4px;margin:3px 0}
 .row label{white-space:nowrap}
 .panel button{font:9px Arial,sans-serif;padding:3px 5px}
@@ -92,11 +92,11 @@ select:focus{border-color:#8b5a2b}
 #savedText{font-family:Chomsky,Georgia,serif}
 #starfieldPanel{left:8px;top:8px;width:210px}
 #drawPanel{left:auto;right:10px;top:300px;bottom:auto;width:430px;height:300px;padding:5px;background:transparent;border:0;border-bottom:1px solid rgba(180,180,180,.16);box-shadow:none}
-#drawMoveHandle{position:absolute;left:0;right:0;bottom:-1px;height:10px;background:transparent;border-bottom:1px solid rgba(210,210,210,.24);cursor:grab;z-index:4}
+#drawMoveHandle{position:absolute;left:0;right:0;bottom:-1px;height:10px;background:transparent;border-bottom:1px solid rgba(210,210,210,.24);cursor:pointer;z-index:4}
 #drawClose{width:42px;height:24px;padding:2px 5px;font-size:9px}
 #drawPanel.open{display:block}
-#drawCanvas{width:100%;height:100%;background:transparent;border:0;outline:0;cursor:crosshair;display:block}
-#drawToolsHandle{height:12px;margin-bottom:3px;cursor:grab;border:0;background:rgba(255,255,255,.03)}
+#drawCanvas{width:100%;height:100%;background:transparent;border:0;outline:0;cursor:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2717%27 height=%2717%27%3E%3Cpath stroke=%27white%27 d=%27M8.5 1v15M1 8.5h15%27/%3E%3C/svg%3E") 8 8,crosshair;display:block}
+#drawToolsHandle{height:12px;margin-bottom:3px;cursor:pointer;border:0;background:rgba(255,255,255,.03)}
 #drawToolsPanel{left:auto;right:10px;top:38px;bottom:auto;width:430px;max-height:250px;overflow:auto}
 #drawToolsPanel .tools{display:flex;gap:3px;flex-wrap:wrap}
 #drawToolsPanel .tools button{font-size:8px;padding:3px 5px}
@@ -110,7 +110,7 @@ select:focus{border-color:#8b5a2b}
 .colorSwatch{width:17px;height:17px;min-width:17px;max-width:17px;padding:0;border:1px solid #aaa;flex:0 0 17px}
 #drawPalette{display:flex;flex-wrap:wrap;gap:3px;margin:4px 0}
 
-#drawMoveHandle:active{cursor:grabbing}
+#drawMoveHandle:active{cursor:pointer}
 #drawPanel.drawing{background:rgba(8,8,8,.03)}
 #drawPalette{display:flex;flex-wrap:wrap;gap:3px;margin:4px 0}
 #drawPalette .colorSwatch{cursor:pointer}
@@ -126,8 +126,8 @@ select:focus{border-color:#8b5a2b}
 
 #spherePanel .archivePrimary{position:relative}
 #spherePanel.expanded .jpgControls{display:none} #spherePanel.expanded .archivePrimary .fileButton{display:none}
-#spherePanel h4{cursor:grab}
-#spherePanel.expanded h4{cursor:grab}
+#spherePanel h4{cursor:pointer}
+#spherePanel.expanded h4{cursor:pointer}
 #spherePanel.expanded{min-width:520px;min-height:430px}
 #spherePanel .jpgControls{border-top:0;padding-top:2px}
 #spherePanel .jpgControls[open]{max-width:100%}
@@ -139,7 +139,7 @@ select:focus{border-color:#8b5a2b}
 #spherePanel.expanded #loadedList{display:none}
 #savedText{width:100%;height:170px;background:#111;color:#ddd;border:1px solid #444;resize:none;padding:6px;font-size:16px;line-height:1.3;font-family:Chomsky,Georgia,serif}
 #playlist{max-height:110px;overflow:auto;border:1px solid #333;padding:2px}
-.song{display:flex;gap:4px;align-items:center;padding:2px;border-bottom:1px solid #222;cursor:grab}
+.song{display:flex;gap:4px;align-items:center;padding:2px;border-bottom:1px solid #222;cursor:pointer}
 .song.dragging{opacity:.5}
 .song .name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #visualShow{font-size:9px}
@@ -149,10 +149,10 @@ select:focus{border-color:#8b5a2b}
  position:absolute;left:18px;bottom:56px;width:34px;height:34px;border-radius:50%;
  background:radial-gradient(circle at 35% 30%,#fff,#ffffff 24%,#d8d8d8 48%,#888 76%,#222 100%);
  box-shadow:0 0 12px #fff,0 0 28px rgba(255,255,255,.55);
- cursor:grab;z-index:900;animation:bob 2.7s ease-in-out infinite
+ cursor:pointer;z-index:900;animation:bob 2.7s ease-in-out infinite
 }
 #sphere:hover{box-shadow:0 0 16px #fff,0 0 36px rgba(255,255,255,.75)}
-#sphere:active{cursor:grabbing}
+#sphere:active{cursor:pointer}
 /* NIAGARA FALLS — clean barge / Lar-mobile sequence */
 .niagaraHidden{display:none!important}
 
@@ -177,7 +177,7 @@ select:focus{border-color:#8b5a2b}
 #drawToolsPanel{max-height:min(78vh,520px)!important;overflow-y:auto!important;scrollbar-width:none!important;overscroll-behavior:contain}
 #drawToolsPanel::-webkit-scrollbar{display:none}
 #drawPanel.expanded{position:absolute!important;inset:0!important;width:100vw!important;height:100vh!important;background:transparent!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important;padding:0!important;z-index:10!important;max-width:none!important;max-height:none!important;touch-action:none}
-#drawPanel.expanded #drawCanvas{position:absolute!important;inset:0!important;width:100vw!important;height:100vh!important;background:transparent!important;cursor:crosshair!important}
+#drawPanel.expanded #drawCanvas{position:absolute!important;inset:0!important;width:100vw!important;height:100vh!important;background:transparent!important;cursor:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2717%27 height=%2717%27%3E%3Cpath stroke=%27white%27 d=%27M8.5 1v15M1 8.5h15%27/%3E%3C/svg%3E") 8 8,crosshair!important}
 #drawPanel.expanded #drawMoveHandle{display:none!important}
 #drawToolsPanel{background:rgba(8,8,8,.86)!important}
 #spherePanel{resize:both;overflow:auto}
@@ -230,7 +230,7 @@ select:focus{border-color:#8b5a2b}
 .niagaraSlowTitle{position:fixed;left:50%;top:23%;transform:translateX(-50%);display:none;visibility:hidden;opacity:0;background:rgba(0,0,0,.94);border:2px solid #8a6a45;padding:15px 19px;color:#eee;font:18px Georgia;text-align:center;pointer-events:none;z-index:2147483647;box-shadow:0 5px 25px #000} .niagaraSlowTitle::backdrop{background:transparent} .niagaraSlowTitle[open]{display:block}
 .niagaraSlowTitle.show{display:block;visibility:visible;opacity:1;pointer-events:auto!important}.niagaraSlowTitle a,.niagaraSlowTitle button{margin:10px 4px 0;padding:7px 12px;background:#17110c;color:#ddd;border:1px solid #80613f;cursor:pointer;pointer-events:auto!important}.niagaraSlowTitle a{display:inline-block;margin:10px 4px 0;padding:7px 12px;background:#17110c;color:#ddd;border:1px solid #80613f;cursor:pointer;text-decoration:none;pointer-events:auto!important}.niagaraSlowTitle a:hover,.niagaraSlowTitle button:hover{background:#2a1b10;border-color:#b47b45}
 .pointGrid{grid-template-columns:repeat(3,18px)!important;grid-template-rows:repeat(3,18px)!important;gap:2px!important}.pointGrid button{width:18px!important;height:18px!important;font-size:7px!important;padding:0!important}.drawPaletteLine{max-width:100%;display:flex;flex-wrap:wrap;gap:3px}.drawControlRow{min-height:20px}
-@keyframes rainbowSweep{0%{background-position:100% 0}100%{background-position:0 0}}.rainbowField{background:linear-gradient(90deg,#ff3030,#ff8a00,#ffe600,#44ff66,#20d9ff,#4888ff,#7b4dff,#ff3030);background-size:300% 100%;background-clip:text;-webkit-background-clip:text;color:transparent;animation:rainbowSweep 5s linear infinite}.categoryTitle{font:700 9px Georgia,serif;color:#fff;letter-spacing:.5px;margin:4px 0 2px}.thinLine{height:1px;background:#555;margin:4px 0}radioShowPanel{display:none}#radioShowPanel{right:auto;top:auto;bottom:auto;width:330px;max-height:70vh;overflow:auto;z-index:1200}#radioShowPanel.open{display:block}.song .name{cursor:grab}.song .deleteSong{cursor:pointer!important}.song input[type=checkbox]{cursor:pointer}.song input[type=checkbox]+.name{cursor:grab}#radioPanel .row{flex-wrap:wrap}#textPanel{width:360px;max-height:86vh;overflow:auto}#textPanel select{max-width:115px}#textPanel input[type=range]{width:78px}#spherePanel{max-width:92vw}#spherePanel.expanded{max-width:92vw;max-height:88vh}.niagaraCargoStack2{position:absolute;left:126px;bottom:108px;width:190px;height:48px;pointer-events:auto;cursor:pointer;transition:filter .18s ease,box-shadow .18s ease;background:linear-gradient(145deg,#704825,#321c0e);border:3px solid #9d6d3b;box-shadow:inset 0 0 10px #0008;display:flex;align-items:center;justify-content:center;color:#c9a16e;font:bold 13px Arial}.niagaraCargoStack2:hover{filter:drop-shadow(0 0 8px rgba(145,78,27,.98)) drop-shadow(0 0 18px rgba(145,78,27,.72));box-shadow:inset 0 0 10px #0008,0 0 14px rgba(145,78,27,.78)}.niagaraCargoStack2.hidden{display:none}.niagaraBrownSmoke{position:absolute;pointer-events:none;border-radius:50%;background:radial-gradient(circle,rgba(113,69,31,.8),rgba(78,45,21,.45) 45%,transparent 72%);filter:blur(8px);opacity:.8}.niagaraBarge .niagaraBrownSmoke{left:-90px;bottom:20px;width:150px;height:95px}.niagaraCarSmoke{position:absolute;left:-120px;bottom:25px;width:160px;height:110px;border-radius:50%;background:radial-gradient(circle,rgba(113,69,31,.9),rgba(64,36,16,.45) 45%,transparent 74%);filter:blur(10px);pointer-events:none;opacity:.9}.
+@keyframes rainbowSweep{0%{background-position:100% 0}100%{background-position:0 0}}.rainbowField{background:linear-gradient(90deg,#ff3030,#ff8a00,#ffe600,#44ff66,#20d9ff,#4888ff,#7b4dff,#ff3030);background-size:300% 100%;background-clip:text;-webkit-background-clip:text;color:transparent;animation:rainbowSweep 5s linear infinite}.categoryTitle{font:700 9px Georgia,serif;color:#fff;letter-spacing:.5px;margin:4px 0 2px}.thinLine{height:1px;background:#555;margin:4px 0}radioShowPanel{display:none}#radioShowPanel{right:auto;top:auto;bottom:auto;width:330px;max-height:70vh;overflow:auto;z-index:1200}#radioShowPanel.open{display:block}.song .name{cursor:pointer}.song .deleteSong{cursor:pointer!important}.song input[type=checkbox]{cursor:pointer}.song input[type=checkbox]+.name{cursor:pointer}#radioPanel .row{flex-wrap:wrap}#textPanel{width:360px;max-height:86vh;overflow:auto}#textPanel select{max-width:115px}#textPanel input[type=range]{width:78px}#spherePanel{max-width:92vw}#spherePanel.expanded{max-width:92vw;max-height:88vh}.niagaraCargoStack2{position:absolute;left:126px;bottom:108px;width:190px;height:48px;pointer-events:auto;cursor:pointer;transition:filter .18s ease,box-shadow .18s ease;background:linear-gradient(145deg,#704825,#321c0e);border:3px solid #9d6d3b;box-shadow:inset 0 0 10px #0008;display:flex;align-items:center;justify-content:center;color:#c9a16e;font:bold 13px Arial}.niagaraCargoStack2:hover{filter:drop-shadow(0 0 8px rgba(145,78,27,.98)) drop-shadow(0 0 18px rgba(145,78,27,.72));box-shadow:inset 0 0 10px #0008,0 0 14px rgba(145,78,27,.78)}.niagaraCargoStack2.hidden{display:none}.niagaraBrownSmoke{position:absolute;pointer-events:none;border-radius:50%;background:radial-gradient(circle,rgba(113,69,31,.8),rgba(78,45,21,.45) 45%,transparent 72%);filter:blur(8px);opacity:.8}.niagaraBarge .niagaraBrownSmoke{left:-90px;bottom:20px;width:150px;height:95px}.niagaraCarSmoke{position:absolute;left:-120px;bottom:25px;width:160px;height:110px;border-radius:50%;background:radial-gradient(circle,rgba(113,69,31,.9),rgba(64,36,16,.45) 45%,transparent 74%);filter:blur(10px);pointer-events:none;opacity:.9}.
 input[type=range]{accent-color:#8b5a2b}
 input[type=range]::-webkit-slider-runnable-track{background:#5a3820}
 input[type=range]::-webkit-slider-thumb{background:#b47b45}
@@ -259,7 +259,7 @@ input[type=range]::-moz-range-progress{background:#8b5a2b}
 .panel h4 .titleClose{float:right;cursor:pointer;margin-left:12px}
 #typeInput{background-color:transparent}
 #drawToolsPanel{overflow:hidden!important;min-width:0;max-height:min(78vh,540px)!important}
-#drawToolsHandle{margin:0;padding:5px;min-height:24px;box-sizing:border-box;cursor:grab}
+#drawToolsHandle{margin:0;padding:5px;min-height:24px;box-sizing:border-box;cursor:pointer}
 #drawToolsPanel .drawToolsBody{overflow:auto;max-height:calc(min(78vh,540px) - 36px);scrollbar-width:thin;padding:0 4px 4px}
 #drawToolsPanel .colourTabs{flex-basis:auto}
 #drawToolsPanel input[type=range]{max-width:120px}
@@ -270,10 +270,40 @@ input[type=range]::-moz-range-progress{background:#8b5a2b}
 .widthTrack span.selected{color:transparent}
 .widthTrack span.selected::after{content:attr(data-size);position:absolute;inset:2px;border-radius:50%;background:#cf1929;color:white;text-align:center;line-height:16px;font:bold 11px/16px Arial}
 #drawWidthPalette input{position:absolute;inset:0;width:100%;max-width:none!important;margin:0;opacity:0;cursor:pointer}
-#drawWidthPalette:focus-within{outline:2px solid #fff}
+
 .drawSequence summary{cursor:pointer}
 .drawSequenceBody{padding:6px;background:#171717;border:1px solid #555}
 #starfieldPanel a{color:#fff}
+#typeInput::placeholder{color:#929292;opacity:1}
+#poemCaret{position:fixed;z-index:861;bottom:19px;left:calc(50% - 55px);width:1px;height:19px;background:#bbb;pointer-events:none;animation:poemBlink 1s step-end infinite}
+@keyframes poemBlink{50%{opacity:0}}
+#drawToolsPanel{width:min(360px,calc(100vw - 20px));resize:none!important}
+#drawToolsPanel .drawToolsBody{scrollbar-width:none;padding-right:4px}
+#drawToolsPanel .drawToolsBody::-webkit-scrollbar{display:none}
+#drawToolsPanel .colourWidthRow{display:flex;flex-direction:column;align-items:flex-start;gap:0}
+#drawPalette{width:220px;grid-template-columns:repeat(10,1fr)}
+.widthTrack span:nth-child(even){box-shadow:inset 0 0 0 1px #161616,inset 0 0 0 2px #777}
+.widthTrack span::after{content:attr(data-size);position:absolute;inset:2px;border-radius:50%;background:#6f6f6f;color:white;text-align:center;font:bold 11px/16px Arial}
+.widthTrack span.selected::after{background:#cf1929}
+#drawToolsPanel .drawToolsBody .drawControlRow input[type=range]{width:88px}
+#drawToolsPanel #drawWidthPalette input[type=range]{width:100%}
+#drawToolsPanel .matchedSlider{display:grid;grid-template-columns:40px 95px 1fr}
+#drawToolsPanel .matchedSlider input[type=range]{width:95px;margin:0}
+#drawToolsPanel #drawClear{background:none;border:0;box-shadow:none;padding:3px 0;margin-left:auto;cursor:pointer}
+#drawWidthPalette{margin-bottom:12px}
+.widthTrack span:nth-child(even){background:#000;box-shadow:inset 0 1px #666,inset 0 -1px #666}
+.widthTrack span::after,.widthTrack span.selected::after{inset:auto 0 -10px;background:none;border-radius:0;color:#aaa;font:8px/10px Arial}
+.widthTrack span.selected::before{content:"";position:absolute;width:8px;height:8px;border-radius:50%;background:#df2537;left:50%;top:50%;transform:translate(-50%,-50%)}
+#drawWidthPalette input:focus{outline:none}
+#textPanel select,#drawToolsPanel select{font-size:12px}
+#textPanel .textColourSection{display:grid;grid-template-columns:minmax(0,1fr) 22px;gap:7px;align-items:start}
+.textColourWheel{width:20px;height:20px;border-radius:50%;padding:0!important;background:conic-gradient(red,yellow,lime,cyan,blue,magenta,red);cursor:pointer}
+.textRainbows label{display:inline-flex;align-items:center}
+#starColourPicker{position:fixed;inset:12vh 16px auto auto;margin:0;padding:10px;background:#151515;color:#eee;border:1px solid #555;z-index:100000}
+#starColourPicker header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+#starColourPicker canvas{display:block;touch-action:none;cursor:pointer}
+#starColourPicker label,#starColourPicker details{display:block;margin-top:7px}
+#starColourPicker input,#starColourPicker button{background:#252525;color:#eee;border:1px solid #666}
 </style>
 </head>
 <body>
@@ -290,8 +320,8 @@ input[type=range]::-moz-range-progress{background:#8b5a2b}
 
 </div>
 
-<textarea id="typeInput" autocomplete="off" spellcheck="false" aria-label="text" rows="2"></textarea>
-<div id="typingZone" aria-hidden="true"><div id="typingSmoke"></div></div>
+<textarea id="typeInput" autocomplete="off" spellcheck="false" aria-label="Poem text" virtualkeyboardpolicy="manual" writingsuggestions="false" placeholder="start poem" rows="2"></textarea>
+<span id="poemCaret" aria-hidden="true"></span><div id="typingZone" aria-hidden="true"><div id="typingSmoke"></div></div>
 
 <div id="starfieldTab" class="starfieldTab">STARFIELD</div>
 
@@ -659,8 +689,13 @@ window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCa
    ========================================================= */
 const typingZone=document.getElementById('typingZone'),typeInput=document.getElementById('typeInput'),typingSmoke=document.getElementById('typingSmoke');
 function focusTyping(){typeInput.focus({preventScroll:true});const len=typeInput.value.length;typeInput.setSelectionRange(len,len);typingSmoke.style.color=state.colour;}
-typingZone.addEventListener('pointerenter',focusTyping);
-typingZone.addEventListener('click',focusTyping);
+function dismissPoemPrompt(){
+  typeInput.removeAttribute('placeholder');
+  document.getElementById('poemCaret')?.remove();
+}
+typeInput.addEventListener('pointerdown',dismissPoemPrompt,{once:true});
+typeInput.addEventListener('input',dismissPoemPrompt,{once:true});
+typingZone.addEventListener('click',()=>{dismissPoemPrompt();focusTyping();});
 typeInput.addEventListener('focus',()=>{typeInput.style.caretColor=state.colour;typingSmoke.style.color=state.colour});
 
 /* =========================================================
@@ -889,7 +924,7 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
   const tools=$('drawToolsPanel'), panel=$('drawPanel');
   tools.innerHTML='';
   const h=document.createElement('h4');h.id='drawToolsHandle';h.textContent='DRAW';tools.append(h);
-  tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><button id="drawUndo">UNDO</button><button id="drawRedo">REDO</button><button id="drawClose">CLOSE</button><button id="drawOtto">OTTO</button><button id="drawClear">CLEAR</button></div>');
+  tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><button id="drawUndo">UNDO</button><button id="drawRedo">REDO</button><button id="drawClose">CLOSE</button><label><input id="drawOtto" type="checkbox"> Auto launch</label><button id="drawClear">CLEAR</button></div>');
   tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><label>WIDTH</label><div id="drawWidthPalette" class="drawPaletteLine"></div></div>');
   tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><label>START POINT</label><div class="pointGrid" id="drawStartGrid"></div><label>END POINT</label><div class="pointGrid" id="drawEndGrid"></div></div>');
   ['drawStartGrid','drawEndGrid'].forEach(id=>{
@@ -908,9 +943,9 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
   tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><label>DRAWING SIZE</label><input id="drawScale" type="range" min="40" max="260" value="100"><span id="drawScaleValue">100%</span></div>');
   tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><label>SPEED</label><input id="drawTrailSpeed" type="range" min="0" max="100" value="22"><span id="drawTrailSpeedValue">Slow</span></div>');
   tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><label>REPEAT</label><select id="drawRepeat"></select><label>COUNT</label><select id="drawCount"></select><label>GLOW</label><input id="drawGlow" type="range" min="0" max="35" value="8"></div><div class="drawControlRow"><label>POSITION</label><select id="drawPosition"><option value="center" selected>Centre</option><option value="far">Far</option><option value="near">Near</option><option value="left">Left</option><option value="right">Right</option><option value="top">Top</option><option value="bottom">Bottom</option></select></div><div class="drawControlRow"><label><input id="drawColourCycle" type="checkbox"> COLOUR CHANGES EACH DRAWING</label><input id="drawComboName" placeholder="combo name" style="width:90px"><button id="drawSaveCombo">SAVE COLOUR COMBO</button><select id="drawComboSelect"><option value="">Saved combos</option></select></div>');
-  tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><label>MEMORY</label><select id="drawMemory"><option value="last" selected>Last drawing</option><option value="random">Random line</option><option value="loaded">Loaded drawing</option></select><button id="drawSaveImage">SAVE</button><button id="drawLoadImage">LOAD</button><button id="drawLaunch">LAUNCH</button><label><input id="ottoRandomEffects" type="checkbox"> OTTO RANDOM EFFECTS</label></div>');
+  tools.insertAdjacentHTML('beforeend','<div class="drawControlRow"><label>MEMORY</label><select id="drawMemory"><option value="last" selected>Last drawing</option><option value="random">Random line</option><option value="loaded">Loaded drawing</option></select><button id="drawSaveImage">SAVE</button><button id="drawLoadImage">LOAD</button><button id="drawLaunch">LAUNCH</button><label><input id="ottoRandomEffects" type="checkbox"> Random effect</label></div>');
   const colors=[['#ff3030','red'],['#ff8a00','orange'],['#ffe600','yellow'],['#44ff66','light green'],['#20d9ff','turquoise'],['#ff78c8','pink'],['#4888ff','blue'],['#7b4dff','purple'],['#8b5a2b','brown'],['#000','black'],['#fff','white'],['rainbow','rainbow']];
-  let colour='#fff',width=4,last=null,loaded=null,drawing=false,otto=false,ottoTimer=null,undo=[],redo=[];
+  let colour='#fff',width=4,last=null,loaded=null,drawing=false,ottoTimer=null,undo=[],redo=[];
   for(let i of [1,2,4,8,14,24]){const b=document.createElement('button');b.className='widthSwatch';b.textContent=i;b.onclick=()=>width=i;$('drawWidthPalette').append(b)}
   colors.forEach(([c,n])=>{const b=document.createElement('button');b.className='colorSwatch';b.title=n;b.style.background=c==='rainbow'?'linear-gradient(90deg,red,orange,yellow,green,cyan,blue,purple,pink,red)':c;b.onclick=()=>{colour=c;b.parentElement.dataset.activeColour=c;dc.dataset.nextColour=c;dc.style.setProperty('--next-draw-colour',c==='rainbow'?'#20d9ff':c);};$('drawPalette').append(b)});
   for(let i=1;i<=30;i++){const o=document.createElement('option');o.value=i;o.textContent=i;$('drawRepeat').append(o)}
@@ -923,6 +958,7 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
   function pt(e){const r=dc.getBoundingClientRect();return{x:(e.clientX-r.left)*dc.width/r.width,y:(e.clientY-r.top)*dc.height/r.height}}
   function speedDuration(){const v=+$('drawTrailSpeed').value;return 9000-(v*80)}
   function makeKaleido(src,mode){if(mode==='off')return src;const c=document.createElement('canvas');c.width=src.width*2;c.height=src.height*2;const x=c.getContext('2d'),w=src.width,h=src.height;x.save();x.translate(c.width/2,c.height/2);if(mode==='half'){x.drawImage(src,-w/2,-h/2);x.scale(-1,1);x.drawImage(src,-w/2,-h/2)}else{const count=mode==='four'?4:8;for(let i=0;i<count;i++){x.save();x.rotate(i*Math.PI*2/count);x.scale(i%2?-1:1,1);x.drawImage(src,-w/2,-h/2);x.restore()}}x.restore();return c}
+  let drawGeneration=0;
   function tintSource(src,use,now=performance.now(),c=document.createElement('canvas')){if(!src)return src;if(c.width!==src.width||c.height!==src.height){c.width=src.width;c.height=src.height;}const q=c.getContext('2d');q.globalCompositeOperation='source-over';q.clearRect(0,0,c.width,c.height);q.drawImage(src,0,0);const data=strokeData.get(src);
     if(use==='original'&&(!data||!['rainbow-moving','rainbow-pulse'].includes(data.colour)))return src;
     if(data && (use==='original'||!/^(#|hsl|rgb)/.test(use))){
@@ -930,8 +966,9 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
       renderStroke(now,q,mode,data);
       return c;
     }
-    if(!/^(#|hsl|rgb)/.test(use)&&use!=='rainbow')return src;if(use==='rainbow'){const g=q.createLinearGradient(0,0,c.width,0);rainbowStops.forEach((v,i)=>g.addColorStop(i/(rainbowStops.length-1),v));q.globalCompositeOperation='source-in';q.fillStyle=g;q.fillRect(0,0,c.width,c.height);}else{q.globalCompositeOperation='source-in';q.fillStyle=use;q.fillRect(0,0,c.width,c.height);}return c} function launch(src,delay=0){if(!src)return;const count=(+$('drawRepeat').value||1)*(+$('drawCount')?.value||1);for(let n=0;n<count;n++)setTimeout(()=>animate(src,n),delay+n*260)}
+    if(!/^(#|hsl|rgb)/.test(use)&&use!=='rainbow')return src;if(use==='rainbow'){const g=q.createLinearGradient(0,0,c.width,0);rainbowStops.forEach((v,i)=>g.addColorStop(i/(rainbowStops.length-1),v));q.globalCompositeOperation='source-in';q.fillStyle=g;q.fillRect(0,0,c.width,c.height);}else{q.globalCompositeOperation='source-in';q.fillStyle=use;q.fillRect(0,0,c.width,c.height);}return c} function launch(src,delay=0){if(!src)return;const count=(+$('drawRepeat').value||1)*(+$('drawCount')?.value||1);const generation=drawGeneration;for(let n=0;n<count;n++)setTimeout(()=>{if(generation===drawGeneration)animate(src,n)},delay+n*260)}
   function animate(src,rep){let ink=window.pickDrawingColour('launched');if(ink==='rainbow-order')ink=hue(spectrum[launchOrder++%spectrum.length]);let revision=window.launchColourRevision||0;const scratch=document.createElement('canvas');const kaleido=$('drawKaleido').value;const source=makeKaleido(tintSource(src,ink,performance.now(),scratch),kaleido),w=document.createElement('div'),c=document.createElement('canvas');w.className='projectile drawn';c.width=source.width;c.height=source.height;c.getContext('2d').drawImage(source,0,0);w.append(c);$('objects').append(w);const a=.5,b=.5,dur=speedDuration(),effect=$('drawEffect').value,size=$('drawSizeEffect').value,scaleBase=(+$('drawScale').value||100)/100,t0=performance.now();w.style.width=Math.min(900,source.width)+'px';w.style.height=Math.min(650,source.height)+'px';function f(now){
+    if(!w.isConnected)return;
     const changed=revision!==(window.launchColourRevision||0);
     if(changed){revision=window.launchColourRevision;ink=window.pickDrawingColour('launched');if(ink==='rainbow-order')ink=hue(spectrum[launchOrder++%spectrum.length]);}
     const live=ink==='original'?strokeData.get(src)?.colour:ink;
@@ -941,10 +978,24 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
     }
     const t=Math.min(1,(now-t0)/dur);let x=W*.5,y=H*.58,sc=scaleBase,rot=0,op=1;const pos=$('drawPosition')?.value||'center';if(pos==='far'){sc*=.35;y=H*.50}else if(pos==='near'){sc*=1.55;y=H*.58}else if(pos==='left'){x=W*.22}else if(pos==='right'){x=W*.78}else if(pos==='top'){y=H*.22}else if(pos==='bottom'){y=H*.82};if(size==='smallLarge'){sc=scaleBase*(.08+1.35*t);op=t>.76?1-(t-.76)/.24:1}else if(size==='largeSmall'){sc=scaleBase*(1.8-1.45*t)}else if(size==='largeSmallLargeFade'){sc=scaleBase*(1.8-1.55*Math.sin(t*Math.PI));op=t>.72?1-(t-.72)/.28:1};if(effect==='wave')x+=Math.sin(t*18)*W*.12;if(effect==='forwardZoom'){x+=Math.sin(t*Math.PI*2)*W*.22*(t);y-=H*.12*t;sc*=.25+1.8*t;rot+=Math.sin(t*Math.PI*3)*18;}if(effect==='orbit'){const q=t*Math.PI*6;x+=Math.cos(q)*W*.12;y+=Math.sin(q)*H*.12;rot=q*30}if(effect==='figure8'){const q=t*Math.PI*4;x+=Math.sin(q)*W*.14;y+=Math.sin(q*2)*H*.10;rot=Math.sin(q)*20}if(effect==='spiral'){const q=t*Math.PI*10,r=W*.13*(1-t);x+=Math.cos(q)*r;y+=Math.sin(q)*r;rot=q*25}if(effect==='float'){y=H-(H*.12+H*.72*t);x+=Math.sin(t*8)*40}if(effect==='swoop'){y-=Math.sin(t*Math.PI)*H*.12;x+=Math.sin(t*Math.PI)*W*.12}if(effect==='comet')w.style.filter='drop-shadow(-90px 0 0 rgba(255,255,255,.14)) drop-shadow(-180px 0 0 rgba(255,255,255,.07))';if(effect==='burst'){sc*=1+.55*t;rot=t*180}w.style.left=x+'px';w.style.top=y+'px';w.style.transform=`translate(-50%,-50%) scale(${sc}) rotate(${rot}deg)`;w.style.opacity=op;if(t<1)requestAnimationFrame(f);else w.remove()}requestAnimationFrame(f)}
   function randomLine(){const c=document.createElement('canvas');c.width=dc.width;c.height=dc.height;const x=c.getContext('2d');x.strokeStyle=colour==='rainbow'?`hsl(${Math.random()*360},100%,65%)`:colour;x.lineWidth=width;x.lineCap='round';x.beginPath();let px=20,py=200;x.moveTo(px,py);for(let i=0;i<100;i++){px+=5;py+=Math.sin(i*.47)*10+(Math.random()-.5)*18;x.lineTo(px,py)}x.stroke();last=c;launch(c)}
-  function save(n){localStorage.setItem('draw-image-'+n,snap().toDataURL());loaded=snap()}
+  function save(n){const source=last||snap();localStorage.setItem('draw-image-'+n,source.toDataURL());loaded=source}
   function load(n){const d=localStorage.getItem('draw-image-'+n);if(!d)return;const im=new Image();im.onload=()=>{clear();ctx.drawImage(im,0,0);loaded=snap();last=loaded};im.src=d}
-  function setOtto(on){otto=on;if(ottoTimer){clearInterval(ottoTimer);ottoTimer=null}if(on){const tick=()=>{const source=last||snap();if(source){if($('ottoRandomEffects')?.checked){const vals=['flow','wave','orbit','figure8','spiral','float','swoop','comet','burst'];$('drawEffect').value=vals[Math.floor(Math.random()*vals.length)]}launch(source)}};tick();ottoTimer=setInterval(tick,Math.max(550,speedDuration()/2));$('drawOtto').classList.add('active');$('drawOtto').textContent='Auto launch on'}else{$('drawOtto').classList.remove('active');$('drawOtto').textContent='Auto launch'}}
-  $('drawOtto').onclick=()=>setOtto(!otto);
+  function setAutoLaunch(on){
+    $('drawOtto').checked=on;
+    clearInterval(ottoTimer);
+    if(!on)return;
+    function tick(){
+      if(!last)return;
+      if($('ottoRandomEffects').checked){
+        const effects=$('drawEffect');
+        effects.selectedIndex=Math.floor(Math.random()*effects.length);
+      }
+      launch(last);
+    }
+    tick();
+    ottoTimer=setInterval(tick,Math.max(550,speedDuration()/2));
+  }
+  $('drawOtto').onchange=e=>setAutoLaunch(e.target.checked);
   const strokeData=new WeakMap();
   const spectrum = [315, 360, 390, 410, 420, 450, 480, 535, 570, 620, 650, 675];
   let launchOrder=0, strokeIndex = 0, points = [], distance = 0, frame = 0, base, penWidth, pointer;
@@ -1054,9 +1105,17 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
     if(!drawing||pointer!==e.pointerId)return;
     cancelAnimationFrame(frame);drawing=false;clear();ctx.drawImage(base,0,0);
   });
-  $('drawClear').onclick=()=>{clear();last=null};$('drawSaveImage').onclick=()=>{const n=prompt('Save drawing as slot 1-12:','1');if(n)save(Math.max(1,Math.min(12,+n)))};$('drawLoadImage').onclick=()=>{const n=prompt('Load drawing slot 1-12:','1');if(n)load(Math.max(1,Math.min(12,+n)))};$('drawLaunch').onclick=()=>{const m=$('drawMemory').value;m==='random'?randomLine():m==='loaded'?launch(loaded):launch(last||snap())};
+  $('drawClear').onclick=()=>window.clearDrawLab();$('drawSaveImage').onclick=()=>{const n=prompt('Save drawing as slot 1-12:','1');if(n)save(Math.max(1,Math.min(12,+n)))};$('drawLoadImage').onclick=()=>{const n=prompt('Load drawing slot 1-12:','1');if(n)load(Math.max(1,Math.min(12,+n)))};$('drawLaunch').onclick=()=>{const m=$('drawMemory').value;m==='random'?randomLine():m==='loaded'?launch(loaded):launch(last||snap())};
   window.getUserDrawingCanvas=()=>last;
-  window.clearDrawLab=()=>{clear();last=null;loaded=null;undo=[];redo=[];};
+  window.clearDrawLab=()=>{
+    drawGeneration++;
+    setAutoLaunch(false);
+    cancelAnimationFrame(frame);
+    drawing=false;
+    clear();
+    document.querySelectorAll('#objects .projectile.drawn').forEach(node=>node.remove());
+    last=null;loaded=null;undo=[];redo=[];
+  };
   window.launchUserDrawingShape=function(src,index=0,beat=false){if(!src)return;const c=document.createElement('canvas');c.width=src.width;c.height=src.height;c.getContext('2d').drawImage(src,0,0);const w=document.createElement('div');w.className='projectile drawn';w.append(c);$('objects').append(w);const t0=performance.now(),dur=beat?1600:3600;function f(now){const t=Math.min(1,(now-t0)/dur),beatPulse=beat&&audio&&!audio.paused?1+.18*Math.max(0,Math.sin((audio.currentTime||0)*Math.PI*4)):1,x=W*.5+Math.sin(t*Math.PI*2+index)*W*.18,y=H*.58-H*.38*t,sc=(.45+1.25*t)*beatPulse;w.style.left=x+'px';w.style.top=y+'px';w.style.transform=`translate(-50%,-50%) scale(${sc}) rotate(${Math.sin(t*Math.PI*2)*12}deg)`;w.style.opacity=t>.82?1-(t-.82)/.18:1;if(t<1)requestAnimationFrame(f);else w.remove()}requestAnimationFrame(f)};
   function resizeDrawingSurface() {
     const previous = snap();
@@ -1175,11 +1234,11 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
  function localSpeakOne(text,kind,volume=1){if(!text||$('quietPlease').dataset.quiet==='1')return;return new Promise(resolve=>{localSpeechQueue.push({text,kind,volume,resolve});pumpLocalSpeech()})}
  function pumpLocalSpeech(){if(localSpeechBusy||!localSpeechQueue.length||$('quietPlease').dataset.quiet==='1')return;const item=localSpeechQueue.shift();localSpeechBusy=true;const vs=speechSynthesis.getVoices(),gb=vs.filter(v=>/^en-GB/i.test(v.lang));let voice=gb[0]||vs[0]||null;if(item.kind==='The Fancy Woman')voice=gb.find(v=>/female|woman|susan|hazel|libby|kate|serena|moira/i.test(v.name))||voice;else voice=gb.find(v=>/male|man|george|daniel|ryan|oliver|arthur|brian|roger/i.test(v.name))||voice;const u=new SpeechSynthesisUtterance(item.text);u.voice=voice;u.lang='en-GB';u.volume=item.volume;u.pitch=item.kind==='Lar Report'?.54:item.kind==="Captain O'Pirate"?.74:item.kind==='Professor Fuffonbass'?.82:1.06;u.rate=item.kind==="Captain O'Pirate"?.72:item.kind==='Lar Report'?.70:.84;u.onend=u.onerror=()=>{localSpeechBusy=false;item.resolve();setTimeout(pumpLocalSpeech,120)};speechSynthesis.speak(u)}
  function clearLocalSpeech(){localSpeechQueue.splice(0).forEach(x=>x.resolve());speechSynthesis.cancel();localSpeechBusy=false} window.stopShakeSpeech=clearLocalSpeech;
- function startWot(){if(wotTimer)clearInterval(wotTimer);if(!$('wotToggle').checked)return;wotTimer=setInterval(()=>{if(!$('speakToggle').checked||$('quietPlease').dataset.quiet==='1')return;const lines={"Captain O'Pirate":'Wot? I have seen stranger cargo, love, but scarcely stranger timing.',"The Fancy Woman":'How very peculiar. One can scarcely leave a sentence unattended for five minutes.',"Professor Fuffonbass":'Fuffonbass observes that the phenomenon is both unnecessary and magnificent.',"Lar Report":'Wicked good. I repeat: wicked good.'};Object.entries(lines).forEach(([v,t])=>localSpeakOne(t,v,($('shhNow').checked?.22:1)*(+$('voiceVolume')?.value||100)/100));},75000)}
- function speakSelected(text){if(!$('speakToggle').checked||$('quietPlease').dataset.quiet==='1')return;const kind=$('speakVoice').value,master=(+$('voiceVolume')?.value||100)/100,vol=($('shhNow').checked?.22:1)*master,n=+$('speakRepeat').value||1;for(let i=0;i<n;i++)localSpeakOne(text,kind,vol);const extra=$('speakExtra').value;if(extra==='fortune'){const arr=(window.characterFortunes&&window.characterFortunes[kind])||[];if(arr.length)localSpeakOne(arr[Math.floor(Math.random()*arr.length)],kind,vol)}else if(extra==='compliment')localSpeakOne('That is a rather splendid turn of phrase.',kind,vol);else if(extra==='advice')localSpeakOne('One might sensibly proceed with caution, although that has never stopped Larry.',kind,vol)}
+ function startWot(){if(wotTimer)clearInterval(wotTimer);if(!$('wotToggle').checked)return;wotTimer=setInterval(()=>{if(!$('speakToggle').checked||$('quietPlease').dataset.quiet==='1')return;const lines={"Captain O'Pirate":'Wot? I have seen stranger cargo, love, but scarcely stranger timing.',"The Fancy Woman":'How very peculiar. One can scarcely leave a sentence unattended for five minutes.',"Professor Fuffonbass":'Fuffonbass observes that the phenomenon is both unnecessary and magnificent.',"Lar Report":'Wicked good. I repeat: wicked good.'};Object.entries(lines).forEach(([v,t])=>localSpeakOne(t,v,($('shhNow').checked?.22:1)*(+$('voiceVolume').value)/100));},75000)}
+ function speakSelected(text){if(!$('speakToggle').checked||$('quietPlease').dataset.quiet==='1')return;const kind=$('speakVoice').value,master=(+$('voiceVolume').value)/100,vol=($('shhNow').checked?.22:1)*master,n=+$('speakRepeat').value||1;for(let i=0;i<n;i++)localSpeakOne(text,kind,vol);const extra=$('speakExtra').value;if(extra==='fortune'){const arr=(window.characterFortunes&&window.characterFortunes[kind])||[];if(arr.length)localSpeakOne(arr[Math.floor(Math.random()*arr.length)],kind,vol)}else if(extra==='compliment')localSpeakOne('That is a rather splendid turn of phrase.',kind,vol);else if(extra==='advice')localSpeakOne('One might sensibly proceed with caution, although that has never stopped Larry.',kind,vol)}
   window.speakSelected=speakSelected;
  $('wotToggle').onchange=startWot;startWot();
- $('speakVoice').onchange=()=>{saveTextPrefs();if($('speakVoice').value==='Lar Report'&&$('speakToggle').checked)localSpeakOne('ITS LARRY TIME.','Lar Report',($('shhNow').checked?.22:1)*(+$('voiceVolume')?.value||100)/100)};
+ $('speakVoice').onchange=()=>{saveTextPrefs();if($('speakVoice').value==='Lar Report'&&$('speakToggle').checked)localSpeakOne('ITS LARRY TIME.','Lar Report',($('shhNow').checked?.22:1)*(+$('voiceVolume').value)/100)};
  $('shhNow').onchange=()=>{saveTextPrefs()};
  $('quietPlease').onchange=()=>{const q=$('quietPlease');q.dataset.quiet=q.checked?'1':'0';saveTextPrefs();if(q.checked)clearLocalSpeech()};
  $('launch').onclick=e=>{e.stopPropagation();const text=$('typeInput').value.trim();if(!text)return;launchConfigured(text,getTextConfig('field'),'field');speakSelected(text)};
@@ -1232,7 +1291,7 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
     ['#ff3030','RED'],['#ff4f24','RED-ORANGE'],['#ff6a24','ORANGE-RED'],['#ff8a00','ORANGE'],
     ['#ffb000','AMBER'],['#ffe600','YELLOW'],['#b9ef45','LIME'],['#44ff66','LIGHT GREEN'],
     ['#20d9ff','TURQUOISE'],['#7de8e1','PASTEL TURQUOISE'],['#4888ff','BLUE'],['#5b4dff','INDIGO'],
-    ['#7b4dff','PURPLE'],['#ff4fd8','MAGENTA'],['#ff78c8','PINK'],['#8b5a2b','BROWN']
+    ['#7b4dff','PURPLE'],['#ff00ff','MAGENTA'],['#ff78c8','PINK'],['#8b5a2b','BROWN']
   ];
 
   /* ---------- ARCHIVE: an unmistakable text-file loader ---------- */
@@ -1263,16 +1322,37 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
     };
   }
 
-  function wheelSelect(sel){
-    sel.addEventListener('wheel',event=>{
+  let drawWheelControl;
+  function stepControl(control,delta){
+    const direction=Math.sign(delta);
+    if(control.matches('select')){
+      const next=(control.selectedIndex+direction+control.length)%control.length;
+      if(next===control.selectedIndex)return;
+      control.selectedIndex=next;
+    }else{
+      if(direction>0)control.stepUp();else control.stepDown();
+      control.dispatchEvent(new Event('input',{bubbles:true}));
+    }
+    control.dispatchEvent(new Event('change',{bubbles:true}));
+  }
+  function wheelSelect(control){
+    const draw=Boolean(control.closest('#drawToolsPanel'));
+    if(draw)control.addEventListener('pointerdown',()=>{drawWheelControl=control;});
+    control.addEventListener('wheel',event=>{
       if(!event.deltaY)return;
       event.preventDefault();
-      const next=Math.max(0,Math.min(sel.length-1,sel.selectedIndex+Math.sign(event.deltaY)));
-      if(next===sel.selectedIndex)return;
-      sel.selectedIndex=next;
-      sel.dispatchEvent(new Event('change',{bubbles:true}));
+      if(draw)drawWheelControl=control;
+      stepControl(control,event.deltaY);
     },{passive:false});
   }
+  document.addEventListener('pointerdown',event=>{
+    if(!event.target.closest('#drawCanvas,#drawToolsPanel select,#drawToolsPanel input[type=range]'))drawWheelControl=null;
+  },true);
+  $('drawCanvas').addEventListener('wheel',event=>{
+    if(!drawWheelControl||!$('drawToolsPanel').classList.contains('open')||!event.deltaY)return;
+    event.preventDefault();
+    stepControl(drawWheelControl,event.deltaY);
+  },{passive:false});
   /* ---------- Shake/Text: full colour lists, fonts, visibility ---------- */
   const colours=palette.map(x=>x[0]);
 
@@ -1302,10 +1382,10 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
   if($('fieldSize'))$('fieldSize').value='48';
   if($('speakRepeat'))$('speakRepeat').value='1';
   if($('speakVoice'))$('speakVoice').value='The Fancy Woman';
-  if($('speakToggle'))$('speakToggle').checked=false;
+  $('speakToggle').checked=true;$('speakExtra').value='none';
   if($('wotToggle'))$('wotToggle').checked=false;
   if($('shhNow'))$('shhNow').checked=false;
-  if($('quietPlease'))$('quietPlease').checked=false;
+  $('quietPlease').checked=false;$('quietPlease').dataset.quiet='0';
 
   if($('voiceVolume')){
     const vv=$('voiceVolumeValue');
@@ -1316,6 +1396,8 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
   function paintText(node, value, outline=false){
     const gradientMode=value==='rainbow'||value==='rainbow-static';
     const pulse=value==='rainbow-pulse';
+    if(value==='rainbow-random')value=node.dataset.randomInk||='#'+['ff00ff','ff3030','ff8a00','ffe600','44ff66','20d9ff','4888ff','7b4dff'][Math.floor(Math.random()*8)];
+    else delete node.dataset.randomInk;
     node.style.backgroundImage=gradientMode?gradient:'none';
     node.style.backgroundSize=value==='rainbow'?'300% 100%':'100% 100%';
     node.style.backgroundClip=gradientMode?'text':'';
@@ -1347,7 +1429,33 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
     wrap.appendChild(node);if($('fieldVisible').checked){$('objects').appendChild(wrap);const t0=performance.now(),dur=Math.max(1200,cfg.linger);function f(now){const t=Math.min(1,(now-t0)/dur);let y=H*.54-H*.18*t,sc=1-.25*t,x=W*.5;if(cfg.effect==='Wave')x+=Math.sin(t*16)*70;if(cfg.effect==='Orbit'){const q=t*Math.PI*5;x+=Math.cos(q)*80;y+=Math.sin(q)*45}const fade=cfg.fade/100;if(fade&&t>1-fade)wrap.style.opacity=(1-t)/fade;wrap.style.transform=`translate(-50%,-50%) translate(${x-W*.5}px,${y-H*.54}px) scale(${sc})`;if(t<1)requestAnimationFrame(f);else wrap.remove()}requestAnimationFrame(f);}
     }
     if($('fieldVisible').checked){showField();for(let i=1;i<+$('fieldRepeat').value;i++)scheduleVisual(showField,i*state.repeatSpeed);}
-    if($('rimeToggle')?.checked){const w=text.trim().split(/\s+/).pop()?.replace(/[^\w'-]/g,'');if(w){if($('rimeCloud').checked)createWordCloud(w,cfg.colour,cfg.font);else{const last=document.createElement('div');last.className='projectile';last.style.top='20%';last.style.font=cfg.size+'px '+JSON.stringify(cfg.font);last.textContent=w;liveTextColour(last,'fieldColour');$('objects').appendChild(last);setTimeout(()=>last.remove(),cfg.linger);}}}
+    if($('rimeToggle').checked){
+      const word=text.trim().split(/\s+/).pop()?.replace(/^[\p{P}]+|[\p{P}]+$/gu,'');
+      if(word){
+        const layer=document.createElement('div');
+        layer.className='projectile rimeWord';
+        layer.style.top='20%';
+        layer.style.width='80vw';
+        layer.style.textAlign=$('rimeAlign').value;
+        const size=+$('rimeSize').value, style=$('rimeStyle').value;
+        const lifetime=+$('rimeLinger').value, fade=+$('rimeFade').value/100;
+        const count=$('rimeCloud').checked?24:1;
+        for(let i=0;i<count;i++){
+          const node=document.createElement('span');
+          node.textContent=word;
+          node.style.display='inline-block';
+          node.style.font=(count===1?size:Math.round(size*(.4+Math.random()*.65)))+'px '+JSON.stringify($('rimeFont').value);
+          node.style.opacity=style==='translucent'?'.72':'1';
+          node.style.textShadow='0 0 '+$('rimeGlow').value+'px #ffffffa0';
+          if(count>1)node.style.margin='3px 6px';
+          liveTextColour(node,'rimeColour',style==='outlined');
+          layer.append(node);
+        }
+        $('objects').append(layer);
+        const animation=layer.animate([{opacity:1,offset:0},{opacity:1,offset:1-fade},{opacity:fade?0:1,offset:1}],lifetime);
+        animation.onfinish=()=>layer.remove();
+      }
+    }
     if($('subVisible')?.checked){for(let i=0;i<+$('subRepeat').value;i++)scheduleVisual(()=>{if($('subVisible').checked)sendSubtitle(text)},i*state.repeatSpeed);}
   }
   function sendCursor(text){if(!text)return;sendField(text);}
@@ -1420,23 +1528,23 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
     function applyWidth(){
       const index=+widthInput.value-1;
       $('drawCanvas').dataset.width=widths[index];
-      [...track.children].forEach((cell,i)=>{cell.dataset.size=i===index?index+1:'';cell.classList.toggle('selected',i===index);});
+      [...track.children].forEach((cell,i)=>{cell.dataset.size=i+1;cell.classList.toggle('selected',i===index);});
     }
     widthInput.oninput=applyWidth;
     applyWidth();
     const pal = $('drawPalette');
     const colourControls = document.createElement('div');
     colourControls.className = 'drawControlRow';
-    colourControls.innerHTML = '<div class="drawControlRow"><div class="colourTabs" role="tablist"><span role="tab" tabindex="0" data-target="drawn" aria-selected="true">Draw</span><span role="tab" tabindex="0" data-target="launched" aria-selected="false">Launch</span></div><label>Add colour <input type="color" aria-label="Custom colour"></label></div><div class="drawControlRow"><select aria-label="Line effect"></select><details class="drawSequence"><summary>Sequence</summary><div class="drawSequenceBody"><label><input type="checkbox"> On</label><button type="button">Add colour</button><button type="button">Clear sequence</button><div aria-live="polite"></div></div></details></div>';
+    colourControls.innerHTML = '<div class="drawControlRow"><div class="colourTabs" role="tablist"><span role="tab" tabindex="0" data-target="drawn" aria-selected="true">Draw</span><span role="tab" tabindex="0" data-target="launched" aria-selected="false">Launch</span></div><label>Add colour <input type="color" aria-label="Custom colour"></label></div><div class="drawControlRow"><select aria-label="Line effect"></select><details class="drawSequence"><summary>Edit</summary><div class="drawSequenceBody"><label><input type="checkbox"> On</label><button type="button">Add colour</button><button type="button">Clear sequence</button><div aria-live="polite"></div></div></details></div>';
     pal.parentElement.after(colourControls);
     const [picker, sequence] = colourControls.querySelectorAll('input');
     const effect = colourControls.querySelector('select');
     const target={value:'drawn'};
     const lineEffects = [
-      ['fixed','Line effect · solid colour'],['rainbow-pulse','Rainbow · whole line cycles'],
-      ['rainbow','Rainbow · smooth along line'],['rainbow-scoop','Rainbow · random groups'],
+      ['fixed','Line effect · solid colour'],['rainbow-pulse','Rainbow 2 · Cycle'],
+      ['rainbow','Rainbow 3 · Gradient'],['rainbow-scoop','Rainbow 4 · Random'],
       ['rainbow-order','Rainbow · next colour per stroke'],['checker','Black and white checker'],
-      ['stripes','Rainbow · long smooth gradient'],['rainbow-moving','Rainbow · moving'],['original','Keep drawn colours']
+      ['stripes','Rainbow · long smooth gradient'],['rainbow-moving','Rainbow 1 · Moving'],['original','Keep drawn colours']
     ];
     function refreshEffects(){
       effect.replaceChildren(...(target.value==='drawn'?lineEffects.slice(0,-1):lineEffects).map(([v,n])=>new Option(n,v)));
@@ -1493,6 +1601,10 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
         if (entry.enabled) entry.sequence.push(colour);
         refreshColours();
       };
+      button.ondblclick=()=>{
+        if(/^#[0-9a-f]{6}$/i.test(colour))picker.value=colour;
+        window.openStarColour(picker.value,value=>{picker.value=value;picker.dispatchEvent(new Event('input'));});
+      };
       pal.appendChild(button);
     });
     for(const tab of colourControls.querySelectorAll('[role=tab]')){
@@ -1526,20 +1638,34 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
     glow.append(label('drawGlow'),$('drawGlow'));
     repeat.append(...position.children);position.remove();
     const scale=row('drawScale'), speed=row('drawTrailSpeed');
-    label('drawScale').textContent='Launch size';
-    label('drawTrailSpeed').textContent='Travel speed';
-    const auto=$('drawOtto');auto.textContent='Auto launch';
-    const memory=row('drawMemory');memory.append(auto);
+    label('drawScale').textContent='Size';
+    label('drawTrailSpeed').textContent='Speed';
+    const auto=$('drawOtto').closest('label');
+    const random=$('ottoRandomEffects').closest('label');
+    const memory=row('drawMemory');
+    const autoRow=document.createElement('div');autoRow.className='drawControlRow';
+    autoRow.append(auto,random);
     const symmetry=row('drawKaleido');
     const grids=row('drawStartGrid');
-    grids.title='Reserved for a future drawing path control';
-    grids.querySelectorAll('button').forEach(button=>button.disabled=true);
-    grids.prepend(document.createTextNode('Path points (inactive) '));
+    grids.replaceChildren(...['drawStartGrid','drawEndGrid'].map((id,index)=>{
+      const box=document.createElement('div');
+      const caption=document.createElement('small');
+      caption.textContent=index?'End point':'Start point';
+      box.append(caption,$(id));
+      return box;
+    }));
     const sequenceBody=colourControls.querySelector('.drawSequenceBody');
-    const combosRow=row('drawComboName');
-    sequenceBody.append(combosRow);
+    const edit=sequenceBody.parentElement;
+    sequenceBody.prepend(document.createTextNode('Colour sequence'));
+    sequenceBody.append(row('drawComboName'),memory,grids);
+    const colourRow=row('drawPalette'), widthRow=row('drawWidthPalette');
+    colourRow.firstElementChild.textContent='Colour and width';
+    colourRow.classList.add('colourWidthRow');
+    colourRow.append($('drawWidthPalette'));widthRow.remove();
+    size.append(label('drawPosition'),$('drawPosition'));
+    scale.classList.add('matchedSlider');speed.classList.add('matchedSlider');
     const body=document.createElement('div');body.className='drawToolsBody';
-    body.append(undo,row('drawWidthPalette'),row('drawPalette'),colourControls,glow,size,repeat,scale,speed,memory,symmetry,grids);
+    body.append(undo,colourRow,colourControls,glow,size,symmetry,scale,speed,repeat,autoRow,edit);
     dp.replaceChildren(header,body);
     const comboName = $('drawComboName');
     const comboSelect = $('drawComboSelect');
@@ -1589,7 +1715,96 @@ $('repeatSong').checked=false;$('repeatAll').checked=true;$('randomShowToggle').
   /* Random Show grid and smooth line movement; use the selected 3x3 point centres. */
   ['randomStartGrid','randomEndGrid'].forEach(id=>{const g=$(id);if(g){g.style.display='grid';g.querySelectorAll('button').forEach((b,i)=>{b.style.position='relative';b.style.cursor='pointer';b.dataset.index=i});}});
 
-  document.querySelectorAll('#textPanel select,#drawToolsPanel select').forEach(wheelSelect);
+  const rainbowModes=['rainbow','rainbow-pulse','rainbow-static','rainbow-random'];
+  const colourDialog=document.createElement('dialog');
+  colourDialog.id='starColourPicker';
+  colourDialog.innerHTML='<header>Colour picker <button type="button">Close</button></header><canvas width="184" height="184" aria-label="Hue and saturation"></canvas><label>Brightness <input type="range" min="0" max="100" value="100"></label><details><summary>Show / hide values</summary><label>Hex <input type="text" maxlength="7" value="#ffffff"></label></details>';
+  document.body.append(colourDialog);
+  const wheel=colourDialog.querySelector('canvas'), wheelContext=wheel.getContext('2d');
+  const brightness=colourDialog.querySelector('input[type=range]'), hex=colourDialog.querySelector('input[type=text]');
+  let colourTarget, hue=0, saturation=0, light=1;
+  function rgb(h,s,v){
+    return [5,3,1].map(n=>{const k=(n+h/60)%6;return Math.round(255*(v-v*s*Math.max(0,Math.min(k,4-k,1))));});
+  }
+  const wheelImage=wheelContext.createImageData(184,184);
+  for(let y=0;y<184;y++)for(let x=0;x<184;x++){
+    const dx=x-92,dy=y-92,r=Math.hypot(dx,dy)/91;
+    if(r>1)continue;
+    const offset=(y*184+x)*4;
+    wheelImage.data.set([...rgb((Math.atan2(dy,dx)*180/Math.PI+360)%360,r,1),255],offset);
+  }
+  wheelContext.putImageData(wheelImage,0,0);
+  function pickHex(){
+    const value='#'+rgb(hue,saturation,light).map(x=>x.toString(16).padStart(2,'0')).join('');
+    hex.value=value;colourTarget?.(value);
+  }
+  function pickAt(event){
+    const rect=wheel.getBoundingClientRect(),dx=event.clientX-rect.left-rect.width/2,dy=event.clientY-rect.top-rect.height/2;
+    hue=(Math.atan2(dy,dx)*180/Math.PI+360)%360;saturation=Math.min(1,Math.hypot(dx,dy)/(rect.width/2));
+    pickHex();
+  }
+  wheel.onpointerdown=e=>{wheel.setPointerCapture(e.pointerId);pickAt(e);};
+  wheel.onpointermove=e=>{if(wheel.hasPointerCapture(e.pointerId))pickAt(e);};
+  brightness.oninput=()=>{light=brightness.value/100;pickHex();};
+  hex.onchange=()=>{if(/^#[0-9a-f]{6}$/i.test(hex.value))colourTarget?.(hex.value);};
+  colourDialog.querySelector('button').onclick=()=>colourDialog.close();
+  colourDialog.addEventListener('cancel',e=>e.preventDefault());
+  function openColour(value,apply){
+    colourTarget=apply;hex.value=value;
+    if(/^#[0-9a-f]{6}$/i.test(value)){
+      const [r,g,b]=value.slice(1).match(/../g).map(x=>parseInt(x,16)/255), low=Math.min(r,g,b), high=Math.max(r,g,b), d=high-low;
+      light=high;saturation=high?d/high:0;
+      hue=d?((high===r?(g-b)/d:high===g?2+(b-r)/d:4+(r-g)/d)*60+360)%360:0;
+      brightness.value=Math.round(light*100);
+    }
+    if(!colourDialog.open)colourDialog.show();
+    colourDialog.querySelector('details').open=false;
+  }
+  window.openStarColour=openColour;
+  const textHeadings=[...$('textPanel').querySelectorAll('.categoryTitle')];
+  ['cursor','field','sub','rime'].forEach((kind,index)=>{
+    const heading=textHeadings[index], next=textHeadings[index+1];
+    const enabled=$(kind==='rime'?'rimeToggle':kind+'Visible').closest('label');
+    heading.append(' ',enabled);
+    const section=document.createElement('section');
+    section.className='textColourSection';
+    const body=document.createElement('div');
+    heading.before(section);section.append(body);body.append(heading);
+    while(section.nextElementSibling&&section.nextElementSibling!==next)body.append(section.nextElementSibling);
+    if(kind==='rime'){
+      const controls=document.createElement('div');controls.className='row';
+      controls.innerHTML='<label>Font <select id="rimeFont"></select></label><label>Size <select id="rimeSize"></select></label><label>Style <select id="rimeStyle"></select></label><label>Align <select id="rimeAlign"></select></label><label>Glow <input id="rimeGlow" type="range" min="0" max="30" value="8"></label><label>Linger <input id="rimeLinger" type="range" min="1000" max="15000" value="5500"></label><label>Fade <input id="rimeFade" type="range" min="0" max="100" value="35"></label><select id="rimeColour" hidden></select>';
+      body.append(controls);
+      for(const key of ['Font','Size','Style','Align']){$('rime'+key).innerHTML=$('field'+key).innerHTML;$('rime'+key).value=$('field'+key).value;}
+      $('rimeColour').add(new Option('White','#ffffff'));
+    }
+    const id=kind+'Colour', select=$(id);
+    const colourLabel=select.previousElementSibling;
+    if(colourLabel?.textContent==='COLOUR')colourLabel.remove();
+    select.hidden=true;
+    const chip=document.createElement('button');chip.type='button';chip.className='textColourWheel';chip.title='Double-click to open colour picker';chip.setAttribute('aria-label','Open '+kind+' colour picker');
+    section.append(chip);
+    let solid=/^#[0-9a-f]{6}$/i.test(select.value)?select.value:'#ffffff';
+    function choose(value){
+      if(![...select.options].some(option=>option.value===value))select.add(new Option(value,value));
+      select.value=value;select.dispatchEvent(new Event('change',{bubbles:true}));
+    }
+    function open(){openColour(solid,value=>{solid=value;choose(value);});}
+    chip.ondblclick=open;
+    chip.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open();}};
+    const row=document.createElement('div');row.className='row textRainbows';row.append('Rainbow');
+    const toggles=rainbowModes.map((mode,i)=>{
+      const label=document.createElement('label'), box=document.createElement('input');
+      box.type='checkbox';box.title=['Moving','Cycle','Gradient','Random'][i];box.checked=select.value===mode;
+      label.append(box,i+1);row.append(label);
+      box.onchange=()=>choose(box.checked?mode:solid);
+      return box;
+    });
+    body.append(row);
+    select.addEventListener('change',()=>toggles.forEach((box,i)=>box.checked=select.value===rainbowModes[i]));
+    if(kind==='rime')select.addEventListener('change',()=>document.querySelectorAll('[data-live-colour-control="rimeColour"]').forEach(node=>paintText(node,select.value,node.dataset.outline==='true')));
+  });
+  document.querySelectorAll('#textPanel select,#drawToolsPanel select,#drawToolsPanel input[type=range]').forEach(wheelSelect);
   for(const [panelId,buttonId] of [['textPanel','textClose'],['drawToolsPanel','drawClose'],['radioPanel','radioClose'],['spherePanel','closeSphere'],['radioShowPanel','radioShowClose']]){
     const panel=$(panelId), button=$(buttonId), title=panel?.querySelector('h4');
     if(!title||!button)continue;
