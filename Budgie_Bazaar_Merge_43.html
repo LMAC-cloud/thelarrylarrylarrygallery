@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Budgie Bazaar Merge</title>
+<style>
+:root{--sky:#8eeaff;--aqua:#21d5cf;--deep:#087f91;--navy:#174c62;--gold:#ffd84f}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Arial,sans-serif;color:var(--navy)}
+body{background:linear-gradient(160deg,#dffcff,#8eeaff 48%,#35d6cf);overflow-x:hidden;overflow-y:auto}
+button{font:inherit}
+#game{width:100%;max-width:980px;margin:0 auto;padding:7px 9px 18px}
+header{position:relative;width:min(560px,94vw);height:60px;margin:0 0 5px 278px;display:flex;align-items:center;justify-content:center;text-align:center;padding:4px 10px;box-sizing:border-box;background:transparent;box-shadow:none;border-radius:0}
+.titlebox{width:max-content;max-width:calc(100% - 115px);padding:7px 13px;border-radius:14px;background:#fffffff4;box-shadow:0 4px 13px #087f9130;box-sizing:border-box}
+.header-content{min-width:0;text-align:left}h1{margin:0;color:#087f91;font-size:20px;line-height:1}
+.subtitle{display:block;font-size:9px;color:#087f91;margin-top:3px;font-weight:bold}
+#stats{position:absolute;right:0;top:-2px;display:flex;gap:14px;align-items:center;justify-content:flex-end;flex-shrink:0}
+.pill{background:#e9ffff;border:1px solid #72dfe2;border-radius:9px;padding:3px 5px;font-size:9px;font-weight:bold}
+.layout{display:grid;grid-template-columns:260px minmax(430px,560px) 145px;column-gap:18px;row-gap:8px;align-items:start;width:100%}
+.board-wrap{width:100%;text-align:center;grid-column:2}
+#board{width:100%;max-width:560px;height:auto;aspect-ratio:1/1;margin:0 auto;padding:5px;display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(6,1fr);gap:4px;border-radius:16px;background:#25c9ca;border:3px solid #087f91;box-shadow:inset 0 0 0 2px #9dffff,0 5px 15px #087f9150}
+.cell{position:relative;border-radius:7px;background:#e0ffffd8;border:1px solid #087f9130;display:flex;align-items:center;justify-content:center;min-width:0;min-height:0}
+.piece{width:96%;height:96%;display:flex;align-items:center;justify-content:center;cursor:grab;user-select:none;position:relative;touch-action:none}
+.piece.grabbed{filter:drop-shadow(0 0 2px rgba(255,255,255,.92)) drop-shadow(0 0 5px rgba(255,255,255,.62));transform:scale(1.02);opacity:1;z-index:4}
+.piece.match-glow{filter:drop-shadow(0 0 2px rgba(255,255,255,.82)) drop-shadow(0 0 5px rgba(255,255,255,.52))}
+.piece svg{width:100%;height:100%;overflow:visible}
+.piece .itemEmoji{font-size:clamp(28px,8vw,52px);line-height:1;display:flex;align-items:center;justify-content:center;width:100%;height:100%}
+.piece-label{position:absolute;bottom:0;right:0;font-size:6px;font-weight:bold;background:#ffffffe6;border-radius:4px;padding:1px 2px;max-width:85%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.generator-piece{width:96%;height:96%;border-radius:7px;border:2px solid #13aeb5;background:linear-gradient(#d9ffff,#62ded8);box-shadow:0 2px 0 #087f91;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:grab;user-select:none;touch-action:none}
+.generator-piece.grabbed{filter:drop-shadow(0 0 7px #fff) drop-shadow(0 0 3px #ffd84f);transform:none;opacity:1}
+.generator-piece .genicon{font-size:clamp(29px,7vw,43px);line-height:1}
+.generator-piece b{font-size:7px;color:#075d70;display:block;margin-top:2px;letter-spacing:.15px}
+.orders-panel{grid-column:1;grid-row:1;height:560px;max-height:calc(100vh - 68px);overflow:hidden;background:#fffffff5;border:2px solid #66dfe4;border-radius:15px;padding:8px;box-shadow:0 4px 13px #087f9130}
+.orders-panel h2{font-size:15px;margin:0 0 6px;color:#087f91;text-align:center}
+#orders{height:calc(100% - 25px);display:grid;grid-template-rows:repeat(6,1fr);gap:5px}
+.order{min-height:0;background:linear-gradient(135deg,#efffff,#d2fbff);border:2px solid #62dadd;border-radius:10px;padding:5px;display:flex;flex-direction:column;justify-content:center}
+.order.drop-ready{border-color:#ffcf35;box-shadow:0 0 0 2px #ffcf3555}
+.order-head{display:flex;justify-content:space-between;font-weight:bold;font-size:9px;margin-bottom:3px;color:#075d70}
+.req{display:flex;align-items:center;gap:5px;flex-wrap:nowrap;overflow:hidden}
+.orderReqPiece{width:42px;height:42px;display:flex;align-items:center;justify-content:center;position:relative;flex:0 0 42px;border:1px solid #a2e7e9;border-radius:7px;background:#ffffffd0}
+.orderReqPiece svg{width:100%;height:100%}
+.orderReqPiece .itemEmoji{font-size:29px}
+.reqCount{position:absolute;right:-3px;bottom:-3px;background:#fff;border:2px solid #62dadd;border-radius:8px;padding:0 3px;font-size:10px;font-weight:bold;min-width:16px;text-align:center}
+.controls-wrap{grid-column:3;grid-row:1;align-self:end;justify-self:start;position:relative;width:112px;margin:0 0 18px 14px;z-index:330}
+.controls-button{width:100%;border:2px solid #66dfe4;border-radius:10px;background:#fffffff5;color:#087f91;padding:7px 6px;font-size:10px;font-weight:bold;cursor:pointer;box-shadow:0 4px 13px #087f9130}
+.controls-button.open{background:#eaffff;border-color:#087f91}
+.confirm-shade{position:fixed;inset:0;z-index:900;display:none;align-items:center;justify-content:center;background:rgba(0,100,120,.18)}
+.confirm-shade.open{display:flex}
+.confirm-box{width:150px;box-sizing:border-box;padding:10px;background:#fff;border:2px solid #66dfe4;border-radius:12px;box-shadow:0 8px 25px rgba(0,90,110,.28);text-align:center;color:#174c62;font-size:11px;font-weight:bold}
+.confirm-buttons{display:flex;justify-content:center;gap:7px;margin-top:9px}
+.confirm-buttons button{min-width:48px;padding:5px 8px;border:1px solid #65d8dc;border-radius:7px;background:#efffff;color:#174c62;font-size:9px;cursor:pointer}
+.confirm-buttons button:hover{background:#bffff9;border-color:#087f91}
+.controls-popup{position:absolute;z-index:320;left:50%;bottom:calc(100% + 8px);top:auto;transform:translateX(-50%);width:210px;max-width:calc(100vw - 16px);max-height:55vh;overflow:auto;display:none;flex-direction:column;gap:5px;padding:7px;background:#fffffff8;border:2px solid #66dfe4;border-radius:12px;box-shadow:0 8px 22px #087f9145;box-sizing:border-box}
+.controls-popup.open{display:flex}
+.controls-popup .toggle{border:1px solid #65d8dc;border-radius:7px;background:#efffff;padding:5px 2px;font-size:8px;text-align:center;cursor:pointer;color:#174c62;box-shadow:none;appearance:none}
+.controls-popup .toggle.on{background:#bffff9;border-color:#087f91;font-weight:bold}.control-pair{position:relative;display:grid;grid-template-columns:1fr 1fr;width:100%;gap:2px}
+.control-pair .pair-button{min-width:0;margin:0}
+
+.flyer{position:fixed;z-index:50;pointer-events:none;display:flex;align-items:center;justify-content:center;transform-origin:center;will-change:left,top;opacity:1}
+.flyer svg{width:100%;height:100%}
+.flyer .itemEmoji{font-size:inherit}
+.drag-ghost{position:fixed;z-index:1000;pointer-events:none;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 0 3px rgba(255,255,255,.34)) drop-shadow(0 0 4px rgba(88,255,241,.24));opacity:1}
+.drag-ghost svg{width:100%;height:100%}
+.drag-ghost .itemEmoji{font-size:inherit;line-height:1}
+#toast{position:fixed;left:50%;top:6px;transform:translate(-50%,-100px);background:#fff;border:2px solid #19cfc5;border-radius:10px;padding:6px 10px;font-weight:bold;box-shadow:0 5px 14px #087f9138;transition:.2s;z-index:60;font-size:10px;max-width:90vw;text-align:center}
+#toast.show{transform:translate(-50%,0)}
+.spark{position:fixed;pointer-events:none;font-size:22px;z-index:70;animation:pop .7s ease-out forwards}
+@keyframes pop{0%{transform:translate(-50%,-50%) scale(.5);opacity:1}100%{transform:translate(-50%,-140px) scale(1.5);opacity:0}}
+@media(max-width:760px){
+ header{margin:0 0 5px 0}
+ header .titlebox{width:max-content;max-width:calc(100vw - 18px);padding:6px 9px}
+ #stats{right:0;top:3px}
+ #stats .pill{background:transparent!important;border:0!important;box-shadow:none!important;color:#fff;font-size:21px;font-weight:900;padding:0;min-width:58px;display:flex;align-items:center;justify-content:flex-end;gap:5px;line-height:1;cursor:pointer;user-select:none}
+ #game{max-width:620px}
+ .layout{display:grid;grid-template-columns:minmax(0,1fr) 100px;column-gap:8px;row-gap:7px;align-items:end}
+ .board-wrap{grid-column:1;grid-row:1;order:0}
+ .orders-panel{grid-column:1 / -1;grid-row:2;order:0;width:100%;height:auto;max-height:none}
+ #orders{height:auto;grid-template-rows:repeat(6,auto)}
+ .order{min-height:58px}
+ .controls-wrap{grid-column:2;grid-row:1;order:0;width:100px;align-self:end;justify-self:start;margin:0 0 18px 10px;z-index:330}
+}
+
+.generator-piece,.generator-piece:active,.generator-piece:focus{transition:none!important;-webkit-tap-highlight-color:transparent;outline:none}
+
+.generator-piece:active,.generator-piece:focus{outline:none;transform:none;transition:none!important;-webkit-tap-highlight-color:transparent}
+
+.generator-sequences{border-top:1px solid #8fe8e8;margin-top:4px;padding-top:7px;display:flex;flex-direction:column;gap:9px}
+.generator-seq{background:#f5ffff;border:1px solid #9be7e8;border-radius:10px;padding:7px}
+.generator-seq-title{font-size:12px;font-weight:800;color:#075d70;margin-bottom:6px;text-align:left}
+.generator-seq-icons{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.generator-seq-icons .seq-icon{width:54px;height:54px;display:flex;align-items:center;justify-content:center;flex:0 0 54px;position:relative}.seq-icon svg{width:100%;height:100%}.seq-icon .itemEmoji{font-size:40px;line-height:1}
+.generator-seq-icons svg{width:100%;height:100%}
+.generator-seq-icons .itemEmoji{font-size:13px;line-height:1}
+.diamond-award{display:none!important}
+@keyframes diamondPulse{0%,100%{transform:scale(1);opacity:.82}50%{transform:scale(1.18);opacity:1}}
+
+.tip{font-size:8px;color:#176b78;margin:4px auto 0;max-width:560px;text-align:center}
+.panel{background:#fffffff5;border:2px solid #66dfe4;border-radius:15px;padding:8px;box-shadow:0 4px 13px #087f9130}
+.order-popup-shade{position:fixed;inset:0;background:#087f9166;display:none;align-items:center;justify-content:center;z-index:200;padding:18px}
+.order-popup-shade.open{display:flex}
+.order-popup{position:relative;width:min(390px,92vw);background:#f7ffff;border:3px solid #21cfd0;border-radius:20px;box-shadow:0 12px 35px #075d7055;padding:18px;text-align:center}
+.popup-close{position:absolute;right:8px;top:6px;border:0;background:transparent;color:#087f91;font-size:24px;cursor:pointer}
+.popup-kicker{font-size:9px;font-weight:bold;letter-spacing:1px;color:#0a8998}
+.popup-store{font-size:19px;font-weight:900;color:#075d70;margin-top:3px}
+.popup-commentary{font-size:11px;line-height:1.3;margin:7px auto;color:#174c62;max-width:330px}
+.popup-items{display:flex;justify-content:center;gap:5px;flex-wrap:wrap;margin:8px 0}
+.popup-item{width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid #8edfe2;border-radius:8px}
+.popup-item svg{width:100%;height:100%}.popup-item .itemEmoji{font-size:28px}
+.popup-budgies{display:flex;justify-content:center;gap:4px;margin-top:3px;height:82px}
+.popup-budgie{width:76px;height:82px}.popup-budgie svg{width:100%;height:100%}
+
+.drag-ghost{position:fixed!important;z-index:1000!important;pointer-events:none!important;display:flex!important;align-items:center!important;justify-content:center!important;opacity:1!important;visibility:visible!important}
+.drag-ghost svg{width:100%!important;height:100%!important}
+.drag-ghost .itemEmoji{font-size:inherit!important;line-height:1!important;display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:100%!important}
+.drag-ghost .genicon{font-size:clamp(29px,7vw,43px)!important;line-height:1!important}
+.drag-ghost b{display:block!important;font-size:7px!important;color:#075d70!important}
+
+.drag-ghost{position:fixed!important;z-index:1000!important;pointer-events:none!important;display:flex!important;align-items:center!important;justify-content:center!important;opacity:1!important;visibility:visible!important}
+.drag-ghost.cell{background:#e0ffffd8!important;border:1px solid #087f9130!important;border-radius:7px!important;padding:0!important}
+.drag-ghost .piece{width:96%!important;height:96%!important}
+.drag-ghost .generator-piece{width:96%!important;height:96%!important}
+.drag-ghost .itemEmoji{line-height:1!important}
+
+.sequence-launchers{display:flex;flex-direction:column;gap:5px;margin-top:3px}
+.sequence-launcher{border:1px solid #65d8dc;border-radius:8px;background:#efffff;padding:6px 4px;font-size:9px;text-align:center;cursor:pointer;color:#174c62}
+.sequence-launcher:hover{background:#d8ffff}
+.sequence-popup-shade{position:fixed;inset:0;background:#087f9144;display:none;align-items:center;justify-content:center;z-index:220;padding:12px}
+.sequence-popup-shade.open{display:flex}
+.sequence-popup{position:relative;width:min(94vw,590px);max-height:82vh;overflow:auto;background:#f7ffff;border:3px solid #21cfd0;border-radius:18px;box-shadow:0 12px 35px #075d7055;padding:18px}
+.sequence-popup-content{display:flex;flex-direction:column;gap:14px;margin-top:8px}
+.sequence-popup-section{border:1px solid #9be7e8;border-radius:12px;background:#fff;padding:9px}
+.sequence-popup-section h3{margin:0 0 8px;text-align:left;color:#075d70;font-size:14px}
+.sequence-popup-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.sequence-popup-piece{width:68px;height:78px;display:flex;align-items:center;justify-content:center;background:#efffff;border:1px solid #b6ecee;border-radius:9px}
+.sequence-popup-piece svg{width:62px;height:62px;display:block}
+.sequence-popup-piece .itemEmoji{font-size:48px!important;line-height:1!important}
+.sequence-popup-piece .piece-label{display:none!important}
+
+/* Dragged Supply Cart items must retain a real, visible icon. */
+.drag-ghost.piece{width:96%!important;height:96%!important;opacity:1!important;visibility:visible!important;transform:none!important}
+.drag-ghost.piece .itemEmoji{font-size:48px!important;opacity:1!important;visibility:visible!important;display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:100%!important}
+
+.drag-ghost{box-sizing:border-box!important;overflow:hidden!important;transform:none!important}
+.drag-ghost svg{display:block!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important}
+.drag-ghost .itemEmoji{font-size:clamp(26px,6vw,48px)!important;line-height:1!important;width:100%!important;height:100%!important}
+
+/* Final layout refinements */
+header{width:min(560px,94vw);max-width:100%;box-sizing:border-box}
+header .titlebox{width:max-content;max-width:100%;box-sizing:border-box}
+#stats{background:transparent!important;border:0!important;box-shadow:none!important}
+#stats .pill{background:transparent!important;border:0!important;box-shadow:none!important;color:#fff;font-size:21px;font-weight:900;padding:0;min-width:58px;display:flex;align-items:center;justify-content:flex-end;gap:5px;line-height:1;cursor:pointer;user-select:none}
+
+.music-checks{width:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:4px;margin-top:3px;padding:5px 4px;background:#f5ffff;border:1px solid #65d8dc;border-radius:7px}
+.music-checks label{display:flex;align-items:center;gap:5px;color:#174c62;font-size:9px;line-height:14px;cursor:pointer;white-space:nowrap}
+.music-checks input{width:11px;height:11px;margin:0;accent-color:#16cbd0;cursor:pointer;flex:0 0 auto}
+
+/* Title bar is aligned to the playing grid's left and right edges. */
+header{width:min(560px,94vw);box-sizing:border-box}
+header .titlebox{width:100%;max-width:none;box-sizing:border-box;margin:0 auto;text-align:center}
+
+/* Final title sizing: white bar ends just after "Budgie Bazaar Merge". */
+header .titlebox{
+  width:max-content;
+  max-width:none;
+  padding:7px 12px;
+  box-sizing:border-box;
+  text-align:center;
+}
+header .header-content{
+  width:max-content;
+  max-width:none;
+  text-align:center;
+}
+header .subtitle{
+  white-space:nowrap;
+  font-size:8px;
+}
+
+/* Stronger but translucent edge glow: the artwork and grid remain visible. */
+.piece.grabbed{
+  filter:
+    drop-shadow(0 0 3px rgba(255,255,255,.98))
+    drop-shadow(0 0 8px rgba(255,255,255,.78))
+    drop-shadow(0 0 14px rgba(255,255,255,.42));
+  transform:scale(1.02);
+  opacity:1;
+  z-index:4;
+}
+.piece.match-glow{
+  filter:
+    drop-shadow(0 0 3px rgba(255,255,255,.96))
+    drop-shadow(0 0 8px rgba(255,255,255,.72))
+    drop-shadow(0 0 14px rgba(255,255,255,.38));
+}
+
+/* FINAL POSITIONING — title begins at the grid's left edge. */
+header{
+  justify-content:flex-start !important;
+  width:min(560px,94vw) !important;
+  box-sizing:border-box !important;
+}
+header .titlebox{
+  margin-left:0 !important;
+  margin-right:0 !important;
+  width:max-content !important;
+  max-width:none !important;
+  text-align:center !important;
+}
+
+/* Counters sit slightly lower and slightly left, while staying inside the
+   grid's right edge. */
+#stats{
+  right:12px !important;
+  top:9px !important;
+}
+
+.cell,.piece,.generator-piece{
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
+  touch-action:none;
+}
+.piece,.generator-piece{cursor:grab}
+.piece.grabbed,.generator-piece.grabbed{cursor:grabbing}
+</style>
+<body>
+<div id="game">
+<header>
+  <div class="titlebox">
+    <div class="header-content">
+      <h1>Budgie Bazaar Merge</h1>
+      <div class="subtitle">raise, merge and fulfil the shop orders</div>
+    </div>
+  </div>
+  <div id="stats">
+    <div class="pill">⭐ <span id="score">0</span></div>
+    <div class="pill">💎 <span id="gems">0</span></div>
+    <div class="pill">🪶 <span id="feathers">0</span></div>
+  </div>
+</header>
+<div class="layout">
+  <aside class="panel orders-panel">
+    <h2>📋 Orders</h2>
+    <div id="orders"></div>
+  </aside>
+  <main class="board-wrap">
+    <div id="board"></div>
+    <div class="tip">Move pieces to empty squares. Matching pieces merge. Deliver only the exact item an order requests.</div>
+  </main>
+  <aside class="controls-wrap">
+    <button class="controls-button" id="controlsButton" aria-expanded="false">Controls</button>
+    <div class="controls-popup" id="controlsPopup" aria-hidden="true">
+      <div class="control-pair" id="controlPair">
+        <button class="toggle pair-button" id="doubleToggle">2×</button>
+      </div>
+      <button class="toggle" id="musicToggle">♫ Music</button>
+      <div class="music-checks" id="musicChecks" aria-label="Music tracks">
+        <label><input type="checkbox" value="Budgie Morning Flight" checked> Budgie Morning Flight</label>
+        <label><input type="checkbox" value="Feathers Over the Lagoon"> Feathers Over the Lagoon</label>
+        <label><input type="checkbox" value="Happy Perch Parade"> Happy Perch Parade</label>
+        <label><input type="checkbox" value="Quiet Nest at Dusk"> Quiet Nest at Dusk</label>
+        <label><input type="checkbox" value="Sleepy Budgie Breeze"> Sleepy Budgie Breeze</label>
+      </div>
+<button class="toggle" id="newGame">New Game</button>
+      <div class="sequence-launchers" aria-label="Generator piece sequences">
+        <button class="sequence-launcher" data-sequence="bird">AVIARY</button>
+        <button class="sequence-launcher" data-sequence="item">SUPPLY CART</button>
+        <button class="sequence-launcher" data-sequence="plant">NURSERY</button>
+      </div>
+    </div>
+  </aside>
+</div>
+<div id="toast"></div><div id="newGameConfirmShade" class="confirm-shade" aria-hidden="true">
+  <div class="confirm-box" role="dialog" aria-modal="true" aria-labelledby="newGameConfirmTitle">
+    <div id="newGameConfirmTitle">Start a new game?</div>
+    <div class="confirm-buttons">
+      <button id="newGameYes">Yes</button>
+      <button id="newGameNo">No</button>
+    </div>
+  </div>
+</div>
+
+<div id="sequencePopupShade" class="sequence-popup-shade" aria-hidden="true">
+  <div class="sequence-popup" role="dialog" aria-modal="true" aria-labelledby="sequencePopupTitle">
+    <div id="sequencePopupTitle" class="popup-store"></div>
+    <div id="sequencePopupContent" class="sequence-popup-content"></div>
+  </div>
+</div>
+<div id="orderPopupShade" class="order-popup-shade" aria-hidden="true">
+  <div class="order-popup" role="dialog" aria-modal="true" aria-labelledby="popupStore">
+    <div class="popup-kicker">ORDER DELIVERED</div>
+    <div id="popupStore" class="popup-store"></div>
+    <div id="popupCommentary" class="popup-commentary"></div>
+    <div id="popupItems" class="popup-items"></div>
+    <div id="popupBudgies" class="popup-budgies"></div>
+  </div>
+</div>
+<script>
+const ROWS=6,COLS=6,N=ROWS*COLS;
+window.pendingDrops=new Set();
+window.activeFlyers=new Set();
+
+const birdNames=["Egg","Cracked Egg","Hatching Chick","Chick","Green Budgie","Blue Budgie","Turquoise Budgie","Yellow Budgie","Violet Budgie","Rainbow Budgie"];
+const itemNames=["Seed","Cracked Seed","Sprout","Millet Spray","Treat Cup","Swing","Bell","Nest","Budgie Palace","Deluxe Palace"];
+const plantNames=["Maple Seed","Maple Sapling","Palm Tree","Pine Tree","Cherry Tree","Orange Tree","Willow Tree","Apple Tree","Bird-Safe Oak"];
+const birdColors=["#ffffff","#f7d96a","#ffffff","#ffffff","#54c95b","#43a9ff","#20d6cf","#ffd84d","#b47cff","#ff6fae"];
+
+// Deliberately unique visual symbols: no Supply Cart symbol is reused by the Nursery.
+const itemIcons=["🌾","🫘","🌱","🎋","🥣","🪵","🔔","🪹","🏠","🏡"];
+const plantIcons=["🌰","🪴","🌿","🪴","🍃","🌸","🌴","🌺","🌳"];
+
+const pieceData={};
+birdNames.forEach((n,i)=>pieceData["b"+i]={type:"bird",level:i,name:n,color:birdColors[i]});
+itemNames.forEach((n,i)=>pieceData["i"+i]={type:"item",level:i,name:n,icon:itemIcons[i]});
+plantNames.forEach((n,i)=>pieceData["p"+i]={type:"plant",level:i,name:n,icon:plantIcons[i]});
+
+let board=Array(N).fill(null),score=0,gems=0,feathers=0;
+const customers=[
+ "Feather & Finch Pet Shop","Blue Sky Bird Co.","The Happy Budgie","Tropical Wings Pets",
+ "The Aviary Emporium","Sunny Perch Bird Supply","Rainbow Feather House","Little Wing Pets"
+];
+let customerIndex=0,orders=[],dragFrom=null,dragged=false,dragEl=null,audioCtx=null,musicOn=false,doubleOn=false,musicTimers={},musicSteps={},spawnQueue=0,spawning=false;
+const musicTracks={
+ "Budgie Morning Flight":{tempo:360,gain:.012,notes:[196,220,261.63,329.63,261.63,220,196,165,196,247,293.66,247,220,196,174.61,196,220,261.63,293.66,329.63,293.66,261.63,220,196]},
+ "Feathers Over the Lagoon":{tempo:470,gain:.010,notes:[261.63,329.63,392,329.63,293.66,261.63,220,261.63,329.63,440,392,329.63,293.66,261.63,220,196]},
+ "Happy Perch Parade":{tempo:245,gain:.011,notes:[261.63,261.63,329.63,392,392,329.63,261.63,293.66,329.63,392,440,392,329.63,293.66,261.63,220]},
+ "Quiet Nest at Dusk":{tempo:760,gain:.008,notes:[196,220,261.63,293.66,261.63,220,174.61,196,220,246.94,293.66,246.94,220,196,174.61,164.81]},
+ "Sleepy Budgie Breeze":{tempo:920,gain:.007,notes:[164.81,196,220,261.63,220,196,174.61,196,220,246.94,293.66,246.94,220,196,174.61,146.83]}
+};
+let selectedMusicTrack="Budgie Morning Flight";
+
+
+function esc(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function budgieSVG(level,color){
+ if(level===0)return `<svg viewBox="0 0 100 100"><ellipse cx="50" cy="55" rx="29" ry="36" fill="#fff" stroke="#174c62" stroke-width="3"/><circle cx="63" cy="30" r="2.5" fill="#174c62"/></svg>`;
+ if(level===1)return `<svg viewBox="0 0 100 100"><ellipse cx="50" cy="55" rx="29" ry="36" fill="#fff6d6" stroke="#174c62" stroke-width="3"/><path d="M28 28 L38 43 L48 31 L59 45 L72 30" fill="none" stroke="#b98932" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M42 70Q50 78 58 70" fill="none" stroke="#b98932" stroke-width="2"/></svg>`;
+ if(level===2)return `<svg viewBox="0 0 100 100"><path d="M24 78Q17 56 27 36Q35 17 50 20Q68 17 77 38Q85 58 74 78Z" fill="#fff6d6" stroke="#174c62" stroke-width="3"/><path d="M29 57L41 42L51 56L63 41L74 57" fill="none" stroke="#b98932" stroke-width="4"/><ellipse cx="52" cy="48" rx="15" ry="20" fill="#f7d96a" stroke="#174c62" stroke-width="2"/><circle cx="57" cy="38" r="4" fill="#fff"/><circle cx="58" cy="38" r="2" fill="#174c62"/><path d="M67 47L79 51L67 56Z" fill="#f5a34a" stroke="#174c62" stroke-width="2"/><path d="M45 66Q52 72 59 66" fill="none" stroke="#174c62" stroke-width="2"/></svg>`;
+ return `<svg viewBox="0 0 100 100"><ellipse cx="51" cy="55" rx="31" ry="34" fill="${color}" stroke="#174c62" stroke-width="3"/><circle cx="58" cy="27" r="22" fill="${color}" stroke="#174c62" stroke-width="3"/><path d="M42 48Q15 58 30 79Q49 72 52 54Z" fill="${level%2?"#dffbff":"#fff"}" stroke="#174c62" stroke-width="3"/><circle cx="65" cy="22" r="6" fill="#fff"/><circle cx="66" cy="22" r="3" fill="#174c62"/><path d="M79 27L92 31L79 35Z" fill="#f5a34a" stroke="#174c62" stroke-width="2"/><path d="M46 88L41 96M61 88L66 96" stroke="#e9a73e" stroke-width="4" stroke-linecap="round"/></svg>`;
+}
+function plantSVG(level){
+ const trees=[
+  `<svg viewBox="0 0 100 100"><rect x="45" y="55" width="10" height="35" rx="4" fill="#80532f"/><path d="M50 59C29 58 19 44 30 30C37 21 47 26 50 35C55 22 70 21 76 32C84 46 70 58 50 59Z" fill="#62bd54" stroke="#174c62" stroke-width="3"/></svg>`,
+  `<svg viewBox="0 0 100 100"><path d="M50 88Q54 60 50 37" fill="none" stroke="#875631" stroke-width="9" stroke-linecap="round"/><path d="M50 39Q31 23 17 29Q29 42 48 44M51 38Q57 18 72 12Q72 29 55 41M51 40Q72 28 87 36Q73 47 53 44" fill="#35b88a" stroke="#174c62" stroke-width="3"/></svg>`,
+  `<svg viewBox="0 0 100 100"><rect x="45" y="70" width="10" height="20" fill="#765033"/><path d="M50 12L28 43H40L23 63H42L27 81H73L58 63H77L60 43H72Z" fill="#238b66" stroke="#174c62" stroke-width="3"/></svg>`,
+  `<svg viewBox="0 0 100 100"><path d="M50 87Q47 60 51 43" fill="none" stroke="#754b32" stroke-width="9"/><path d="M51 50Q30 49 25 35Q31 20 45 28Q53 17 64 24Q80 21 82 36Q78 52 60 51Z" fill="#4dbb55" stroke="#174c62" stroke-width="3"/><circle cx="34" cy="37" r="4" fill="#f47f9d"/><circle cx="48" cy="29" r="4" fill="#f47f9d"/><circle cx="66" cy="38" r="4" fill="#f47f9d"/></svg>`,
+  `<svg viewBox="0 0 100 100"><path d="M50 88Q49 59 53 40" fill="none" stroke="#805131" stroke-width="10"/><path d="M52 51Q25 57 24 35Q34 17 50 28Q65 13 80 31Q82 52 56 52Z" fill="#4cae4f" stroke="#174c62" stroke-width="3"/><circle cx="38" cy="38" r="6" fill="#f59d32"/><circle cx="61" cy="31" r="6" fill="#f59d32"/><circle cx="67" cy="44" r="5" fill="#f59d32"/></svg>`,
+  `<svg viewBox="0 0 100 100"><path d="M50 88Q48 55 51 31" fill="none" stroke="#765035" stroke-width="10"/><path d="M51 36Q26 23 19 33M51 37Q72 20 83 28M50 43Q27 39 17 51M52 44Q75 36 86 47" fill="none" stroke="#43a96b" stroke-width="10" stroke-linecap="round"/><path d="M25 38L19 67M39 39L33 76M65 37L72 72M77 38L84 67" stroke="#62c985" stroke-width="5" stroke-linecap="round"/></svg>`,
+  `<svg viewBox="0 0 100 100"><path d="M50 88V48" stroke="#80502f" stroke-width="9"/><path d="M50 52Q31 30 22 38Q27 57 49 60M51 53Q67 28 79 37Q76 57 52 61" fill="#4da94d" stroke="#174c62" stroke-width="3"/><circle cx="34" cy="46" r="4" fill="#f05a5a"/><circle cx="67" cy="47" r="4" fill="#f05a5a"/></svg>`,
+  `<svg viewBox="0 0 100 100"><path d="M50 88V50" stroke="#79502f" stroke-width="10"/><path d="M50 53Q25 40 24 25Q40 18 50 36Q60 18 76 25Q75 40 50 53Z" fill="#6ac15a" stroke="#174c62" stroke-width="3"/><circle cx="35" cy="31" r="4" fill="#fff"/><circle cx="65" cy="31" r="4" fill="#fff"/></svg>`,
+  `<svg viewBox="0 0 100 100"><rect x="45" y="67" width="10" height="23" fill="#765033"/><path d="M50 13C31 13 20 29 28 43C13 45 18 64 35 63C34 78 48 84 58 73C69 83 84 73 78 59C92 55 85 38 72 38C77 23 65 13 50 13Z" fill="#4f9f4d" stroke="#174c62" stroke-width="3"/><path d="M50 25V65M38 45L50 52M62 41L50 52" stroke="#7fc66c" stroke-width="3"/></svg>`
+ ];
+ return trees[Math.min(level,trees.length-1)];
+}
+function iconHTML(id){
+ const d=pieceData[id];
+ if(d.type==="bird")return budgieSVG(d.level,d.color);
+ if(d.type==="plant")return plantSVG(d.level);
+ return `<div class="itemEmoji">${d.icon}</div>`;
+}
+function renderPiece(id,label=true){
+ const d=pieceData[id];
+ return `<div class="piece" draggable="false" data-id="${id}">${iconHTML(id)}${label && d.type==="bird"?`<span class="piece-label">${esc(d.name)}</span>`:""}</div>`;
+}
+function renderGenerator(g){
+ const icons={bird:"🦜",item:"🪺",plant:"🌳"};
+ const names={bird:"Aviary",item:"Supply Cart",plant:"Nursery"};
+ return `<div class="generator-piece" draggable="false" data-generator="${g}" aria-label="${names[g]} generator"><div class="genicon">${icons[g]}</div><b>${names[g]}</b></div>`;
+}
+function renderBoard(){
+ const b=document.getElementById("board");b.innerHTML="";
+ board.forEach((obj,i)=>{
+  const c=document.createElement("div");c.className="cell";c.dataset.i=i;
+  if(obj)c.innerHTML=obj.generator?renderGenerator(obj.generator):renderPiece(obj.id);
+  b.appendChild(c);
+ });
+ b.querySelectorAll(".piece,.generator-piece").forEach(el=>attachDrag(el));
+}
+
+
+let activeDrag=null;
+
+document.addEventListener("dragstart",e=>{
+ const gamePiece=e.target.closest?.(".piece,.generator-piece");
+ if(gamePiece)e.preventDefault();
+});
+function attachDrag(el){
+ const isGenerator=el.classList.contains("generator-piece");
+ el.addEventListener("pointerdown",e=>{
+  if(e.button!==0)return;
+  e.preventDefault();
+  const from=Number(el.parentElement.dataset.i),obj=board[from];if(!obj)return;
+  el.dataset.dragMoved="0";
+  activeDrag={from,el,obj,ghost:null,startX:e.clientX,startY:e.clientY,moved:false};
+  el.classList.add("grabbed");
+  try{el.setPointerCapture(e.pointerId)}catch(_){}
+ });
+ el.addEventListener("pointermove",e=>{
+  if(!activeDrag||activeDrag.el!==el)return;
+  e.preventDefault();
+  const dx=e.clientX-activeDrag.startX,dy=e.clientY-activeDrag.startY;
+  if(!activeDrag.moved&&Math.hypot(dx,dy)<6)return;
+  if(!activeDrag.moved){
+   activeDrag.moved=true;
+   el.dataset.dragMoved="1";
+   playPiecePickup();
+   createDragGhost(el,e.clientX,e.clientY);
+  }
+  moveDragGhost(e.clientX,e.clientY);
+  updateMatchGlow(e.clientX,e.clientY);
+ });
+ el.addEventListener("pointerup",e=>{
+  if(!activeDrag||activeDrag.el!==el)return;
+  e.preventDefault();
+  const wasMoved=activeDrag.moved;
+  const idx=Number(el.parentElement?.dataset.i);
+  const obj=board[idx];
+  finishPointerDrag(e.clientX,e.clientY);
+  el.dataset.dragMoved=wasMoved?"1":"0";
+  try{el.releasePointerCapture(e.pointerId)}catch(_){}
+  if(isGenerator&&!wasMoved&&obj?.generator){
+   // A stationary pointer-up is the generator's click. Play the tick directly
+   // from the user gesture, then launch the piece.
+   el.dataset.lastSpawnClick="1";
+   playGeneratorSound(obj.generator);
+   spawnFrom(obj.generator);
+   setTimeout(()=>{el.dataset.lastSpawnClick="0";},80);
+  }
+ });
+ el.addEventListener("click",e=>{
+  // Kept only as a fallback for browsers that do not suppress the synthetic
+  // click after pointer capture. The guard prevents a double spawn.
+  if(!isGenerator)return;
+  if(el.dataset.lastSpawnClick==="1"){el.dataset.lastSpawnClick="0";return;}
+  if(el.dataset.dragMoved==="1"){el.dataset.dragMoved="0";return;}
+  const idx=Number(el.parentElement?.dataset.i);
+  const obj=board[idx];
+  if(obj?.generator){
+   el.dataset.lastSpawnClick="1";
+   spawnFrom(obj.generator);
+  }
+ });
+ el.addEventListener("pointercancel",()=>{
+  if(activeDrag&&activeDrag.el===el)cancelPointerDrag();
+  el.dataset.dragMoved="1";
+ });
+ el.addEventListener("dragstart",e=>e.preventDefault());
+}
+function createDragGhost(el,x,y){
+ const cell=el.parentElement;
+ const r=cell.getBoundingClientRect();
+ const ghost=document.createElement("div");
+ ghost.className="drag-ghost generator-drag-ghost";
+ ghost.setAttribute("draggable","false");
+ ghost.style.width=r.width+"px";
+ ghost.style.height=r.height+"px";
+ ghost.style.left=(x-r.width/2)+"px";
+ ghost.style.top=(y-r.height/2)+"px";
+ ghost.style.opacity="1";
+ ghost.style.visibility="visible";
+ ghost.style.display="flex";
+ ghost.style.alignItems="center";
+ ghost.style.justifyContent="center";
+ ghost.style.pointerEvents="none";
+ ghost.innerHTML=el.outerHTML;
+ const inner=ghost.firstElementChild;
+ if(inner){inner.style.width="96%";inner.style.height="96%";inner.style.opacity="1";inner.style.visibility="visible";}
+ document.body.appendChild(ghost);
+ activeDrag.ghost=ghost;
+ el.style.visibility="hidden";
+ el.style.opacity="0";
+ cell.style.background="";
+ cell.style.borderColor="";
+}
+function moveDragGhost(x,y){
+ if(!activeDrag?.ghost)return;
+ const r=activeDrag.ghost.getBoundingClientRect();
+ activeDrag.ghost.style.left=(x-r.width/2)+"px";activeDrag.ghost.style.top=(y-r.height/2)+"px";
+}
+function updateMatchGlow(x,y){
+ document.querySelectorAll(".match-glow").forEach(n=>n.classList.remove("match-glow"));
+ if(!activeDrag||!activeDrag.moved)return;
+ const sourceId=activeDrag.el.dataset.id;
+ const sourceIndex=activeDrag.from;
+ const sourceRow=Math.floor(sourceIndex/COLS),sourceCol=sourceIndex%COLS;
+
+ // Lightly outline nearby exact matches while a piece is being carried.
+ document.querySelectorAll(".piece[data-id]").forEach(n=>{
+   if(n===activeDrag.el||n.dataset.id!==sourceId)return;
+   const cell=n.closest(".cell");
+   if(!cell)return;
+   const idx=Number(cell.dataset.i);
+   const row=Math.floor(idx/COLS),col=idx%COLS;
+   const distance=Math.abs(row-sourceRow)+Math.abs(col-sourceCol);
+   if(distance<=2)n.classList.add("match-glow");
+ });
+
+ // If the carried piece is actually over an exact match, keep that target
+ // highlighted regardless of distance.
+ const target=document.elementFromPoint(x,y)?.closest(".piece");
+ if(target&&target!==activeDrag.el&&target.dataset.id===sourceId)target.classList.add("match-glow");
+}
+function boardCellAt(x,y){return document.elementFromPoint(x,y)?.closest(".cell")||null}
+function finishPointerDrag(x,y){
+ const d=activeDrag;
+ const orderEl=document.elementFromPoint(x,y)?.closest(".order");
+ const cell=boardCellAt(x,y);
+ const to=cell?Number(cell.dataset.i):d.from;
+ const wasGenerator=!!d.obj?.generator;
+ if(orderEl&&d.moved&&!wasGenerator){
+  const oi=Number(orderEl.dataset.order);
+  cleanupPointerDrag();submitToOrder(oi,d.from);return;
+ }
+ cleanupPointerDrag();
+ if(to!==d.from)moveBoardObject(d.from,to);
+ else renderBoard();
+}
+function cancelPointerDrag(){cleanupPointerDrag();renderBoard()}
+function cleanupPointerDrag(){
+ if(!activeDrag)return;
+ if(activeDrag.ghost)activeDrag.ghost.remove();
+ if(activeDrag.el){
+ const source=activeDrag.el;
+ source.style.visibility="";
+ source.style.opacity="";
+ if(source.parentElement){
+   source.parentElement.style.background="";
+   source.parentElement.style.borderColor="";
+ }
+}
+ document.querySelectorAll(".match-glow").forEach(n=>n.classList.remove("match-glow"));
+ activeDrag=null;
+}
+function moveBoardObject(from,to){
+ if(from===to)return;
+ if(window.pendingDrops?.has(to))return;
+ const a=board[from],b=board[to];if(!a)return;
+ if(a.generator){if(b){return}board[to]=a;board[from]=null;playPieceDrop();renderBoard();return}
+ if(b&&b.generator){return}
+ if(b&&b.id===a.id){merge(from,to);return}
+ if(b){return}
+ board[to]=a;board[from]=null;playPieceDrop();renderBoard();
+}
+function maxLevel(type){return type==="bird"?9:type==="item"?9:8}
+let mergeRunType=null,mergeRunStep=0;
+const scaleNotes=[261.63,293.66,329.63,349.23,392,440,493.88,523.25,587.33,659.25,783.99,880];
+function playMergeScale(type){
+ if(mergeRunType!==type){mergeRunType=type;mergeRunStep=0}
+ const freq=scaleNotes[mergeRunStep%scaleNotes.length];
+ mergeRunStep++;
+ tone(freq,.16,"sine",.028);
+ if(mergeRunStep>scaleNotes.length)mergeRunStep=0;
+}
+function merge(from,to){
+ const a=board[from].id,d=pieceData[a];
+ if(d.level>=maxLevel(d.type))return;
+ const newId=d.type[0]+(d.level+1);
+ board[to]={id:newId};board[from]=null;
+ score+=(d.level+1);
+ playMergeScale(a);
+ renderBoard();updateStats();
+}
+function showMergeGlowAndDiamond(index){
+ const cell=document.querySelectorAll(".cell")[index];
+ const piece=cell?.querySelector(".piece");
+ if(piece){piece.classList.add("merge-glow");setTimeout(()=>piece.classList.remove("merge-glow"),380);}
+}
+function playWindchime(){
+ tone(659.25,.12,"sine",.018);
+ tone(783.99,.14,"sine",.016,.10);
+ tone(1046.5,.18,"sine",.014,.22);
+}
+
+function generatorIndex(type){return board.findIndex(x=>x&&x.generator===type)}
+function adjacentEmptyCells(center,reserved=new Set()){
+ const out=[],cr=Math.floor(center/COLS),cc=center%COLS;
+ for(let radius=1;radius<6;radius++){
+  const layer=[];
+  for(let r=Math.max(0,cr-radius);r<=Math.min(ROWS-1,cr+radius);r++){
+   for(let c=Math.max(0,cc-radius);c<=Math.min(COLS-1,cc+radius);c++){
+    if(Math.max(Math.abs(r-cr),Math.abs(c-cc))!==radius)continue;
+    const i=r*COLS+c;
+    if(board[i]===null&&!reserved.has(i))layer.push(i);
+   }
+  }
+  layer.sort((a,b)=>
+   (Math.abs(Math.floor(a/COLS)-cr)+Math.abs(a%COLS-cc))-
+   (Math.abs(Math.floor(b/COLS)-cr)+Math.abs(b%COLS-cc))
+  );
+  if(layer.length)return layer;
+ }
+ return out;
+}
+function playGeneratorSound(type){
+ try{
+  const c=audio();
+  const o=c.createOscillator(),g=c.createGain();
+  o.type="triangle";
+  const base=type==="bird"?330:type==="item"?247:294;
+  o.frequency.setValueAtTime(base,c.currentTime);
+  o.frequency.exponentialRampToValueAtTime(base*1.32,c.currentTime+.045);
+  g.gain.setValueAtTime(.0001,c.currentTime);
+  g.gain.exponentialRampToValueAtTime(.010,c.currentTime+.006);
+  g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.065);
+  o.connect(g);g.connect(c.destination);
+  o.start(c.currentTime);o.stop(c.currentTime+.075);
+ }catch(_){}
+}
+function spawnFrom(type){
+ const gi=generatorIndex(type);if(gi<0)return;
+ if(!window.pendingDrops)window.pendingDrops=new Set();
+ const first=type==="bird"?"b0":type==="item"?"i0":"p0";
+ const second=type==="bird"?"b1":type==="item"?"i1":"p1";
+ const ids=doubleOn?[first,second]:[first];
+ const targets=[];
+ for(let k=0;k<ids.length;k++){
+  const available=adjacentEmptyCells(gi,window.pendingDrops);
+  if(!available.length)break;
+  const target=available[0];
+  window.pendingDrops.add(target);
+  targets.push(target);
+ }
+ if(!targets.length){return}
+ // Launch immediately. The click sound was already fired directly from
+ // the pointer gesture above.
+ targets.forEach((target,k)=>flyFromGenerator(type,target,ids[k],k*210,gi));
+}
+function flyFromGenerator(type,i,id,extra,gi){
+ const cells=document.querySelectorAll(".cell"),start=cells[gi],dest=cells[i];
+ if(!start||!dest){window.pendingDrops?.delete(i);return}
+
+ const br=start.getBoundingClientRect(),cr=dest.getBoundingClientRect();
+ const size=Math.min(cr.width,cr.height)*.96;
+ const fly=document.createElement("div");
+ fly.className="flyer";
+ fly.dataset.targetCell=String(i);
+ fly.dataset.pieceId=id;
+ fly.style.width=size+"px";
+ fly.style.height=size+"px";
+ fly.innerHTML=iconHTML(id)+(pieceData[id].type==="bird"?`<span class="piece-label">${esc(pieceData[id].name)}</span>`:"");
+ const iconSize=Math.max(28,Math.min(52,cr.width*.68));
+ fly.style.fontSize=iconSize+"px";
+ fly.style.left=(br.left+br.width/2-size/2)+"px";
+ fly.style.top=(br.top+br.height/2-size/2)+"px";
+ document.body.appendChild(fly);
+
+ if(!window.activeFlyers)window.activeFlyers=new Set();
+ window.activeFlyers.add(fly);
+
+ let settled=false;
+ const settle=()=>{
+  if(settled)return;
+  settled=true;
+  if(window.pendingDrops)window.pendingDrops.delete(i);
+  if(window.activeFlyers)window.activeFlyers.delete(fly);
+
+  // A reserved destination is protected from normal dragging, so it should
+  // still be available here. Never silently redirect the flying piece to a
+  // different square: that was the source of visual "ghost" pieces.
+  if(board[i]===null){
+   board[i]={id};
+  }else{
+   // If an unexpected external change occurred, do not leave a flyer stranded.
+   // Return the reservation and remove the visual flyer cleanly.
+   fly.remove();
+   return;
+  }
+
+  fly.remove();
+  renderBoard();
+  updateStats();
+ };
+
+ // Force layout before starting the transition.
+ fly.getBoundingClientRect();
+ requestAnimationFrame(()=>{
+  fly.style.transition="left 165ms cubic-bezier(.2,.75,.35,1),top 165ms cubic-bezier(.2,.75,.35,1)";
+  fly.style.left=(cr.left+cr.width/2-size/2)+"px";
+  fly.style.top=(cr.top+cr.height/2-size/2)+"px";
+ });
+
+ // The normal landing time is 190ms plus the intentional 2x spacing.
+ // A watchdog prevents a browser animation/timer hiccup from leaving a
+ // piece permanently suspended in mid-air.
+ const normalDelay=190+extra;
+ setTimeout(settle,normalDelay);
+ setTimeout(()=>{
+  if(!settled)settle();
+ },Math.max(900,normalDelay+500));
+}
+const ORDER_QUANTITIES=[3,3,4,4,5,5,6,6,5,6,5,6];
+function makeReq(orderSlot=0){
+ const total=ORDER_QUANTITIES[Math.min(customerIndex-1,ORDER_QUANTITIES.length-1)];
+ const req={};
+ const easyCount=Math.min(2,total-1);
+ for(let k=0;k<total;k++){
+  const r=Math.random(),type=r<.45?"bird":r<.76?"item":"plant";
+  let level;
+  if(k<easyCount){
+   level=Math.random()<.55?0:1;
+  }else{
+   const cap=orderSlot<2?3:orderSlot<4?5:orderSlot<6?7:9;
+   level=2+Math.floor(Math.random()*Math.max(1,cap-1));
+   level=Math.min(level,maxLevel(type));
+  }
+  const id=(type==="bird"?"b":type==="item"?"i":"p")+level;
+  req[id]=(req[id]||0)+1;
+ }
+ return req;
+}
+function newOrder(slot=customerIndex%6){
+ const customer=customers[customerIndex++%customers.length];
+ return {customer,req:makeReq(slot),filled:{},done:false};
+}
+function renderOrders(){
+ const box=document.getElementById("orders");box.innerHTML="";
+ orders.forEach((o,oi)=>{
+  const div=document.createElement("div");
+  div.className="order"+(o.done?" done":"");
+  div.dataset.order=oi;
+  const parts=Object.entries(o.req).map(([id,n])=>
+   `<div><div class="orderReqPiece">${iconHTML(id)}<span class="reqCount">${o.filled[id]||0}/${n}</span></div></div>`
+  ).join("");
+  div.innerHTML=`<div class="order-head"><span>${esc(o.customer)}</span><span>${o.done?"✓":""}</span></div><div class="req">${parts}</div>`;
+  box.appendChild(div);
+ });
+}
+function popupBudgieSVG(level){
+ const cols=["#f7d96a","#55c95b","#42a9ff","#22d7cf","#ffd84d","#b47cff"];
+ const c=cols[level%cols.length];
+ return `<svg viewBox="0 0 100 110">
+ <ellipse cx="52" cy="62" rx="29" ry="36" fill="${c}" stroke="#174c62" stroke-width="3"/>
+ <circle cx="72" cy="29" r="18" fill="${c}" stroke="#174c62" stroke-width="3"/>
+ <path d="M25 57Q7 48 16 32Q33 35 43 52Z" fill="#278b83" stroke="#174c62" stroke-width="3"/>
+ <path d="M43 65Q23 82 32 96Q50 88 57 69Z" fill="#176f91" opacity=".9"/>
+ <circle cx="77" cy="25" r="4" fill="#fff"/><circle cx="78" cy="25" r="1.8" fill="#173c4b"/>
+ <path d="M89 32L99 36L89 40Z" fill="#f39a39" stroke="#174c62" stroke-width="2"/>
+ <path d="M47 20Q53 7 61 18" fill="none" stroke="#174c62" stroke-width="3" stroke-linecap="round"/>
+ </svg>`;
+}
+const orderComments=[
+ "The budgies have inspected the parcel. They appear satisfied.",
+ "Excellent. The shopkeeper has stopped pacing around the counter.",
+ "Order accepted. Somewhere, a tiny budgie is ringing a bell.",
+ "Delivered perfectly. The birds have already begun quality control.",
+ "A splendid delivery. No millet was harmed in the process.",
+ "The customer says the budgies are impressed. This is apparently a serious endorsement."
+];
+function showOrderPopup(order,ids){
+ const shade=document.getElementById("orderPopupShade");
+ document.getElementById("popupStore").textContent=order.customer;
+ document.getElementById("popupCommentary").textContent=orderComments[Math.floor(Math.random()*orderComments.length)];
+ const items=document.getElementById("popupItems");items.innerHTML="";
+ ids.forEach(id=>{
+  const d=document.createElement("div");d.className="popup-item";d.innerHTML=iconHTML(id);items.appendChild(d);
+ });
+ const bud=document.getElementById("popupBudgies");bud.innerHTML="";
+ const palette=[4,5,6,7,8,9].sort(()=>Math.random()-.5);
+ const budgieCount=Math.random()<.65?2:3;
+ palette.slice(0,budgieCount).forEach(level=>{
+  const d=document.createElement("div");d.className="popup-budgie";d.innerHTML=popupBudgieSVG(level);bud.appendChild(d);
+ });
+ shade.classList.add("open");shade.setAttribute("aria-hidden","false");
+}
+function closeOrderPopup(){
+ const shade=document.getElementById("orderPopupShade");
+ shade.classList.remove("open");shade.setAttribute("aria-hidden","true");
+}
+function submitToOrder(oi,from){
+ const obj=board[from],o=orders[oi];
+ if(!obj||obj.generator||!o)return;
+ const id=obj.id;
+ if(!Object.prototype.hasOwnProperty.call(o.req,id)){return}
+ if((o.filled[id]||0)>=o.req[id]){return}
+ board[from]=null;o.filled[id]=(o.filled[id]||0)+1;score+=(pieceData[id].level+1);
+ const complete=Object.entries(o.req).every(([x,n])=>(o.filled[x]||0)>=n);
+ const completedIds=Object.entries(o.filled).flatMap(([x,n])=>Array.from({length:n},()=>x));
+ if(complete){
+  o.done=true;score+=5;feathers++;playOrderComplete();burstAt(from,"✦");
+  renderOrders();renderBoard();updateStats();
+  showOrderPopup(o,completedIds);
+  setTimeout(()=>{orders.splice(oi,1);orders.push(newOrder());renderOrders()},900);
+ }else{
+  playCorrectDeposit();renderOrders();renderBoard();updateStats();
+ }
+}
+
+function updateStats(){document.getElementById("score").textContent=score;document.getElementById("gems").textContent=gems;document.getElementById("feathers").textContent=feathers}
+function playCounterClick(){
+  tone(196,.075,"sine",.010);
+  setTimeout(()=>tone(247,.055,"sine",.007),28);
+}
+
+function toast(t){const x=document.getElementById("toast");x.textContent=t;x.classList.add("show");clearTimeout(window.tt);window.tt=setTimeout(()=>x.classList.remove("show"),1500)}
+function burstAt(i,char){const cell=document.querySelectorAll(".cell")[i];if(!cell)return;const r=cell.getBoundingClientRect(),s=document.createElement("div");s.className="spark";s.textContent=char;s.style.left=(r.left+r.width/2)+"px";s.style.top=(r.top+r.height/2)+"px";document.body.appendChild(s);setTimeout(()=>s.remove(),750)}
+function audio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==="suspended")audioCtx.resume();return audioCtx}
+function tone(freq,dur,type="sine",gain=.018,delay=0){
+ const c=audio(),o=c.createOscillator(),g=c.createGain();
+ o.type=type;o.frequency.setValueAtTime(freq,c.currentTime+delay);
+ g.gain.setValueAtTime(.0001,c.currentTime+delay);
+ g.gain.exponentialRampToValueAtTime(gain,c.currentTime+delay+.012);
+ g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+delay+dur);
+ o.connect(g);g.connect(c.destination);o.start(c.currentTime+delay);o.stop(c.currentTime+delay+dur+.03);
+}
+function playGeneratorSound(type){
+  // Short, low "tick" on every generator click. Kept quiet, but clearly audible.
+  const f=type==="bird"?210:type==="item"?185:195;
+  tone(f,.055,"triangle",.026);
+}
+function playPiecePickup(){tone(205,.07,"triangle",.020)}
+function playPieceDrop(){tone(155,.10,"triangle",.028);tone(185,.08,"sine",.018,.035)}
+function playMerge(){tone(105,.18,"triangle",.032);tone(165,.16,"triangle",.027,.06);tone(250,.20,"sine",.022,.12)}
+function playCorrectDeposit(){tone(245,.09,"sine",.020);tone(315,.12,"sine",.018,.065)}
+function playOrderComplete(){tone(92,.25,"triangle",.030);tone(123,.25,"triangle",.026,.10);tone(165,.30,"sine",.023,.21)}
+function checkedMusicTracks(){
+ return Array.from(document.querySelectorAll("#musicChecks input[type=checkbox]:checked")).map(x=>x.value);
+}
+function stopMusicTrack(name){
+ if(musicTimers[name]){clearTimeout(musicTimers[name]);delete musicTimers[name];}
+}
+function startMusicTrack(name){
+ if(!musicOn)return;
+ const track=musicTracks[name];
+ if(!track)return;
+ stopMusicTrack(name);
+ if(musicSteps[name]===undefined)musicSteps[name]=0;
+ const loop=()=>{
+  if(!musicOn || !document.querySelector(`#musicChecks input[value="${CSS.escape(name)}"]`)?.checked){
+   delete musicTimers[name];return;
+  }
+  const note=track.notes[musicSteps[name]++%track.notes.length];
+  const dur=Math.max(.16,track.tempo/1000*.78);
+  tone(note,dur,"sine",track.gain);
+  musicTimers[name]=setTimeout(loop,track.tempo);
+ };
+ loop();
+}
+function musicToggle(){
+ musicOn=!musicOn;
+ const b=document.getElementById("musicToggle");
+ b.classList.toggle("on",musicOn);
+ b.textContent=musicOn?"♫ Music ON":"♫ Music";
+ if(!musicOn){
+  Object.keys(musicTimers).forEach(stopMusicTrack);
+  return;
+ }
+ const c=audio();
+ const begin=()=>checkedMusicTracks().forEach(startMusicTrack);
+ if(c.state==="suspended")c.resume().then(begin).catch(begin);else begin();
+}
+function doubleToggle(){doubleOn=!doubleOn;const b=document.getElementById("doubleToggle");b.classList.toggle("on",doubleOn);b.textContent=doubleOn?"2× ON":"2×"}
+
+function renderGeneratorGuide(){
+ const content=document.getElementById("sequencePopupContent");
+ if(!content)return;
+ const groups=[["Aviary","bird",10],["Supply Cart","item",10],["Nursery","plant",9]];
+ content.innerHTML=groups.map(([name,type,count])=>{
+  const ids=Array.from({length:count},(_,i)=>(type==="bird"?"b":type==="item"?"i":"p")+i);
+  return `<section class="sequence-popup-section" data-seq-type="${type}">
+   <h3>${name}</h3>
+   <div class="sequence-popup-row">
+    ${ids.map(id=>`<div class="sequence-popup-piece" title="${esc(pieceData[id].name)}">${iconHTML(id)}</div>`).join("")}
+   </div>
+  </section>`;
+ }).join("");
+}
+
+document.getElementById("controlsButton").onclick=()=>{
+ const p=document.getElementById("controlsPopup"),b=document.getElementById("controlsButton"),open=!p.classList.contains("open");
+ p.classList.toggle("open",open);b.classList.toggle("open",open);
+ b.setAttribute("aria-expanded",String(open));p.setAttribute("aria-hidden",String(!open));
+};
+
+function closeSequencePopup(){
+ const shade=document.getElementById("sequencePopupShade");
+ shade.classList.remove("open");shade.setAttribute("aria-hidden","true");
+}
+document.querySelectorAll(".sequence-launcher").forEach(btn=>{
+ btn.onclick=e=>{
+  e.stopPropagation();
+  const type=btn.dataset.sequence;
+  const shade=document.getElementById("sequencePopupShade");
+  const title=type==="bird"?"AVIARY":type==="item"?"SUPPLY CART":"NURSERY";
+  // Clicking the same generator display button a second time toggles only
+  // its display window. The Controls menu remains open.
+  if(shade.classList.contains("open") &&
+     document.getElementById("sequencePopupTitle").textContent===title){
+    closeSequencePopup();
+    return;
+  }
+  renderGeneratorGuide();
+  const content=document.getElementById("sequencePopupContent");
+  content.querySelectorAll(".sequence-popup-section").forEach(x=>x.style.display="none");
+  const section=content.querySelector(`[data-seq-type="${type}"]`);
+  if(section)section.style.display="";
+  document.getElementById("sequencePopupTitle").textContent=title;
+  shade.classList.add("open");shade.setAttribute("aria-hidden","false");
+ };
+});
+document.getElementById("sequencePopupShade").addEventListener("pointerdown",e=>{
+ // Close only the sequence display. Do not let this event reach the global
+ // outside-click handler, because Controls must remain open.
+ e.stopPropagation();
+ closeSequencePopup();
+});
+document.addEventListener("pointerdown",e=>{
+ const wrap=document.querySelector(".controls-wrap");
+ const seq=document.getElementById("sequencePopupShade");
+ const clickedSequence=seq&&seq.classList.contains("open")&&seq.contains(e.target);
+ if(wrap&&!wrap.contains(e.target)&&!clickedSequence){
+  document.getElementById("controlsPopup").classList.remove("open");
+  document.getElementById("controlsButton").classList.remove("open");
+ }
+ // Sequence popup clicks are intentionally allowed to close the display
+ // while leaving the Controls menu untouched.
+ const order=document.getElementById("orderPopupShade");
+ if(order&&order.classList.contains("open")&&!e.target.closest(".order-popup"))closeOrderPopup();
+});
+
+document.getElementById("orderPopupShade").addEventListener("pointerdown",e=>{
+ closeOrderPopup();
+});
+document.getElementById("musicToggle").onclick=musicToggle;
+document.querySelectorAll("#musicChecks input[type=checkbox]").forEach(box=>{
+ box.addEventListener("change",e=>{
+  const name=e.target.value;
+  musicSteps[name]=0;
+  if(e.target.checked){
+   if(musicOn)startMusicTrack(name);
+  }else{
+   stopMusicTrack(name);
+  }
+ });
+});
+document.querySelectorAll("#stats .pill").forEach(counter=>{
+  counter.addEventListener("click",e=>{
+    e.stopPropagation();
+    playCounterClick();
+  });
+});
+document.getElementById("doubleToggle").onclick=doubleToggle;
+function closeNewGameConfirm(){
+ const shade=document.getElementById("newGameConfirmShade");
+ shade.classList.remove("open");
+ shade.setAttribute("aria-hidden","true");
+}
+function startNewGame(){
+ if(window.pendingDrops)window.pendingDrops.clear();
+ if(window.activeFlyers){
+  window.activeFlyers.forEach(f=>f.remove());
+  window.activeFlyers.clear();
+ }
+ score=0;gems=0;feathers=0;customerIndex=0;mergeRunType=null;mergeRunStep=0;
+ board=Array(N).fill(null);
+ board[0]={generator:"bird"};board[2]={generator:"item"};board[4]={generator:"plant"};
+ orders=Array.from({length:6},(_,i)=>newOrder(i));
+ renderBoard();renderOrders();updateStats();toast("New game started.");
+ closeNewGameConfirm();
+}
+document.getElementById("newGame").onclick=e=>{
+ e.stopPropagation();
+ const shade=document.getElementById("newGameConfirmShade");
+ shade.classList.add("open");
+ shade.setAttribute("aria-hidden","false");
+};
+document.getElementById("newGameYes").onclick=e=>{
+ e.stopPropagation();
+ startNewGame();
+};
+document.getElementById("newGameNo").onclick=e=>{
+ e.stopPropagation();
+ closeNewGameConfirm();
+ // Deliberately do not touch the Controls popup: it remains exactly as it was.
+};
+document.getElementById("newGameConfirmShade").onclick=e=>{
+ if(e.target===e.currentTarget) closeNewGameConfirm();
+};
+
+// Three movable generators begin in the top row.
+board[0]={generator:"bird"};board[2]={generator:"item"};board[4]={generator:"plant"};
+orders=Array.from({length:6},(_,i)=>newOrder(i));
+renderBoard();renderOrders();updateStats();renderGeneratorGuide();
+
+
+</script>
+</body>
+</html>
