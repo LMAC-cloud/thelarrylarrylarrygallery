@@ -1,0 +1,1899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vintage Typewriter Studio</title>
+<style>
+  :root {
+    --tw-scale: 1;
+    --ream-scale: 1;
+    --font-family: 'Courier New', Courier, monospace;
+    --text-align: left;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #07080c;
+    font-family: 'Courier New', Courier, monospace;
+  }
+
+  /* Animated Background Canvas */
+  #bg-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* 3D Ream of Paper (Starts Hidden until P is clicked) */
+  #ream-wrapper {
+    position: fixed;
+    top: 6%;
+    left: 50%;
+    transform: translateX(-50%) scale(var(--ream-scale));
+    transform-origin: top center;
+    z-index: 15;
+    transition: opacity 0.3s ease, transform 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #ream-wrapper.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%) scale(calc(var(--ream-scale) * 0.9));
+  }
+
+  #ream-paper {
+    width: 560px;
+    height: 430px;
+    background: #fcfaf2;
+    color: #1b1b1b;
+    padding: 45px 50px;
+    position: relative;
+    font-family: var(--font-family);
+    font-size: 20px;
+    line-height: 1.5;
+    text-align: var(--text-align);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-y: auto;
+    border-top: 1px solid #e0ddd1;
+    border-right: 1px solid #d5d1c2;
+    box-shadow:
+      -1px 1px 0 #ebe7d8,
+      -2px 2px 0 #dcd7c5,
+      -3px 3px 0 #ebe7d8,
+      -4px 4px 0 #d5d0bd,
+      -5px 5px 0 #ebe7d8,
+      -6px 6px 0 #cfc9b4,
+      -7px 7px 0 #ebe7d8,
+      -8px 8px 0 #c8c2ac,
+      -9px 9px 0 #ebe7d8,
+      -10px 10px 0 #bfb8a0,
+      -11px 11px 0 #ebe7d8,
+      -12px 12px 0 #b5ae94,
+      -18px 22px 35px rgba(0, 0, 0, 0.8);
+  }
+
+  #ream-paper::-webkit-scrollbar {
+    width: 6px;
+  }
+  #ream-paper::-webkit-scrollbar-thumb {
+    background: #c5bfa8;
+  }
+
+  .page-number-stamp {
+    position: absolute;
+    bottom: 14px;
+    right: 24px;
+    font-size: 14px;
+    color: #666;
+    font-family: 'Courier New', Courier, monospace;
+  }
+
+  /* Typewriter Assembly at Bottom */
+  #typewriter-wrapper {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) scale(var(--tw-scale));
+    transform-origin: bottom center;
+    width: 84%;
+    max-width: 1120px;
+    height: 270px;
+    z-index: 20;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  #typewriter-wrapper.hidden {
+    transform: translateX(-50%) translateY(115%) scale(var(--tw-scale));
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Active Typing Paper emerging & curving down out of sight */
+  #active-paper-slot {
+    position: absolute;
+    bottom: 145px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 660px;
+    height: 290px;
+    perspective: 700px;
+    z-index: 15;
+    pointer-events: none;
+  }
+
+  #active-paper {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, #ffffff 0%, #f7f5ec 75%, #dcd8c8 100%);
+    padding: 25px 45px;
+    font-family: var(--font-family);
+    font-size: 32px;
+    line-height: 1.35;
+    color: #141414;
+    text-align: var(--text-align);
+    box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.55);
+    border-radius: 3px 3px 0 0;
+    transform-origin: bottom center;
+    transform: rotateX(24deg);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+    position: relative;
+  }
+
+  #active-paper::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 45px;
+    background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.25));
+    pointer-events: none;
+  }
+
+  .writing-row { white-space: pre; }
+  .writing-row > span { display: inline-block; }
+  .writing-row .marked { background: #f1d68b; }
+  #ream-wrapper { z-index: 40; top: 3%; }
+  #ream-wrapper.hidden, #menu-panel.hidden { visibility: hidden; }
+  #ream-paper { padding: 0; overflow: hidden; white-space: normal; }
+  #ream-content { user-select: text; }
+  #active-paper { padding: 0 0 24px; }
+  #active-lines { margin-inline: auto; max-height: 250px; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; }
+  #active-lines .writing-row { flex-shrink: 0; }
+  .page-number-stamp { pointer-events: none; bottom: 5px; }
+  #menu-panel { max-height: calc(100dvh - 104px); overflow: auto; width: min(340px, calc(100vw - 48px)); }
+  #format-target { font-size: 12px; }
+  .slider-row input[type=range] { min-width: 0; }
+  .slider-row output { min-width: 3ch; text-align: right; }
+  #typebar-zone { position: fixed; inset: 0; z-index: 60; pointer-events: none; }
+  .typebar {
+    position: absolute;
+    width: 7px;
+    height: var(--stem);
+    background: linear-gradient(90deg, #555, #e0e0e0, #444);
+    transform-origin: top center;
+    border-radius: 4px;
+    animation: strike 170ms ease-out forwards;
+    display: flex;
+    justify-content: center;
+  }
+
+  .typebar-slug {
+    position: absolute;
+    top: -17px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #f5f5f5, #8a8a8a 70%, #3a3a3a);
+    border: 2px solid #222;
+    color: #111;
+    font-family: var(--font-family);
+    font-weight: bold;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.7);
+  }
+
+  @keyframes strike {
+    0% { transform: translate(-50%, 17px) rotate(13deg); opacity: .4; }
+    50% { transform: translateX(-50%); opacity: 1; }
+    100% { transform: translate(-50%, 20px) rotate(-9deg); opacity: 0; }
+  }
+
+  /* Top of the Black Typewriter Body */
+  #typewriter-body {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 165px;
+    background: linear-gradient(180deg, #2b2b2b 0%, #141414 25%, #080808 100%);
+    border-radius: 36px 36px 0 0;
+    border-top: 3px solid #4a4a4a;
+    box-shadow: 0 -10px 35px rgba(0, 0, 0, 0.85), inset 0 4px 12px rgba(255,255,255,0.12);
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .platen-roller {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 720px;
+    height: 26px;
+    background: linear-gradient(180deg, #3a3a3a, #111 50%, #000);
+    border-radius: 12px;
+    border-left: 18px solid #b5b5b5;
+    border-right: 18px solid #b5b5b5;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.8);
+  }
+
+  .chrome-bar {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 690px;
+    height: 6px;
+    background: linear-gradient(180deg, #fff, #888, #eee);
+    border-radius: 3px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.9);
+  }
+
+  .ribbon-cover {
+    margin-top: 24px;
+    width: 340px;
+    height: 68px;
+    background: linear-gradient(180deg, #222, #0d0d0d);
+    border: 2px solid #3c3c3c;
+    border-radius: 60px 60px 12px 12px;
+    box-shadow: inset 0 2px 8px rgba(255,255,255,0.1), 0 6px 15px rgba(0,0,0,0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .brand-plate {
+    background: #111;
+    border: 1px solid #b89b5e;
+    color: #d4b872;
+    padding: 4px 18px;
+    font-size: 13px;
+    letter-spacing: 4px;
+    font-weight: bold;
+    border-radius: 3px;
+    text-transform: uppercase;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.8);
+  }
+
+  /* Live Caret Typing Input Box below CORONA */
+  #caret-box-wrapper {
+    margin-top: 12px;
+    width: 480px;
+    position: relative;
+    z-index: 35;
+  }
+
+  #live-typing-input {
+    width: 100%;
+    background: #101012;
+    border: 2px solid #555;
+    border-radius: 6px;
+    padding: 8px 14px;
+    color: #f4e8c8;
+    caret-color: #f4e8c8;
+    font-family: var(--font-family);
+    font-size: 20px;
+    text-align: var(--text-align);
+    outline: none;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.9), 0 1px 0 rgba(255,255,255,0.15);
+  }
+
+  #live-typing-input:focus {
+    border-color: #d4b872;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.9), 0 0 10px rgba(212, 184, 114, 0.35);
+  }
+
+  /* Round Vintage Typewriter Keys (UI Controls) */
+  .tw-key {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #3a3a3a, #121212 80%);
+    border: 3px solid #d4d4d4;
+    box-shadow:
+      0 0 0 2px #555,
+      0 5px 10px rgba(0, 0, 0, 0.8),
+      inset 0 2px 4px rgba(255, 255, 255, 0.35);
+    color: #f4f1ea;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: bold;
+    font-size: 19px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.2s;
+    user-select: none;
+  }
+
+  .tw-key:hover {
+    border-color: #ffffff;
+    box-shadow:
+      0 0 0 2px #888,
+      0 6px 14px rgba(255, 255, 255, 0.2),
+      inset 0 2px 5px rgba(255, 255, 255, 0.5);
+  }
+
+  .tw-key:active, .tw-key.active {
+    transform: translateY(3px) scale(0.96);
+    border-color: #e6c27a;
+    color: #e6c27a;
+    box-shadow:
+      0 0 0 2px #444,
+      0 2px 4px rgba(0, 0, 0, 0.9),
+      inset 0 1px 3px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Bottom Left Corner Controls: T, P, M */
+  #bottom-left-controls {
+    position: fixed;
+    left: 24px;
+    bottom: 24px;
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    z-index: 100;
+  }
+
+  /* Bottom Right Corner Controls: Page Arrows */
+  #bottom-right-controls {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    z-index: 100;
+  }
+
+  /* Menu Panel (Opens above bottom-left buttons) */
+  #menu-panel {
+    position: fixed;
+    left: 24px;
+    bottom: 88px;
+    width: 315px;
+    background: rgba(18, 18, 20, 0.96);
+    border: 2px solid #777;
+    border-radius: 12px;
+    padding: 18px;
+    color: #f0ede6;
+    z-index: 110;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  #menu-panel.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(15px);
+  }
+
+  .menu-section {
+    margin-bottom: 14px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 12px;
+  }
+
+  .menu-section:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .menu-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #d4b872;
+    margin-bottom: 8px;
+    display: block;
+    font-weight: bold;
+  }
+
+  .btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .menu-btn {
+    background: #262629;
+    color: #ddd;
+    border: 1px solid #4a4a4f;
+    padding: 6px 10px;
+    border-radius: 5px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    cursor: pointer;
+    flex: 1 1 auto;
+    text-align: center;
+  }
+
+  .menu-btn:hover {
+    background: #35353a;
+    border-color: #888;
+  }
+
+  .menu-btn.selected {
+    background: #d4b872;
+    color: #111;
+    border-color: #f3dc9f;
+    font-weight: bold;
+  }
+
+  .slider-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 6px;
+    font-size: 12px;
+  }
+
+  input[type="range"] {
+    flex: 1;
+    accent-color: #d4b872;
+    cursor: pointer;
+  }
+  #draw-canvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; touch-action: none; }
+  #draw-canvas.enabled { pointer-events: auto; cursor: crosshair; }
+  #ream-wrapper:not(.hidden) #ream-paper { cursor: text; }
+  #ream-content { position: absolute; inset: 0; }
+  #paper-input { position: absolute; width: 1px; height: 1px; opacity: 0; inset: 0 auto auto 0; pointer-events: none; padding: 0; }
+  .writing-row .ink-caret {
+    display: inline-block; width: 0; height: .88em; position: relative;
+    vertical-align: -.08em; pointer-events: none;
+  }
+  #ream-content > .ink-caret { width: 0; height: .88em; }
+  .ink-caret::after { content: ''; position: absolute; inset: 0 auto 0 0; border-left: 2px solid #8c5918; animation: ink-blink 1s step-end infinite; }
+  @keyframes ink-blink { 50% { opacity: 0; } }
+  .utility-panel { position: fixed; left: 24px; bottom: 88px; z-index: 111; width: min(345px, calc(100vw - 48px));
+    max-height: calc(100dvh - 104px); overflow: auto; padding: 16px; border: 1px solid #777;
+    border-radius: 12px; background: rgba(18,18,20,.97); color: #f0ede6; box-shadow: 0 15px 40px #000b; font-size: 12px; }
+  .utility-panel.hidden { display: none; }
+  .utility-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+  .utility-heading .menu-title { margin: 0; }
+  .utility-heading .menu-btn { flex: 0; }
+  .utility-panel label { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .utility-panel [hidden] { display: none; }
+  #bank-title { width: 100%; min-width: 0; padding: 5px; color: #f4e8c8; background: #101012; border: 1px solid #777; }
+  #bank-status { min-height: 1.2em; color: #e8c97a; }
+  .bank-entry { border-top: 1px solid #4a4a4f; padding-block: 8px; }
+  .bank-entry strong { display: block; margin-bottom: 6px; overflow-wrap: anywhere; }
+  #bottom-left-controls { gap: 8px; }
+  @media (max-width: 540px) {
+    #bottom-left-controls { left: 8px; gap: 4px; bottom: 12px; }
+    #bottom-right-controls { right: 8px; gap: 4px; bottom: 12px; }
+    .tw-key { width: 38px; height: 38px; }
+  }
+
+</style>
+</head>
+<body>
+
+  <canvas id="bg-canvas"></canvas>
+  <canvas id="draw-canvas" aria-label="Background drawing surface"></canvas>
+  <div id="typebar-zone" aria-hidden="true"></div>
+
+  <!-- 3D Paper Ream (Starts hidden; toggled with P) -->
+  <div id="ream-wrapper" class="hidden">
+    <div id="ream-paper">
+      <div id="ream-content"></div>
+      <textarea id="paper-input" aria-label="Paper editor" tabindex="-1" spellcheck="false"></textarea>
+      <div class="page-number-stamp" id="page-indicator">Page 1 of 1</div>
+    </div>
+  </div>
+
+  <!-- Typewriter at Bottom (Starts visible; toggled with T) -->
+  <div id="typewriter-wrapper">
+    
+
+    <div id="active-paper-slot">
+      <div id="active-paper">
+        <div id="active-lines"></div>
+      </div>
+    </div>
+
+    <div id="typewriter-body">
+      <div class="platen-roller"></div>
+      <div class="chrome-bar"></div>
+      <div class="ribbon-cover">
+        <div class="brand-plate">CORONA • 1928</div>
+      </div>
+      <div id="caret-box-wrapper">
+        <input type="text" id="live-typing-input" aria-label="Typewriter input" autocomplete="off" spellcheck="false" autofocus>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Left Corner: T, P, M -->
+  <div id="bottom-left-controls">
+    <button type="button" class="tw-key active" id="btn-toggle-tw" title="Toggle Typewriter">T</button>
+    <button type="button" class="tw-key" id="btn-toggle-paper" title="Toggle Paper Ream">P</button>
+    <button type="button" class="tw-key" id="btn-toggle-menu" title="Open Settings Menu">M</button>
+    <button class="tw-key" id="btn-bank" title="Writing bank">B</button>
+    <button class="tw-key" id="btn-draw" title="Drawing tools">D</button>
+  </div>
+
+  <!-- Bottom Right Corner: Page Arrows -->
+  <div id="bottom-right-controls">
+    <button type="button" class="tw-key" id="btn-prev-page" title="Previous Page">←</button>
+    <button type="button" class="tw-key" id="btn-next-page" title="Next / New Page">→</button>
+  </div>
+
+  <!-- Settings Menu Panel -->
+  <div id="menu-panel" class="hidden">
+    <div class="menu-section">
+      <span class="menu-title">Background Visuals</span>
+      <div class="btn-group" id="bg-options">
+        <button type="button" class="menu-btn selected" data-bg="stars">Moving Stars</button>
+        <button type="button" class="menu-btn" data-bg="spiral">Op-Art Spiral</button>
+        <button type="button" class="menu-btn" data-bg="waves">Op-Art Waves</button>
+        <button type="button" class="menu-btn" data-bg="matrix">Glowing Bubbles</button>
+        <button type="button" class="menu-btn" data-bg="grid">Cyber Grid</button>
+        <button class="menu-btn" data-bg="vortex">Grid Vortex</button>
+        <button class="menu-btn" data-bg="rings">Ripple Rings</button>
+      </div>
+    </div>
+
+    <div class="menu-section" id="visual-controls" hidden>
+      <label class="slider-row">Colour <input type="color" id="visual-colour"></label><label class="slider-row">Line thickness <input type="range" id="visual-thickness" min="0.5" max="12" step="0.5" value="1.5"><output for="visual-thickness">1.5</output></label>
+      <label class="slider-row">Speed <input type="range" id="visual-speed" min="0" max="3" step="0.1" value="1"><output for="visual-speed">1</output></label><label class="slider-row">Size <input type="range" id="visual-size" min="0.5" max="2.5" step="0.1" value="1"><output for="visual-size">1</output></label>
+    </div>
+    <div class="menu-section">
+      <span class="menu-title">Typewriter Font</span>
+      <div class="btn-group" id="font-options">
+        <button type="button" class="menu-btn selected" data-font="'Courier New', Courier, monospace">Classic Type</button>
+        <button type="button" class="menu-btn" data-font="'Lucida Console', Monaco, monospace">Sharp Mono</button>
+        <button type="button" class="menu-btn" data-font="'Consolas', monospace">Modern Ink</button>
+        <button type="button" class="menu-btn" data-font="Georgia, serif">Vintage Serif</button>
+      </div>
+    </div>
+
+    <div class="menu-section">
+      <span class="menu-title">Paragraph</span>
+      <p id="format-target" aria-live="polite">Applies to new typing</p>
+      <label class="slider-row">Paper <select id="paper-kind"><option value="card">Cue card</option><option value="letter">US Letter (8.5 × 11)</option></select></label>
+      <label class="slider-row"><input id="poetry" type="checkbox"> One word per line</label>
+      <label class="slider-row">Font size <input type="range" id="size" min="10" max="48" step="1" value="20"><output for="size">20</output></label><label class="slider-row">Line spacing <input type="range" id="spacing" min="1" max="2.5" step="0.1" value="1.4"><output for="spacing">1.4</output></label><label class="slider-row">Side margins <input type="range" id="margin" min="12" max="128" step="1" value="32"><output for="margin">32</output></label><label class="slider-row">Top / bottom margins <input type="range" id="vertical" min="24" max="100" step="1" value="32"><output for="vertical">32</output></label>
+      <div class="btn-group" id="align-options">
+        <button type="button" class="menu-btn selected" data-align="left">Left</button>
+        <button type="button" class="menu-btn" data-align="center">Center</button>
+        <button type="button" class="menu-btn" data-align="right">Right</button>
+      </div>
+    </div>
+
+    <div class="menu-section">
+      <span class="menu-title">Scale &amp; Size</span>
+      <div class="slider-row">
+        <span>Typewriter</span>
+        <input type="range" id="slider-tw" min="0.5" max="1.25" step="0.05" value="1">
+      </div>
+      <div class="slider-row">
+        <span>Paper Ream</span>
+        <input type="range" id="slider-ream" min="0.5" max="1.3" step="0.05" value="1">
+      </div>
+    </div>
+
+    <div class="menu-section">
+      <span class="menu-title">Sound</span>
+      <label class="slider-row">Line return <select id="return-sound"><option value="bell">Bell</option><option value="wood">Wood tap</option><option value="chime">Soft chime</option><option value="click">Mechanical click</option><option value="off">Off</option></select></label>
+      <label class="slider-row">Typing <input type="range" id="typing-volume" min="0" max="1" step="0.01" value="0.7"><output for="typing-volume">0.7</output></label><label class="slider-row">Line return <input type="range" id="return-volume" min="0" max="1" step="0.01" value="0.55"><output for="return-volume">0.55</output></label><label class="slider-row">New page <input type="range" id="page-volume" min="0" max="1" step="0.01" value="0.5"><output for="page-volume">0.5</output></label>
+    </div>
+    <div class="menu-section">
+      <div class="btn-group">
+        <button type="button" class="menu-btn" id="btn-new-page">+ New Page</button>
+        <button type="button" class="menu-btn" id="btn-clear-page">Clear Page</button>
+        <button type="button" class="menu-btn" id="download">Download writing</button>
+      </div>
+    </div>
+  </div>
+
+<section id="bank-panel" class="utility-panel hidden" aria-label="Writing bank">
+    <div class="utility-heading"><span class="menu-title">Writing Bank</span><button class="menu-btn" id="close-bank">Close</button></div>
+    <label>Title <input id="bank-title" maxlength="160" autocomplete="off"></label>
+    <div class="btn-group"><button class="menu-btn" id="bank-save">Save copy</button>
+      <button class="menu-btn" id="bank-new">New draft</button><button class="menu-btn" id="bank-download">Download Letter copy</button></div>
+    <p id="bank-status" role="status"></p>
+    <div id="bank-list"></div>
+  </section>
+  <section id="draw-panel" class="utility-panel hidden" aria-label="Drawing tools">
+    <div class="utility-heading"><span class="menu-title">Draw</span><button class="menu-btn" id="close-draw">Close</button></div>
+    <label><input id="draw-enabled" type="checkbox"> Draw on background</label>
+    <label class="slider-row">Colour <input type="color" id="draw-colour" value="#67f3dd"></label>
+    <label class="slider-row">Ink <select id="draw-ink"><option value="solid">Solid</option><option value="cycle">Colour cycling</option><option value="spectrum">Rainbow along line</option></select></label>
+    <label id="draw-continuity" hidden><input type="checkbox" id="draw-continue"> Continue rainbow across strokes</label>
+    <label><input type="checkbox" id="draw-build" checked> Start thin, widen on release</label>
+    <label><input type="checkbox" id="draw-fuse"> Burn away on release</label>
+    <label id="draw-direction" hidden><input type="checkbox" id="draw-reverse"> Reverse fuse (finish to start)</label>
+    <label class="slider-row">Width <input type="range" id="draw-width" min="1" max="70" step="1" value="12"><output for="draw-width">12</output></label><label class="slider-row">Glow <input type="range" id="draw-glow" min="0" max="45" step="1" value="12"><output for="draw-glow">12</output></label><label class="slider-row">Rainbow speed <input type="range" id="draw-cycle" min="0" max="3" step="0.1" value="1"><output for="draw-cycle">1</output></label><div id="draw-fuse-controls" hidden><label class="slider-row">Fuse speed <input type="range" id="draw-speed" min="25" max="1800" step="25" value="250"><output for="draw-speed">250</output></label></div><div class="btn-group"><button class="menu-btn" id="draw-undo">Undo stroke</button><button class="menu-btn" id="draw-clear">Clear drawing</button></div>
+  </section>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  /* =========================================
+     1. SOUND EFFECTS (Safe Web Audio API)
+     ========================================= */
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  let audioCtx = null;
+
+  function initAudio() {
+    try {
+      if (!audioCtx && AudioCtx) {
+        audioCtx = new AudioCtx();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    } catch (err) {}
+  }
+
+  function playKeyClack() {
+    const volume = Number(document.getElementById("typing-volume").value);
+    if (!volume) return;
+    initAudio();
+    if (!audioCtx) return;
+    try {
+      const now = audioCtx.currentTime;
+      const bufferSize = Math.floor(audioCtx.sampleRate * 0.035);
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (audioCtx.sampleRate * 0.006));
+      }
+
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = 1400 + Math.random() * 500;
+      filter.Q.value = 1.8;
+
+      const gain = audioCtx.createGain();
+      gain.gain.setValueAtTime(0.45 * volume, now);
+      gain.gain.exponentialRampToValueAtTime(0.001 * volume, now + 0.035);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+      noise.start(now);
+
+      const osc = audioCtx.createOscillator();
+      const oscGain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(140 + Math.random() * 30, now);
+      osc.frequency.exponentialRampToValueAtTime(45, now + 0.04);
+
+      oscGain.gain.setValueAtTime(0.35 * volume, now);
+      oscGain.gain.exponentialRampToValueAtTime(0.001 * volume, now + 0.04);
+
+      osc.connect(oscGain);
+      oscGain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.045);
+    } catch (err) {}
+  }
+
+  const byId = id => document.getElementById(id);
+  const liveInput = byId('live-typing-input');
+  const paper = byId('ream-paper');
+  const ream = byId('ream-wrapper');
+  const content = byId('ream-content');
+  const preview = byId('active-lines');
+  const machine = byId('typewriter-wrapper');
+  const menu = byId('menu-panel');
+  const settings = {
+    font: "'Courier New', Courier, monospace", size: 20, spacing: 1.4,
+    margin: 32, vertical: 32, align: 'left', poetry: false
+  };
+  const dimensions = { card: [560, 350], letter: [561, 726] };
+  const documentText = [];
+  const measure = document.createElement('canvas').getContext('2d');
+  const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+  const widths = new Map();
+  let pages = [];
+  let pageIndex = 0;
+  let position = 0;
+  let selection = null;
+
+  function tone(volumeId, notes, duration, wave = 'sine') {
+    const volume = Number(byId(volumeId).value);
+    if (!volume) return;
+    initAudio();
+    if (!audioCtx) return;
+    notes.forEach(([frequency, delay, level, endFrequency]) => {
+      const start = audioCtx.currentTime + delay;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = wave;
+      osc.frequency.setValueAtTime(frequency, start);
+      if (endFrequency) osc.frequency.exponentialRampToValueAtTime(endFrequency, start + duration);
+      gain.gain.setValueAtTime(Math.max(.0002, level * volume), start);
+      gain.gain.exponentialRampToValueAtTime(.0001, start + duration);
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start(start);
+      osc.stop(start + duration);
+    });
+  }
+
+  function playReturn() {
+    const sound = byId('return-sound').value;
+    if (sound === 'bell') tone('return-volume', [[1568, 0, .21], [3136, 0, .07]], .75);
+    if (sound === 'wood') tone('return-volume', [[450, 0, .28, 170]], .09, 'triangle');
+    if (sound === 'chime') tone('return-volume', [[660, 0, .19], [880, .065, .15]], .42);
+    if (sound === 'click') tone('return-volume', [[2200, 0, .11, 300], [380, .025, .23, 70]], .055, 'triangle');
+  }
+
+  function playPage() {
+    tone('page-volume', [[350, 0, .21, 85], [520, .055, .13, 180]], .16, 'triangle');
+  }
+
+  function getDimensions(kind = byId('paper-kind').value) {
+    return dimensions[kind];
+  }
+
+  function glyphWidth(item) {
+    const font = item.style.size + 'px ' + item.style.font;
+    const key = font + '\u0000' + item.char;
+    if (!widths.has(key)) {
+      if (widths.size > 12000) widths.clear();
+      measure.font = font;
+      widths.set(key, measure.measureText(item.char).width);
+    }
+    return widths.get(key);
+  }
+
+  const paragraphKeys = ['align', 'margin', 'vertical', 'spacing', 'poetry'];
+  const sameParagraph = (a, b) => paragraphKeys.every(key => a[key] === b[key]);
+
+  function paginate(kind, source = documentText) {
+    const [width, height] = getDimensions(kind);
+    const result = [];
+    let page = { rows: [], start: 0, end: 0, y: 0 };
+    let row = null;
+
+    function nextPage(start) {
+      page.end = start;
+      result.push(page);
+      page = { rows: [], start, end: start, y: 0 };
+    }
+
+    function flush(end) {
+      if (!row) return;
+      const margin = row.style.vertical;
+      const y = Math.max(page.y, margin);
+      if (page.rows.length && y + row.height > height - margin) nextPage(row.start);
+      row.y = Math.max(page.y, margin);
+      page.y = row.y + row.height;
+      row.end = end;
+      page.rows.push(row);
+      row = null;
+    }
+
+    function startRow(index, style) {
+      row = { start: index, items: [], width: 0, height: style.size * style.spacing, style };
+    }
+
+    function append(index, item, width) {
+      row.items.push({ index, ...item });
+      row.width += width;
+      row.height = Math.max(row.height, item.style.size * row.style.spacing);
+    }
+
+    for (let i = 0; i < source.length;) {
+      const item = source[i];
+      const style = item.style;
+      if (item.char === '\f' || item.char === '\n') {
+        if (item.char === '\n' && !row) startRow(i, style);
+        flush(i + 1);
+        if (item.char === '\f') nextPage(i + 1);
+        i++;
+        continue;
+      }
+
+      const isSpace = item.char === ' ';
+      let end = i + 1;
+      if (!isSpace) {
+        while (end < source.length && !/[ \n\f]/.test(source[end].char)
+          && sameParagraph(source[end].style, style)) end++;
+      }
+      const tokens = source.slice(i, end);
+      const tokenWidths = tokens.map(glyphWidth);
+      const total = tokenWidths.reduce((sum, value) => sum + value, 0);
+      const paragraphChanged = row && !sameParagraph(row.style, style);
+      if (paragraphChanged) flush(i);
+      if (isSpace && style.poetry) {
+        flush(end);
+      } else {
+        const room = width - 2 * style.margin;
+        if (!isSpace && row && row.width + total > room) flush(i);
+        if (!row) startRow(i, style);
+        if (!isSpace || row.width + total <= room) {
+          tokens.forEach((token, offset) => append(i + offset, token, tokenWidths[offset]));
+        }
+      }
+      i = end;
+    }
+    flush(source.length);
+    page.end = source.length;
+    result.push(page);
+    return result;
+  }
+
+  function paintRow(row, width, markSelection = false) {
+    const line = document.createElement('div');
+    const area = width - row.style.margin * 2;
+    const scale = row.width > area ? area / row.width : 1;
+    const left = { left: 0, center: .5, right: 1 }[row.style.align];
+    line.className = 'writing-row';
+    line.dataset.start = row.start;
+    line.dataset.end = row.end;
+    Object.assign(line.style, {
+      marginLeft: row.style.margin + 'px', width: area + 'px',
+      lineHeight: row.height + 'px', height: row.height + 'px'
+    });
+    const ink = document.createElement('span');
+    Object.assign(ink.style, {
+      marginLeft: Math.max(0, area - row.width * scale) * left + 'px',
+      transformOrigin: 'left center', transform: 'scaleX(' + scale + ')',
+      fontSize: '0'
+    });
+    for (const item of row.items) {
+      const glyph = document.createElement('span');
+      glyph.dataset.index = item.index;
+      glyph.style.fontFamily = item.style.font;
+      glyph.style.fontSize = item.style.size + 'px';
+      glyph.textContent = item.char;
+      if (markSelection && selection && item.index >= selection[0] && item.index < selection[1]) {
+        glyph.className = 'marked';
+      }
+      ink.append(glyph);
+    }
+    line.append(ink);
+    return line;
+  }
+
+  function applyPaperScale() {
+    const [width, height] = getDimensions();
+    const scale = Math.max(.1, Math.min(
+      Number(byId('slider-ream').value),
+      (innerHeight - 95) / height,
+      (innerWidth - 28) / width
+    ));
+    document.documentElement.style.setProperty('--ream-scale', scale);
+    const machineScale = Math.min(Number(byId('slider-tw').value), innerWidth / 735);
+    document.documentElement.style.setProperty('--tw-scale', machineScale);
+  }
+
+  function updateDisplay(target = position) {
+    pages = paginate();
+    pageIndex = pages.findLastIndex(page => page.start <= target);
+    const page = pages[pageIndex];
+    const [width, height] = getDimensions();
+    paper.style.width = width + 'px';
+    paper.style.height = height + 'px';
+    preview.style.width = width + 'px';
+    applyPaperScale();
+    content.replaceChildren();
+    preview.replaceChildren();
+    for (const row of page.rows) {
+      const line = paintRow(row, width, true);
+      line.style.position = 'absolute';
+      line.style.top = row.y + 'px';
+      content.append(line);
+    }
+    const currentPage = pages[pageIndex];
+    const activeRows = currentPage.rows.filter(row => row.start <= position).slice(-4);
+    const previous = documentText[position - 1];
+    const rowAtCaret = activeRows.at(-1);
+    const returnBreak = previous && (previous.char === '\n' || previous.char === '\f'
+      || (previous.char === ' ' && previous.style.poetry));
+    const blank = !rowAtCaret || (returnBreak && rowAtCaret.start !== position);
+    for (const row of activeRows) preview.append(paintRow(row, width));
+    if (blank) {
+      const style = settings;
+      preview.append(paintRow({
+        style, height: style.size * style.spacing, width: 0, items: [], start: position, end: position
+      }, width));
+    }
+    drawCaret(preview, true);
+    if (paperEditing && !selection) drawCaret(content);
+    byId('page-indicator').textContent = (byId('paper-kind').value === 'card' ? 'Card ' : 'Page ')
+      + (pageIndex + 1) + ' of ' + pages.length;
+    byId('btn-prev-page').disabled = pageIndex === 0;
+  }
+
+  function focusTypingBox(preserveSelection = false) {
+    paperEditing = false;
+    if (!preserveSelection) clearSelection();
+    else if (selection) formattingSelection = true;
+    if (!machine.classList.contains('hidden')) liveInput.focus({ preventScroll: true });
+    else if (!ream.classList.contains('hidden')) focusPaper();
+    updateDisplay(pages[pageIndex]?.start ?? position);
+  }
+
+  function strike(index, char) {
+    const target = (ream.classList.contains('hidden') ? preview : content)
+      .querySelector('[data-index="' + index + '"]');
+    if (!target || char === ' ') return;
+    const { left, top, width, height } = target.getBoundingClientRect();
+    if (!width || !height) return;
+    const bar = document.createElement('div');
+    bar.className = 'typebar';
+    bar.style.left = left + width / 2 + 'px';
+    bar.style.top = top + height / 2 + 'px';
+    bar.style.setProperty('--stem', Math.round(42 + Math.random() * 45) + 'px');
+    const slug = document.createElement('div');
+    slug.className = 'typebar-slug';
+    slug.textContent = char;
+    bar.append(slug);
+    byId('typebar-zone').append(bar);
+    bar.addEventListener('animationend', () => bar.remove(), { once: true });
+  }
+
+  const paperInput = byId('paper-input');
+  let paperEditing = false;
+  let selectionAnchor = null;
+  let formattingSelection = false;
+  let paperPress = null;
+  const undo = [];
+  const redo = [];
+
+  function clearSelection() {
+    selection = null;
+    formattingSelection = false;
+    selectionAnchor = null;
+    window.getSelection()?.removeAllRanges();
+    syncFormatting();
+  }
+
+  function styleAtCaret() {
+    const previous = documentText[position - 1];
+    if (previous && previous.char !== '\f') return previous.style;
+    return documentText[position]?.style || settings;
+  }
+
+  function drawCaret(surface, useLastRow = false) {
+    const rows = [...surface.children];
+    const row = useLastRow ? rows.at(-1) : rows.findLast(line => Number(line.dataset.start) <= position);
+    const prev = documentText[position - 1];
+    const afterReturn = !useLastRow && row && Number(row.dataset.start) !== position
+      && (prev?.char === '\n' || (prev?.char === ' ' && prev.style.poetry))
+      && position >= Number(row.dataset.end);
+    if (!row || afterReturn) {
+      const style = paperEditing ? styleAtCaret() : settings;
+      const top = afterReturn ? row.offsetTop + row.offsetHeight : style.vertical;
+      const caret = document.createElement('div');
+      caret.className = 'ink-caret';
+      caret.style.cssText = 'position:absolute;top:' + top + 'px;left:' + style.margin + 'px;font-size:' + style.size + 'px';
+      surface.append(caret);
+      return;
+    }
+    const ink = row.firstElementChild;
+    const before = [...ink.children].find(glyph => Number(glyph.dataset.index) >= position);
+    const caret = document.createElement('span');
+    caret.className = 'ink-caret';
+    caret.style.fontSize = (paperEditing ? styleAtCaret() : settings).size + 'px';
+    ink.insertBefore(caret, before || null);
+  }
+
+  function focusPaper() {
+    paperEditing = true;
+    paperInput.focus({ preventScroll: true });
+    updateDisplay(pages[pageIndex]?.start ?? position);
+  }
+
+  function pointOnPaper(x, y) {
+    const rows = [...content.querySelectorAll('.writing-row')];
+    if (!rows.length) return pages[pageIndex].start;
+    const last = rows.at(-1);
+    if (y > last.getBoundingClientRect().bottom) {
+      const end = pages[pageIndex].end;
+      return documentText[end - 1]?.char === '\f' ? end - 1 : end;
+    }
+    const row = rows.find(line => y <= line.getBoundingClientRect().bottom) || rows.at(-1);
+    const glyphs = [...row.querySelectorAll('[data-index]')];
+    for (const glyph of glyphs) {
+      const box = glyph.getBoundingClientRect();
+      if (x < box.left + box.width / 2) return Number(glyph.dataset.index);
+    }
+    return glyphs.length ? Number(glyphs.at(-1).dataset.index) + 1 : Number(row.dataset.start);
+  }
+
+  paper.addEventListener('pointerdown', event => {
+    if (event.button !== 0) return;
+    clearSelection();
+    content.querySelectorAll('.marked').forEach(glyph => glyph.classList.remove('marked'));
+    paperPress = { x: event.clientX, y: event.clientY };
+  });
+
+  document.addEventListener('pointerup', event => {
+    if (!paperPress) return;
+    const start = paperPress;
+    paperPress = null;
+    const selected = window.getSelection();
+    if (selected && !selected.isCollapsed && content.contains(selected.anchorNode)
+      && content.contains(selected.focusNode)) {
+      const range = selected.getRangeAt(0);
+      const indices = [...content.querySelectorAll('[data-index]')].filter(glyph => {
+        const text = glyph.firstChild;
+        return range.intersectsNode(text)
+          && !(range.startContainer === text && range.startOffset === text.length)
+          && !(range.endContainer === text && range.endOffset === 0);
+      }).map(glyph => Number(glyph.dataset.index));
+      if (indices.length) {
+        selection = [indices[0], indices.at(-1) + 1];
+        position = selection[1];
+        selectionAnchor = selection[0];
+      }
+    } else {
+      const anchor = pointOnPaper(start.x, start.y);
+      position = pointOnPaper(event.clientX, event.clientY);
+      if (anchor !== position && Math.hypot(event.clientX - start.x, event.clientY - start.y) > 4) {
+        selection = [Math.min(anchor, position), Math.max(anchor, position)];
+        selectionAnchor = anchor;
+      }
+    }
+    selected?.removeAllRanges();
+    syncFormatting();
+    focusPaper();
+  });
+
+  document.addEventListener('click', event => {
+    if (!event.target.closest('button, #menu-panel, .utility-panel, #ream-paper, input, #draw-canvas')) focusTypingBox();
+  });
+
+  function rememberEdit() {
+    undo.push({ text: documentText.slice(), position });
+    if (undo.length > 60) undo.shift();
+    redo.length = 0;
+  }
+
+  function restoreEdit(from, to) {
+    if (!from.length) return;
+    to.push({ text: documentText.slice(), position });
+    const state = from.pop();
+    documentText.length = 0;
+    for (const token of state.text) documentText.push(token);
+    position = state.position;
+    clearSelection();
+    updateDisplay();
+  }
+
+  function removeText(backward) {
+    const range = selection || (backward ? [Math.max(0, position - 1), position]
+      : [position, Math.min(position + 1, documentText.length)]);
+    if (range[0] === range[1]) return;
+    rememberEdit();
+    position = range[0];
+    documentText.splice(position, range[1] - position);
+    clearSelection();
+    updateDisplay();
+    playKeyClack();
+  }
+
+  function moveCaret(key, extend) {
+    const rows = pages.flatMap(page => page.rows);
+    const index = rows.findLastIndex(row => row.start <= position);
+    const row = rows[index];
+    let next = position;
+    if (key === 'ArrowLeft') next = selection && !extend ? selection[0] : position - 1;
+    if (key === 'ArrowRight') next = selection && !extend ? selection[1] : position + 1;
+    if (key === 'Home' && row) next = row.start;
+    if (key === 'End' && row) next = row.items.length ? row.items.at(-1).index + 1 : row.start;
+    if (key === 'ArrowUp' || key === 'ArrowDown') {
+      const other = rows[index + (key === 'ArrowUp' ? -1 : 1)];
+      if (other && row) {
+        const end = other.items.length ? other.items.at(-1).index + 1 : other.start;
+        next = Math.min(end, other.start + position - row.start);
+      }
+    }
+    next = Math.max(0, Math.min(next, documentText.length));
+    if (extend) {
+      selectionAnchor ??= position;
+      selection = next === selectionAnchor ? null : [Math.min(next, selectionAnchor), Math.max(next, selectionAnchor)];
+    } else clearSelection();
+    position = next;
+    syncFormatting();
+    updateDisplay();
+  }
+
+  function clipboardText() {
+    if (!selection) return '';
+    return documentText.slice(...selection).map(({ char, style }) =>
+      char === '\f' ? '\n\n' : char === ' ' && style.poetry ? '\n' : char
+    ).join('');
+  }
+
+  for (const input of [liveInput, paperInput]) {
+    let composing = false;
+    input.addEventListener('keydown', event => {
+      if (event.isComposing || composing) return;
+      const key = event.key;
+      const command = event.ctrlKey || event.metaKey;
+      if (command && key.toLowerCase() === 'a') {
+        event.preventDefault();
+        if (!documentText.length) return;
+        formattingSelection = false;
+        selection = [0, documentText.length];
+        selectionAnchor = 0;
+        syncFormatting();
+        updateDisplay(pages[pageIndex].start);
+      } else if (command && ['z','y'].includes(key.toLowerCase())) {
+        event.preventDefault();
+        if (key.toLowerCase() === 'y' || event.shiftKey) restoreEdit(redo, undo);
+        else restoreEdit(undo, redo);
+      } else if (!command && key === 'Enter') {
+        event.preventDefault();
+        const style = paperEditing ? styleAtCaret() : settings;
+        insert(style.poetry ? '\f' : '\n');
+      } else if (command && ['Home','End'].includes(key)) {
+        event.preventDefault();
+        const next = key === 'Home' ? 0 : documentText.length;
+        if (event.shiftKey) {
+          selectionAnchor ??= position;
+          selection = next === selectionAnchor ? null : [Math.min(next, selectionAnchor), Math.max(next, selectionAnchor)];
+        } else clearSelection();
+        position = next;
+        syncFormatting();
+        updateDisplay();
+      } else if (!command && ['Backspace','Delete'].includes(key)) {
+        event.preventDefault();
+        removeText(key === 'Backspace');
+      } else if (!command && ['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End'].includes(key)) {
+        event.preventDefault();
+        moveCaret(key, event.shiftKey);
+      } else if (key === 'Escape' && selection) {
+        clearSelection();
+        updateDisplay();
+      }
+    });
+    input.addEventListener('compositionstart', () => { composing = true; });
+    input.addEventListener('compositionend', () => {
+      composing = false;
+      insert(input.value);
+      input.value = '';
+    });
+    input.addEventListener('input', event => {
+      if (event.isComposing || composing) return;
+      insert(input.value);
+      input.value = '';
+    });
+    input.addEventListener('paste', event => {
+      event.preventDefault();
+      insert(event.clipboardData.getData('text/plain').replaceAll('\f', '\n'));
+    });
+    for (const action of ['copy','cut']) {
+      input.addEventListener(action, event => {
+        if (!selection) return;
+        event.preventDefault();
+        event.clipboardData.setData('text/plain', clipboardText());
+        if (action === 'cut') removeText(false);
+      });
+    }
+  }
+  liveInput.addEventListener('focus', () => { paperEditing = false; });
+
+  function insert(text) {
+    if (!text) return;
+    const lastPage = pageIndex;
+    const previousRow = pages[pageIndex]?.rows.find(row => row.items.some(item => item.index === position - 1));
+    const style = { ...(paperEditing ? styleAtCaret() : settings) };
+    rememberEdit();
+    if (selection) {
+      if (!formattingSelection) {
+        position = selection[0];
+        documentText.splice(position, selection[1] - position);
+      }
+      clearSelection();
+    }
+    const tokens = Array.from(segmenter.segment(text.replace(/\r\n?/g, '\n').replace(/\t/g, '    ')),
+      ({ segment }) => ({ char: segment, style }));
+    const tail = documentText.splice(position);
+    for (const token of tokens) documentText.push(token);
+    for (const token of tail) documentText.push(token);
+    position += tokens.length;
+    const char = tokens.at(-1).char;
+    updateDisplay(char === '\f' ? position : position - 1);
+    const currentRow = pages[pageIndex].rows.find(row => row.items.some(item => item.index === position - 1));
+    if (pageIndex !== lastPage || char === '\f') playPage();
+    else if (char === '\n' || (previousRow && currentRow && currentRow.start !== previousRow.start)
+      || (char === ' ' && style.poetry)) playReturn();
+    if (!/[\n\f]/.test(char)) {
+      playKeyClack();
+      strike(position - 1, char);
+    }
+  }
+
+  function syncFormatting() {
+    const style = selection ? documentText[selection[0]]?.style || settings : settings;
+    byId('format-target').textContent = selection
+      ? 'Applies to selected text · typing resumes at the writing cursor'
+      : 'Applies to new typing';
+    document.querySelectorAll('#font-options button, #align-options button').forEach(button => {
+      const key = button.dataset.font ? 'font' : 'align';
+      button.classList.toggle('selected', button.dataset[key] === style[key]);
+    });
+    ['size', 'spacing', 'margin', 'vertical'].forEach(key => {
+      byId(key).value = style[key];
+      byId(key).nextElementSibling.value = style[key];
+    });
+    byId('poetry').checked = style.poetry;
+  }
+
+  function format(key, value) {
+    if (selection) {
+      rememberEdit();
+      for (let i = selection[0]; i < selection[1]; i++) {
+        const item = documentText[i];
+        if (item) item.style = { ...item.style, [key]: value };
+      }
+      updateDisplay(selection[0]);
+    } else {
+      settings[key] = value;
+      document.documentElement.style.setProperty('--font-family', settings.font);
+    }
+    syncFormatting();
+  }
+
+  document.querySelectorAll('.slider-row input[type=range]').forEach(input => {
+    input.addEventListener('input', () => {
+      if (input.nextElementSibling?.tagName === 'OUTPUT') input.nextElementSibling.value = input.value;
+    });
+  });
+  ['size', 'spacing', 'margin', 'vertical'].forEach(key =>
+    byId(key).addEventListener('input', event => format(key, Number(event.target.value))));
+  document.querySelectorAll('#font-options button, #align-options button').forEach(button => {
+    button.addEventListener('click', () => {
+      const key = button.dataset.font ? 'font' : 'align';
+      format(key, button.dataset[key]);
+    });
+  });
+  byId('poetry').addEventListener('change', event => format('poetry', event.target.checked));
+  byId('paper-kind').addEventListener('change', () => updateDisplay(selection?.[0] ?? position));
+  byId('return-sound').addEventListener('change', playReturn);
+  ['slider-tw', 'slider-ream'].forEach(id => byId(id).addEventListener('input', applyPaperScale));
+  window.addEventListener('resize', applyPaperScale);
+
+  function toggle(button, panel) {
+    byId(button).addEventListener('click', () => {
+      const open = panel.classList.toggle('hidden') === false;
+      byId(button).classList.toggle('active', open);
+      byId(button).setAttribute('aria-expanded', open);
+      if (button === 'btn-toggle-tw' && open) focusTypingBox(true);
+      if (button === 'btn-toggle-paper' && !open && paperEditing) focusTypingBox(true);
+      if (button === 'btn-toggle-menu') focusTypingBox(true);
+    });
+    byId(button).setAttribute('aria-expanded', !panel.classList.contains('hidden'));
+  }
+  toggle('btn-toggle-tw', machine);
+  toggle('btn-toggle-paper', ream);
+  toggle('btn-toggle-menu', menu);
+  menu.addEventListener('click', event => {
+    if (event.target.closest('button, input[type=checkbox]')) focusTypingBox(true);
+  });
+  menu.addEventListener('change', event => {
+    if (event.target.matches('select, input')) focusTypingBox(true);
+  });
+  menu.addEventListener('pointerup', event => {
+    if (event.target.matches('input[type=range]')) requestAnimationFrame(() => focusTypingBox(true));
+  });
+  menu.addEventListener('keydown', event => {
+    if (event.key === 'Escape') focusTypingBox(true);
+  });
+
+  function goToPage(index) {
+    if (!pages[index]) return;
+    const wasEditing = paperEditing;
+    clearSelection();
+    position = index === pages.length - 1 ? documentText.length
+      : pages[index + 1].start - (documentText[pages[index + 1].start - 1]?.char === '\f' ? 1 : 0);
+    updateDisplay(pages[index].start);
+    playPage();
+    if (wasEditing) focusPaper();
+    else focusTypingBox();
+  }
+  byId('btn-prev-page').addEventListener('click', () => goToPage(pageIndex - 1));
+  byId('btn-next-page').addEventListener('click', () => {
+    if (pageIndex < pages.length - 1) goToPage(pageIndex + 1);
+    else {
+      clearSelection();
+      position = documentText.length;
+      insert('\f');
+      focusTypingBox();
+    }
+  });
+  byId('btn-new-page').addEventListener('click', () => {
+    clearSelection();
+    position = documentText.length;
+    insert('\f');
+    focusTypingBox();
+  });
+  byId('btn-clear-page').addEventListener('click', () => {
+    const { start, end } = pages[pageIndex];
+    const preserveBreak = documentText[end - 1]?.char === '\f';
+    rememberEdit();
+    documentText.splice(start, Math.max(0, end - start - Number(preserveBreak)));
+    position = start;
+    focusTypingBox();
+    updateDisplay();
+  });
+  const bankPanel = byId('bank-panel');
+  const bankTitle = byId('bank-title');
+  const bankStatus = byId('bank-status');
+  const bankKey = 'starfield-typewriter-writing-bank-v1';
+  let bank = [];
+  let openEntry = null;
+  try {
+    const stored = JSON.parse(localStorage.getItem(bankKey) || '[]');
+    if (Array.isArray(stored)) bank = stored;
+  } catch {
+    bankStatus.textContent = 'Saved writing could not be read in this browser.';
+  }
+
+  function exportWriting(title, source = documentText, kind = byId('paper-kind').value) {
+    const [width, height] = getDimensions(kind);
+    const exportPages = paginate(kind, source).map((page, index) => {
+      const section = document.createElement('section');
+      section.style.cssText = 'width:' + width + 'px;height:' + height + 'px';
+      section.setAttribute('aria-label', 'Page ' + (index + 1));
+      for (const row of page.rows) {
+        const line = paintRow(row, width);
+        line.style.position = 'absolute';
+        line.style.top = row.y + 'px';
+        section.append(line);
+      }
+      return section.outerHTML;
+    }).join('\n');
+    const titleElement = document.createElement('title');
+    titleElement.textContent = title;
+    const heading = document.createElement('h1');
+    heading.textContent = title;
+    const printPage = kind === 'letter' ? 'letter' : '560px 350px';
+    const printZoom = kind === 'letter' ? 'zoom:1.4545454545;' : '';
+    const html = '<!doctype html><html lang="en"><meta charset="utf-8">' + titleElement.outerHTML
+      + '<style>body{background:#e7e3d8;color:#1b1b1b}h1{text-align:center;font:24px Georgia,serif}'
+      + 'section{box-sizing:border-box;position:relative;background:#fcfaf2;margin:16px auto;break-after:page}'
+      + '.writing-row{white-space:pre}.writing-row>span{display:inline-block}'
+      + '@page{size:' + printPage + ';margin:0}'
+      + '@media print{body{margin:0;background:white}h1{display:none}section{margin:0 auto;background:white;' + printZoom + '}section:last-child{break-after:auto}}</style><body>'
+      + heading.outerHTML + exportPages + '</body></html>';
+    const url = URL.createObjectURL(new Blob([html], { type: 'text/html;charset=utf-8' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = (title.replace(/[<>:"/\\|?*\x00-\x1f]/g, '_').replace(/[. ]+$/g, '').slice(0, 100) || 'Typewriter_Writing') + '.html';
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 30000);
+  }
+
+  function utilityToggle(buttonId, panel, closeId, opened) {
+    toggle(buttonId, panel);
+    byId(buttonId).addEventListener('click', () => {
+      if (!panel.classList.contains('hidden')) opened?.();
+    });
+    byId(closeId).addEventListener('click', () => byId(buttonId).click());
+  }
+
+  utilityToggle('btn-bank', bankPanel, 'close-bank', renderBank);
+  utilityToggle('btn-draw', byId('draw-panel'), 'close-draw');
+
+  function discardAllowed() {
+    const saved = bank.find(entry => entry.id === openEntry);
+    const dirty = saved
+      ? saved.title !== bankTitle.value.trim() || JSON.stringify(saved.text) !== JSON.stringify(documentText)
+      : documentText.length || bankTitle.value.trim();
+    return !dirty || window.confirm('Leave this draft without saving the latest changes?');
+  }
+
+  function loadDraft(entry) {
+    if (!discardAllowed()) return;
+    openEntry = entry?.id ?? null;
+    bankTitle.value = entry?.title ?? '';
+    documentText.length = 0;
+    for (const token of entry?.text || []) documentText.push(token);
+    undo.length = 0;
+    redo.length = 0;
+    position = documentText.length;
+    byId('paper-kind').value = entry ? 'letter' : 'card';
+    clearSelection();
+    updateDisplay();
+    if (ream.classList.contains('hidden')) byId('btn-toggle-paper').click();
+    focusPaper();
+    bankStatus.textContent = entry ? 'Opened ' + entry.title + '.' : 'New draft.';
+    renderBank();
+  }
+
+  function renderBank() {
+    const list = byId('bank-list');
+    list.replaceChildren();
+    byId('bank-save').textContent = openEntry ? 'Save changes' : 'Save copy';
+    if (!bank.length) list.textContent = 'No saved writing yet.';
+    for (const entry of bank) {
+      const row = document.createElement('div');
+      row.className = 'bank-entry';
+      const title = document.createElement('strong');
+      title.textContent = entry.title;
+      const buttons = document.createElement('div');
+      buttons.className = 'btn-group';
+      for (const [label, action] of [
+        ['Open', () => loadDraft(entry)],
+        ['Download', () => exportWriting(entry.title, entry.text, 'letter')]
+      ]) {
+        const button = document.createElement('button');
+        button.className = 'menu-btn';
+        button.textContent = label;
+        button.addEventListener('click', action);
+        buttons.append(button);
+      }
+      row.append(title, buttons);
+      list.append(row);
+    }
+  }
+
+  byId('bank-save').addEventListener('click', () => {
+    const title = bankTitle.value.trim();
+    if (!title) {
+      bankStatus.textContent = 'Enter a title for this piece.';
+      bankTitle.focus();
+      return;
+    }
+    if (!documentText.some(token => token.char.trim())) {
+      bankStatus.textContent = 'Write something before saving.';
+      return;
+    }
+    const id = openEntry || (globalThis.crypto?.randomUUID?.() ?? Date.now().toString(36) + Math.random().toString(36));
+    const next = [{ id, title, text: documentText.slice() }, ...bank.filter(entry => entry.id !== id)];
+    try {
+      localStorage.setItem(bankKey, JSON.stringify(next));
+      bank = next;
+      openEntry = id;
+      bankStatus.textContent = 'Saved ' + title + '.';
+      renderBank();
+    } catch {
+      bankStatus.textContent = 'This browser could not save the copy. Download it to keep it.';
+    }
+  });
+
+  byId('bank-new').addEventListener('click', () => loadDraft());
+  byId('bank-download').addEventListener('click', () => exportWriting(bankTitle.value.trim() || 'Typewriter Writing', documentText, 'letter'));
+  byId('download').addEventListener('click', () => exportWriting(bankTitle.value.trim() || 'Typewriter Writing'));
+
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let width = window.innerWidth;
+  let height = window.innerHeight;
+  let currentBg = 'stars';
+  let frameTime = 0;
+  let lastFrame;
+  const visualControls = ['colour', 'speed', 'size', 'thickness'].map(key => byId('visual-' + key));
+  const visualDefaults = { waves: '#e5e0d5', grid: '#d4b872', vortex: '#41d9df', rings: '#ec8aff' };
+  const visuals = Object.fromEntries(Object.entries(visualDefaults).map(([key, color]) =>
+    [key, [color, '1', '1', '1.5']]));
+  visualControls.forEach((control, index) => control.addEventListener('input', () => {
+    visuals[currentBg][index] = control.value;
+  }));
+  function syncVisuals() {
+    const values = visuals[currentBg];
+    byId('visual-controls').hidden = !values;
+    if (values) visualControls.forEach((control, index) => {
+      control.value = values[index];
+      control.dispatchEvent(new Event('input'));
+    });
+  }
+
+  function resizeCanvas() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  const stars = [];
+  for (let i = 0; i < 240; i++) {
+    stars.push({
+      x: (Math.random() - 0.5) * 2000,
+      y: (Math.random() - 0.5) * 2000,
+      z: Math.random() * 1500 + 1
+    });
+  }
+
+  const particles = [];
+  for (let i = 0; i < 85; i++) {
+    particles.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      r: Math.random() * 3 + 1,
+      speedY: Math.random() * 0.8 + 0.2,
+      drift: Math.random() * 2,
+      hue: Math.random() * 360
+    });
+  }
+
+  const bgBtns = document.querySelectorAll('#bg-options .menu-btn');
+  for (let i = 0; i < bgBtns.length; i++) {
+    bgBtns[i].addEventListener('click', function() {
+      playKeyClack();
+      for (let j = 0; j < bgBtns.length; j++) bgBtns[j].classList.remove('selected');
+      this.classList.add('selected');
+      currentBg = this.getAttribute('data-bg');
+      syncVisuals();
+    });
+  }
+
+  function renderBackground(now = performance.now()) {
+    const [colour, speed, size, thickness] = visuals[currentBg] || ['#fff', 1, 1, 1.5];
+    const elapsed = Math.min(40, now - (lastFrame ?? now)) / 16.67;
+    lastFrame = now;
+    frameTime += 0.03 * speed * elapsed;
+
+    if (currentBg === 'stars') {
+      ctx.fillStyle = '#07080c';
+      ctx.fillRect(0, 0, width, height);
+      const cx = width / 2;
+      const cy = height / 2;
+
+      ctx.fillStyle = '#ffffff';
+      for (let i = 0; i < stars.length; i++) {
+        const s = stars[i];
+        s.z -= 4 * elapsed;
+        if (s.z <= 1) {
+          s.z = 1500;
+          s.x = (Math.random() - 0.5) * 2000;
+          s.y = (Math.random() - 0.5) * 2000;
+        }
+        const sx = cx + (s.x / s.z) * 500;
+        const sy = cy + (s.y / s.z) * 500;
+        const size = Math.max(0.5, (1 - s.z / 1500) * 3.2);
+        ctx.beginPath();
+        ctx.arc(sx, sy, size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+    } else if (currentBg === 'spiral') {
+      ctx.fillStyle = '#111111';
+      ctx.fillRect(0, 0, width, height);
+      const cx = width / 2;
+      const cy = height / 2;
+      const maxR = Math.hypot(cx, cy);
+      const arms = 14;
+
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(frameTime * 0.4);
+
+      for (let i = 0; i < arms; i++) {
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        const startAngle = (i * 2 * Math.PI) / arms;
+        const armWidth = Math.PI / arms;
+
+        for (let r = 0; r <= maxR; r += 15) {
+          const twist = r * 0.008;
+          ctx.lineTo(Math.cos(startAngle + twist) * r, Math.sin(startAngle + twist) * r);
+        }
+        for (let r = maxR; r >= 0; r -= 15) {
+          const twist = r * 0.008;
+          ctx.lineTo(Math.cos(startAngle + armWidth + twist) * r, Math.sin(startAngle + armWidth + twist) * r);
+        }
+        ctx.closePath();
+        ctx.fillStyle = '#eae6df';
+        ctx.fill();
+      }
+      ctx.restore();
+
+    } else if (currentBg === 'waves') {
+      ctx.fillStyle = '#0e0e10';
+      ctx.fillRect(0, 0, width, height);
+      const stripeCount = Math.round(26 / size);
+      const stripeW = width / stripeCount;
+
+      for (let i = 0; i < stripeCount; i++) {
+        if (i % 2 === 0) {
+          ctx.fillStyle = colour;
+          ctx.beginPath();
+          for (let y = 0; y <= height; y += 20) {
+            const wave = Math.sin(y * 0.012 + frameTime * 1.5 + i * 0.4) * 22 * size;
+            const x = i * stripeW + wave;
+            if (y === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          for (let y = height; y >= 0; y -= 20) {
+            const wave = Math.sin(y * 0.012 + frameTime * 1.5 + i * 0.4) * 22 * size;
+            const x = i * stripeW + stripeW * 0.55 + wave;
+            ctx.lineTo(x, y);
+          }
+          ctx.closePath();
+          ctx.fill();
+          ctx.strokeStyle = colour;
+          ctx.lineWidth = Number(thickness);
+          ctx.stroke();
+        }
+      }
+
+    } else if (currentBg === 'matrix') {
+      const grad = ctx.createRadialGradient(width / 2, height / 2, 50, width / 2, height / 2, width * 0.7);
+      grad.addColorStop(0, '#261f18');
+      grad.addColorStop(1, '#090807');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, width, height);
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.y += p.speedY * elapsed;
+        p.x += Math.sin(frameTime + p.drift) * 0.4;
+        if (p.y > height + 12) {
+          p.y = -12;
+          p.x = Math.random() * width;
+        }
+        ctx.strokeStyle = `hsl(${p.hue} 95% 78%)`;
+        ctx.fillStyle = `hsl(${p.hue} 95% 65% / .24)`;
+        ctx.shadowColor = ctx.strokeStyle;
+        ctx.shadowBlur = 9;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r + 1, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      }
+
+    } else if (currentBg === 'grid') {
+      ctx.fillStyle = '#090514';
+      ctx.fillRect(0, 0, width, height);
+      const horizon = height * 0.42;
+
+      ctx.strokeStyle = colour + '88';
+      ctx.lineWidth = Number(thickness);
+
+      const numV = 24;
+      for (let i = -numV; i <= numV; i++) {
+        ctx.beginPath();
+        ctx.moveTo(width / 2 + i * 25 * size, horizon);
+        ctx.lineTo(width / 2 + i * 160 * size, height);
+        ctx.stroke();
+      }
+
+      const step = 1 / Math.round(22 / size);
+      for (let z = (frameTime * 0.22) % step; z < 1; z += step) {
+        const y = horizon + z ** 2.2 * (height - horizon);
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+      }
+    } else if (currentBg === 'vortex' || currentBg === 'rings') {
+      ctx.fillStyle = '#080913';
+      ctx.fillRect(0, 0, width, height);
+      const cx = width / 2;
+      const cy = height / 2;
+      const reach = Math.hypot(cx, cy) * 1.35;
+      const step = 36 * size;
+      const vortex = currentBg === 'vortex';
+      ctx.strokeStyle = colour;
+      ctx.lineWidth = Number(thickness);
+      const point = (r, a) => {
+        const angle = a + (vortex ? r * .006 + frameTime * .3 : 0);
+        const radius = vortex ? r * (1 + .16 * Math.cos(4 * a)) : r;
+        return [cx + radius * Math.cos(angle), cy + radius * Math.sin(angle)];
+      };
+      for (let r = (frameTime * 24) % step; r < reach; r += step) {
+        ctx.beginPath();
+        for (let i = 0; i <= 96; i++) ctx.lineTo(...point(r, i * Math.PI / 48));
+        ctx.stroke();
+      }
+      if (vortex) for (let i = 0; i < 24; i++) {
+        ctx.beginPath();
+        for (let r = 0; r < reach; r += 8) ctx.lineTo(...point(r, i * Math.PI / 12));
+        ctx.stroke();
+      }
+    }
+
+    requestAnimationFrame(renderBackground);
+  }
+
+  const drawingSurface = byId('draw-canvas');
+  const drawing = drawingSurface.getContext('2d');
+  const strokes = [];
+  let drawingPointer = null;
+  let currentStroke = null;
+  let nextHue = 0;
+  let inkFrame = 0;
+  let drawWidth = 0;
+  let drawHeight = 0;
+  const huePerPixel = 1.15;
+
+  function resizeDrawing() {
+    const density = Math.min(devicePixelRatio || 1, 2);
+    drawWidth = innerWidth;
+    drawHeight = innerHeight;
+    drawingSurface.width = Math.ceil(drawWidth * density);
+    drawingSurface.height = Math.ceil(drawHeight * density);
+    drawing.setTransform(density, 0, 0, density, 0, 0);
+    requestInkFrame();
+  }
+
+  function requestInkFrame() {
+    if (!inkFrame) inkFrame = requestAnimationFrame(renderInk);
+  }
+
+  function inkColour(stroke, distance, now) {
+    if (stroke.mode === 'solid') return stroke.colour;
+    const hue = stroke.mode === 'cycle'
+      ? ((now - stroke.started) / 24 * stroke.cycle) % 360
+      : (stroke.hue + distance * huePerPixel) % 360;
+    return 'hsl(' + hue + ' 100% 56%)';
+  }
+
+  function renderInk(now) {
+    inkFrame = 0;
+    drawing.clearRect(0, 0, drawWidth, drawHeight);
+    drawing.lineCap = drawing.lineJoin = 'round';
+    let animating = false;
+    for (let i = 0; i < strokes.length; i++) {
+      const stroke = strokes[i];
+      const length = stroke.points.at(-1).distance;
+      const elapsed = stroke.ended === null ? 0 : (now - stroke.ended) / 1000;
+      const fuseDistance = stroke.fuse && stroke.ended !== null ? Math.max(0, elapsed) * stroke.speed : 0;
+      if (stroke.fuse && stroke.ended !== null && fuseDistance >= Math.max(length, 8)) {
+        strokes.splice(i--, 1);
+        continue;
+      }
+      const min = stroke.reverse ? 0 : fuseDistance;
+      const max = stroke.reverse ? length - fuseDistance : length;
+      const progress = stroke.build ? (stroke.ended === null ? 0 : Math.min(1, Math.max(0, elapsed / .23))) : 1;
+      const width = stroke.width * (.3 + .7 * progress);
+      drawing.lineWidth = width;
+      drawing.shadowBlur = stroke.glow;
+      animating ||= (stroke.mode === 'cycle' && stroke.cycle > 0)
+        || (stroke.ended !== null && (stroke.fuse || progress < 1));
+      if (!length) {
+        const point = stroke.points[0];
+        drawing.fillStyle = drawing.shadowColor = inkColour(stroke, 0, now);
+        drawing.beginPath();
+        drawing.arc(point.x, point.y, width / 2, 0, 2 * Math.PI);
+        drawing.fill();
+        continue;
+      }
+      const spectrum = stroke.mode === 'spectrum';
+      if (!spectrum) {
+        drawing.strokeStyle = drawing.shadowColor = inkColour(stroke, 0, now);
+        drawing.beginPath();
+      }
+      let began = false;
+      for (let j = 1; j < stroke.points.length; j++) {
+        const a = stroke.points[j - 1];
+        const b = stroke.points[j];
+        const start = Math.max(a.distance, min);
+        const end = Math.min(b.distance, max);
+        if (end <= start) continue;
+        const span = b.distance - a.distance;
+        const xAt = d => a.x + (b.x - a.x) * (d - a.distance) / span;
+        const yAt = d => a.y + (b.y - a.y) * (d - a.distance) / span;
+        if (spectrum) {
+          const gradient = drawing.createLinearGradient(xAt(start), yAt(start), xAt(end), yAt(end));
+          gradient.addColorStop(0, inkColour(stroke, start, now));
+          gradient.addColorStop(1, inkColour(stroke, end, now));
+          drawing.strokeStyle = gradient;
+          drawing.shadowColor = inkColour(stroke, (start + end) / 2, now);
+          drawing.beginPath();
+        }
+        if (spectrum || !began) drawing.moveTo(xAt(start), yAt(start));
+        drawing.lineTo(xAt(end), yAt(end));
+        if (spectrum) drawing.stroke();
+        began = true;
+      }
+      if (!spectrum && began) drawing.stroke();
+    }
+    if (animating) requestInkFrame();
+  }
+
+  function sampleInk(x, y) {
+    const last = currentStroke.points.at(-1);
+    const distance = Math.hypot(x - last.x, y - last.y);
+    if (distance < 1) return;
+    const steps = currentStroke.mode === 'spectrum' ? Math.ceil(distance / 8) : 1;
+    for (let i = 1; i <= steps; i++) {
+      const part = i / steps;
+      currentStroke.points.push({
+        x: last.x + (x - last.x) * part,
+        y: last.y + (y - last.y) * part,
+        distance: last.distance + distance * part
+      });
+    }
+  }
+
+  byId('draw-enabled').addEventListener('change', event => {
+    drawingSurface.classList.toggle('enabled', event.target.checked);
+    byId('btn-draw').dataset.drawing = String(event.target.checked);
+  });
+  byId('draw-ink').addEventListener('change', event => {
+    byId('draw-continuity').hidden = event.target.value !== 'spectrum';
+  });
+  byId('draw-fuse').addEventListener('change', event => {
+    byId('draw-direction').hidden = !event.target.checked;
+    byId('draw-fuse-controls').hidden = !event.target.checked;
+  });
+  drawingSurface.addEventListener('pointerdown', event => {
+    if (event.button !== 0 || drawingPointer !== null) return;
+    event.preventDefault();
+    drawingPointer = event.pointerId;
+    drawingSurface.setPointerCapture(drawingPointer);
+    currentStroke = {
+      points: [{ x: event.clientX, y: event.clientY, distance: 0 }],
+      colour: byId('draw-colour').value, width: Number(byId('draw-width').value),
+      glow: Number(byId('draw-glow').value), speed: Number(byId('draw-speed').value),
+      mode: byId('draw-ink').value, cycle: Number(byId('draw-cycle').value),
+      hue: byId('draw-continue').checked ? nextHue : 0,
+      fuse: byId('draw-fuse').checked, reverse: byId('draw-reverse').checked,
+      build: byId('draw-build').checked, started: performance.now(), ended: null
+    };
+    strokes.push(currentStroke);
+    requestInkFrame();
+  });
+  drawingSurface.addEventListener('pointermove', event => {
+    if (event.pointerId !== drawingPointer) return;
+    const samples = event.getCoalescedEvents?.();
+    for (const point of samples?.length ? samples : [event]) sampleInk(point.clientX, point.clientY);
+    requestInkFrame();
+  });
+  function finishInk(event) {
+    if (event.pointerId !== drawingPointer) return;
+    if (event.type === 'pointerup') sampleInk(event.clientX, event.clientY);
+    if (currentStroke.mode === 'spectrum') {
+      nextHue = (currentStroke.hue + currentStroke.points.at(-1).distance * huePerPixel) % 360;
+    }
+    currentStroke.ended = performance.now();
+    currentStroke = null;
+    drawingPointer = null;
+    requestInkFrame();
+  }
+  for (const event of ['pointerup', 'pointercancel', 'lostpointercapture']) drawingSurface.addEventListener(event, finishInk);
+  byId('draw-undo').addEventListener('click', () => { strokes.pop(); requestInkFrame(); });
+  byId('draw-clear').addEventListener('click', () => { strokes.length = 0; nextHue = 0; requestInkFrame(); });
+  window.addEventListener('resize', resizeDrawing);
+  resizeDrawing();
+
+  // Initialize everything on load
+  updateDisplay(0);
+  renderBackground();
+  focusTypingBox();
+});
+</script>
+</body>
+</html>
