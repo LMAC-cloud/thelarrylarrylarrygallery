@@ -34,7 +34,18 @@ function productHref(value){
   return ['http:','https:'].includes(url.protocol) || (url.protocol==='file:' && location.protocol==='file:' && !/^[a-z][a-z\d+.-]*:/i.test(value)) ? url.href : '';
  }catch{return ''}
 }
-function renderProducts(){cleanUrls();const q=$('search').value.trim().toLowerCase();$('grid').innerHTML='';const add=document.createElement('div');add.className='card empty editor-only';add.innerHTML='<div><b>＋</b><br>New listing<br><small>Click to add a product</small></div>';add.onclick=()=>editProduct();$('grid').append(add);for(const p of catalogueProducts().filter(p=>(p.name+' '+p.description+' '+p.category).toLowerCase().includes(q))){const card=document.createElement('article');card.className='card';const img=findAsset(p.assetId);const photo=document.createElement('div');photo.className='photo';if(img){const im=document.createElement('img');im.src=urlFor(img);im.alt=p.name;photo.append(im)}else if(p.link){photo.classList.add('digital-cover');photo.textContent=p.category||'Digital workshop'}else if(storefront){photo.classList.add('digital-cover');photo.textContent=p.category||'Larry’s Variety'}else photo.textContent='No photograph';const body=document.createElement('div');body.className='body';const title=document.createElement('h3');title.textContent=p.name;const price=document.createElement('div');price.className='price';price.textContent=p.fictional?'Fictional merchandise':p.link && !Number(p.price) ? 'Free to open' : 'Ł '+Number(p.price||0).toFixed(2);const desc=document.createElement('p');desc.textContent=p.description||'';const meta=document.createElement('div');meta.className='muted';meta.textContent=(p.category||'Uncategorised')+(img&&!storefront?' · '+img.name:'');body.append(title,price,desc,meta);const actions=document.createElement('div');actions.className='actions';const edit=document.createElement('button');edit.textContent='Edit listing';edit.onclick=()=>editProduct(p);edit.className='editor-only';actions.append(edit);const href=productHref(p.link);if(href){const link=document.createElement('a');link.className='product-link';link.href=href;link.target='_blank';link.rel='noopener';link.textContent=p.action||'Open';link.setAttribute('aria-label',link.textContent+' '+p.name);actions.append(link)}card.append(photo,body,actions);$('grid').append(card)}$('count').textContent=products.length+' listings · '+assets.length+' warehouse files'}$('search').oninput=renderProducts;$('add').onclick=()=>editProduct();function editProduct(p=null){editing=p?.id||null;selectedAsset=p?.assetId||null;$('productName').value=p?.name||'';$('productPrice').value=p?.price??'';$('productCategory').value=p?.category||'';$('productDesc').value=p?.description||'';$('productLink').value=p?.link||'';$('deleteProduct').style.display=p?'':'none';renderProductAssets();show('productModal')}function selectAsset(id){selectedAsset=id;renderProductAssets()}function renderProductAssets(){const box=$('productAssets');box.innerHTML='';for(const a of assets.filter(a=>a.kind==='image')){const tile=document.createElement('div');tile.className='asset'+(a.id===selectedAsset?' selected':'');tile.draggable=true;tile.ondragstart=e=>e.dataTransfer.setData('text/plain',a.id);tile.onclick=()=>selectAsset(a.id);const im=document.createElement('img');im.src=urlFor(a);const label=document.createElement('small');label.textContent=a.name;tile.append(im,label);box.append(tile)}const a=findAsset(selectedAsset);$('productPreview').src=a?urlFor(a):'';$('chosenFilename').textContent=a?.name||'No image selected'}$('productPreview').ondragover=e=>e.preventDefault();$('productPreview').ondrop=e=>{e.preventDefault();const id=e.dataTransfer.getData('text/plain');if(findAsset(id)?.kind==='image')selectAsset(id)};$('saveProduct').onclick=async()=>{const name=$('productName').value.trim();if(!name)return alert('Enter a product name.');const link=$('productLink').value.trim();if(link&&!productHref(link))return alert('Use a relative page filename or an HTTP/HTTPS address.');const previous=products.find(item=>item.id===editing);const p={...previous,id:editing||uuid(),name,link,price:Number($('productPrice').value||0),category:$('productCategory').value.trim(),description:$('productDesc').value.trim(),assetId:selectedAsset};await put('products',p);hide('productModal');await refresh()};$('deleteProduct').onclick=async()=>{if(editing&&confirm('Delete this listing?')){await del('products',editing);hide('productModal');await refresh()}};$('warehouseBtn').onclick=()=>show('warehouseModal');$('pickWarehouse').onclick=()=>show('warehouseModal');$('loadImages').onclick=()=>$('imageInput').click();function scaledImage(file){return new Promise((resolve,reject)=>{const im=new Image();const temp=URL.createObjectURL(file);im.onload=()=>{URL.revokeObjectURL(temp);const s=Math.min(1,1200/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*s));c.height=Math.max(1,Math.round(im.height*s));const ctx=c.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(im,0,0,c.width,c.height);c.toBlob(b=>b?resolve(b):reject(Error('Image conversion failed')),'image/jpeg',.8)};im.onerror=()=>{URL.revokeObjectURL(temp);reject(Error('Cannot open '+file.name))};im.src=temp})}$('imageInput').onchange=async e=>{for(const f of e.target.files){try{const blob=await scaledImage(f);await put('assets',{id:uuid(),kind:'image',name:f.name,blob,mime:'image/jpeg'})}catch(err){alert(err.message)}}e.target.value='';await refresh()};function renderAssets(){const box=$('warehouseAssets');box.innerHTML='';for(const a of assets.filter(a=>a.kind==='image')){const tile=document.createElement('div');tile.className='asset';const im=document.createElement('img');im.src=urlFor(a);const label=document.createElement('small');label.textContent=a.name;const btn=document.createElement('button');btn.textContent='Delete';btn.onclick=async()=>{if(products.some(p=>p.assetId===a.id))return alert('This photograph is in use by a listing.');await del('assets',a.id);await refresh()};tile.append(im,label,btn);box.append(tile)}}$('clearUnused').onclick=async()=>{const unused=assets.filter(a=>a.kind==='image'&&!products.some(p=>p.assetId===a.id));if(!confirm('Remove '+unused.length+' unused warehouse images?'))return;for(const a of unused)await del('assets',a.id);await refresh()};
+const featuredIds = ['digital-ghostprint','digital-typewriter','digital-mathelebet','digital-budgie','digital-casino','digital-starfield','digital-angel','digital-bamboo','digital-old-road'];
+const publishedFiles = new Set(['Ghostprint.html','Starfield_Typewriter.html','Angel_Tarot.html','Bamboo_Gate_I_Ching.html','Mathelebet.html','Budgie_Bazaar_Merge.html','Starfield_First_Experiment.html','niagara_lar_casino.html','Old_Road_Tarot.html']);
+function publishedLink(value){
+ const filename = (value || '').replace(/^\.\//,'');
+ return publishedFiles.has(filename) ? 'https://larrysvariety.ca/' + filename : value;
+}
+function listingRank(product){
+ const featured = featuredIds.indexOf(product.id);
+ if(featured !== -1)return featured;
+ return featuredIds.length + (findAsset(product.assetId) ? 0 : 1);
+}
+function renderProducts(){cleanUrls();const q=$('search').value.trim().toLowerCase();$('grid').innerHTML='';const add=document.createElement('div');add.className='card empty editor-only';add.innerHTML='<div><b>＋</b><br>New listing<br><small>Click to add a product</small></div>';add.onclick=()=>editProduct();$('grid').append(add);for(const p of products.filter(p=>(p.name+' '+p.description+' '+p.category).toLowerCase().includes(q)).sort((a,b)=>listingRank(a)-listingRank(b))){const card=document.createElement('article');card.className='card';const img=findAsset(p.assetId);const photo=document.createElement('div');photo.className='photo';if(img){const im=document.createElement('img');im.src=urlFor(img);im.alt=p.name;photo.append(im)}else{const im=document.createElement('img');im.src=illustratedCover(p);im.alt='';im.loading='lazy';photo.append(im)}const body=document.createElement('div');body.className='body';const title=document.createElement('h3');title.textContent=p.name;const price=document.createElement('div');price.className='price';price.textContent=p.fictional?'Fictional merchandise':p.link && !Number(p.price) ? 'Free to open' : 'Ł '+Number(p.price||0).toFixed(2);const desc=document.createElement('p');desc.textContent=p.description||'';const meta=document.createElement('div');meta.className='muted';meta.textContent=(p.category||'Uncategorised')+(img&&!storefront?' · '+img.name:'');body.append(title,price,desc,meta);const actions=document.createElement('div');actions.className='actions';const edit=document.createElement('button');edit.textContent='Edit listing';edit.onclick=()=>editProduct(p);edit.className='editor-only';actions.append(edit);const href=productHref(publishedLink(p.link));if(href){const link=document.createElement('a');link.className='product-link';link.href=href;link.target='_blank';link.rel='noopener';link.textContent=p.action||'Open';link.setAttribute('aria-label',link.textContent+' '+p.name);actions.append(link)}card.append(photo,body,actions);$('grid').append(card)}$('count').textContent=products.length+' listings · '+assets.length+' warehouse files'}$('search').oninput=renderProducts;$('add').onclick=()=>editProduct();function editProduct(p=null){editing=p?.id||null;selectedAsset=p?.assetId||null;$('productName').value=p?.name||'';$('productPrice').value=p?.price??'';$('productCategory').value=p?.category||'';$('productDesc').value=p?.description||'';$('productLink').value=publishedLink(p?.link)||'';$('deleteProduct').style.display=p?'':'none';renderProductAssets();show('productModal')}function selectAsset(id){selectedAsset=id;renderProductAssets()}function renderProductAssets(){const box=$('productAssets');box.innerHTML='';for(const a of assets.filter(a=>a.kind==='image')){const tile=document.createElement('div');tile.className='asset'+(a.id===selectedAsset?' selected':'');tile.draggable=true;tile.ondragstart=e=>e.dataTransfer.setData('text/plain',a.id);tile.onclick=()=>selectAsset(a.id);const im=document.createElement('img');im.src=urlFor(a);const label=document.createElement('small');label.textContent=a.name;tile.append(im,label);box.append(tile)}const a=findAsset(selectedAsset);$('productPreview').src=a?urlFor(a):'';$('chosenFilename').textContent=a?.name||'No image selected'}$('productPreview').ondragover=e=>e.preventDefault();$('productPreview').ondrop=e=>{e.preventDefault();const id=e.dataTransfer.getData('text/plain');if(findAsset(id)?.kind==='image')selectAsset(id)};$('saveProduct').onclick=async()=>{const name=$('productName').value.trim();if(!name)return alert('Enter a product name.');const link=$('productLink').value.trim();if(link&&!productHref(link))return alert('Use a relative page filename or an HTTP/HTTPS address.');const previous=products.find(item=>item.id===editing);const p={...previous,id:editing||uuid(),name,link,price:Number($('productPrice').value||0),category:$('productCategory').value.trim(),description:$('productDesc').value.trim(),assetId:selectedAsset};await put('products',p);hide('productModal');await refresh()};$('deleteProduct').onclick=async()=>{if(editing&&confirm('Delete this listing?')){await del('products',editing);hide('productModal');await refresh()}};$('warehouseBtn').onclick=()=>show('warehouseModal');$('pickWarehouse').onclick=()=>show('warehouseModal');$('loadImages').onclick=()=>$('imageInput').click();function scaledImage(file){return new Promise((resolve,reject)=>{const im=new Image();const temp=URL.createObjectURL(file);im.onload=()=>{URL.revokeObjectURL(temp);const s=Math.min(1,1200/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*s));c.height=Math.max(1,Math.round(im.height*s));const ctx=c.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(im,0,0,c.width,c.height);c.toBlob(b=>b?resolve(b):reject(Error('Image conversion failed')),'image/jpeg',.8)};im.onerror=()=>{URL.revokeObjectURL(temp);reject(Error('Cannot open '+file.name))};im.src=temp})}$('imageInput').onchange=async e=>{for(const f of e.target.files){try{const blob=await scaledImage(f);await put('assets',{id:uuid(),kind:'image',name:f.name,blob,mime:'image/jpeg'})}catch(err){alert(err.message)}}e.target.value='';await refresh()};function renderAssets(){const box=$('warehouseAssets');box.innerHTML='';for(const a of assets.filter(a=>a.kind==='image')){const tile=document.createElement('div');tile.className='asset';const im=document.createElement('img');im.src=urlFor(a);const label=document.createElement('small');label.textContent=a.name;const btn=document.createElement('button');btn.textContent='Delete';btn.onclick=async()=>{if(products.some(p=>p.assetId===a.id))return alert('This photograph is in use by a listing.');await del('assets',a.id);await refresh()};tile.append(im,label,btn);box.append(tile)}}$('clearUnused').onclick=async()=>{const unused=assets.filter(a=>a.kind==='image'&&!products.some(p=>p.assetId===a.id));if(!confirm('Remove '+unused.length+' unused warehouse images?'))return;for(const a of unused)await del('assets',a.id);await refresh()};
 // Telephone editor: each node stores an audio asset id and key -> target node mappings.
 function nodeById(id){return nodes.find(n=>n.id===id)}function renderNodes(){const list=$('nodes');list.innerHTML='';for(const n of nodes){const b=document.createElement('button');b.textContent=(n.id==='start'?'☎ ':'↳ ')+n.title;b.className=n.id===selectedNode?'selected':'';b.onclick=()=>{selectedNode=n.id;renderNodes()};list.append(b)}const n=nodeById(selectedNode)||nodes[0];if(!n)return;selectedNode=n.id;$('nodeTitle').value=n.title;const sel=$('nodeAudio');sel.innerHTML='<option value="">No recording</option>';for(const a of assets.filter(a=>a.kind==='audio')){const opt=document.createElement('option');opt.value=a.id;opt.textContent=a.name;sel.append(opt)}sel.value=n.assetId||'';const a=findAsset(n.assetId);$('nodePlayer').src=a?urlFor(a):'';const box=$('choices');box.innerHTML='';for(const [key,target] of Object.entries(n.choices||{})){const cell=document.createElement('div');const label=document.createElement('b');label.textContent='Press '+key;const select=document.createElement('select');for(const t of nodes){const opt=document.createElement('option');opt.value=t.id;opt.textContent=t.title;select.append(opt)}select.value=target;select.onchange=async()=>{n.choices[key]=select.value;await put('nodes',n)};const remove=document.createElement('button');remove.textContent='×';remove.title='Remove key';remove.onclick=async()=>{delete n.choices[key];await put('nodes',n);renderNodes()};cell.append(label,document.createElement('br'),select,remove);box.append(cell)}}$('nodeTitle').onchange=async()=>{const n=nodeById(selectedNode);n.title=$('nodeTitle').value.trim()||'Untitled';await put('nodes',n);renderNodes()};$('nodeAudio').onchange=async()=>{const n=nodeById(selectedNode);n.assetId=$('nodeAudio').value||null;await put('nodes',n);renderNodes()};$('addNode').onclick=async()=>{const n={id:uuid(),title:'New message '+(nodes.length+1),assetId:null,choices:{}};await put('nodes',n);selectedNode=n.id;await refresh()};$('deleteNode').onclick=async()=>{if(selectedNode==='start')return alert('The opening message cannot be deleted.');if(!confirm('Delete this message branch?'))return;await del('nodes',selectedNode);for(const n of nodes){for(const [k,v] of Object.entries(n.choices||{}))if(v===selectedNode)delete n.choices[k];await put('nodes',n)}selectedNode='start';await refresh()};$('addChoice').onclick=async()=>{const n=nodeById(selectedNode);let i=1;while(n.choices[i]&&i<=99)i++;n.choices[i]='start';await put('nodes',n);renderNodes()};$('addPound').onclick=async()=>{const n=nodeById(selectedNode);n.choices['#']='EXIT';await put('nodes',n);renderNodes()};$('uploadAudio').onclick=()=>$('audioInput').click();$('audioInput').onchange=async e=>{let first=null;for(const f of e.target.files){const id=uuid();await put('assets',{id,kind:'audio',name:f.name,mime:f.type||'audio/mp4',blob:f});first??=id}if(first){const n=nodeById(selectedNode);n.assetId=first;await put('nodes',n)}e.target.value='';await refresh()};$('record').onclick=async()=>{try{recordStream=await navigator.mediaDevices.getUserMedia({audio:true});const mime=MediaRecorder.isTypeSupported('audio/webm')?'audio/webm':'';recorder=new MediaRecorder(recordStream,mime?{mimeType:mime}:{});recordChunks=[];recorder.ondataavailable=e=>{if(e.data.size)recordChunks.push(e.data)};recorder.onstop=async()=>{const blob=new Blob(recordChunks,{type:recorder.mimeType});const title=prompt('Name this recording:',nodeById(selectedNode).title+' recording');if(title){const id=uuid();await put('assets',{id,kind:'audio',name:title+'.webm',mime:blob.type,blob});const n=nodeById(selectedNode);n.assetId=id;await put('nodes',n)}recordStream.getTracks().forEach(t=>t.stop());$('recordStatus').textContent='Recording saved';$('record').disabled=false;$('stopRecord').disabled=true;await refresh()};recorder.start();$('record').disabled=true;$('stopRecord').disabled=false;$('recordStatus').textContent='Recording…'}catch(e){alert('Microphone unavailable. Local file pages may need browser permission or a secure origin. '+e.message)}};$('stopRecord').onclick=()=>{if(recorder?.state==='recording')recorder.stop()};function openStudio(){ $('servicePanel').style.display='block';$('servicePanel').scrollIntoView({behavior:'smooth'})}$('serviceEditBtn').onclick=openStudio;$('serviceStudioFooter').onclick=openStudio;$('serviceOpen').onclick=()=>{openStudio();startCall()};function playCall(id){if(id==='EXIT'){hangup();return}const n=nodeById(id);if(!n){$('callStatus').textContent='This branch has not been assigned.';return}callNode=id;$('callStatus').textContent=n.title;const a=findAsset(n.assetId);const player=$(storefront?'shopCallAudio':'nodePlayer');if(a){player.src=urlFor(a);player.play().catch(()=>{})}else{player.pause();player.removeAttribute('src');player.load()}const box=$('callKeys');box.innerHTML='';for(const [key,target] of Object.entries(n.choices||{})){const b=document.createElement('button');b.textContent=key;b.onclick=()=>playCall(target);box.append(b)}const repeat=document.createElement('button');repeat.textContent='↻ Repeat';repeat.onclick=()=>playCall(id);box.append(repeat)}function startCall(){playCall('start')}function hangup(){callNode=null;$('nodePlayer').pause();$('shopCallAudio').pause();$('callStatus').textContent='Call ended';$('callKeys').innerHTML=''}$('call').onclick=startCall;$('hangup').onclick=hangup;
 // Portable JSON backup includes binary assets as data URLs. Large exports may be slow.
@@ -138,109 +149,58 @@ const BIRTHDAY_STOCK={
  ['Shipwreck Shortbread Air Freshener','Blarney','A useful scent when the cabin smells of damp rope and someone has promised visitors there would be refreshments.'],
  ['Parrot Travel Ledger','Blarney','Record voyages, memorable phrases and the names of everyone the bird has implicated in the cargo business.']]
 };
-const DIGITAL_LISTINGS=[
- [
-  "typewriter",
-  "Starfield Typewriter",
-  "Writing Studio",
-  "Write on editable cue cards or Letter paper, save poems in the Writing Bank, and draw in the starfield.",
-  "Starfield_Typewriter.html",
-  "Buy"
- ],
- [
-  "ghostprint",
-  "Ghostprint",
-  "Printmaking Studio",
-  "Pull layered monoprints from a virtual gel plate. A birthday present for anyone, any day.",
-  "https://larrysvariety.ca/Ghostprint.html",
-  "Buy"
- ],
- [
-  "mathelebet",
-  "Mathelebet",
-  "Games",
-  "Set out for the Mathelebet game.",
-  "Mathelebet.html",
-  "Play"
- ],
- [
-  "budgie",
-  "Budgie Bazaar",
-  "Games",
-  "Play Budgie Bazaar Merge.",
-  "Budgie_Bazaar_Merge.html",
-  "Play"
- ],
- [
-  "casino",
-  "Niagara Lar Casino",
-  "Games",
-  "Visit the Niagara Lar Casino.",
-  "niagara_lar_casino.html",
-  "Play"
- ],
- [
-  "starfield",
-  "Starfield First Experiment",
-  "Creative Studio",
-  "Open Starfield First Experiment.",
-  "Starfield_First_Experiment.html",
-  "Open"
- ],
- [
-  "angel",
-  "Angel Fortune Deck",
-  "Fortune Decks",
-  "Open the Angel Tarot deck.",
-  "Angel_Tarot.html",
-  "Open deck"
- ],
- [
-  "bamboo",
-  "Bamboo Gate I Ching",
-  "Fortune Decks",
-  "Open the Bamboo Gate I Ching deck.",
-  "Bamboo_Gate_I_Ching.html",
-  "Open deck"
- ],
- [
-  "old-road",
-  "Old Road Tarot",
-  "Fortune Decks",
-  "Open the Old Road Tarot deck.",
-  "Old_Road_Tarot.html",
-  "Open deck"
- ]
+const DIGITAL_LISTINGS=[["typewriter", "Starfield Typewriter", "Writing Studio", "Write on editable cue cards or Letter paper, save poems in the Writing Bank, and draw in the starfield.", "Starfield_Typewriter.html", "Buy"], ["ghostprint", "Ghostprint", "Printmaking Studio", "Pull layered monoprints from a virtual gel plate. A birthday present for anyone, any day.", "https://larrysvariety.ca/Ghostprint.html", "Buy"], ["mathelebet", "Mathelebet", "Games", "Set out for the Mathelebet game.", "Mathelebet.html", "Play"], ["angel", "Angel Fortune Deck", "Fortune Decks", "Open the Angel Tarot deck.", "Angel_Tarot.html", "Open deck"], ["bamboo", "Bamboo Gate I Ching", "Fortune Decks", "Open the Bamboo Gate I Ching deck.", "Bamboo_Gate_I_Ching.html", "Open deck"]];
+DIGITAL_LISTINGS.push(
+ ['budgie','Budgie Bazaar Merge','Games','Visit the Budgie Bazaar and see what happens when two matching birds meet.','Budgie_Bazaar_Merge.html','Play'],
+ ['starfield','Starfield First Experiment','Starfield','Open the first Starfield experiment.','Starfield_First_Experiment.html','Open'],
+ ['casino','Niagara Lar Casino','Games','Visit the Niagara Lar Casino.','niagara_lar_casino.html','Play'],
+ ['old-road','Old Road Tarot','Fortune Decks','Open the Old Road Tarot deck.','Old_Road_Tarot.html','Open deck']
+);
+const DIGITAL_ART = {
+ ghostprint:['🎨','🖼️','#a8535f'], typewriter:['⌨️','📜','#855e4b'],
+ angel:['🪽','✨','#655596'], bamboo:['🎋','☯','#3a755e'],
+ mathelebet:['🛸','🪐','#55417a'], budgie:['🦜','🐦','#4d805c'],
+ starfield:['🌌','✦','#353a77'], casino:['🎰','♦','#83384b'],
+ 'old-road':['🛤️','🌙','#634664']
+};
+const BIRTHDAY_ART = [
+ ['🥕','🥔','#a75335'],['🧺','🌊','#4f7581'],['🍷','🫐','#8d455a'],
+ ['👒','📜','#816245'],['👗','🎀','#8a5972'],
+ ['✉️','🕰️','#896846'],['🥣','🐟','#4d6895'],['🗄️','✒️','#815745'],
+ ['✉️','🌱','#647a4a'],['🛏️','🚪','#745a87'],
+ ['🪨','🌊','#5b7476'],['🕯️','☾','#92703e'],['🌾','🪨','#917746'],
+ ['🪑','❄️','#5a748d'],['🧦','🪡','#8d6264'],
+ ['🦜','🪶','#4d7861'],['🕯️','🍪','#916540'],['🍪','⚓','#776443'],
+ ['📕','🦜','#59785e']
 ];
-// Match both current links and older catalogue entries saved in this browser.
-function digitalListingMatches(product, listing){
- const [id,name,,,link]=listing;
- const savedLink=(product.link||'').split(/[?#]/)[0].split('/').pop().toLowerCase();
- const savedName=product.name.trim();
- if(product.id==='digital-'+id || savedName.toLowerCase()===name.toLowerCase() ||
-    savedLink===link.split('/').pop().toLowerCase())return true;
- if(id==='angel')return /^(?:angel (?:tarot|fortune)(?: deck)?)(?:\s+v?\d+)?$/i.test(savedName)||/^angel_tarot(?:[_-]|\.)/i.test(savedLink);
- if(id==='bamboo')return /^bamboo gate(?: i ching)?(?:\s+v?\d+)?$/i.test(savedName)||/^bamboo_gate_i_ching(?:[_-]|\.)/i.test(savedLink);
- if(id==='old-road')return /^old road tarot(?:\s+v?\d+)?$/i.test(savedName)||/^old_road_tarot(?:[_-]|\.)/i.test(savedLink);
- if(id==='budgie')return /^Budgie[ _-]+Bazaar\b/i.test(savedName)||/^budgie_bazaar_merge/i.test(savedLink);
- if(id==='starfield')return /^Starfield(?:[ _-]+First[ _-]+Experiment)?(?:[ _-]+v?\d+)?$/i.test(savedName)||
-    /^starfield_first_experiment/i.test(savedLink);
- return false;
+const birthdayArtByName = new Map(Object.values(BIRTHDAY_STOCK).flat()
+ .map(([name], index) => [name, BIRTHDAY_ART[index]]));
+const coverCache = new Map();
+function illustratedCover(product){
+ const [subject, detail, colour] = DIGITAL_ART[product.id.replace(/^digital-/, '')]
+  || birthdayArtByName.get(product.name)
+  || (product.link ? ['✦','◇','#514b76'] : ['🎁','✧','#78523f']);
+ const key = [subject,detail,colour].join('|');
+ if(coverCache.has(key))return coverCache.get(key);
+ const canvas=document.createElement('canvas');
+ canvas.width=640;canvas.height=430;
+ const ctx=canvas.getContext('2d');
+ const paper=ctx.createLinearGradient(0,0,640,430);
+ paper.addColorStop(0,'#fff7e7');paper.addColorStop(1,colour);
+ ctx.fillStyle=paper;ctx.fillRect(0,0,640,430);
+ ctx.strokeStyle='#fff5dc';ctx.lineWidth=3;ctx.strokeRect(24,24,592,382);ctx.strokeRect(34,34,572,362);
+ ctx.fillStyle=colour;
+ ctx.beginPath();ctx.ellipse(320,212,198,139,0,0,Math.PI*2);ctx.fill();
+ ctx.strokeStyle='#f3d5a2';ctx.lineWidth=3;ctx.stroke();
+ ctx.fillStyle='#fff5dc';ctx.textAlign='center';ctx.textBaseline='middle';
+ ctx.font='150px "Segoe UI Emoji","Apple Color Emoji",serif';ctx.fillText(subject,305,203);
+ ctx.font='63px "Segoe UI Emoji","Apple Color Emoji",serif';ctx.fillText(detail,420,263);
+ ctx.font='20px Georgia,serif';ctx.fillText('LARRY’S VARIETY',320,374);
+ const image=canvas.toDataURL('image/png');
+ coverCache.set(key,image);
+ return image;
 }
-function catalogueOrder(product){
- const index=DIGITAL_LISTINGS.findIndex(listing=>digitalListingMatches(product,listing));
- return index<0 ? DIGITAL_LISTINGS.length : index;
-}
-function catalogueProducts(){
- const visible=products.filter(product=>{
-  // Keep the original illustrated listing when an earlier update added a plain duplicate.
-  if(!product.id.startsWith('digital-') || findAsset(product.assetId))return true;
-  const listing=DIGITAL_LISTINGS.find(([id])=>product.id==='digital-'+id);
-  return !listing || !products.some(other=>other!==product &&
-   findAsset(other.assetId) && digitalListingMatches(other,listing));
- });
- return visible.sort((a,b)=>catalogueOrder(a)-catalogueOrder(b));
-}
+
 async function seedStorefront(){
  const transaction=db.transaction(['products','metadata'],'readwrite');
  const markers=transaction.objectStore('metadata');
@@ -249,9 +209,11 @@ async function seedStorefront(){
   transaction.oncomplete=resolve;
   transaction.onabort=()=>reject(transaction.error||new Error('Catalogue update was interrupted'));
  });
- const marker=markers.get('storefront-v7');
+ const marker=markers.get('storefront-v8');
  marker.onsuccess=()=>{
   if(marker.result)return;
+  const previous=markers.get('storefront-v5');
+  previous.onsuccess=()=>{
   const request=listings.getAll();
   request.onsuccess=()=>{
    const names=new Set(request.result.map(item=>item.name.toLowerCase()));
@@ -261,20 +223,22 @@ async function seedStorefront(){
     listings.add(item);
    }
    for(const [id,name,category,description,link,action] of DIGITAL_LISTINGS){
-    const matches=request.result.filter(product=>digitalListingMatches(product,[id,name,category,description,link,action]));
-    if(matches.length){
-     for(const product of matches)listings.put({...product,link});
-    }else{
-     add({id:'digital-'+id,name,category,description,link,action,price:0,assetId:null});
+    const existing=request.result.find(product=>product.id==='digital-'+id);
+    if(existing){
+     listings.put({...existing,link:publishedLink(link)});
+     continue;
     }
+    add({id:'digital-'+id,name,category,description,link:publishedLink(link),action,price:0,assetId:null});
    }
    let number=0;
-   for(const [category,entries] of Object.entries(BIRTHDAY_STOCK)){
+   if(!previous.result)for(const [category,entries] of Object.entries(BIRTHDAY_STOCK)){
     for(const [name,character,description] of entries){
      add({id:'birthday-'+number++,name,category,description:character+' · '+description,price:0,assetId:null,fictional:true});
     }
    }
-   markers.add({id:'storefront-v7'});
+   if(!previous.result)markers.add({id:'storefront-v5'});
+   markers.add({id:'storefront-v8'});
+  };
   };
  };
  return completed;
