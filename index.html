@@ -3842,15 +3842,8 @@ if(window.visualViewport) {
    Exactly one is the correct vehicle.
    ============================================================ */
 
-// These four files are in the same GitHub Pages folder as this main page.
-// Build their URLs from the current page so the browser never treats them
-// as a missing subfolder path.
-const niagaraVersions = [
-    new URL("./niagara16.html", document.baseURI).href,
-    new URL("./niagara20.html", document.baseURI).href,
-    new URL("./niagara27.html", document.baseURI).href,
-    new URL("./niagara34.html", document.baseURI).href
-];
+// Published Niagara destination for the transportation game.
+const niagaraVersions = [new URL("./niagara_lar_casino.html", document.baseURI).href];
 
 const busFleet = [
 
@@ -5562,7 +5555,7 @@ window.addEventListener("resize",fitFinalPaintingFrame);
     q.a.forEach((text,i)=>{const b=document.createElement("button"); b.className="larAnswer"; b.textContent=String.fromCharCode(65+i)+". "+text; b.addEventListener("click",()=>{if(round<6){round++; result.textContent="RECORDED. THE LAR DEPARTMENT HAS MOVED ON TO THE NEXT QUESTION."; result.style.display="block"; setTimeout(renderRound,520);}else{answers.style.display="none"; result.textContent="THE SEVEN LAR QUESTIONS HAVE BEEN PLACED IN THE APPROPRIATE FILE. LARRY WILL NOT COMMENT FURTHER."; result.style.display="block"; casino.style.display="block";}}); answers.appendChild(b);});
   }
   booth.addEventListener("click",()=>{if(!started){round=0;started=true;} renderRound(); overlay.style.display="flex";});
-  close.addEventListener("click",()=>overlay.style.display="none"); overlay.addEventListener("click",e=>{if(e.target===overlay)overlay.style.display="none";}); casino.addEventListener("click",()=>window.location.href="niagara34larcasino.html");
+  close.addEventListener("click",()=>overlay.style.display="none"); overlay.addEventListener("click",e=>{if(e.target===overlay)overlay.style.display="none";}); casino.addEventListener("click",()=>window.location.href="niagara_lar_casino.html");
 })();
 (function(){
   const host=document.getElementById("larBackgroundStarbursts"); if(!host)return; const c=["#ff3131","#ff9d00","#ffe600","#38ff6b","#00eaff","#477dff","#b85cff","#ff4fd8"];
