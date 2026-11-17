@@ -9,11 +9,11 @@
 .card .digital-cover{min-height:130px;display:grid;place-items:center;text-align:center;padding:1rem;background:linear-gradient(135deg,#292332,#554052);color:#fff2d8;font:700 1.25rem Georgia,serif}
 #previewBtn{font-weight:700} .shop-status{padding:0 1rem;color:#74482b}
 </style></head><body>
-<header><h1>LARRY'S VARIETY</h1><input id="search" placeholder="Search the Lar catalogue…"><button class="editor-only" id="add">+ Add a product</button><div class="links" aria-label="Larry's Variety destinations"><a href="https://larrysvariety.ca/larrystampmerge.html" target="_blank" title="Lar Mobile — Stamp Merge"><svg viewBox="0 0 100 70"><defs><filter id="glow"><feGaussianBlur stdDeviation="3"/></filter></defs><ellipse cx="46" cy="60" rx="45" ry="8" fill="#a87742" opacity=".6" filter="url(#glow)"/><path d="M9 39 L20 25 L67 22 L82 37 L96 41 L96 53 L7 53Z" fill="#744a2d" stroke="#b58a5b" stroke-width="2"/><path d="M25 27 L65 26 L77 38 L15 38Z" fill="#303b43"/><circle cx="26" cy="53" r="9" fill="#151515" stroke="#b7b7b7" stroke-width="3"/><circle cx="77" cy="53" r="9" fill="#151515" stroke="#b7b7b7" stroke-width="3"/><circle cx="96" cy="47" r="4" fill="#ffda82"/><g fill="#b7b5b0" opacity=".6"><circle cx="5" cy="39" r="6"/><circle cx="0" cy="31" r="9"/><circle cx="8" cy="20" r="7"/></g></svg></a><a href="https://larrysvariety.ca/niagara34larcasino.html" target="_blank" title="Seagull — Lar Casino"><svg viewBox="0 0 100 70"><path d="M5 38 Q24 17 47 37 Q70 10 96 31 Q74 28 51 48 Q29 35 5 38" fill="#fff" stroke="#aab5c3" stroke-width="2"/><circle cx="55" cy="39" r="2" fill="#111"/><path d="M58 43 L67 47 L58 48" fill="#e4b25e"/></svg></a><a href="https://larrysvariety.ca/starfield.html" target="_blank" title="Silver Moon — Starfield"><svg viewBox="0 0 100 70"><defs><radialGradient id="moon"><stop stop-color="#fff"/><stop offset=".7" stop-color="#aeb7c2"/><stop offset="1" stop-color="#6b7a8b"/></radialGradient></defs><circle cx="50" cy="35" r="28" fill="url(#moon)"/><g fill="#8793a3" opacity=".38"><circle cx="41" cy="25" r="8"/><circle cx="59" cy="46" r="6"/><circle cx="63" cy="20" r="4"/></g></svg></a></div></header>
+<header><h1>LARRY'S VARIETY</h1><input id="search" placeholder="Search the Lar catalogue…"><button class="editor-only" id="add">+ Add a product</button><div class="links" aria-label="Larry's Variety destinations"><a href="https://larrysvariety.ca/" target="_blank" title="Lar Mobile — Larry's Variety Home"><svg viewBox="0 0 100 70"><defs><filter id="glow"><feGaussianBlur stdDeviation="3"/></filter></defs><ellipse cx="46" cy="60" rx="45" ry="8" fill="#a87742" opacity=".6" filter="url(#glow)"/><path d="M9 39 L20 25 L67 22 L82 37 L96 41 L96 53 L7 53Z" fill="#744a2d" stroke="#b58a5b" stroke-width="2"/><path d="M25 27 L65 26 L77 38 L15 38Z" fill="#303b43"/><circle cx="26" cy="53" r="9" fill="#151515" stroke="#b7b7b7" stroke-width="3"/><circle cx="77" cy="53" r="9" fill="#151515" stroke="#b7b7b7" stroke-width="3"/><circle cx="96" cy="47" r="4" fill="#ffda82"/><g fill="#b7b5b0" opacity=".6"><circle cx="5" cy="39" r="6"/><circle cx="0" cy="31" r="9"/><circle cx="8" cy="20" r="7"/></g></svg></a><a href="https://larrysvariety.ca/niagara_lar_casino.html" target="_blank" title="Seagull — Lar Casino"><svg viewBox="0 0 100 70"><path d="M5 38 Q24 17 47 37 Q70 10 96 31 Q74 28 51 48 Q29 35 5 38" fill="#fff" stroke="#aab5c3" stroke-width="2"/><circle cx="55" cy="39" r="2" fill="#111"/><path d="M58 43 L67 47 L58 48" fill="#e4b25e"/></svg></a><a href="https://larrysvariety.ca/starfield.html" target="_blank" title="Silver Moon — Starfield"><svg viewBox="0 0 100 70"><defs><radialGradient id="moon"><stop stop-color="#fff"/><stop offset=".7" stop-color="#aeb7c2"/><stop offset="1" stop-color="#6b7a8b"/></radialGradient></defs><circle cx="50" cy="35" r="28" fill="url(#moon)"/><g fill="#8793a3" opacity=".38"><circle cx="41" cy="25" r="8"/><circle cx="59" cy="46" r="6"/><circle cx="63" cy="20" r="4"/></g></svg></a></div></header>
 <div class="sub"><button id="previewBtn" aria-pressed="false">Preview storefront</button><button class="editor-only" id="warehouseBtn">Image warehouse</button><button class="editor-only" id="backupBtn">Export catalogue backup</button><button class="editor-only" id="restoreBtn">Import backup</button><button class="editor-only" id="serviceEditBtn">Customer Service Studio</button><span class="editor-only" id="count"></span></div>
 <div class="hero"><h2>The Lar Department Store</h2><div>Original offerings, improbable merchandise and other fine curiosities. All prices in <b>Lar Bucks (Ł)</b>.</div></div><main class="wrap"><div id="grid" class="grid"></div><section id="servicePanel"><h2>Lar Customer Service — speaking telephone studio</h2><div class="notice">Dialogue is spoken live using the browser's available adult voices. Text uses very little storage. Uploaded recordings remain optional. Product pictures and recordings are stored on this device; export backups regularly.</div><div class="tree"><div><h3>Message branches</h3><div id="nodes" class="nodes"></div><button id="addNode">+ Add branch</button></div><div><div class="row"><label class="field">Selected branch title<input id="nodeTitle"></label><button id="deleteNode">Delete branch</button></div><div class="voicebox"><label for="nodeText"><b>Spoken message</b></label><textarea id="nodeText" placeholder="Write what the caller hears…"></textarea><div class="row"><label>Character <select id="nodeCharacter"><option>Fancy Woman</option><option>Blarney the Pirate</option><option>Lady Lar</option><option>Captain Lar</option><option>Miss Quill</option><option>Professor Lar</option><option>Customer</option></select></label><label>Available browser voice <select id="nodeVoice"><option value="">Automatic character voice</option></select></label><label>Speed <input id="nodeRate" type="number" min="0.6" max="1.5" step="0.05" value="0.95" style="width:76px"></label><label>Pitch <input id="nodePitch" type="number" min="0.6" max="1.5" step="0.05" value="1" style="width:76px"></label><button id="previewVoice">▶ Preview speech</button><button id="stopVoice">■ Stop</button></div><div class="voiceNote" id="voiceStatus">Voice availability depends on Microsoft Edge, Windows, and installed speech voices. Some natural voices require internet.</div></div><div class="row"><label class="field">Optional uploaded audio / MP4<select id="nodeAudio"><option value="">No recording</option></select></label><button id="uploadAudio">Load audio / MP4</button><input type="file" id="audioInput" accept="audio/*,video/mp4,video/*" multiple hidden></div><div class="row"><button id="record">● Record message</button><button id="stopRecord" disabled>■ Stop & save</button><span id="recordStatus" class="hint"></span></div><audio id="nodePlayer" controls style="width:100%"></audio><h3>Keypad branches</h3><div id="choices" class="choices"></div><div class="row"><button id="addChoice">+ Add numbered choice</button><button id="addPound">+ Add # exit</button></div><p class="hint">Each number links to another message. Use the same branch for multiple keys if desired. A branch may contain a recording, a title, and any number of outgoing options.</p></div></div><h3>Test the telephone</h3><div class="player"><audio id="shopCallAudio" hidden></audio><div id="callStatus">Ready</div><div id="spokenText" aria-live="polite">Press Start call to hear the operator.</div><button id="call">☎ Start call</button><button id="hangup">Hang up</button><div id="callKeys"></div></div></section></main>
 <footer><h3>Larry's Variety — Customer Service</h3><p>For inquiries, unexpected offers, and administrative confusion.</p><button id="serviceOpen">☎ Call Lar Customer Service</button> <button class="editor-only" id="serviceStudioFooter">Edit telephone branches</button><p class="hint">Personal fictional catalogue. No actual payments or purchases. Literary artefacts are imaginary, not genuine historical belongings.</p></footer>
-<div class="overlay" id="productModal"><div class="dialog"><div class="row"><h2 style="flex:1">Product listing</h2><button data-close="productModal">✕ Close</button></div><div class="row"><label class="field">Product name<input id="productName" maxlength="130"></label><label class="field">Price (Lar Bucks Ł)<input id="productPrice" type="number" min="0" step=".01"></label></div><label class="field">Destination page or URL<input id="productLink" type="text" placeholder="Example: Starfield_Typewriter_v06.html"></label><div class="row"><label class="field">Category<input id="productCategory" placeholder="Artwork, Books, Curiosities…"></label></div><label class="field">Description<textarea id="productDesc"></textarea></label><h3>Choose a photograph from the warehouse</h3><p class="hint">Drag an image onto the preview, or click an image below. Your original filename is retained.</p><div class="row"><img class="preview" id="productPreview" alt="Selected product photo" draggable="false"><div><button id="pickWarehouse">Open warehouse</button><div id="chosenFilename" class="hint"></div></div></div><div id="productAssets" class="warehouse"></div><div class="toolbar"><button class="primary" id="saveProduct">Save listing</button><button id="deleteProduct">Delete listing</button></div></div></div>
+<div class="overlay" id="productModal"><div class="dialog"><div class="row"><h2 style="flex:1">Product listing</h2><button data-close="productModal">✕ Close</button></div><div class="row"><label class="field">Product name<input id="productName" maxlength="130"></label><label class="field">Price (Lar Bucks Ł)<input id="productPrice" type="number" min="0" step=".01"></label></div><label class="field">Destination page or URL<input id="productLink" type="text" placeholder="Example: Starfield_Typewriter.html"></label><div class="row"><label class="field">Category<input id="productCategory" placeholder="Artwork, Books, Curiosities…"></label></div><label class="field">Description<textarea id="productDesc"></textarea></label><h3>Choose a photograph from the warehouse</h3><p class="hint">Drag an image onto the preview, or click an image below. Your original filename is retained.</p><div class="row"><img class="preview" id="productPreview" alt="Selected product photo" draggable="false"><div><button id="pickWarehouse">Open warehouse</button><div id="chosenFilename" class="hint"></div></div></div><div id="productAssets" class="warehouse"></div><div class="toolbar"><button class="primary" id="saveProduct">Save listing</button><button id="deleteProduct">Delete listing</button></div></div></div>
 <div class="overlay" id="warehouseModal"><div class="dialog"><div class="row"><h2 style="flex:1">Lar Warehouse</h2><button data-close="warehouseModal">✕ Close</button></div><p>Load photographs here once, then assign them to any number of product listings. The files remain local to this browser.</p><div class="toolbar"><button id="loadImages">+ Load JPG / PNG / WebP</button><input id="imageInput" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden><button id="clearUnused">Remove unused images</button></div><div class="notice">Large original images can still fill browser storage. New photographs are reduced to a maximum of 1200 pixels and saved as compressed JPEGs. Export a backup for safekeeping.</div><div id="warehouseAssets" class="warehouse"></div></div></div>
 <input type="file" id="backupInput" accept="application/json" hidden><script>
 'use strict';const $=id=>document.getElementById(id);const DB='larrys-variety-warehouse-v2';let db,products=[],assets=[],nodes=[],editing=null,selectedAsset=null,selectedNode='start',callNode=null,recorder=null,recordChunks=[],recordStream=null;let objectUrls=[];function urlFor(asset){if(!asset)return '';const u=URL.createObjectURL(asset.blob);objectUrls.push(u);return u}function cleanUrls(){objectUrls.forEach(u=>URL.revokeObjectURL(u));objectUrls=[]}function uuid(){return crypto.randomUUID?crypto.randomUUID():Date.now()+'-'+Math.random().toString(36).slice(2)}function tx(store,mode='readonly'){return db.transaction(store,mode).objectStore(store)}function req(r){return new Promise((resolve,reject)=>{r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}async function all(store){return req(tx(store).getAll())}async function put(store,item){return req(tx(store,'readwrite').put(item))}async function del(store,key){return req(tx(store,'readwrite').delete(key))}async function refresh(){products=await all('products');assets=await all('assets');nodes=await all('nodes');renderProducts();renderAssets();renderNodes()}function show(id){$(id).classList.add('open')}function hide(id){$(id).classList.remove('open')}document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>hide(b.dataset.close));function findAsset(id){return assets.find(a=>a.id===id)}let storefront = location.hash === '#storefront';
@@ -34,18 +34,7 @@ function productHref(value){
   return ['http:','https:'].includes(url.protocol) || (url.protocol==='file:' && location.protocol==='file:' && !/^[a-z][a-z\d+.-]*:/i.test(value)) ? url.href : '';
  }catch{return ''}
 }
-const featuredIds = ['digital-ghostprint','digital-typewriter','digital-angel','digital-bamboo','digital-budgie','digital-starfield','digital-mathelebet'];
-const publishedFiles = new Set(['Ghostprint_v51.html','Starfield_Typewriter_v06.html','Angel_Tarot.html','Bamboo_Gate_I_Ching.html','Mathelebet.html','Budgie_Bazaar_Merge_43.html','Starfield_First_Experiment_50.html']);
-function publishedLink(value){
- const filename = (value || '').replace(/^\.\//,'');
- return publishedFiles.has(filename) ? 'https://larrysvariety.ca/' + filename : value;
-}
-function listingRank(product){
- const featured = featuredIds.indexOf(product.id);
- if(featured !== -1)return featured;
- return featuredIds.length + (findAsset(product.assetId) ? 0 : 1);
-}
-function renderProducts(){cleanUrls();const q=$('search').value.trim().toLowerCase();$('grid').innerHTML='';const add=document.createElement('div');add.className='card empty editor-only';add.innerHTML='<div><b>＋</b><br>New listing<br><small>Click to add a product</small></div>';add.onclick=()=>editProduct();$('grid').append(add);for(const p of products.filter(p=>(p.name+' '+p.description+' '+p.category).toLowerCase().includes(q)).sort((a,b)=>listingRank(a)-listingRank(b))){const card=document.createElement('article');card.className='card';const img=findAsset(p.assetId);const photo=document.createElement('div');photo.className='photo';if(img){const im=document.createElement('img');im.src=urlFor(img);im.alt=p.name;photo.append(im)}else{const im=document.createElement('img');im.src=illustratedCover(p);im.alt='';im.loading='lazy';photo.append(im)}const body=document.createElement('div');body.className='body';const title=document.createElement('h3');title.textContent=p.name;const price=document.createElement('div');price.className='price';price.textContent=p.fictional?'Fictional merchandise':p.link && !Number(p.price) ? 'Free to open' : 'Ł '+Number(p.price||0).toFixed(2);const desc=document.createElement('p');desc.textContent=p.description||'';const meta=document.createElement('div');meta.className='muted';meta.textContent=(p.category||'Uncategorised')+(img&&!storefront?' · '+img.name:'');body.append(title,price,desc,meta);const actions=document.createElement('div');actions.className='actions';const edit=document.createElement('button');edit.textContent='Edit listing';edit.onclick=()=>editProduct(p);edit.className='editor-only';actions.append(edit);const href=productHref(publishedLink(p.link));if(href){const link=document.createElement('a');link.className='product-link';link.href=href;link.target='_blank';link.rel='noopener';link.textContent=p.action||'Open';link.setAttribute('aria-label',link.textContent+' '+p.name);actions.append(link)}card.append(photo,body,actions);$('grid').append(card)}$('count').textContent=products.length+' listings · '+assets.length+' warehouse files'}$('search').oninput=renderProducts;$('add').onclick=()=>editProduct();function editProduct(p=null){editing=p?.id||null;selectedAsset=p?.assetId||null;$('productName').value=p?.name||'';$('productPrice').value=p?.price??'';$('productCategory').value=p?.category||'';$('productDesc').value=p?.description||'';$('productLink').value=publishedLink(p?.link)||'';$('deleteProduct').style.display=p?'':'none';renderProductAssets();show('productModal')}function selectAsset(id){selectedAsset=id;renderProductAssets()}function renderProductAssets(){const box=$('productAssets');box.innerHTML='';for(const a of assets.filter(a=>a.kind==='image')){const tile=document.createElement('div');tile.className='asset'+(a.id===selectedAsset?' selected':'');tile.draggable=true;tile.ondragstart=e=>e.dataTransfer.setData('text/plain',a.id);tile.onclick=()=>selectAsset(a.id);const im=document.createElement('img');im.src=urlFor(a);const label=document.createElement('small');label.textContent=a.name;tile.append(im,label);box.append(tile)}const a=findAsset(selectedAsset);$('productPreview').src=a?urlFor(a):'';$('chosenFilename').textContent=a?.name||'No image selected'}$('productPreview').ondragover=e=>e.preventDefault();$('productPreview').ondrop=e=>{e.preventDefault();const id=e.dataTransfer.getData('text/plain');if(findAsset(id)?.kind==='image')selectAsset(id)};$('saveProduct').onclick=async()=>{const name=$('productName').value.trim();if(!name)return alert('Enter a product name.');const link=$('productLink').value.trim();if(link&&!productHref(link))return alert('Use a relative page filename or an HTTP/HTTPS address.');const previous=products.find(item=>item.id===editing);const p={...previous,id:editing||uuid(),name,link,price:Number($('productPrice').value||0),category:$('productCategory').value.trim(),description:$('productDesc').value.trim(),assetId:selectedAsset};await put('products',p);hide('productModal');await refresh()};$('deleteProduct').onclick=async()=>{if(editing&&confirm('Delete this listing?')){await del('products',editing);hide('productModal');await refresh()}};$('warehouseBtn').onclick=()=>show('warehouseModal');$('pickWarehouse').onclick=()=>show('warehouseModal');$('loadImages').onclick=()=>$('imageInput').click();function scaledImage(file){return new Promise((resolve,reject)=>{const im=new Image();const temp=URL.createObjectURL(file);im.onload=()=>{URL.revokeObjectURL(temp);const s=Math.min(1,1200/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*s));c.height=Math.max(1,Math.round(im.height*s));const ctx=c.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(im,0,0,c.width,c.height);c.toBlob(b=>b?resolve(b):reject(Error('Image conversion failed')),'image/jpeg',.8)};im.onerror=()=>{URL.revokeObjectURL(temp);reject(Error('Cannot open '+file.name))};im.src=temp})}$('imageInput').onchange=async e=>{for(const f of e.target.files){try{const blob=await scaledImage(f);await put('assets',{id:uuid(),kind:'image',name:f.name,blob,mime:'image/jpeg'})}catch(err){alert(err.message)}}e.target.value='';await refresh()};function renderAssets(){const box=$('warehouseAssets');box.innerHTML='';for(const a of assets.filter(a=>a.kind==='image')){const tile=document.createElement('div');tile.className='asset';const im=document.createElement('img');im.src=urlFor(a);const label=document.createElement('small');label.textContent=a.name;const btn=document.createElement('button');btn.textContent='Delete';btn.onclick=async()=>{if(products.some(p=>p.assetId===a.id))return alert('This photograph is in use by a listing.');await del('assets',a.id);await refresh()};tile.append(im,label,btn);box.append(tile)}}$('clearUnused').onclick=async()=>{const unused=assets.filter(a=>a.kind==='image'&&!products.some(p=>p.assetId===a.id));if(!confirm('Remove '+unused.length+' unused warehouse images?'))return;for(const a of unused)await del('assets',a.id);await refresh()};
+function renderProducts(){cleanUrls();const q=$('search').value.trim().toLowerCase();$('grid').innerHTML='';const add=document.createElement('div');add.className='card empty editor-only';add.innerHTML='<div><b>＋</b><br>New listing<br><small>Click to add a product</small></div>';add.onclick=()=>editProduct();$('grid').append(add);for(const p of products.slice().sort((a,b)=>catalogueOrder(a)-catalogueOrder(b)).filter(p=>(p.name+' '+p.description+' '+p.category).toLowerCase().includes(q))){const card=document.createElement('article');card.className='card';const img=findAsset(p.assetId);const photo=document.createElement('div');photo.className='photo';if(img){const im=document.createElement('img');im.src=urlFor(img);im.alt=p.name;photo.append(im)}else if(p.link){photo.classList.add('digital-cover');photo.textContent=p.category||'Digital workshop'}else if(storefront){photo.classList.add('digital-cover');photo.textContent=p.category||'Larry’s Variety'}else photo.textContent='No photograph';const body=document.createElement('div');body.className='body';const title=document.createElement('h3');title.textContent=p.name;const price=document.createElement('div');price.className='price';price.textContent=p.fictional?'Fictional merchandise':p.link && !Number(p.price) ? 'Free to open' : 'Ł '+Number(p.price||0).toFixed(2);const desc=document.createElement('p');desc.textContent=p.description||'';const meta=document.createElement('div');meta.className='muted';meta.textContent=(p.category||'Uncategorised')+(img&&!storefront?' · '+img.name:'');body.append(title,price,desc,meta);const actions=document.createElement('div');actions.className='actions';const edit=document.createElement('button');edit.textContent='Edit listing';edit.onclick=()=>editProduct(p);edit.className='editor-only';actions.append(edit);const href=productHref(p.link);if(href){const link=document.createElement('a');link.className='product-link';link.href=href;link.target='_blank';link.rel='noopener';link.textContent=p.action||'Open';link.setAttribute('aria-label',link.textContent+' '+p.name);actions.append(link)}card.append(photo,body,actions);$('grid').append(card)}$('count').textContent=products.length+' listings · '+assets.length+' warehouse files'}$('search').oninput=renderProducts;$('add').onclick=()=>editProduct();function editProduct(p=null){editing=p?.id||null;selectedAsset=p?.assetId||null;$('productName').value=p?.name||'';$('productPrice').value=p?.price??'';$('productCategory').value=p?.category||'';$('productDesc').value=p?.description||'';$('productLink').value=p?.link||'';$('deleteProduct').style.display=p?'':'none';renderProductAssets();show('productModal')}function selectAsset(id){selectedAsset=id;renderProductAssets()}function renderProductAssets(){const box=$('productAssets');box.innerHTML='';for(const a of assets.filter(a=>a.kind==='image')){const tile=document.createElement('div');tile.className='asset'+(a.id===selectedAsset?' selected':'');tile.draggable=true;tile.ondragstart=e=>e.dataTransfer.setData('text/plain',a.id);tile.onclick=()=>selectAsset(a.id);const im=document.createElement('img');im.src=urlFor(a);const label=document.createElement('small');label.textContent=a.name;tile.append(im,label);box.append(tile)}const a=findAsset(selectedAsset);$('productPreview').src=a?urlFor(a):'';$('chosenFilename').textContent=a?.name||'No image selected'}$('productPreview').ondragover=e=>e.preventDefault();$('productPreview').ondrop=e=>{e.preventDefault();const id=e.dataTransfer.getData('text/plain');if(findAsset(id)?.kind==='image')selectAsset(id)};$('saveProduct').onclick=async()=>{const name=$('productName').value.trim();if(!name)return alert('Enter a product name.');const link=$('productLink').value.trim();if(link&&!productHref(link))return alert('Use a relative page filename or an HTTP/HTTPS address.');const previous=products.find(item=>item.id===editing);const p={...previous,id:editing||uuid(),name,link,price:Number($('productPrice').value||0),category:$('productCategory').value.trim(),description:$('productDesc').value.trim(),assetId:selectedAsset};await put('products',p);hide('productModal');await refresh()};$('deleteProduct').onclick=async()=>{if(editing&&confirm('Delete this listing?')){await del('products',editing);hide('productModal');await refresh()}};$('warehouseBtn').onclick=()=>show('warehouseModal');$('pickWarehouse').onclick=()=>show('warehouseModal');$('loadImages').onclick=()=>$('imageInput').click();function scaledImage(file){return new Promise((resolve,reject)=>{const im=new Image();const temp=URL.createObjectURL(file);im.onload=()=>{URL.revokeObjectURL(temp);const s=Math.min(1,1200/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*s));c.height=Math.max(1,Math.round(im.height*s));const ctx=c.getContext('2d');ctx.fillStyle='white';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(im,0,0,c.width,c.height);c.toBlob(b=>b?resolve(b):reject(Error('Image conversion failed')),'image/jpeg',.8)};im.onerror=()=>{URL.revokeObjectURL(temp);reject(Error('Cannot open '+file.name))};im.src=temp})}$('imageInput').onchange=async e=>{for(const f of e.target.files){try{const blob=await scaledImage(f);await put('assets',{id:uuid(),kind:'image',name:f.name,blob,mime:'image/jpeg'})}catch(err){alert(err.message)}}e.target.value='';await refresh()};function renderAssets(){const box=$('warehouseAssets');box.innerHTML='';for(const a of assets.filter(a=>a.kind==='image')){const tile=document.createElement('div');tile.className='asset';const im=document.createElement('img');im.src=urlFor(a);const label=document.createElement('small');label.textContent=a.name;const btn=document.createElement('button');btn.textContent='Delete';btn.onclick=async()=>{if(products.some(p=>p.assetId===a.id))return alert('This photograph is in use by a listing.');await del('assets',a.id);await refresh()};tile.append(im,label,btn);box.append(tile)}}$('clearUnused').onclick=async()=>{const unused=assets.filter(a=>a.kind==='image'&&!products.some(p=>p.assetId===a.id));if(!confirm('Remove '+unused.length+' unused warehouse images?'))return;for(const a of unused)await del('assets',a.id);await refresh()};
 // Telephone editor: each node stores an audio asset id and key -> target node mappings.
 function nodeById(id){return nodes.find(n=>n.id===id)}function renderNodes(){const list=$('nodes');list.innerHTML='';for(const n of nodes){const b=document.createElement('button');b.textContent=(n.id==='start'?'☎ ':'↳ ')+n.title;b.className=n.id===selectedNode?'selected':'';b.onclick=()=>{selectedNode=n.id;renderNodes()};list.append(b)}const n=nodeById(selectedNode)||nodes[0];if(!n)return;selectedNode=n.id;$('nodeTitle').value=n.title;const sel=$('nodeAudio');sel.innerHTML='<option value="">No recording</option>';for(const a of assets.filter(a=>a.kind==='audio')){const opt=document.createElement('option');opt.value=a.id;opt.textContent=a.name;sel.append(opt)}sel.value=n.assetId||'';const a=findAsset(n.assetId);$('nodePlayer').src=a?urlFor(a):'';const box=$('choices');box.innerHTML='';for(const [key,target] of Object.entries(n.choices||{})){const cell=document.createElement('div');const label=document.createElement('b');label.textContent='Press '+key;const select=document.createElement('select');for(const t of nodes){const opt=document.createElement('option');opt.value=t.id;opt.textContent=t.title;select.append(opt)}select.value=target;select.onchange=async()=>{n.choices[key]=select.value;await put('nodes',n)};const remove=document.createElement('button');remove.textContent='×';remove.title='Remove key';remove.onclick=async()=>{delete n.choices[key];await put('nodes',n);renderNodes()};cell.append(label,document.createElement('br'),select,remove);box.append(cell)}}$('nodeTitle').onchange=async()=>{const n=nodeById(selectedNode);n.title=$('nodeTitle').value.trim()||'Untitled';await put('nodes',n);renderNodes()};$('nodeAudio').onchange=async()=>{const n=nodeById(selectedNode);n.assetId=$('nodeAudio').value||null;await put('nodes',n);renderNodes()};$('addNode').onclick=async()=>{const n={id:uuid(),title:'New message '+(nodes.length+1),assetId:null,choices:{}};await put('nodes',n);selectedNode=n.id;await refresh()};$('deleteNode').onclick=async()=>{if(selectedNode==='start')return alert('The opening message cannot be deleted.');if(!confirm('Delete this message branch?'))return;await del('nodes',selectedNode);for(const n of nodes){for(const [k,v] of Object.entries(n.choices||{}))if(v===selectedNode)delete n.choices[k];await put('nodes',n)}selectedNode='start';await refresh()};$('addChoice').onclick=async()=>{const n=nodeById(selectedNode);let i=1;while(n.choices[i]&&i<=99)i++;n.choices[i]='start';await put('nodes',n);renderNodes()};$('addPound').onclick=async()=>{const n=nodeById(selectedNode);n.choices['#']='EXIT';await put('nodes',n);renderNodes()};$('uploadAudio').onclick=()=>$('audioInput').click();$('audioInput').onchange=async e=>{let first=null;for(const f of e.target.files){const id=uuid();await put('assets',{id,kind:'audio',name:f.name,mime:f.type||'audio/mp4',blob:f});first??=id}if(first){const n=nodeById(selectedNode);n.assetId=first;await put('nodes',n)}e.target.value='';await refresh()};$('record').onclick=async()=>{try{recordStream=await navigator.mediaDevices.getUserMedia({audio:true});const mime=MediaRecorder.isTypeSupported('audio/webm')?'audio/webm':'';recorder=new MediaRecorder(recordStream,mime?{mimeType:mime}:{});recordChunks=[];recorder.ondataavailable=e=>{if(e.data.size)recordChunks.push(e.data)};recorder.onstop=async()=>{const blob=new Blob(recordChunks,{type:recorder.mimeType});const title=prompt('Name this recording:',nodeById(selectedNode).title+' recording');if(title){const id=uuid();await put('assets',{id,kind:'audio',name:title+'.webm',mime:blob.type,blob});const n=nodeById(selectedNode);n.assetId=id;await put('nodes',n)}recordStream.getTracks().forEach(t=>t.stop());$('recordStatus').textContent='Recording saved';$('record').disabled=false;$('stopRecord').disabled=true;await refresh()};recorder.start();$('record').disabled=true;$('stopRecord').disabled=false;$('recordStatus').textContent='Recording…'}catch(e){alert('Microphone unavailable. Local file pages may need browser permission or a secure origin. '+e.message)}};$('stopRecord').onclick=()=>{if(recorder?.state==='recording')recorder.stop()};function openStudio(){ $('servicePanel').style.display='block';$('servicePanel').scrollIntoView({behavior:'smooth'})}$('serviceEditBtn').onclick=openStudio;$('serviceStudioFooter').onclick=openStudio;$('serviceOpen').onclick=()=>{openStudio();startCall()};function playCall(id){if(id==='EXIT'){hangup();return}const n=nodeById(id);if(!n){$('callStatus').textContent='This branch has not been assigned.';return}callNode=id;$('callStatus').textContent=n.title;const a=findAsset(n.assetId);const player=$(storefront?'shopCallAudio':'nodePlayer');if(a){player.src=urlFor(a);player.play().catch(()=>{})}else{player.pause();player.removeAttribute('src');player.load()}const box=$('callKeys');box.innerHTML='';for(const [key,target] of Object.entries(n.choices||{})){const b=document.createElement('button');b.textContent=key;b.onclick=()=>playCall(target);box.append(b)}const repeat=document.createElement('button');repeat.textContent='↻ Repeat';repeat.onclick=()=>playCall(id);box.append(repeat)}function startCall(){playCall('start')}function hangup(){callNode=null;$('nodePlayer').pause();$('shopCallAudio').pause();$('callStatus').textContent='Call ended';$('callKeys').innerHTML=''}$('call').onclick=startCall;$('hangup').onclick=hangup;
 // Portable JSON backup includes binary assets as data URLs. Large exports may be slow.
@@ -120,7 +109,7 @@ for(const k of ['Rate','Pitch'])$('node'+k).onchange=async()=>{const n=nodeById(
 $('previewVoice').onclick=()=>{const n={...nodeById(selectedNode),text:$('nodeText').value,character:$('nodeCharacter').value,voiceURI:$('nodeVoice').value,rate:Number($('nodeRate').value),pitch:Number($('nodePitch').value)};larSpeak(n)};
 $('stopVoice').onclick=()=>window.speechSynthesis?.cancel();
 const larRenderNodes=renderNodes;renderNodes=function(){larRenderNodes();larEditor()};
-const larPlayCall=playCall;playCall=function(id){if(id==='CASINO'){window.open('https://larrysvariety.ca/niagara34larcasino.html','_blank','noopener');return}window.speechSynthesis?.cancel();larPlayCall(id);const n=nodeById(id);if(!n){$('spokenText').textContent=id==='EXIT'?'Call ended.':'No message assigned.';return}$('spokenText').textContent=n.text||'(No text message; optional audio may play.)';if(!n.assetId)larSpeak(n)};
+const larPlayCall=playCall;playCall=function(id){if(id==='CASINO'){window.open('https://larrysvariety.ca/niagara_lar_casino.html','_blank','noopener');return}window.speechSynthesis?.cancel();larPlayCall(id);const n=nodeById(id);if(!n){$('spokenText').textContent=id==='EXIT'?'Call ended.':'No message assigned.';return}$('spokenText').textContent=n.text||'(No text message; optional audio may play.)';if(!n.assetId)larSpeak(n)};
 const larHangup=hangup;hangup=function(){window.speechSynthesis?.cancel();larHangup();$('spokenText').textContent='Call ended.'};
 if('speechSynthesis' in window){speechSynthesis.onvoiceschanged=larVoiceOptions;setTimeout(larVoiceOptions,400)}
 
@@ -149,55 +138,97 @@ const BIRTHDAY_STOCK={
  ['Shipwreck Shortbread Air Freshener','Blarney','A useful scent when the cabin smells of damp rope and someone has promised visitors there would be refreshments.'],
  ['Parrot Travel Ledger','Blarney','Record voyages, memorable phrases and the names of everyone the bird has implicated in the cargo business.']]
 };
-const DIGITAL_LISTINGS=[["typewriter", "Starfield Typewriter v6", "Writing Studio", "Write on editable cue cards or Letter paper, save poems in the Writing Bank, and draw in the starfield.", "Starfield_Typewriter_v06.html", "Buy"], ["ghostprint", "Ghostprint v51", "Printmaking Studio", "Pull layered monoprints from a virtual gel plate. A birthday present for anyone, any day.", "https://larrysvariety.ca/Ghostprint_v51.html", "Buy"], ["mathelebet", "Mathelebet", "Games", "Set out for the Mathelebet game.", "Mathelebet.html", "Play"], ["angel", "Angel Fortune Deck", "Fortune Decks", "Open the Angel Tarot deck.", "Angel_Tarot.html", "Open deck"], ["bamboo", "Bamboo Gate I Ching", "Fortune Decks", "Open the Bamboo Gate I Ching deck.", "Bamboo_Gate_I_Ching.html", "Open deck"]];
-DIGITAL_LISTINGS.push(
- ['budgie','Budgie Bazaar Merge','Games','Visit the Budgie Bazaar and see what happens when two matching birds meet.','Budgie_Bazaar_Merge_43.html','Play'],
- ['starfield','Starfield First Experiment','Starfield','Open the first Starfield experiment.','Starfield_First_Experiment_50.html','Open']
-);
-const DIGITAL_ART = {
- ghostprint:['🎨','🖼️','#a8535f'], typewriter:['⌨️','📜','#855e4b'],
- angel:['🪽','✨','#655596'], bamboo:['🎋','☯','#3a755e'],
- mathelebet:['🛸','🪐','#55417a'], budgie:['🦜','🐦','#4d805c'],
- starfield:['🌌','✦','#353a77']
-};
-const BIRTHDAY_ART = [
- ['🥕','🥔','#a75335'],['🧺','🌊','#4f7581'],['🍷','🫐','#8d455a'],
- ['👒','📜','#816245'],['👗','🎀','#8a5972'],
- ['✉️','🕰️','#896846'],['🥣','🐟','#4d6895'],['🗄️','✒️','#815745'],
- ['✉️','🌱','#647a4a'],['🛏️','🚪','#745a87'],
- ['🪨','🌊','#5b7476'],['🕯️','☾','#92703e'],['🌾','🪨','#917746'],
- ['🪑','❄️','#5a748d'],['🧦','🪡','#8d6264'],
- ['🦜','🪶','#4d7861'],['🕯️','🍪','#916540'],['🍪','⚓','#776443'],
- ['📕','🦜','#59785e']
+const DIGITAL_LISTINGS=[
+ [
+  "typewriter",
+  "Starfield Typewriter",
+  "Writing Studio",
+  "Write on editable cue cards or Letter paper, save poems in the Writing Bank, and draw in the starfield.",
+  "Starfield_Typewriter.html",
+  "Buy"
+ ],
+ [
+  "ghostprint",
+  "Ghostprint",
+  "Printmaking Studio",
+  "Pull layered monoprints from a virtual gel plate. A birthday present for anyone, any day.",
+  "https://larrysvariety.ca/Ghostprint.html",
+  "Buy"
+ ],
+ [
+  "mathelebet",
+  "Mathelebet",
+  "Games",
+  "Set out for the Mathelebet game.",
+  "Mathelebet.html",
+  "Play"
+ ],
+ [
+  "budgie",
+  "Budgie Bazaar",
+  "Games",
+  "Play Budgie Bazaar Merge.",
+  "Budgie_Bazaar_Merge.html",
+  "Play"
+ ],
+ [
+  "casino",
+  "Niagara Lar Casino",
+  "Games",
+  "Visit the Niagara Lar Casino.",
+  "niagara_lar_casino.html",
+  "Play"
+ ],
+ [
+  "starfield",
+  "Starfield First Experiment",
+  "Creative Studio",
+  "Open Starfield First Experiment.",
+  "Starfield_First_Experiment.html",
+  "Open"
+ ],
+ [
+  "angel",
+  "Angel Fortune Deck",
+  "Fortune Decks",
+  "Open the Angel Tarot deck.",
+  "Angel_Tarot.html",
+  "Open deck"
+ ],
+ [
+  "bamboo",
+  "Bamboo Gate I Ching",
+  "Fortune Decks",
+  "Open the Bamboo Gate I Ching deck.",
+  "Bamboo_Gate_I_Ching.html",
+  "Open deck"
+ ],
+ [
+  "old-road",
+  "Old Road Tarot",
+  "Fortune Decks",
+  "Open the Old Road Tarot deck.",
+  "Old_Road_Tarot.html",
+  "Open deck"
+ ]
 ];
-const birthdayArtByName = new Map(Object.values(BIRTHDAY_STOCK).flat()
- .map(([name], index) => [name, BIRTHDAY_ART[index]]));
-const coverCache = new Map();
-function illustratedCover(product){
- const [subject, detail, colour] = DIGITAL_ART[product.id.replace(/^digital-/, '')]
-  || birthdayArtByName.get(product.name)
-  || (product.link ? ['✦','◇','#514b76'] : ['🎁','✧','#78523f']);
- const key = [subject,detail,colour].join('|');
- if(coverCache.has(key))return coverCache.get(key);
- const canvas=document.createElement('canvas');
- canvas.width=640;canvas.height=430;
- const ctx=canvas.getContext('2d');
- const paper=ctx.createLinearGradient(0,0,640,430);
- paper.addColorStop(0,'#fff7e7');paper.addColorStop(1,colour);
- ctx.fillStyle=paper;ctx.fillRect(0,0,640,430);
- ctx.strokeStyle='#fff5dc';ctx.lineWidth=3;ctx.strokeRect(24,24,592,382);ctx.strokeRect(34,34,572,362);
- ctx.fillStyle=colour;
- ctx.beginPath();ctx.ellipse(320,212,198,139,0,0,Math.PI*2);ctx.fill();
- ctx.strokeStyle='#f3d5a2';ctx.lineWidth=3;ctx.stroke();
- ctx.fillStyle='#fff5dc';ctx.textAlign='center';ctx.textBaseline='middle';
- ctx.font='150px "Segoe UI Emoji","Apple Color Emoji",serif';ctx.fillText(subject,305,203);
- ctx.font='63px "Segoe UI Emoji","Apple Color Emoji",serif';ctx.fillText(detail,420,263);
- ctx.font='20px Georgia,serif';ctx.fillText('LARRY’S VARIETY',320,374);
- const image=canvas.toDataURL('image/png');
- coverCache.set(key,image);
- return image;
+// Match both current links and older catalogue entries saved in this browser.
+function digitalListingMatches(product, listing){
+ const [id,name,,,link]=listing;
+ const savedLink=(product.link||'').split(/[?#]/)[0].split('/').pop().toLowerCase();
+ const savedName=product.name.trim();
+ if(product.id==='digital-'+id || savedName.toLowerCase()===name.toLowerCase() ||
+    savedLink===link.split('/').pop().toLowerCase())return true;
+ if(id==='budgie')return /^Budgie[ _-]+Bazaar\b/i.test(savedName)||/^budgie_bazaar_merge/i.test(savedLink);
+ if(id==='starfield')return /^Starfield(?:[ _-]+First[ _-]+Experiment)?(?:[ _-]+v?\d+)?$/i.test(savedName)||
+    /^starfield_first_experiment/i.test(savedLink);
+ return false;
 }
-
+function catalogueOrder(product){
+ const index=DIGITAL_LISTINGS.findIndex(listing=>digitalListingMatches(product,listing));
+ const firstDeck=DIGITAL_LISTINGS.findIndex(listing=>listing[0]==='angel');
+ return index<0 ? firstDeck-0.5 : index;
+}
 async function seedStorefront(){
  const transaction=db.transaction(['products','metadata'],'readwrite');
  const markers=transaction.objectStore('metadata');
@@ -206,11 +237,9 @@ async function seedStorefront(){
   transaction.oncomplete=resolve;
   transaction.onabort=()=>reject(transaction.error||new Error('Catalogue update was interrupted'));
  });
- const marker=markers.get('storefront-v7');
+ const marker=markers.get('storefront-v6');
  marker.onsuccess=()=>{
   if(marker.result)return;
-  const previous=markers.get('storefront-v5');
-  previous.onsuccess=()=>{
   const request=listings.getAll();
   request.onsuccess=()=>{
    const names=new Set(request.result.map(item=>item.name.toLowerCase()));
@@ -220,18 +249,20 @@ async function seedStorefront(){
     listings.add(item);
    }
    for(const [id,name,category,description,link,action] of DIGITAL_LISTINGS){
-    if(previous.result && id!=='budgie' && id!=='starfield')continue;
-    add({id:'digital-'+id,name,category,description,link:publishedLink(link),action,price:0,assetId:null});
+    const matches=request.result.filter(product=>digitalListingMatches(product,[id,name,category,description,link,action]));
+    if(matches.length){
+     for(const product of matches)listings.put({...product,link});
+    }else{
+     add({id:'digital-'+id,name,category,description,link,action,price:0,assetId:null});
+    }
    }
    let number=0;
-   if(!previous.result)for(const [category,entries] of Object.entries(BIRTHDAY_STOCK)){
+   for(const [category,entries] of Object.entries(BIRTHDAY_STOCK)){
     for(const [name,character,description] of entries){
      add({id:'birthday-'+number++,name,category,description:character+' · '+description,price:0,assetId:null,fictional:true});
     }
    }
-   if(!previous.result)markers.add({id:'storefront-v5'});
-   markers.add({id:'storefront-v7'});
-  };
+   markers.add({id:'storefront-v6'});
   };
  };
  return completed;
