@@ -189,12 +189,17 @@ body.wisdom-grid #wisdomRail,body.wisdom-quote #wisdomRail{opacity:1;visibility:
 #fortuneFolderBrowser img{display:block;width:100%;height:min(29vh,200px);object-fit:contain;margin:8px 0}
 #fortuneFolderBrowser button{color:#f4fbff;background:transparent;border:1px solid #89c7d3;border-radius:4px;padding:4px}
 #fortuneFolderBrowser button:disabled{opacity:.55}
-#folderFortune{display:grid;grid-template-rows:repeat(3,auto);grid-auto-flow:column;grid-auto-columns:minmax(90px,1fr);overflow-x:auto;gap:6px;margin:10px 0}
+#folderFortune{display:grid;grid-template-columns:minmax(0,1fr);gap:7px;margin:0;padding:6px;overflow:visible}
 #folderFortune button{min-width:0;overflow-wrap:anywhere}
-#folderFortune{padding:6px;overflow:visible}
-#overlay>#modal.modal-builder{position:relative!important;inset:auto!important;margin:0!important;transform:none!important}
-#fortuneFolderBrowser{top:50%!important;left:50%!important;right:auto!important;transform:translate(-50%,-50%)!important}
-#overlay #modal.modal-builder #folderFortune button[aria-pressed="true"]{position:relative;z-index:1;border-color:var(--appearance-text,#fff)!important;outline:1px solid var(--appearance-text,#fff);outline-offset:1px;box-shadow:var(--appearance-glow,0 0 8px #72f4df)!important}
+#overlay #modal.modal-builder .folder-assignment{display:grid;grid-template-columns:minmax(105px,max-content) minmax(105px,max-content);align-items:start;gap:14px}
+#overlay #modal.modal-builder .folder-assignment #builderActions{display:grid!important;grid-template-columns:1fr;gap:6px;margin:6px 0 0}
+#overlay #modal.modal-builder .folder-assignment button{font-size:10px!important}
+#overlay #modal.modal-builder:has(.folder-assignment) #modalTitle{font-size:11px!important}
+#overlay #modal.modal-builder .folder-intro{font-size:10px!important;margin:3px 0 6px}
+html[data-appearance-glow] body #tickerWrap .ticker-card:is(:hover,:focus-visible){outline:2px solid var(--appearance-text,#fff)!important;outline-offset:-2px!important;box-shadow:inset 0 0 10px var(--appearance-selection,#fff),var(--appearance-glow)!important}
+#overlay>#modal.modal-builder{position:relative!important;inset:auto!important;margin:0!important;transform:none!important;align-self:flex-start!important;max-height:calc(100dvh - 28px)!important}
+#fortuneFolderBrowser{top:14px!important;left:50%!important;right:auto!important;transform:translateX(-50%)!important}
+#overlay #modal.modal-builder #folderFortune button:is([aria-pressed="true"],:hover,:focus-visible){position:relative;z-index:1;border-color:var(--appearance-text,#fff)!important;outline:1px solid var(--appearance-text,#fff);outline-offset:1px;box-shadow:var(--appearance-glow,0 0 8px #72f4df)!important}
 #builderActions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:14px}
 #builderMessage{font-size:.8rem;color:var(--sf-title-accent);min-height:1.2em;margin-top:8px}
 body.wisdom-quote #tickerWrap{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
@@ -833,7 +838,20 @@ function loadSavedSets(){
  try{const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');if(Array.isArray(saved)&&saved.length)return saved.map(normaliseSet);}catch(e){}
  return sets.map(normaliseSet);
 }
-sets=loadSavedSets();
+function fillDefaultFortuneImages(fortuneSets,urls){
+ if(!urls.length)return fortuneSets;
+ fortuneSets.forEach((set,index)=>{
+  const source=slot=>urls[(index*7+slot)%urls.length];
+  for(let slot=0;slot<4;slot++)if(!set.choiceImages[slot])set.choiceImages[slot]=source(slot);
+  for(let slot=0;slot<8;slot++)if(!set.innerChoiceImages[slot])set.innerChoiceImages[slot]=source(4+slot);
+  set.fortunes.forEach((fortune,slot)=>{
+   if(!fortune.finalImage&&!fortune.image)fortune.finalImage=source(12+slot);
+  });
+  if(!set.bannerImage)set.bannerImage=set.choiceImages[0];
+ });
+ return fortuneSets;
+}
+sets=fillDefaultFortuneImages(loadSavedSets(),sharedSlideshowItems().filter(item=>item.type==='image').map(item=>item.url));
 function saveSets(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(sets));return true;}catch(e){return false;}}
 function resize(){let d=Math.min(devicePixelRatio||1,2);canvas.width=innerWidth*d;canvas.height=innerHeight*d;canvas.style.width=innerWidth+'px';canvas.style.height=innerHeight+'px';ctx.setTransform(d,0,0,d,0,0);stars=Array.from({length:Math.min(360,Math.floor(innerWidth*innerHeight/3000))},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:Math.random()*1.3+.2,a:Math.random()*.8+.15,p:Math.random()*6.28,s:Math.random()*.012+.002,b:Math.random()>.7}));}
 function draw(t=0){if(document.body.classList.contains('op-art-active')){requestAnimationFrame(draw);return;}ctx.clearRect(0,0,innerWidth,innerHeight);ctx.fillStyle='#000000';ctx.fillRect(0,0,innerWidth,innerHeight);for(const s of stars){ctx.globalAlpha=s.a*(.68+.32*Math.sin(t*s.s+s.p));ctx.fillStyle=s.b?'#9ee9ff':'#e4fff7';ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();}ctx.globalAlpha=1;requestAnimationFrame(draw);}
@@ -1151,9 +1169,9 @@ function showBuilder(){
  }
  function renderFolder(selected='',notice='',assignedBefore=false,randomized=false){
   builderScreen='folder';$('modalClose').textContent='close';$('modalClose').onclick=closeModal;
-  $('modalBody').innerHTML=`<h2 id="modalTitle">choose fortune</h2><p>select the fortune you want to add images to</p>
-   <div id="folderFortune" role="group" aria-label="choose a fortune teller">${sets.map((set,i)=>`<button type="button" data-fortune-index="${i}" aria-pressed="${String(i)===selected}">${esc(set.name||'untitled fortune')}</button>`).join('')}</div>
-   <div id="builderActions"><button id="assignFolder">assign</button><button id="browseFortuneFolder">browse images</button><label class="file-load-button">add another folder<input id="fortuneFolderUpload" type="file" webkitdirectory multiple></label><button id="folderHome">back</button></div>
+  $('modalBody').innerHTML=`<h2 id="modalTitle">choose fortune</h2><p class="folder-intro">select the fortune you want to add images to</p>
+   <div class="folder-assignment"><div id="builderActions"><button id="assignFolder">assign</button><button id="browseFortuneFolder">browse images</button><label class="file-load-button">add another folder<input id="fortuneFolderUpload" type="file" webkitdirectory multiple></label><button id="folderHome">back</button></div>
+   <div id="folderFortune" role="group" aria-label="choose a fortune teller">${sets.map((set,i)=>`<button type="button" data-fortune-index="${i}" aria-pressed="${String(i)===selected}">${esc(set.name||'untitled fortune')}</button>`).join('')}</div></div>
    <p id="folderStatus" role="status" ${notice?'':'hidden'}>${esc(notice)}</p>`;
   const choices=[...$('folderFortune').querySelectorAll('button')];
   const assign=$('assignFolder'),status=$('folderStatus');
@@ -1251,29 +1269,23 @@ function showBuilder(){
  function renderHome(){builderScreen='home';$('modalClose').textContent='close';$('modalClose').onclick=closeModal;
   $('modalBody').innerHTML=`<h2 id="modalTitle">create fortune</h2>
    <div class="fortune-home-actions">
-    <label class="file-load-button">load image folder<input id="fortuneFolderUpload" type="file" webkitdirectory multiple></label><span>load a folder with at least 20 different images</span>
+    <label class="file-load-button">load image folder<input id="fortuneFolderUpload" type="file" webkitdirectory multiple></label><span>add images from a folder</span>
+    <button id="addSharedFortuneImages" type="button">use built-in images</button><span>choose from built-in and slideshow images</span>
     <button id="editCurrentBtn">edit fortunes</button><span>change the details of a fortune</span>
     <button id="createNewBtn">create new</button><span>start a new fortune</span>
-    ${window.LarryBackgroundMedia?.image?.length?'<button id="addSharedFortuneImages" type="button">use built-in images</button><span>choose from the shared image collection</span>':''}
-    <button id="useBackgroundImagesForFortunes">use background images</button><span>choose from your slideshow images</span>
     <button id="fortuneLogHome">fortune log</button><span>review past readings</span>
-    ${fortuneFolder.files.length?'<button id="editFolderBtn">edit image folder</button><span>return to your loaded images</span>':''}
+    <button id="editFolderBtn"${fortuneFolder.files.length?'':' disabled'}>edit image folder</button><span>return to your loaded images</span>
    </div><div id="builderMessage"></div>`;
   $('createNewBtn').onclick=()=>{builderIndex=sets.length;sets.push(defaultNewSet(sets.length));ensureInnerChoices(sets[builderIndex]);renderEditor(true);};
   $('editCurrentBtn').textContent='edit fortunes';$('editCurrentBtn').onclick=()=>{renderBank();};
   $('fortuneFolderUpload').onchange=loadFortuneFolder;
   if($('editFolderBtn'))$('editFolderBtn').onclick=()=>renderFolder();
   const sharedButton=$('addSharedFortuneImages');
-  if(sharedButton)sharedButton.onclick=()=>loadFortuneImageSources(sharedButton,[],window.LarryBackgroundMedia.image);
   const backgroundImages=mediaItems.filter(item=>item.type==='image');
-  const backgroundButton=$('useBackgroundImagesForFortunes');
-  backgroundButton.disabled=!backgroundImages.some(item=>item.file||item.sharedPath);
-  backgroundButton.onclick=()=>{
-   const files=backgroundImages.filter(item=>item.file).map(item=>item.file);
-   const paths=backgroundImages.filter(item=>!item.file&&item.sharedPath).map(item=>item.sharedPath);
-   if(paths.length)return loadFortuneImageSources(backgroundButton,files,paths);
-   addFortuneFiles(files);renderFolder('','',false,true);
-  };
+  const paths=[...new Set([...(window.LarryBackgroundMedia?.image||[]),...backgroundImages.map(item=>item.sharedPath).filter(Boolean)])];
+  const files=backgroundImages.filter(item=>item.file&&!item.sharedPath).map(item=>item.file);
+  sharedButton.disabled=!paths.length&&!files.length;
+  sharedButton.onclick=()=>loadFortuneImageSources(sharedButton,files,paths);
   $('fortuneLogHome').onclick=showFortuneLog;
  }
  function renderBank(){builderScreen='bank';$('modalClose').textContent='close';$('modalClose').onclick=closeModal;
@@ -1372,7 +1384,7 @@ function showMusicPanel2(){
  <div class="music-topline"><label id="musicUploadLabel" class="file-load-button">load audio<input id="musicUpload" type="file" accept="audio/*,.mp3,.wav,.ogg,.m4a" multiple></label></div></div>
  <div class="radio-track-row"><div id="musicTicker" aria-label="current track"><div id="musicTickerTrack"><span>No track playing</span><span aria-hidden="true">No track playing</span></div></div>
  </div>
- <div id="radioOval" class="radio-oval"><button id="radioPlayPause" type="button" aria-label="play or pause" title="play / pause">play</button><input id="musicProgress" type="range" min="0" max="1000" value="0" aria-label="track progress" title="seek through current track"><span id="musicTime">0:00 / 0:00</span><label class="radio-speed radio-speed-hidden" title="track speed">×<select id="musicSpeed" aria-label="track speed"><option value="0.75">.75</option><option value="1" selected>1×</option><option value="1.25">1.25</option><option value="1.5">1.5</option><option value="2">2×</option></select></label><button id="musicDownload" type="button" title="download current track">⇩</button><button id="radioMoreBtn" type="button" title="more options">⋯</button><span class="radio-divider" aria-hidden="true"></span><div class="radio-volume"><button id="radioVolumeBtn" type="button" title="volume" aria-label="Volume"><span class="radio-speaker" aria-hidden="true"></span></button><div id="radioVolumePopover" class="media-popover media-volume-popover" popover><input id="musicVolume" type="range" min="0" max="1" step=".01" value=".5" aria-label="volume"></div></div><button id="musicRepeat" type="button" title="change repeat mode">↻ all</button><div id="radioOptionsPopover" class="media-popover media-options-popover" popover><button id="musicDownloadMenu" type="button" title="download current track" aria-label="download current track">⇩</button></div></div>
+ <div id="radioOval" class="radio-oval"><button id="radioPlayPause" type="button" aria-label="play or pause" title="play / pause">play</button><input id="musicProgress" type="range" min="0" max="1000" value="0" aria-label="track progress" title="seek through current track"><span id="musicTime">0:00 / 0:00</span><label class="radio-speed radio-speed-hidden" title="track speed">×<select id="musicSpeed" aria-label="track speed"><option value="0.75">.75</option><option value="1" selected>1×</option><option value="1.25">1.25</option><option value="1.5">1.5</option><option value="2">2×</option></select></label><button id="musicDownload" type="button" title="download current track">⇩</button><button id="radioMoreBtn" type="button" title="more options" aria-label="More options"><span class="radio-dots" aria-hidden="true"></span></button><span class="radio-divider" aria-hidden="true"></span><div class="radio-volume"><button id="radioVolumeBtn" type="button" title="volume" aria-label="Volume"><span class="radio-speaker" aria-hidden="true"></span></button><div id="radioVolumePopover" class="media-popover media-volume-popover" popover><input id="musicVolume" type="range" min="0" max="1" step=".01" value=".5" aria-label="volume"></div></div><button id="musicRepeat" type="button" title="change repeat mode">↻ all</button><div id="radioOptionsPopover" class="media-popover media-options-popover" popover><button id="musicDownloadMenu" type="button" title="download current track" aria-label="download current track">⇩</button></div></div>
  <div class="music-list-head"><button id="musicHideList" type="button">hide list</button><button id="musicSelectAll" type="button">deselect all</button><span id="musicTrackCount"></span><span class="radio-track-navigation"><button type="button" id="radioPrevTrack" title="previous track" aria-label="Previous track">◀</button><button type="button" id="radioNextTrack" title="next track" aria-label="Next track">▶</button></span></div><div id="radioPlaylistDetails" hidden><div id="musicList" class="media-list"></div><div class="radio-list-footer"><button id="musicReload" type="button">reload</button><button id="musicDeleteAll" type="button">delete all</button></div></div>`;
  q('musicUploadLabel').parentElement.append(q('modalClose'));
  if(!musicAudio){musicAudio=document.createElement('audio');musicAudio.id='musicPlayer';musicAudio.controls=false;musicAudio.preload='auto';musicAudio.playsInline=true;musicAudio.volume=.5;}
@@ -3032,7 +3044,7 @@ body.wisdom-quote #overlay #modal{pointer-events:auto!important;}
 .v29-test-panel[data-kind="music2"]{position:fixed!important}
 #modal.modal-music.v29-test-panel[data-kind="music2"]{padding:10px!important;overflow-x:hidden!important;font-size:10px!important}
 #modal.modal-music.v29-test-panel[data-kind="music2"] :is(button,#musicUploadLabel,#musicTrackCount,#musicList,#musicList label,#musicList span,#musicList small,#musicTime){font-size:9px!important}
-#modal.modal-music.v29-test-panel[data-kind="music2"] .radio-title-line{margin:0 0 4px!important}
+#modal.modal-music.v29-test-panel[data-kind="music2"] .radio-title-line{margin:0 0 4px!important;background:rgba(119,119,119,.34)!important}
 #modal.modal-music.v29-test-panel[data-kind="music2"] .radio-title-line #modalTitle{align-self:flex-start;top:0!important;margin:0!important;padding:0!important;font-size:11px!important;line-height:1.2!important;white-space:nowrap;transform:none!important}
 #modal.modal-music.v29-test-panel[data-kind="music2"] .music-topline{margin:0 0 0 auto!important;display:flex;align-items:center;gap:5px;flex-wrap:nowrap}
 #modal.modal-music.v29-test-panel[data-kind="music2"] #musicUploadLabel{white-space:nowrap}
@@ -3052,8 +3064,9 @@ body.wisdom-quote #overlay #modal{pointer-events:auto!important;}
 #modal.modal-music.v29-test-panel[data-kind="music2"] .radio-track-row #musicTickerTrack span{font-size:8px!important}
 html[data-appearance-text] body #modal.modal-music.v29-test-panel[data-kind="music2"] #radioOval :is(#radioPlayPause,#musicRepeat,#radioMoreBtn,#radioVolumeBtn,#musicTime){color:#111!important}
 html body #modal.modal-music.v29-test-panel[data-kind="music2"] #radioOval{background:#a3a3a3!important;width:calc(100% - 12px)!important;padding:3px 8px!important;min-height:26px!important}
-html[data-appearance-text] body #modal.modal-music.v29-test-panel[data-kind="music2"] #radioOval :is(#radioPlayPause,#musicRepeat,#radioMoreBtn,#radioVolumeBtn){color:#000!important;text-shadow:none!important;background:transparent!important}
+html[data-appearance-text] body #modal.modal-music.v29-test-panel[data-kind="music2"] #radioOval :is(#radioPlayPause,#musicRepeat,#radioMoreBtn,#radioVolumeBtn){color:#000!important;-webkit-text-fill-color:#000!important;text-shadow:none!important;background:transparent!important}
 #modal.modal-music.v29-test-panel[data-kind="music2"] #radioOval #radioMoreBtn{font-size:15px!important;line-height:1!important}
+#modal.modal-music.v29-test-panel[data-kind="music2"] #radioMoreBtn .radio-dots{display:inline-block;width:3px;height:3px;margin:0 5px;vertical-align:middle;border-radius:50%;background:#000;box-shadow:-5px 0 #000,5px 0 #000}
 #modal.modal-music.v29-test-panel[data-kind="music2"] #radioVolumeBtn .radio-speaker{position:relative;display:inline-block;width:13px;height:11px;vertical-align:middle;color:#000}
 #modal.modal-music.v29-test-panel[data-kind="music2"] .radio-speaker::before{content:'';position:absolute;inset:0 5px 0 0;background:currentColor;clip-path:polygon(0 30%,35% 30%,100% 0,100% 100%,35% 70%,0 70%)}
 #modal.modal-music.v29-test-panel[data-kind="music2"] .radio-speaker::after{content:'';position:absolute;inset:1px 0 1px 7px;border-right:2px solid currentColor;border-radius:50%}
@@ -3414,7 +3427,6 @@ body.wisdom-grid #orchardGrid.wisdom-leaving{animation:stage10WisdomOut .65s eas
 <style id="rainbow-integration-style">
 #overlay #modal.modal-builder:has(.fortune-home-actions){width:min(435px,calc(100vw - 20px))!important;min-width:0!important}
 .fortune-home-actions{position:relative;isolation:isolate;grid-template-columns:minmax(100px,145px) minmax(0,1fr)}
-.fortune-home-actions::before{content:'';position:absolute;inset:0 0 0 151px;background:rgba(10,26,38,.8);border-radius:6px;z-index:-1;pointer-events:none}
 .fortune-home-actions>span{padding:4px 6px}
 .appearance-title-buttons{display:flex;gap:4px}
 #modal.modal-slideshow.v29-test-panel[data-kind="slideshow2"] .video-progress-row #mediaProgress{background:linear-gradient(to right,#fff 0%,#fff var(--sf-progress,0%),#797d82 var(--sf-progress,0%),#797d82 100%)!important}
@@ -3470,11 +3482,11 @@ body.wisdom-grid #rainbowStudioFrame,body.wisdom-quote #rainbowStudioFrame{visib
 </style>
 <div id="rainbowOpBackground"></div>
 <div id="rainbowOpPanel"><div class="op-head">OP ART BACKGROUNDS <button id="rainbowOpClose">Close</button></div><div id="rainbowOpChoices"></div><div class="op-playlist">
- <button id="opArtCycle" type="button" aria-pressed="false">play Op Art</button>
+ <button id="opArtCycle" type="button" aria-pressed="false">slideshow off</button>
  <label><input type="checkbox" id="opArtShuffle" checked> shuffle</label>
- <label>hold (sec) <input id="opArtHold" type="number" value="8" min="1" max="120" step="1"></label>
- <label>transition <select id="opArtTransition"><option value="circle">circle wipe</option><option value="right">wipe right</option><option value="left">wipe left</option><option value="down">wipe down</option><option value="fade">crossfade</option><option value="cut">cut</option></select></label>
- <label>transition (sec) <input id="opArtTransitionTime" type="number" value="1" min=".1" max="20" step=".1"></label>
+ <label>hold (sec) <input id="opArtHold" type="number" value="7" min="1" max="120" step="1"></label>
+ <label>transition <select id="opArtTransition"><option value="circle">circle wipe</option><option value="right">wipe right</option><option value="left">wipe left</option><option value="down">wipe down</option><option value="fade" selected>crossfade</option><option value="random">random transition</option><option value="cut">cut</option></select></label>
+ <label>transition (sec) <input id="opArtTransitionTime" type="number" value="2" min=".1" max="20" step=".1"></label>
  </div></div>
 <iframe id="rainbowStudioFrame" title="Rainbow drawing studio"></iframe>
 <div id="rainbowThemePanel">
@@ -3571,7 +3583,7 @@ function endOpTransition(){
 }
 function stopOpCycle(){
  clearTimeout(opTimer);opRunning=false;opQueue=[];
- opCycle.setAttribute('aria-pressed','false');opCycle.textContent='play Op Art';
+ opCycle.setAttribute('aria-pressed','false');opCycle.textContent='slideshow off';
  endOpTransition();
 }
 function showOpStyle(name,transition='cut',seconds=0){
@@ -3601,15 +3613,17 @@ function nextOpStyle(){
   }
   next=opQueue.pop();
  }else next=names[(names.indexOf(opCurrent)+1)%names.length];
- const transition=document.getElementById('opArtTransition').value;
- const seconds=transition==='cut'?0:Math.max(.1,Math.min(20,Number(document.getElementById('opArtTransitionTime').value)||1));
- const hold=Math.max(1,Math.min(120,Number(document.getElementById('opArtHold').value)||8));
+ const choice=document.getElementById('opArtTransition').value;
+ const transitions=['circle','right','left','down','fade'];
+ const transition=choice==='random'?transitions[Math.floor(Math.random()*transitions.length)]:choice;
+ const seconds=transition==='cut'?0:Math.max(.1,Math.min(20,Number(document.getElementById('opArtTransitionTime').value)||2));
+ const hold=Math.max(1,Math.min(120,Number(document.getElementById('opArtHold').value)||7));
  showOpStyle(next,transition,seconds);
  opTimer=setTimeout(nextOpStyle,(seconds+hold)*1000);
 }
 opCycle.onclick=()=>{
  if(opRunning){stopOpCycle();return;}
- opRunning=true;opCycle.setAttribute('aria-pressed','true');opCycle.textContent='stop Op Art';
+ opRunning=true;opCycle.setAttribute('aria-pressed','true');opCycle.textContent='slideshow on';
  nextOpStyle();
 };
 document.getElementById('opArtShuffle').onchange=()=>{opQueue=[];};
@@ -3628,7 +3642,7 @@ opButton.onclick=()=>{
  const opening=op.style.display!=='block';
  op.style.display=opening?'block':'none';
  if(opening){
-
+  if(!opRunning)opCycle.click();
   const backgrounds=opButton.closest('.v29-test-panel');
   if(backgrounds)backgrounds.style.display='none';
  }
@@ -3776,12 +3790,9 @@ body .media-options-popover[popover] button{background:#111!important;color:#fff
 
 #overlay #modal.modal-builder:has(.fortune-home-actions){width:max-content!important;max-width:calc(100vw - 20px)!important;box-sizing:border-box;padding:8px!important}
 #overlay #modal.modal-builder:has(.fortune-home-actions) #modalTitle{font-size:11px!important;padding-left:0!important;margin-left:0!important}
-#overlay #modal.modal-builder:has(.fortune-home-actions) #modalClose{right:8px!important;font-size:9px!important}
+#overlay #modal.modal-builder:has(.fortune-home-actions) #modalClose{right:8px!important;font-size:9px!important;background:transparent!important}
 .fortune-home-actions{--fortune-column-gap:8px;grid-template-columns:max-content minmax(0,max-content);grid-template-rows:repeat(6,auto);column-gap:var(--fortune-column-gap);font-size:10px}
-.fortune-home-actions::before{content:'';grid-area:1 / 2 / 7 / 3;inset:0}
-html[data-appearance-backing-off] body #overlay #modal .fortune-home-actions::before{background:rgba(10,26,38,.8)!important}
-html[data-appearance-clear] body #overlay #modal .fortune-home-actions::before{background:transparent!important}
-.fortune-home-actions>span{font-size:10px;padding:3px 5px;justify-self:stretch}
+.fortune-home-actions>span{font-size:10px;padding:3px 5px;justify-self:stretch;background:transparent!important}
 .fortune-home-actions :is(button,.file-load-button){font-size:9px!important}
 html[data-appearance-clear] #overlay .fortune-home-actions>span{background:transparent}
 html body #board:is(.outer-grid,.face-a,.face-b,.final-alone) .choice,html body #board button.choice,html body #countBtn{
