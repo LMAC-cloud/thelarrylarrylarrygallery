@@ -83,7 +83,8 @@
 
 /* Version 24: keep the opening sequence visually clean until the starfield is fully revealed. */
 body.intro-transition #controls,body.intro-transition #wisdomRail,body.intro-transition #tickerWrap,body.intro-transition #board,body.intro-transition #phraseBar,body.intro-transition #countBtn,body.intro-transition #status,body.intro-transition #wisdomControls{visibility:visible!important;opacity:0!important;transition:opacity .85s ease!important}
-body.intro-transition #stars{transition:opacity 4.8s ease!important}
+body.intro-transition #stars{transition:opacity 1.1s ease!important}
+body.intro-transition :is(#controls,#wisdomRail,#tickerWrap){pointer-events:none!important}
 #tickerTrack{animation-duration:70s!important}
 .ticker-card{background:rgba(6,20,38,.9)!important;border-color:#6ba5bd!important}
 #overlay #modal,#overlay #modal button,#overlay #modal input,#overlay #modal select,#overlay #modal textarea,#voicePanel,#voicePanel button,#voicePanel input,#voicePanel select{font-family:var(--sf-type-sans)!important}
@@ -257,6 +258,7 @@ body.wisdom-grid #tickerWrap{opacity:0!important;visibility:hidden!important;poi
 #welcomeBridge.visible{opacity:1}
 #welcomeBridge.reveal-starfield{background:transparent}
 #welcomeBridge.fade-away{opacity:0}
+#introScreen.hidden,#welcomeBridge.hidden{display:none!important}
 #introScreen h1{font-size:clamp(1.2rem,3vw,2.3rem)}#introScreen p{display:none}#introEnter{display:none}
 #fortuneEditor.log-list{display:flex;flex-direction:column;gap:3px;max-height:62vh;overflow:auto}.log-row{display:flex;align-items:flex-start;gap:6px;padding:5px 7px;border:1px solid var(--sf-control-border-muted);border-radius:var(--sf-control-radius-medium);background:#071525aa;font-size:.75rem;line-height:1.25}.log-row>span{min-width:0;flex:1}.log-row strong{font-weight:var(--sf-heading-weight-regular);color:#bdf9ed}.log-row small{display:block;color:#91acc2;font-size:.65rem;margin-top:2px}.image-stamp-grid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:5px;margin:10px 0;max-height:54vh;overflow:auto}.image-stamp{padding:2px;border:1px solid var(--sf-menu-border-blue);border-radius:var(--sf-button-radius);background:#061426aa;aspect-ratio:1;min-width:0;cursor:pointer}.image-stamp img{width:100%;height:100%;object-fit:cover;display:block}.image-stamp:hover{box-shadow:0 0 12px #72f4df}.media-list{max-height:190px;overflow:auto;border:1px solid var(--sf-control-border-muted);padding:5px;margin:6px 0}.media-list label{display:flex;align-items:center;gap:5px;padding:4px;border-bottom:1px solid #193348;font-size:.76rem}.media-list label span{flex:1;overflow-wrap:anywhere}.media-list button{background:var(--sf-button-bg);color:var(--sf-menu-text-blue);border:1px solid var(--sf-menu-border-blue);border-radius:var(--sf-control-radius-tight)}.media-loads,.media-columns{display:grid;grid-template-columns:1fr 1fr;gap:10px}.media-options{display:flex;flex-wrap:wrap;gap:9px;align-items:center;padding:8px;border:1px solid var(--sf-control-border-muted);margin-top:8px}.media-columns h3{font-weight:var(--sf-heading-weight-regular);color:var(--sf-title-accent);margin-bottom:3px}@media(max-width:900px){.image-stamp-grid{grid-template-columns:repeat(6,minmax(0,1fr))}}@media(max-width:600px){.image-stamp-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.media-loads,.media-columns{grid-template-columns:1fr}}body.starfield-flash #stars{filter:brightness(1.5);transition:filter .12s}body.starfield-flash{background:#000000}
 
@@ -642,7 +644,7 @@ body.wisdom-grid .wisdom-icon:not(:hover),body.wisdom-grid .wisdom-choice:not(:h
 #controls{display:flex!important;flex-direction:column-reverse!important;align-items:flex-end!important;}
 #wisdomRail{display:flex!important;flex-direction:column-reverse!important;align-items:flex-start!important;}
 #controls #musicBtn{order:2!important}#controls #quietBtn{order:3!important}
-#controls #drawStudioBtn{order:3!important}#controls #restartBtn{order:4!important;width:15ch;text-align:center;white-space:nowrap}
+#controls #drawStudioBtn{order:3!important}#controls #restartBtn{order:4!important;width:15ch!important;text-align:center;white-space:nowrap}
 #controls #slideshowBtn{order:5!important}
 #wisdomRail #wellBtn{order:1!important}#wisdomRail #treeBtn{order:2!important}
 #wisdomRail #quietBtn{order:3!important}#wisdomRail #fortuneBankBtnMain{order:4!important}
@@ -2061,7 +2063,42 @@ introName.addEventListener('keydown',event=>{
  event.preventDefault();
  introForm.requestSubmit();
 });
-introForm.addEventListener('submit',e=>{e.preventDefault();if(introStarted)return;introStarted=true;const raw=introName.value.trim();const entered=raw||'Dude';userName=entered;userNameWasDefault=!raw;document.body.classList.add('intro-transition');document.body.classList.remove('starfield-revealed');$('welcomeBridge').classList.remove('hidden','fade-away','reveal-starfield');$('welcomeBridge').textContent=`Welcome ${entered}, your new fortune awaits!`;$('introScreen').classList.add('fade-away');setTimeout(()=>{$('introScreen').classList.add('hidden');$('welcomeBridge').classList.add('visible');if('speechSynthesis'in window){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(`Welcome ${entered}, your new fortune awaits! Wicked good!`);const v=getSpeechVoice();if(v)u.voice=v;u.rate=.96;u.pitch=voicePitch;u.volume=voiceVolume;speechSynthesis.speak(u);}catch(err){}}setTimeout(()=>{document.body.classList.add('starfield-revealed');$('welcomeBridge').classList.add('reveal-starfield');setTimeout(()=>{document.body.classList.remove('intro-transition');$('welcomeBridge').classList.add('fade-away');setTimeout(()=>{$('welcomeBridge').classList.add('hidden');},1200);},4800);},150);},650);});
+introForm.addEventListener('submit',event=>{
+ event.preventDefault();
+ if(introStarted)return;
+ introStarted=true;
+ const name=introName.value.trim();
+ userName=name||'Dude';userNameWasDefault=!name;
+ const body=document.body,intro=$('introScreen'),welcome=$('welcomeBridge');
+ const message=`Welcome ${userName}, your new fortune awaits!`;
+ const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ welcome.textContent=message;
+ welcome.classList.remove('hidden','fade-away','reveal-starfield');
+ intro.classList.add('fade-away');
+ // Schedule the visual handoff before attempting the optional narration.
+ setTimeout(()=>{
+  intro.classList.add('hidden');
+  welcome.classList.add('visible','reveal-starfield');
+  body.classList.add('starfield-revealed');
+  try{
+   if('speechSynthesis'in window){
+    speechSynthesis.cancel();
+    const greeting=new SpeechSynthesisUtterance(message+' Wicked good!');
+    const voice=getSpeechVoice();
+    if(voice)greeting.voice=voice;
+    greeting.rate=.96;greeting.pitch=voicePitch;greeting.volume=voiceVolume;
+    speechSynthesis.speak(greeting);
+   }
+  }catch{}
+ },reduced?0:550);
+ setTimeout(()=>{
+  body.classList.add('starfield-revealed');
+  intro.classList.add('hidden');
+  welcome.classList.add('fade-away');
+  body.classList.remove('intro-transition');
+ },reduced?700:1800);
+ setTimeout(()=>{welcome.classList.add('hidden');},reduced?700:2500);
+});
 $('countBtn').onclick=()=>{if(modalMode==='orchard'||modalMode==='quote')closeModal();if($('countBtn').textContent.trim().toLowerCase()==='choose')return;countPhrase();};$('status').addEventListener('click',()=>{if((phase===2||phase===3)&&!$('countBtn').disabled)countPhrase();});
 // Right-hand menu controls dismiss an open wisdom icon grid or quotation before
 // their existing click handlers run. This is one shared listener, not a wrapper
@@ -2567,6 +2604,8 @@ body.wisdom-grid #voiceManagePanel,body.wisdom-quote #voiceManagePanel{display:b
 
 #controls{position:fixed!important;right:8px!important;bottom:37px!important;display:flex!important;flex-direction:column-reverse!important;align-items:flex-end!important;width:max-content!important;z-index:45!important;}
 #controls>.control-btn{display:block!important;width:max-content!important;}
+#controls,#wisdomRail{gap:6px!important}
+#controls{left:auto!important}#wisdomRail{left:8px!important;right:auto!important}
 #mediaStepButtons{display:flex!important;flex-direction:row!important;justify-content:flex-end!important;order:1!important;}
 #wisdomRail{display:flex!important;flex-direction:column-reverse!important;align-items:flex-start!important;}
 #voicePanel .voice-actions{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:center!important;flex-wrap:wrap!important;}
