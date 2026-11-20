@@ -3060,7 +3060,7 @@ body.wisdom-quote #overlay #modal{pointer-events:auto!important;}
 .v29-test-panel[data-kind="music2"]{position:fixed!important}
 #modal.modal-music.v29-test-panel[data-kind="music2"]{padding:10px!important;overflow-x:hidden!important;font-size:10px!important}
 #modal.modal-music.v29-test-panel[data-kind="music2"] :is(button,#musicUploadLabel,#musicTrackCount,#musicList,#musicList label,#musicList span,#musicList small,#musicTime){font-size:9px!important}
-#modal.modal-music.v29-test-panel[data-kind="music2"] .radio-title-line{margin:0 0 4px!important;background:rgba(119,119,119,.34)!important}
+#modal.modal-music.v29-test-panel[data-kind="music2"] .radio-title-line{margin:0 0 4px!important;background:transparent!important}
 #modal.modal-music.v29-test-panel[data-kind="music2"] .radio-title-line #modalTitle{align-self:flex-start;top:0!important;margin:0!important;padding:0!important;font-size:11px!important;line-height:1.2!important;white-space:nowrap;transform:none!important}
 #modal.modal-music.v29-test-panel[data-kind="music2"] .music-topline{margin:0 0 0 auto!important;display:flex;align-items:center;gap:5px;flex-wrap:nowrap}
 #modal.modal-music.v29-test-panel[data-kind="music2"] #musicUploadLabel{white-space:nowrap}
@@ -3874,7 +3874,8 @@ html body #rainbowOpPanel :is(button,#rainbowOpClose){background:var(--appearanc
  const font=$('rainbowThemeFont'),opacityValue=$('rainbowThemeOpacityValue');
  const opacity=$('rainbowThemeOpacity'),backingOn=$('rainbowThemeBackingOn'),round=$('rainbowThemeRound');
  const drawDocument=()=>$('rainbowStudioFrame').contentDocument;
- let phase=172,timer,greyOutline=false;
+ const defaultOutline='#666';
+ let phase=172,timer,outlineOverride=null;
  const hueColour=degrees=>`hsl(${degrees} 100% 50%)`;
  function colour(n){return n>=110?'#fff':n>=100?'#000':n>=91?'#774c32':hueColour(n*4);}
  const stop=n=>`${n/119*100}%`;
@@ -3883,10 +3884,10 @@ html body #rainbowOpPanel :is(button,#rainbowOpClose){background:var(--appearanc
  function updateColours(){
   const palette=Object.fromEntries(Object.entries(sliders).map(([key,input])=>{
    const n=Number(input.value);
-   const fixed=key==='backing'?`hsl(0 0% ${n}%)`:key==='outline'&&greyOutline?'#bcbcbc':colour(n);
+   const fixed=key==='backing'?`hsl(0 0% ${n}%)`:key==='outline'&&outlineOverride?outlineOverride:colour(n);
    const current=cycling[key]?.checked?hueColour(phase):fixed;
    input.style.setProperty('--chosen-hue',fixed);
-   input.setAttribute('aria-valuetext',cycling[key]?.checked?'rainbow':key==='backing'?n+'% white':key==='outline'&&greyOutline?'light grey':n>=110?'white':n>=100?'black':n>=91?'brown':`${n*4} degrees`);
+   input.setAttribute('aria-valuetext',cycling[key]?.checked?'rainbow':key==='backing'?n+'% white':key==='outline'&&outlineOverride?(outlineOverride===defaultOutline?'medium-dark grey':'light grey'):n>=110?'white':n>=100?'black':n>=91?'brown':`${n*4} degrees`);
    return [key,current];
   }));
   const {text,outline,glow,backing}=palette;
@@ -3944,16 +3945,16 @@ html body #rainbowOpPanel :is(button,#rainbowOpClose){background:var(--appearanc
  for(const [key,input] of Object.entries(sliders)){
   input.style.setProperty('--hue-track',key==='backing'?'linear-gradient(to right,#000,#fff)':track);
   input.oninput=()=>{
-   if(key==='outline')greyOutline=false;
+   if(key==='outline')outlineOverride=null;
    if(cycling[key])cycling[key].checked=false;
    refreshCycle();
   };
   if(cycling[key])cycling[key].onchange=refreshCycle;
  }
- $('rainbowThemeGray').onclick=()=>{greyOutline=true;cycling.outline.checked=false;refreshCycle();};
+ $('rainbowThemeGray').onclick=()=>{outlineOverride='#bcbcbc';cycling.outline.checked=false;refreshCycle();};
  $('rainbowThemeClear').onclick=()=>{opacity.value='0';apply();};
  function reset(){
-  greyOutline=false;phase=172;backingOn.checked=false;round.checked=false;opacity.value='33';font.value='sans';
+  outlineOverride=defaultOutline;phase=172;backingOn.checked=false;round.checked=false;opacity.value='33';font.value='sans';
   for(const [key,input] of Object.entries(sliders)){input.value=defaults[key];if(cycling[key])cycling[key].checked=key==='glow';}
   apply();refreshCycle();
  }
