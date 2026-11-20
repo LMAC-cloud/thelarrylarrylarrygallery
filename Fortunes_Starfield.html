@@ -3126,12 +3126,10 @@ html[data-appearance-text] body #modal.modal-music.v29-test-panel[data-kind="mus
  border:1px solid transparent!important;border-radius:0!important;
  outline:0!important;box-shadow:none!important;background:transparent!important;
 }
-#modal.modal-clear #orchardGrid .orchard-item:is(:hover,:focus-visible,:active){
- border-color:var(--appearance-selection,#fff)!important;
- box-shadow:var(--appearance-glow,0 0 8px #fff)!important;
-}
 #modal.modal-clear #orchardGrid .orchard-item:is(:hover,:focus-visible,:active) .treeIcon{
- filter:drop-shadow(0 0 5px var(--appearance-selection,#fff));
+ filter:drop-shadow(0 0 2px var(--appearance-selection,#fff))
+        drop-shadow(0 0 4px var(--appearance-selection,#fff))
+        drop-shadow(0 0 8px var(--appearance-selection,#fff));
 }
 </style>
 <style id="v57-opaque-media-handoff">
