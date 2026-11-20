@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lar-Mazon</title>
+<style>
+:root{color-scheme:light;--ink:#242338;--plum:#30243e;--violet:#50395d;--papaya:#ffcc80;--line:#ddd3e0}
+*{box-sizing:border-box}body{margin:0;background:#f5f0f4;color:var(--ink);font:16px/1.5 system-ui,sans-serif}
+button,input,select{font:inherit}a{color:inherit}button,.action{cursor:pointer;border:1px solid #ad7953;border-radius:.55rem;background:var(--papaya);color:#302139;padding:.54rem .85rem;text-decoration:none;font-weight:700}
+:focus-visible{outline:3px solid #a25ea8;outline-offset:3px}
+header{background:var(--plum);color:white}.masthead{display:flex;align-items:center;gap:1.25rem;padding:1rem clamp(1rem,4vw,4rem);max-width:100rem;margin:auto}.brand{font:700 2rem Georgia,serif;text-decoration:none;white-space:nowrap}.search{flex:1;min-width:0;display:flex}.search input{width:100%;min-width:0;border:0;border-radius:.55rem 0 0 .55rem;padding:.65rem .9rem}.search button{border-radius:0 .55rem .55rem 0}.service{white-space:nowrap}.nav{background:var(--violet);padding:.55rem clamp(1rem,4vw,4rem);display:flex;align-items:center;gap:1rem}.nav select{min-width:0;max-width:65vw;padding:.25rem;color:var(--ink);border-radius:.3rem}
+main{max-width:100rem;margin:auto;padding:1.5rem clamp(1rem,4vw,4rem) 3rem}.hero{padding:clamp(1.2rem,4vw,3rem);border-radius:1rem;background:radial-gradient(ellipse at right,#765985,transparent 60%),#382747;color:#fff6e8}.hero h1{font:700 clamp(2.5rem,7vw,5.5rem)/1 Georgia,serif;margin:0}.hero p{margin:.7rem 0 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,215px),1fr));gap:1rem}.card{display:flex;flex-direction:column;background:white;border:1px solid var(--line);border-radius:.8rem;overflow:hidden}.card img{width:100%;aspect-ratio:1.5;object-fit:contain;background:#eee8ef}.details{padding:1rem;flex:1;display:flex;flex-direction:column;align-items:flex-start}.details h3{font:700 1.27rem Georgia,serif;margin:.25rem 0}.details p{margin:.5rem 0;font-size:.94rem}.category{color:#624c64;font-size:.8rem}.action{margin-top:auto}.price{font-weight:700;margin-bottom:.6rem}
+footer{background:var(--plum);color:#fff6e8;text-align:center;padding:0 1rem 2rem}.back{display:block;background:var(--violet);margin:0 -1rem 1.25rem;padding:.6rem}footer p{margin:.65rem 0}dialog{width:min(40rem,calc(100% - 2rem));border:1px solid var(--line);border-radius:1rem;color:var(--ink);padding:1.35rem}dialog::backdrop{background:#1b1229aa}.call-head,.keys{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}.call-head h2{margin:0 auto 0 0}#spokenText{max-height:45vh;overflow:auto}
+@media(max-width:660px){.masthead{flex-wrap:wrap;justify-content:space-between;gap:.65rem}.search{order:3;flex-basis:100%}.brand{font-size:1.55rem}.service{font-size:.85rem}}
+</style>
+<body id="top">
+<header>
+ <div class="masthead">
+  <a class="brand" href="#top">Lar-Mazon</a>
+  <form class="search" id="searchForm" role="search"><input type="search" id="search" aria-label="Search Lar-Mazon" placeholder="Search Lar-Mazon"><button>Search</button></form>
+  <button class="service" data-service>Customer Service</button>
+ </div>
+ <nav class="nav" aria-label="Shop navigation"><label for="category">Browse</label><select id="category"><option value="">All categories</option></select></nav>
+</header>
+<main>
+ <section class="hero"><h1>Lar-Mazon</h1><p>Starfields, literary curiosities and improbable merchandise from Larry’s Variety.</p></section>
+ <h2 id="listingHeading">Browse the catalogue</h2>
+ <p id="empty" role="status" hidden>No listings match your search.</p>
+ <div class="grid" id="grid" aria-labelledby="listingHeading"></div>
+</main>
+<footer>
+ <a class="back" href="#top">Back to top</a>
+ <p><a href="https://larrysvariety.ca/">Larry’s Variety home</a></p>
+ <h2>Customer Service</h2>
+ <button data-service>Call Lar-Mazon Customer Service</button>
+ <p>Fictional catalogue. No actual purchases or payments.</p>
+</footer>
+<dialog id="servicePanel" aria-labelledby="serviceTitle">
+ <div class="call-head"><h2 id="serviceTitle">Lar-Mazon Customer Service</h2><form method="dialog"><button autofocus>Close</button></form></div>
+ <h3 id="callStatus"></h3>
+ <p id="spokenText" aria-live="polite"></p>
+ <div class="keys" id="callKeys"></div>
+</dialog>
+<script>
+function productHref(value){
+ if(!value || /[\u0000-\u001f]/.test(value))return '';
+ try{
+  const url=new URL(value,location.href);
+  return ['http:','https:'].includes(url.protocol) || (url.protocol==='file:' && location.protocol==='file:' && !/^[a-z][a-z\d+.-]*:/i.test(value)) ? url.href : '';
+ }catch{return ''}
+}
+const featuredIds = ['digital-ghostprint','digital-typewriter','digital-fortunes-starfield','digital-mathelebet','digital-budgie','digital-casino','digital-starfield','digital-angel','digital-bamboo','digital-old-road'];
+const publishedFiles = new Set(['Ghostprint.html','Starfield_Typewriter.html','Fortunes_Starfield.html','Angel_Tarot.html','Bamboo_Gate_I_Ching.html','Mathelebet.html','Budgie_Bazaar_Merge.html','Starfield_First_Experiment.html','niagara_lar_casino.html','Old_Road_Tarot.html']);
+function publishedLink(value){
+ const filename = (value || '').replace(/^\.\//,'');
+ return publishedFiles.has(filename) ? 'https://larrysvariety.ca/' + filename : value;
+}
+
+const LAR_SCRIPT=[
+{id:'start',title:'Welcome — Fancy Woman',character:'Fancy Woman',rate:.91,pitch:1.03,text:'Welcome to Larry’s Variety, purveyors of remarkable goods, improbable services, and merchandise of uncertain historical significance. Your call is extremely important to us, although we cannot presently establish why. For new and unusual merchandise, press 1. For the Literary Department, press 2. For shipping enquiries and missing Lar Barges, press 3. To hear unsolicited customer testimonials, press 4. For complaints, press 5. To visit the Lar Casino, press 6. To hear these options again, press 9. To return to Larry’s Variety, press the pound key.',choices:{'1':'merch','2':'literary','3':'shipping','4':'reviews','5':'complaints','6':'casino','9':'start','#':'EXIT'}},
+{id:'merch',title:'Unusual Merchandise',character:'Fancy Woman',text:'Our merchandise is guaranteed to be unlike any merchandise you have ever encountered. This guarantee does not extend to the merchandise itself. For the Pirate Department, press 1. For the Poetry Department, press 2. For testimonials, press 3. For the main menu, press 9.',choices:{'1':'pirate','2':'poetry','3':'reviews','9':'start'}},
+{id:'literary',title:'Literary Department',character:'Miss Quill',text:'You have reached the Literary Department, where all the books have been alphabetised according to their feelings. For Shakespeare’s witty ladies, press 1. For women poets and their entirely imaginary possessions, press 2. To return to the main menu, press 9.',choices:{'1':'shakespeare','2':'poetry','9':'start'}},
+{id:'shakespeare',title:'Shakespeare’s Ladies',character:'Miss Quill',text:'Beatrice’s Insult Collection is currently on special, although she has declined to speak to our sales staff. Rosalind’s Disguise Kit has been returned to the Forest of Arden. For the main menu, press 9.',choices:{'9':'start'}},
+{id:'poetry',title:'Women Poets Department',character:'Miss Quill',text:'Our Emily Dickinson writing desk is entirely imaginary and comes with a complimentary envelope. Marianne Moore’s remarkable hats are available in sizes both suitable and unsuitable for poetry. Sappho’s Missing Fragments Kit is missing several fragments, as advertised. For the main menu, press 9.',choices:{'9':'start'}},
+{id:'shipping',title:'Lar Barge Shipping',character:'Captain Lar',rate:.9,pitch:.8,text:'Shipping Department. Your parcel has left the warehouse and is now travelling by Lar Barge. We cannot estimate delivery, because the barge captain has elected to navigate by literary allusion. For a customer’s barge experience, press 1. For the main menu, press 9.',choices:{'1':'blarney','9':'start'}},
+{id:'reviews',title:'Unsolicited Customer Reviews',character:'Lady Lar',text:'Welcome to the Unsolicited Testimonial Exchange. We have never requested these opinions, and in several cases we have requested that they stop. For Blarney the Pirate, press 1. For an enthusiastic literary customer, press 2. For a complaint that we consider a review, press 3. For the main menu, press 9.',choices:{'1':'blarney','2':'customer','3':'complaints','9':'start'}},
+{id:'blarney',title:'Blarney — The Island Rescue',character:'Blarney the Pirate',rate:.85,pitch:.72,text:'Arrr, ’twas the seventeenth Tuesday of me captivity upon a miserable island in the Thousand Islands. I’d eaten the last of me provisions, fashioned a telescope from two empty jam jars, and appointed a disagreeable seagull as First Mate. Then, through the mist, came the most magnificent sight I’d ever beheld. A Lar Barge! Brown as a well-seasoned gravy boat, she was, and trailing a cloud of smoke that blotted out the eastern horizon. The captain offered passage in exchange for three coconuts, a handwritten testimonial, and the exclusive rights to me life story. I’ve been a satisfied Lar customer ever since. Mind you, they still haven’t brought me ashore. For me second adventure, press 1. For other reviews, press 9.',choices:{'1':'blarney2','9':'reviews'}},
+{id:'blarney2',title:'Blarney — Niagara River',character:'Blarney the Pirate',rate:.85,pitch:.72,text:'I was marooned on a sandbank in the Niagara River, equipped with one biscuit, a wet atlas, and a very firm opinion about the direction of north. The Lar rescue service sent a barge, a smaller barge, and a man carrying an invoice. Three weeks later, I was rescued from the invoice. To hear the first adventure, press 1. For the main menu, press 9.',choices:{'1':'blarney','9':'start'}},
+{id:'customer',title:'Customer — Literary Review',character:'Customer',text:'I ordered a Shakespearean disguise kit. It arrived disguised as a household bill. Five stars for authenticity, but I should like to know whether I am now in the wrong play. For more reviews, press 9.',choices:{'9':'reviews'}},
+{id:'complaints',title:'Complaints Department',character:'Lady Lar',rate:.94,pitch:.88,text:'Welcome to Complaints. Your dissatisfaction has been carefully classified as enthusiasm. To complain about the classification, press 1. To return to the main menu, press 9.',choices:{'1':'complaints2','9':'start'}},
+{id:'complaints2',title:'Complaints About Complaints',character:'Professor Lar',text:'The Complaints Department has reviewed your complaint and found it to be an excellent example of customer engagement. A commemorative certificate has been prepared. For the main menu, press 9.',choices:{'9':'start'}},
+{id:'pirate',title:'Pirate Department',character:'Captain Lar',text:'Welcome aboard the Pirate Department. We currently offer seagull whistles, emergency island survival kits, and compasses which reliably point towards the nearest invoice. For Blarney’s testimonial, press 1. For the main menu, press 9.',choices:{'1':'blarney','9':'start'}},
+{id:'casino',title:'Lar Casino',character:'Fancy Woman',text:'For the Lar Casino, our establishment recommends the official Niagara Lar Casino page. To open the casino in a new tab, press 1. To return to the main menu, press 9.',choices:{'1':'CASINO','9':'start'}}
+];
+const LAR_PRODUCTS=[
+['Blarney’s Emergency Island Survival Kit',49.99,'Pirate Department','A coconut inventory ledger, emergency jam jar, and a very persuasive seagull whistle.','island','#8a5b36'],
+['Lar Barge Navigation Compass',89.95,'Pirate Department','Points reliably toward the nearest invoice, weather permitting.','compass','#a36e3e'],
+['Pirate’s Waterproof Poetry Notebook',17.50,'Pirate Department','For sonnets composed during shipwrecks and other scheduling difficulties.','book','#3d6785'],
+['Niagara Shipwreck Souvenir Collection',125,'Pirate Department','Fictional wreckage recovered from the waters of the imagination.','ship','#517a8b'],
+['Blarney’s Emergency Seagull Whistle',12.99,'Pirate Department','May summon one seagull, or several complaints.','bird','#a5b6c4'],
+['Beatrice’s Complete Insult Collection',24.95,'Shakespeare’s Ladies','Witty repartee for the modern Much Ado enthusiast.','book','#a55c70'],
+['Rosalind’s Forest of Arden Disguise Kit',39.99,'Shakespeare’s Ladies','A costume for the confident comic heroine.','mask','#5b875e'],
+['Portia’s Courtroom Briefcase',175,'Shakespeare’s Ladies','Contains arguments, loopholes, and one entirely imaginary pound of flesh.','case','#7c5479'],
+['Viola’s Identity-Changing Wardrobe',299,'Shakespeare’s Ladies','A fictional travelling trunk with more identities than compartments.','case','#668c9a'],
+['Mistress Quickly’s Confidential Correspondence',18.95,'Shakespeare’s Ladies','Letters which ought never to have been delivered.','letter','#b88350'],
+['Emily Dickinson’s Imaginary Writing Desk',450,'Women Poets','A fictional homage; not a genuine historical artefact.','desk','#937a60'],
+['Marianne Moore’s Remarkable Hat Collection',85,'Women Poets','A fanciful collection celebrating a singular literary style.','hat','#5c7d91'],
+['Elizabeth Barrett Browning’s Infinite Sonnets Box',65,'Women Poets','An imaginary casket of inexhaustible affection and verse.','box','#a86b72'],
+['Christina Rossetti’s Goblin Market Basket',32.50,'Women Poets','A poetic basket for fruit of extremely uncertain provenance.','basket','#9b6a43'],
+['Sappho’s Missing Fragments Recovery Kit',125,'Women Poets','The missing fragments are not included, naturally.','scroll','#8c7096']
+];
+function larSvg(name,kind,tone){
+ const shapes={island:'<path d="M30 205 Q170 165 310 205" fill="#cbb58d"/><path d="M168 193V94M168 108Q206 58 248 103Q210 128 168 108" stroke="#4d6748" stroke-width="11" fill="#779b69"/><path d="M165 111Q115 68 89 118Q134 135 165 111" fill="#62855c"/>',compass:'<circle cx="170" cy="140" r="85" fill="#d9b96c" stroke="#6e4c27" stroke-width="14"/><circle cx="170" cy="140" r="65" fill="#f8ebca"/><path d="M170 64L186 141L170 218L154 141Z" fill="#8a4e45"/><circle cx="170" cy="140" r="9" fill="#463d34"/>',book:'<path d="M85 70H265V230H85Q65 225 65 205V90Q65 70 85 70" fill="#f1e5c5" stroke="#58483b" stroke-width="7"/><path d="M85 70V230M110 108H242M110 130H235M110 152H220" stroke="#7e7464" stroke-width="5"/>',ship:'<path d="M40 181H300L260 222H90Z" fill="#704b38"/><path d="M167 180V45M167 58L255 163H167Z" fill="#f4eee0" stroke="#876e5a" stroke-width="4"/><path d="M167 78L88 163H167Z" fill="#d9c5a2"/>',bird:'<path d="M55 153Q115 77 173 151Q233 76 291 143Q229 125 174 181Q116 135 55 153" fill="#fff" stroke="#8f9ba9" stroke-width="5"/><circle cx="192" cy="157" r="5" fill="#292c35"/>',mask:'<path d="M70 94Q170 50 270 94L244 196Q169 245 95 196Z" fill="#eeddbd" stroke="#7d6752" stroke-width="7"/><path d="M92 140Q130 114 155 143Q132 160 92 140M185 143Q213 112 248 140Q213 160 185 143" fill="#4d4143"/>',case:'<rect x="60" y="105" width="220" height="130" rx="12" fill="#9b744c" stroke="#533f34" stroke-width="8"/><path d="M132 105V82Q132 65 150 65H192Q210 65 210 82V105" fill="none" stroke="#5b4538" stroke-width="12"/><path d="M60 155H280" stroke="#e6c78c" stroke-width="7"/>',letter:'<rect x="53" y="83" width="235" height="148" rx="8" fill="#f5ebd9" stroke="#a88c68" stroke-width="6"/><path d="M56 91L170 177L285 91" fill="none" stroke="#b6a082" stroke-width="6"/><circle cx="170" cy="180" r="18" fill="#a65555"/>',desk:'<path d="M53 120H290V155H53Z" fill="#a27650"/><path d="M78 155L65 249M263 155L279 249" stroke="#6c4936" stroke-width="15"/><rect x="112" y="85" width="100" height="35" fill="#e7d6b8"/><path d="M226 115L251 58" stroke="#493d3a" stroke-width="7"/>',hat:'<ellipse cx="170" cy="209" rx="130" ry="26" fill="#3c5568"/><path d="M92 202Q103 77 170 76Q237 77 247 202Z" fill="#5b7c90"/><path d="M95 177H245" stroke="#dec1a1" stroke-width="13"/>',box:'<rect x="70" y="110" width="200" height="125" rx="7" fill="#aa735b" stroke="#704537" stroke-width="7"/><path d="M65 111L103 75H236L275 111Z" fill="#c28b71"/><path d="M169 112V235" stroke="#f0d29a" stroke-width="12"/>',basket:'<path d="M75 130H265L240 240H100Z" fill="#bb8c59" stroke="#704b2e" stroke-width="7"/><path d="M102 131Q105 36 170 35Q235 36 238 131" fill="none" stroke="#8b623e" stroke-width="15"/><path d="M92 170H248M100 201H242" stroke="#e1bd7e" stroke-width="9"/>',scroll:'<path d="M93 65H251V225H93Z" fill="#f5e5c4" stroke="#987f62" stroke-width="5"/><path d="M115 112H225M115 140H218M115 170H227" stroke="#b2a08b" stroke-width="6"/><circle cx="93" cy="65" r="14" fill="#d5b487"/><circle cx="93" cy="225" r="14" fill="#d5b487"/>'};
+ return `<svg xmlns="http://www.w3.org/2000/svg" width="480" height="400" viewBox="0 0 340 285"><defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#faf7ed"/><stop offset="1" stop-color="${tone}" stop-opacity=".26"/></linearGradient></defs><rect width="340" height="285" fill="url(#bg)"/><ellipse cx="170" cy="247" rx="115" ry="15" fill="#47392c" opacity=".12"/>${shapes[kind]||shapes.box}<text x="170" y="268" font-family="Georgia,serif" font-size="11" fill="#584a3d" text-anchor="middle">LARRY’S VARIETY · FICTIONAL CURIOSITY</text></svg>`;
+}
+
+function larVoices(){return 'speechSynthesis' in window?speechSynthesis.getVoices():[]}
+
+function larSelectVoice(n){const vs=larVoices();if(n.voiceURI){const exact=vs.find(v=>v.voiceURI===n.voiceURI);if(exact)return exact}
+ const english=vs.filter(v=>/^en/i.test(v.lang));const british=english.filter(v=>/^en-GB/i.test(v.lang));const pool=british.length?british:english;const femaleNames=/sonia|hazel|libby|susan|kate|serena|aria|zira|jenny|samantha|victoria|emma|female/i;const maleNames=/ryan|george|daniel|david|mark|guy|thomas|male|oliver/i;
+ const male=/Blarney|Captain|Professor/.test(n.character||'');const filtered=pool.filter(v=>(male?maleNames:femaleNames).test(v.name));const chosen=filtered.length?filtered:pool;
+ const order={'Fancy Woman':0,'Blarney the Pirate':1,'Lady Lar':2,'Captain Lar':3,'Miss Quill':4,'Professor Lar':5,'Customer':6};
+ const idx=order[n.character]||0;return chosen[idx%chosen.length]||vs[0]||null;
+}
+function larSpeak(n){if(!('speechSynthesis' in window)){return}
+ speechSynthesis.cancel();const txt=(n.text||'').trim();if(!txt)return;
+ const u=new SpeechSynthesisUtterance(txt);u.voice=larSelectVoice(n);u.rate=Math.min(1.5,Math.max(.6,Number(n.rate)||.95));u.pitch=Math.min(1.5,Math.max(.6,Number(n.pitch)||1));u.lang=u.voice?.lang||'en-GB';speechSynthesis.speak(u);
+}
+
+const BIRTHDAY_STOCK={
+ 'Avonlea Home & Garden':[
+ ['Red Soil Root-Vegetable Set','Anne Shurley','The potatoes are dependable. The carrots have been accused, without evidence, of contributing to the hair. Digging them is expected to improve the character.'],
+ ['Lake of Shining Waters Laundry Kit','L. M. Montgomerry','Includes one rock to stand on and one rock to beat the washing against. The third rock, where you sit down and reconsider the entire undertaking, is sold separately.'],
+ ['Raspberry Cordial Decanter','Dyana Barry','Two labels are supplied. Apply the correct one before company arrives. The decanter cannot intervene.'],
+ ['Avonlea Poetry Apron','Anne Shurley','A pocket for a poem you learned by heart while peeling potatoes. The potatoes expect to be finished before the second stanza.'],
+ ['Puffed-Sleeve Chore Dress','Anne Shurley','Perfect for carrying water, provided you do not look behind you to see how lovely your sleeves are while carrying it.']],
+ 'The Literary Domestic Department':[
+ ['An Envelope Worth Waiting For','Anne Eliot','For correspondence delayed by eight years, several rooms and the reluctance of everybody involved to say what they mean.'],
+ ['Blue Soup Celebration Set','Bridgit Jonse','Contains a blue napkin and an emergency fish slice. If the soup comes out blue, the table setting makes it look intentional.'],
+ ['The Dash Drawer','Emilee Dickinsun','A little cabinet for things too urgent for a full stop. The drawer sticks — which is appropriate.'],
+ ['Envelope Garden','Emilee Dickinsun','Write on the back of the envelope. Plant the front. The post office has asked us to stress that these are separate activities.'],
+ ['Duvet With an Exit Interview','Merryl Streepe','A luxury duvet with no obvious opening. After twenty minutes inside, it becomes increasingly difficult to claim you are only doing research.']],
+ 'Medieval Lifestyle':[
+ ['River Laundry Starter Rock','Hildegarde von Binghen','Morning: walk to river. Afternoon: walk home with wet laundry. Evening: discover the laundry is still wet. The modern dryer has been removed for authenticity.'],
+ ['No-Snooze Rushlight','Seinte Julian of Norwitch','It takes longer to make a rushlight than it takes to burn one. The dark is included at no additional cost.'],
+ ['Hand-Milled Flour Subscription','Cristine de Pizan','You receive grain. The rest of the subscription is between you and the millstone.'],
+ ['Winter Underfloor Nothing','Elinor of Aquitayne','For those wishing to experience a floor at the temperature of the weather. Includes a wooden stool for getting slightly farther away from it.'],
+ ['Mended Stocking Kit','Cristine de Pizan','An instructional kit whose first task is finding enough daylight to thread the needle. Your second task is discovering the other hole.']],
+ 'Blarney’s Parrot & Biscuit Counter':[
+ ['Parrot Correspondence Perch','Blarney','The bird dictates. You write. If the bird takes exception to the letter, it eats the corner bearing the evidence.'],
+ ['The Respectable Biscuit Candle','Blarney','Smells as though somebody has put the kettle on and means to bring biscuits. Leave the actual biscuits out of the transaction.'],
+ ['Shipwreck Shortbread Air Freshener','Blarney','A useful scent when the cabin smells of damp rope and someone has promised visitors there would be refreshments.'],
+ ['Parrot Travel Ledger','Blarney','Record voyages, memorable phrases and the names of everyone the bird has implicated in the cargo business.']]
+};
+const DIGITAL_LISTINGS=[["typewriter", "Starfield Typewriter", "Writing Studio", "Write on editable cue cards or Letter paper, save poems in the Writing Bank, and draw in the starfield.", "Starfield_Typewriter.html", "Buy"], ["ghostprint", "Ghostprint", "Printmaking Studio", "Pull layered monoprints from a virtual gel plate. A birthday present for anyone, any day.", "https://larrysvariety.ca/Ghostprint.html", "Buy"], ["mathelebet", "Mathelebet", "Games", "Set out for the Mathelebet game.", "Mathelebet.html", "Play"], ["angel", "Angel Fortune Deck", "Fortune Decks", "Open the Angel Tarot deck.", "Angel_Tarot.html", "Open deck"], ["bamboo", "Bamboo Gate I Ching", "Fortune Decks", "Open the Bamboo Gate I Ching deck.", "Bamboo_Gate_I_Ching.html", "Open deck"]];
+DIGITAL_LISTINGS.push(
+ ['fortunes-starfield','Fortunes Starfield','Starfield','Choose a fortune among the stars and visit the Wisdom Well or Stellar Orchard.','Fortunes_Starfield.html','Open'],
+ ['budgie','Budgie Bazaar Merge','Games','Visit the Budgie Bazaar and see what happens when two matching birds meet.','Budgie_Bazaar_Merge.html','Play'],
+ ['starfield','Starfield First Experiment','Starfield','Open the first Starfield experiment.','Starfield_First_Experiment.html','Open'],
+ ['casino','Niagara Lar Casino','Games','Visit the Niagara Lar Casino.','niagara_lar_casino.html','Play'],
+ ['old-road','Old Road Tarot','Fortune Decks','Open the Old Road Tarot deck.','Old_Road_Tarot.html','Open deck']
+);
+const DIGITAL_ART = {
+ ghostprint:['🎨','🖼️','#a8535f'], typewriter:['⌨️','📜','#855e4b'],
+ angel:['🪽','✨','#655596'], bamboo:['🎋','☯','#3a755e'],
+ mathelebet:['🛸','🪐','#55417a'], budgie:['🦜','🐦','#4d805c'],
+ 'fortunes-starfield':['✦','☾','#392a72'],
+ starfield:['🌌','✦','#353a77'], casino:['🎰','♦','#83384b'],
+ 'old-road':['🛤️','🌙','#634664']
+};
+const BIRTHDAY_ART = [
+ ['🥕','🥔','#a75335'],['🧺','🌊','#4f7581'],['🍷','🫐','#8d455a'],
+ ['👒','📜','#816245'],['👗','🎀','#8a5972'],
+ ['✉️','🕰️','#896846'],['🥣','🐟','#4d6895'],['🗄️','✒️','#815745'],
+ ['✉️','🌱','#647a4a'],['🛏️','🚪','#745a87'],
+ ['🪨','🌊','#5b7476'],['🕯️','☾','#92703e'],['🌾','🪨','#917746'],
+ ['🪑','❄️','#5a748d'],['🧦','🪡','#8d6264'],
+ ['🦜','🪶','#4d7861'],['🕯️','🍪','#916540'],['🍪','⚓','#776443'],
+ ['📕','🦜','#59785e']
+];
+const birthdayArtByName = new Map(Object.values(BIRTHDAY_STOCK).flat()
+ .map(([name], index) => [name, BIRTHDAY_ART[index]]));
+const coverCache = new Map();
+function illustratedCover(product){
+ const [subject, detail, colour] = DIGITAL_ART[product.id.replace(/^digital-/, '')]
+  || birthdayArtByName.get(product.name)
+  || (product.link ? ['✦','◇','#514b76'] : ['🎁','✧','#78523f']);
+ const key = [subject,detail,colour].join('|');
+ if(coverCache.has(key))return coverCache.get(key);
+ const canvas=document.createElement('canvas');
+ canvas.width=640;canvas.height=430;
+ const ctx=canvas.getContext('2d');
+ const paper=ctx.createLinearGradient(0,0,640,430);
+ paper.addColorStop(0,'#fff7e7');paper.addColorStop(1,colour);
+ ctx.fillStyle=paper;ctx.fillRect(0,0,640,430);
+ ctx.strokeStyle='#fff5dc';ctx.lineWidth=3;ctx.strokeRect(24,24,592,382);ctx.strokeRect(34,34,572,362);
+ ctx.fillStyle=colour;
+ ctx.beginPath();ctx.ellipse(320,212,198,139,0,0,Math.PI*2);ctx.fill();
+ ctx.strokeStyle='#f3d5a2';ctx.lineWidth=3;ctx.stroke();
+ ctx.fillStyle='#fff5dc';ctx.textAlign='center';ctx.textBaseline='middle';
+ ctx.font='150px "Segoe UI Emoji","Apple Color Emoji",serif';ctx.fillText(subject,305,203);
+ ctx.font='63px "Segoe UI Emoji","Apple Color Emoji",serif';ctx.fillText(detail,420,263);
+ ctx.font='20px Georgia,serif';ctx.fillText('LAR-MAZON',320,374);
+ const image=canvas.toDataURL('image/png');
+ coverCache.set(key,image);
+ return image;
+}
+
+
+const byId=id=>document.getElementById(id);
+const digital=DIGITAL_LISTINGS.map(([id,name,category,description,link,action])=>({
+ id:'digital-'+id,name,category,description,link:publishedLink(link),action:action==='Buy'?'Open':action
+})).sort((a,b)=>featuredIds.indexOf(a.id)-featuredIds.indexOf(b.id));
+const merchandise=LAR_PRODUCTS.map(([name,price,category,description,kind,tone],index)=>({
+ id:'lar-product-'+index,name,price,category,description,
+ image:'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(larSvg(name,kind,tone))
+}));
+const birthday=Object.entries(BIRTHDAY_STOCK).flatMap(([category,items])=>items.map(([name,character,description],index)=>({
+ id:category+'-'+index,name,category,description:character+' · '+description,fictional:true
+})));
+const listings=[...digital,...merchandise,...birthday];
+for(const category of [...new Set(listings.map(item=>item.category))].sort()){
+ byId('category').add(new Option(category,category));
+}
+function element(tag,text,className){
+ const node=document.createElement(tag);
+ if(text)node.textContent=text;
+ if(className)node.className=className;
+ return node;
+}
+function render(){
+ const query=byId('search').value.trim().toLowerCase();
+ const category=byId('category').value;
+ const matches=listings.filter(item=>(!category||item.category===category)&&
+  [item.name,item.category,item.description].some(value=>value.toLowerCase().includes(query)));
+ byId('empty').hidden=matches.length>0;
+ byId('grid').replaceChildren(...matches.map(item=>{
+  const card=element('article',null,'card');
+  const image=element('img');
+  image.alt='';
+  image.loading='lazy';
+  image.src=item.image||illustratedCover(item);
+  const details=element('div',null,'details');
+  details.append(element('span',item.category,'category'),element('h3',item.name),
+   element('p',item.description),element('span',item.link?'Free to open':item.fictional?'Fictional merchandise':'Ł '+item.price.toFixed(2),'price'));
+  const href=productHref(item.link);
+  if(href){
+   const link=element('a',item.action,'action');
+   link.href=href;
+   link.setAttribute('aria-label',item.action+' '+item.name);
+   details.append(link);
+  }
+  card.append(image,details);
+  return card;
+ }));
+}
+byId('search').addEventListener('input',render);
+byId('category').addEventListener('change',render);
+byId('searchForm').addEventListener('submit',event=>{
+ event.preventDefault();
+ render();
+ byId('listingHeading').scrollIntoView({block:'start'});
+});
+const panel=byId('servicePanel');
+function callButton(label,action){
+ const button=element('button',label);
+ button.addEventListener('click',action);
+ return button;
+}
+function playCall(id){
+ if(id==='EXIT'){panel.close();return;}
+ if(id==='CASINO'){window.open('https://larrysvariety.ca/niagara_lar_casino.html','_blank','noopener');return;}
+ const branch=LAR_SCRIPT.find(node=>node.id===id);
+ if(!branch)return;
+ byId('callStatus').textContent=branch.title;
+ byId('spokenText').textContent=branch.text;
+ byId('callKeys').replaceChildren(...Object.entries(branch.choices).map(([key,target])=>
+  callButton(key,()=>playCall(target))),callButton('Repeat',()=>playCall(id)));
+ larSpeak(branch);
+}
+for(const button of document.querySelectorAll('[data-service]')){
+ button.addEventListener('click',()=>{
+  panel.showModal();
+  byId('callStatus').textContent='Ready';
+  byId('spokenText').textContent='Start the call to hear the operator.';
+  byId('callKeys').replaceChildren(callButton('Start call',()=>playCall('start')));
+ });
+}
+panel.addEventListener('close',()=>window.speechSynthesis?.cancel());
+render();
+</script>
+</body>
+</html>
