@@ -191,7 +191,10 @@ body.wisdom-grid #wisdomRail,body.wisdom-quote #wisdomRail{opacity:1;visibility:
 #fortuneFolderBrowser button:disabled{opacity:.55}
 #folderFortune{display:grid;grid-template-rows:repeat(3,auto);grid-auto-flow:column;grid-auto-columns:minmax(90px,1fr);overflow-x:auto;gap:6px;margin:10px 0}
 #folderFortune button{min-width:0;overflow-wrap:anywhere}
-#folderFortune button[aria-pressed="true"]{border-color:#9ff2dd!important;box-shadow:0 0 8px #72f4df88}
+#folderFortune{padding:6px;overflow:visible}
+#overlay>#modal.modal-builder{position:relative!important;inset:auto!important;margin:0!important;transform:none!important}
+#fortuneFolderBrowser{top:50%!important;left:50%!important;right:auto!important;transform:translate(-50%,-50%)!important}
+#overlay #modal.modal-builder #folderFortune button[aria-pressed="true"]{position:relative;z-index:1;border-color:var(--appearance-text,#fff)!important;outline:1px solid var(--appearance-text,#fff);outline-offset:1px;box-shadow:var(--appearance-glow,0 0 8px #72f4df)!important}
 #builderActions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:14px}
 #builderMessage{font-size:.8rem;color:var(--sf-title-accent);min-height:1.2em;margin-top:8px}
 body.wisdom-quote #tickerWrap{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
@@ -1123,7 +1126,30 @@ function showBuilder(){
   document.body.append(panel);
   refresh();
  }
- function renderFolder(selected='',notice='',assignedBefore=false){
+ function randomFortuneImages(pool){
+  const shuffle=entries=>{
+   const shuffled=[...entries];
+   for(let i=shuffled.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];
+   }
+   return shuffled;
+  };
+  if(!pool.length)return [];
+  const unused=shuffle([...new Set(pool)]),chosen=[];
+  for(const slots of [4,8,8]){
+   const section=[];
+   for(let i=0;i<slots;i++){
+    const fresh=unused.shift();
+    const options=fresh?[]:shuffle(pool);
+    const image=fresh||options.find(item=>!section.includes(item))||
+      options.find(item=>item!==chosen.at(-1))||options[0];
+    section.push(image);chosen.push(image);
+   }
+  }
+  return chosen;
+ }
+ function renderFolder(selected='',notice='',assignedBefore=false,randomized=false){
   builderScreen='folder';$('modalClose').textContent='close';$('modalClose').onclick=closeModal;
   $('modalBody').innerHTML=`<h2 id="modalTitle">choose fortune</h2><p>select the fortune you want to add images to</p>
    <div id="folderFortune" role="group" aria-label="choose a fortune teller">${sets.map((set,i)=>`<button type="button" data-fortune-index="${i}" aria-pressed="${String(i)===selected}">${esc(set.name||'untitled fortune')}</button>`).join('')}</div>
@@ -1134,8 +1160,8 @@ function showBuilder(){
   let selection=selected;
   const update=()=>{
    const selectedCount=fortuneFolder.files.filter(entry=>entry.selected).length;
-   assign.textContent=selectedCount?`assign selected (${selectedCount})`:assignedBefore?'assign next images':'assign images';
-   assign.disabled=selection===''||!fortuneFolder.files.some(entry=>entry.selected||!entry.used);
+   assign.textContent=selectedCount?`assign selected (${selectedCount})`:randomized?'assign random images':assignedBefore?'assign next images':'assign images';
+   assign.disabled=selection===''||!fortuneFolder.files.some(entry=>randomized||entry.selected||!entry.used);
   };
   for(const choice of choices)choice.onclick=()=>{
    selection=choice.dataset.fortuneIndex;
@@ -1145,7 +1171,7 @@ function showBuilder(){
   update();
   $('browseFortuneFolder').onclick=()=>browseFolder(null,update);
   $('folderHome').onclick=()=>{closeFolderBrowser();renderHome();};
-  $('fortuneFolderUpload').onchange=loadFortuneFolder;
+  $('fortuneFolderUpload').onchange=event=>loadFortuneFolder(event,randomized);
   assign.onclick=async()=>{
    const set=sets[Number(selection)];
    if(!set||selection==='')return;
@@ -1156,24 +1182,26 @@ function showBuilder(){
    status.hidden=false;
    status.textContent='Assigning images…';
    const chosenFiles=fortuneFolder.files.filter(entry=>entry.selected);
-   const queue=chosenFiles.length?chosenFiles:fortuneFolder.files.filter(entry=>!entry.used);
+   const queue=chosenFiles.length?chosenFiles:fortuneFolder.files.filter(entry=>randomized||!entry.used);
    const images=[];const consumed=[];let skipped=0;
    for(const entry of queue){
-    if(images.length===20||!status.isConnected)break;
+    if((!randomized&&images.length===20)||!status.isConnected)break;
     consumed.push(entry);
     try{images.push(await imageDataForStorage(entry.file));}
     catch{skipped++;}
    }
    if(modalMode!=='builder'||$('folderStatus')!==status)return;
    ensureInnerChoices(set);
-   images.forEach((data,i)=>{
+   const assignments=randomized?randomFortuneImages(images):images;
+   assignments.forEach((data,i)=>{
     if(i<4)set.choiceImages[i]=data;
     else if(i<12)set.innerChoiceImages[i-4]=data;
     else set.fortunes[i-12].finalImage=data;
    });
-   for(const entry of consumed){entry.used=true;entry.selected=false;}
+   for(const entry of consumed){if(!randomized)entry.used=true;entry.selected=false;}
    buildTicker();
-   renderFolder(selection,`Assigned ${images.length} images to ${set.name||'untitled fortune'}. You can select this fortune from the bottom row of fortunes.${skipped?' Skipped '+skipped+' unreadable images.':''}`,true);
+   const result=assignments.length?`Filled ${assignments.length} image slots in ${set.name||'untitled fortune'}.`:'No images could be assigned.';
+   renderFolder(selection,result+(skipped?' Skipped '+skipped+' unreadable images.':''),true,randomized);
   };
  }
  function addFortuneFiles(files){
@@ -1185,15 +1213,12 @@ function showBuilder(){
    fortuneFolder.files.push({file,path,selected:false,used:false});
   }
  }
- function loadFortuneFolder(event){
+ function loadFortuneFolder(event,randomized=false){
   const files=[...event.target.files].filter(file=>/^image\//.test(file.type)||/\.(png|jpe?g|webp|gif|avif|bmp|svg)$/i.test(file.name));
   if(!files.length){alert('Choose a folder containing images.');return;}
   files.sort((a,b)=>(a.webkitRelativePath||a.name).localeCompare(b.webkitRelativePath||b.name,undefined,{numeric:true}));
   addFortuneFiles(files);
-  closeFolderBrowser();renderFolder();
-  const panel=$('modal');
-  panel.style.setProperty('left',Math.max(0,(innerWidth-panel.offsetWidth)/2)+'px','important');
-  panel.style.setProperty('right','auto','important');
+  closeFolderBrowser();renderFolder('','',false,randomized);
  }
  async function fetchSharedFortuneImage(path){
   const entry=mediaItems.find(item=>item.sharedPath===path);
@@ -1220,7 +1245,7 @@ function showBuilder(){
     return;
    }
    addFortuneFiles([...files,...loaded]);
-   renderFolder('',missing?missing+' shared images could not be loaded.':'');
+   renderFolder('',missing?missing+' shared images could not be loaded.':'',false,true);
   }finally{button.disabled=false;}
  }
  function renderHome(){builderScreen='home';$('modalClose').textContent='close';$('modalClose').onclick=closeModal;
@@ -1247,7 +1272,7 @@ function showBuilder(){
    const files=backgroundImages.filter(item=>item.file).map(item=>item.file);
    const paths=backgroundImages.filter(item=>!item.file&&item.sharedPath).map(item=>item.sharedPath);
    if(paths.length)return loadFortuneImageSources(backgroundButton,files,paths);
-   addFortuneFiles(files);renderFolder();
+   addFortuneFiles(files);renderFolder('','',false,true);
   };
   $('fortuneLogHome').onclick=showFortuneLog;
  }
@@ -1347,7 +1372,7 @@ function showMusicPanel2(){
  <div class="music-topline"><label id="musicUploadLabel" class="file-load-button">load audio<input id="musicUpload" type="file" accept="audio/*,.mp3,.wav,.ogg,.m4a" multiple></label></div></div>
  <div class="radio-track-row"><div id="musicTicker" aria-label="current track"><div id="musicTickerTrack"><span>No track playing</span><span aria-hidden="true">No track playing</span></div></div>
  </div>
- <div id="radioOval" class="radio-oval"><button id="radioPlayPause" type="button" aria-label="play or pause" title="play / pause">▶</button><input id="musicProgress" type="range" min="0" max="1000" value="0" aria-label="track progress" title="seek through current track"><span id="musicTime">0:00 / 0:00</span><label class="radio-speed radio-speed-hidden" title="track speed">×<select id="musicSpeed" aria-label="track speed"><option value="0.75">.75</option><option value="1" selected>1×</option><option value="1.25">1.25</option><option value="1.5">1.5</option><option value="2">2×</option></select></label><button id="musicDownload" type="button" title="download current track">⇩</button><button id="radioMoreBtn" type="button" title="more options">⋯</button><span class="radio-divider" aria-hidden="true"></span><div class="radio-volume"><button id="radioVolumeBtn" type="button" title="volume" aria-label="Volume"><span class="radio-speaker" aria-hidden="true"></span></button><div id="radioVolumePopover" class="media-popover media-volume-popover" popover><input id="musicVolume" type="range" min="0" max="1" step=".01" value=".5" aria-label="volume"></div></div><button id="musicRepeat" type="button" title="change repeat mode">↻ all</button><div id="radioOptionsPopover" class="media-popover media-options-popover" popover><button id="musicDownloadMenu" type="button" title="download current track" aria-label="download current track">⇩</button></div></div>
+ <div id="radioOval" class="radio-oval"><button id="radioPlayPause" type="button" aria-label="play or pause" title="play / pause">play</button><input id="musicProgress" type="range" min="0" max="1000" value="0" aria-label="track progress" title="seek through current track"><span id="musicTime">0:00 / 0:00</span><label class="radio-speed radio-speed-hidden" title="track speed">×<select id="musicSpeed" aria-label="track speed"><option value="0.75">.75</option><option value="1" selected>1×</option><option value="1.25">1.25</option><option value="1.5">1.5</option><option value="2">2×</option></select></label><button id="musicDownload" type="button" title="download current track">⇩</button><button id="radioMoreBtn" type="button" title="more options">⋯</button><span class="radio-divider" aria-hidden="true"></span><div class="radio-volume"><button id="radioVolumeBtn" type="button" title="volume" aria-label="Volume"><span class="radio-speaker" aria-hidden="true"></span></button><div id="radioVolumePopover" class="media-popover media-volume-popover" popover><input id="musicVolume" type="range" min="0" max="1" step=".01" value=".5" aria-label="volume"></div></div><button id="musicRepeat" type="button" title="change repeat mode">↻ all</button><div id="radioOptionsPopover" class="media-popover media-options-popover" popover><button id="musicDownloadMenu" type="button" title="download current track" aria-label="download current track">⇩</button></div></div>
  <div class="music-list-head"><button id="musicHideList" type="button">hide list</button><button id="musicSelectAll" type="button">deselect all</button><span id="musicTrackCount"></span><span class="radio-track-navigation"><button type="button" id="radioPrevTrack" title="previous track" aria-label="Previous track">◀</button><button type="button" id="radioNextTrack" title="next track" aria-label="Next track">▶</button></span></div><div id="radioPlaylistDetails" hidden><div id="musicList" class="media-list"></div><div class="radio-list-footer"><button id="musicReload" type="button">reload</button><button id="musicDeleteAll" type="button">delete all</button></div></div>`;
  q('musicUploadLabel').parentElement.append(q('modalClose'));
  if(!musicAudio){musicAudio=document.createElement('audio');musicAudio.id='musicPlayer';musicAudio.controls=false;musicAudio.preload='auto';musicAudio.playsInline=true;musicAudio.volume=.5;}
@@ -1357,7 +1382,7 @@ function showMusicPanel2(){
  const updateProgress=()=>{if(!q('musicProgress')||!musicAudio)return;const d=musicAudio.duration||0;const progress=q('musicProgress');
  const ratio=d>0?Math.max(0,Math.min(1,musicAudio.currentTime/d)):0;
  progress.value=String(Math.round(ratio*1000));progress.style.setProperty('--radio-progress',ratio*100+'%');q('musicTime').textContent=`${fmt(musicAudio?.currentTime||0)} / ${fmt(d)}`;};
- const updateTicker=()=>{const item=musicItems[musicCurrent];setTicker(item?`${item.name}  ·  ${fmt(musicAudio?.duration)}`:'No track playing');};
+ const updateTicker=()=>{const item=musicItems[musicCurrent];setTicker(item?item.name:'No track playing');};
  const updateRepeat=()=>{const b=q('musicRepeat');const map={'repeat1':{text:'↻ 1',title:'repeat current track'},'repeat-all':{text:'↻ all',title:'repeat all selected tracks'},'shuffle':{text:'⤨',title:'shuffle selected tracks'}};b.textContent=map[musicRepeatMode]?.text||'↻ all';b.title=map[musicRepeatMode]?.title||'repeat all selected tracks';};
  const render=()=>{if(!q('musicList'))return;q('musicList').innerHTML=musicItems.map((x,i)=>`<label draggable="true" data-music-index="${i}" class="${i===musicCurrent?'music-current':''}"><input type="checkbox" class="music-check" data-i="${i}" ${x.selected?'checked':''}><span title="${esc(x.name)}">${esc(x.name)}</span><button type="button" class="music-remove" data-i="${i}" aria-label="delete ${esc(x.name)}">×</button></label>`).join('')||'<small>No audio files loaded.</small>';q('musicTrackCount').textContent=`${musicItems.length} track${musicItems.length===1?'':'s'}`;panel.querySelectorAll('#musicList .music-check').forEach(c=>c.onchange=()=>{musicItems[+c.dataset.i].selected=c.checked;});panel.querySelectorAll('#musicList .music-remove').forEach(b=>b.onclick=()=>{const i=+b.dataset.i,x=musicItems[i];if(i===musicCurrent){musicAudio.pause();musicAudio.removeAttribute('src');musicAudio.load();musicCurrent=-1;setTicker('No track playing');}musicItems.splice(i,1);if(x?.url)URL.revokeObjectURL(x.url);if(musicCurrent>i)musicCurrent--;render();updateProgress();});q('musicSelectAll').textContent=musicItems.length&&musicItems.every(x=>x.selected)?'deselect all':'select all';};
  q('musicHideList').setAttribute('aria-controls','radioPlaylistDetails');
@@ -1419,7 +1444,7 @@ function showMusicPanel2(){
   musicCurrent=musicItems.indexOf(current);render();
  });
  const selectedQueue=()=>musicItems.map((x,i)=>({...x,index:i})).filter(x=>x.selected);
- const playIndex=index=>{const item=musicItems[index];if(!item||!musicAudio)return;musicCurrent=index;musicAudio.onended=window.__v28SafeMusicAdvance||nextTrack;musicAudio.src=item.url;const vol=q('musicVolume');if(vol)musicAudio.volume=+vol.value;setTicker(`${item.name}  ·  loading…`);render();updateProgress();musicAudio.play().then(()=>{if(q('radioPlayPause'))q('radioPlayPause').textContent='Ⅱ';}).catch(()=>{});};
+ const playIndex=index=>{const item=musicItems[index];if(!item||!musicAudio)return;musicCurrent=index;musicAudio.onended=window.__v28SafeMusicAdvance||nextTrack;musicAudio.src=item.url;const vol=q('musicVolume');if(vol)musicAudio.volume=+vol.value;setTicker(item.name);render();updateProgress();musicAudio.play().then(()=>{if(q('radioPlayPause'))q('radioPlayPause').textContent='pause';}).catch(()=>{});};
  function nextTrack(){const queue=selectedQueue();if(!queue.length)return;if(musicRepeatMode==='repeat1'&&musicItems[musicCurrent]?.selected){playIndex(musicCurrent);return;}let next;if(musicRepeatMode==='shuffle'){const pool=queue.filter(x=>x.index!==musicCurrent);next=(pool.length?pool:queue)[Math.floor(Math.random()*(pool.length||queue.length))];}else{const pos=queue.findIndex(x=>x.index===musicCurrent);next=queue[(pos+1+queue.length)%queue.length];}if(next)playIndex(next.index);}
  q('musicUpload').onchange=e=>{const fresh=[...e.target.files];for(const f of fresh)musicItems.push({name:f.name,file:f,url:URL.createObjectURL(f),selected:true});render();if(fresh.length)playIndex(musicItems.length-fresh.length);e.target.value='';};
  q('musicSelectAll').onclick=()=>{const all=musicItems.length&&musicItems.every(x=>x.selected);musicItems.forEach(x=>x.selected=!all);render();};
@@ -1434,14 +1459,14 @@ function showMusicPanel2(){
   render();
   if(musicCurrent>=0)updateTicker();else setTicker('No track playing');
  };
- q('musicDeleteAll').onclick=()=>{musicAudio.pause();musicAudio.removeAttribute('src');musicAudio.load();musicItems.forEach(x=>{if(x.url)URL.revokeObjectURL(x.url);});musicItems=[];musicCurrent=-1;render();setTicker('No track playing');updateProgress();q('radioPlayPause').textContent='▶';};
+ q('musicDeleteAll').onclick=()=>{musicAudio.pause();musicAudio.removeAttribute('src');musicAudio.load();musicItems.forEach(x=>{if(x.url)URL.revokeObjectURL(x.url);});musicItems=[];musicCurrent=-1;render();setTicker('No track playing');updateProgress();q('radioPlayPause').textContent='play';};
  const downloadCurrentTrack=()=>{const item=musicItems[musicCurrent];if(!item)return;const a=document.createElement('a');a.href=item.url;a.download=item.name||'audio-track';a.click();};q('musicDownload').onclick=downloadCurrentTrack;q('musicDownloadMenu').onclick=downloadCurrentTrack;const applyMusicSpeed=e=>{if(musicAudio)musicAudio.playbackRate=+e.target.value;if(q('musicSpeed'))q('musicSpeed').value=e.target.value;};q('musicSpeed').onchange=applyMusicSpeed;bindMediaPopover(q('radioMoreBtn'),q('radioOptionsPopover'));q('musicDownload').style.display='none';q('musicSpeed').closest('.radio-speed').style.display='none';q('musicDownloadMenu').onclick=downloadCurrentTrack;
  q('radioNextTrack').onclick=()=>{const queue=selectedQueue();if(!queue.length)return;const i=queue.findIndex(x=>x.index===musicCurrent);playIndex(queue[(i+1+queue.length)%queue.length].index);};q('radioPrevTrack').onclick=()=>{const queue=selectedQueue();if(!queue.length)return;const i=queue.findIndex(x=>x.index===musicCurrent);playIndex(queue[(i-1+queue.length)%queue.length].index);};
- q('radioPlayPause').onclick=()=>{if(!musicAudio)return;if(!musicAudio.paused){musicAudio.pause();q('radioPlayPause').textContent='▶';return;}if(musicAudio.src&&musicCurrent>=0&&!musicAudio.ended){musicAudio.play().then(()=>q('radioPlayPause').textContent='Ⅱ').catch(()=>{});return;}const q=selectedQueue();if(q.length)playIndex((q.find(x=>x.index===musicCurrent)||q[0]).index);};
+ q('radioPlayPause').onclick=()=>{if(!musicAudio)return;if(!musicAudio.paused){musicAudio.pause();q('radioPlayPause').textContent='play';return;}if(musicAudio.src&&musicCurrent>=0&&!musicAudio.ended){musicAudio.play().then(()=>q('radioPlayPause').textContent='pause').catch(()=>{});return;}const q=selectedQueue();if(q.length)playIndex((q.find(x=>x.index===musicCurrent)||q[0]).index);};
  q('musicRepeat').onclick=()=>{musicRepeatMode=musicRepeatMode==='repeat-all'?'repeat1':musicRepeatMode==='repeat1'?'shuffle':'repeat-all';localStorage.setItem('starfield-music-repeat',musicRepeatMode);updateRepeat();};
  q('musicProgress').oninput=e=>{if(musicAudio&&Number.isFinite(musicAudio.duration)&&musicAudio.duration>0){musicAudio.currentTime=(+e.target.value/1000)*musicAudio.duration;updateProgress();}};
  q('musicVolume').oninput=e=>{if(musicAudio)musicAudio.volume=+e.target.value;};bindMediaPopover(q('radioVolumeBtn'),q('radioVolumePopover'));
- musicAudio.onended=nextTrack;musicAudio.ontimeupdate=updateProgress;musicAudio.onloadedmetadata=()=>{updateProgress();updateTicker();};musicAudio.onplay=()=>{if(q('radioPlayPause'))q('radioPlayPause').textContent='Ⅱ';render();updateTicker();};musicAudio.onpause=()=>{if(q('radioPlayPause'))q('radioPlayPause').textContent='▶';};
+ musicAudio.onended=nextTrack;musicAudio.ontimeupdate=updateProgress;musicAudio.onloadedmetadata=()=>{updateProgress();updateTicker();};musicAudio.onplay=()=>{if(q('radioPlayPause'))q('radioPlayPause').textContent='pause';render();updateTicker();};musicAudio.onpause=()=>{if(q('radioPlayPause'))q('radioPlayPause').textContent='play';};
  updateRepeat();render();q('musicHideList').textContent='show list';if(musicCurrent>=0&&musicItems[musicCurrent])updateTicker();else setTicker('No track playing');updateProgress();q('musicVolume').value=String(musicAudio?.volume??.5);panel.style.display='block';if(musicCurrent<0){const first=selectedQueue()[0];if(first)playIndex(first.index);}requestAnimationFrame(()=>{const stored=window.__radioLastPosition;if(stored){panel.style.setProperty('left',stored.left+'px','important');panel.style.setProperty('top',stored.top+'px','important');}});panel.style.right='auto';panel.style.transform='none';panel.addEventListener('pointerup',()=>{const r=panel.getBoundingClientRect();window.__radioLastPosition={left:r.left,top:r.top};});
 }
 function showSlideshowPanel2(){
@@ -2748,7 +2773,7 @@ body.wisdom-quote #overlay #modal{pointer-events:auto!important;}
    const vol=$('musicVolume');if(vol)musicAudio.volume=+vol.value;
    musicAudio.play().catch(()=>{});
    const track=$('musicTickerTrack');if(track){const txt=String(next.name||'');track.innerHTML=`<span>${txt.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</span><span aria-hidden="true">${txt.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}</span>`;}
-   if($('radioPlayPause'))$('radioPlayPause').textContent='Ⅱ';
+   if($('radioPlayPause'))$('radioPlayPause').textContent=$('radioPlayPause').closest('.v29-test-panel')?'pause':'Ⅱ';
   };
   window.__v28SafeMusicAdvance=safeAdvance;musicAudio.onended=safeAdvance;
  }
@@ -3024,6 +3049,7 @@ body.wisdom-quote #overlay #modal{pointer-events:auto!important;}
 #modal.modal-music.v29-test-panel[data-kind="music2"] .radio-title-line:active{cursor:grabbing}
 #modal.modal-music.v29-test-panel[data-kind="music2"] .radio-track-row{display:flex;align-items:center;gap:5px;margin:3px 0 4px}
 #modal.modal-music.v29-test-panel[data-kind="music2"] .radio-track-row #musicTicker{flex:1;min-width:0;margin:0!important}
+#modal.modal-music.v29-test-panel[data-kind="music2"] .radio-track-row #musicTickerTrack span{font-size:8px!important}
 html[data-appearance-text] body #modal.modal-music.v29-test-panel[data-kind="music2"] #radioOval :is(#radioPlayPause,#musicRepeat,#radioMoreBtn,#radioVolumeBtn,#musicTime){color:#111!important}
 html body #modal.modal-music.v29-test-panel[data-kind="music2"] #radioOval{background:#a3a3a3!important;width:calc(100% - 12px)!important;padding:3px 8px!important;min-height:26px!important}
 html[data-appearance-text] body #modal.modal-music.v29-test-panel[data-kind="music2"] #radioOval :is(#radioPlayPause,#musicRepeat,#radioMoreBtn,#radioVolumeBtn){color:#000!important;text-shadow:none!important;background:transparent!important}
@@ -3031,7 +3057,7 @@ html[data-appearance-text] body #modal.modal-music.v29-test-panel[data-kind="mus
 #modal.modal-music.v29-test-panel[data-kind="music2"] #radioVolumeBtn .radio-speaker{position:relative;display:inline-block;width:13px;height:11px;vertical-align:middle;color:#000}
 #modal.modal-music.v29-test-panel[data-kind="music2"] .radio-speaker::before{content:'';position:absolute;inset:0 5px 0 0;background:currentColor;clip-path:polygon(0 30%,35% 30%,100% 0,100% 100%,35% 70%,0 70%)}
 #modal.modal-music.v29-test-panel[data-kind="music2"] .radio-speaker::after{content:'';position:absolute;inset:1px 0 1px 7px;border-right:2px solid currentColor;border-radius:50%}
-#modal.modal-music.v29-test-panel[data-kind="music2"] #musicProgress{appearance:none!important;height:8px!important;border:0!important;border-radius:0!important;background:linear-gradient(to right,#a5a5a5 var(--radio-progress,0%),#646464 var(--radio-progress,0%))!important}
+#modal.modal-music.v29-test-panel[data-kind="music2"] #musicProgress{appearance:none!important;height:8px!important;border:0!important;border-radius:0!important;background:linear-gradient(to right,#000 var(--radio-progress,0%),#454545 var(--radio-progress,0%))!important}
 #modal.modal-music.v29-test-panel[data-kind="music2"] #musicProgress::-webkit-slider-thumb{appearance:none;width:3px;height:8px;border:0;border-radius:0;background:#222}
 #modal.modal-music.v29-test-panel[data-kind="music2"] #musicProgress::-moz-range-thumb{width:3px;height:8px;border:0;border-radius:0;background:#222}
 
