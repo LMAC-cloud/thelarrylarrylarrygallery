@@ -162,7 +162,7 @@ body.wisdom-grid #wisdomRail,body.wisdom-quote #wisdomRail{opacity:1;visibility:
 #modal.modal-builder{width:min(96vw,900px);max-height:92vh;overflow:auto;border:1px solid var(--sf-menu-border-highlight);border-radius:16px;padding:18px 20px 4px;background:var(--sf-dialog-bg-solid);box-shadow:0 0 28px #4ce3d733;text-align:left}#modal.modal-music{width:min(94vw,470px);max-height:76vh;overflow:auto;border:1px solid var(--sf-menu-border-highlight);border-radius:12px;padding:12px 14px 4px;background:var(--sf-dialog-bg);box-shadow:0 0 22px #4ce3d733;text-align:left}#modal.modal-music #modalTitle{margin:2px 0 8px}#modal.modal-music p{font-size:.78rem;margin:5px 0 8px}#modal.modal-music .media-list{max-height:115px}#modal.modal-slideshow{width:min(96vw,900px);max-height:90vh;overflow:auto;border:1px solid var(--sf-menu-border-highlight);border-radius:14px;padding:14px 14px 4px;background:var(--sf-dialog-bg);box-shadow:0 0 25px #4ce3d733;text-align:left}
 #modalClose{position:sticky;top:0;float:right;margin:0 0 5px 5px;background:#17384b;border:1px solid #7ac7d1;color:#eaffff;border-radius:var(--sf-button-radius);padding:var(--sf-control-pad-slideshow);font-size:.7rem;cursor:pointer;z-index:2}
 #modalIcon{font-size:2.8rem;clear:both}#modalTitle{color:var(--sf-shared-title-accent);font-weight:var(--sf-shared-title-weight);margin:7px 0 13px}#modalText{font-size:1.1rem;line-height:1.55;margin:0 auto;max-width:560px;clear:both}
-#orchardGrid{clear:both;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin:0 auto;max-width:980px;width:min(92vw,980px);align-content:center}#modal.modal-clear{min-height:100vh}#modal.modal-clear #modalBody{min-height:80vh} 
+#orchardGrid{clear:both;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin:0 auto;max-width:980px;width:min(92vw,980px);grid-auto-rows:1fr;align-content:center}#modal.modal-clear{min-height:100vh}#modal.modal-clear #modalBody{min-height:80vh} 
 .orchard-item{min-height:68px;background:transparent;border:1px solid transparent;border-radius:8px;color:var(--sf-menu-text-blue);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:4px;cursor:pointer;text-shadow:0 2px 7px #000}
 .orchard-item:hover{background:#0b1b2b80;border-color:#477f9a}.orchard-item .treeIcon{font-size:1.55rem}.orchard-item span:last-child{font-size:.68rem}
 #quoteActions{clear:both;display:flex;align-items:center;justify-content:center;gap:5px;margin-top:12px}
@@ -679,8 +679,6 @@ body.wisdom-grid .wisdom-icon:not(:hover),body.wisdom-grid .wisdom-choice:not(:h
 /* Wisdom side rails stay visible during quotations; ticker can remain concealed. */
 body.wisdom-quote #controls,body.wisdom-quote #wisdomRail{display:flex!important}
 /* No dormant borders, immediate hover glow. */
-body.wisdom-grid .orchard-item{border-color:transparent!important;outline:0!important;box-shadow:none!important;transition:none!important}
-body.wisdom-grid .orchard-item:hover,body.wisdom-grid .orchard-item:focus-visible{border-color:#888!important;box-shadow:0 0 12px 3px rgba(205,220,230,.8)!important;background:rgba(130,145,160,.16)!important;transition:none!important}
 /* The right-hand arrow buttons belong at the bottom of the rail. */
 #controls #mediaPrevBtn,#controls #mediaNextBtn{order:0!important}
 
@@ -778,7 +776,7 @@ body.wisdom-grid #board button:hover,body.wisdom-grid .wisdom-choice:hover,body.
 <script src="radio-playlist.js"></script>
 <script>(()=>{
 const wisdomQuotes=["You don’t need to hurry; you need to keep going.", "Something small you do today will matter more than you expect.", "Your confusion is temporary; your curiosity is an asset.", "A good question will open more doors than a perfect answer.", "You are allowed to change your mind without explaining yourself.", "What you’re practicing is becoming who you are.", "Rest is not quitting; it’s maintenance.", "Someone remembers your kindness more clearly than you remember giving it.", "The version of you that started this would be proud.", "You already know more than you think—trust the quiet part.", "If it feels awkward, you’re probably learning.", "Not every silence needs to be filled.", "Today is a good day to forgive yourself for being human.", "The long way around still gets you there.", "Pay attention to what gives you energy, not just approval.", "You can be brave without being loud.", "This isn’t a setback; it’s a recalibration.", "What you enjoy is a clue, not a distraction.", "You’re not behind—you’re on your time.", "Curiosity will take you farther than confidence.", "One honest effort beats ten perfect plans.", "You don’t need permission to take yourself seriously.", "The habit you build quietly will support you loudly later.", "Let yourself be new at something.", "You are not required to carry what isn’t yours.", "A simple solution may be waiting behind a complicated worry.", "Today’s patience will save tomorrow’s energy.", "Listening closely counts as progress.", "The right pace is the one you can sustain.", "You are allowed to enjoy things without turning them into achievements.", "A pause can be a powerful choice.", "You don’t need to win—just to participate honestly.", "Your attention is valuable; spend it intentionally.", "What you water grows.", "You can take pride in effort, even when results are messy.", "Something you learned the hard way will help someone else.", "You don’t have to finish everything today.", "The question “what if?” works both ways—try optimism.", "You’re more consistent than you give yourself credit for.", "Kindness counts, even when no one applauds.", "You are allowed to outgrow old versions of success.", "The skill you’re building now will feel obvious later.", "It’s okay to take the scenic route.", "A small boundary can protect a lot of peace.", "You don’t need to be impressive to be effective.", "Progress often feels like maintenance.", "Something you’re avoiding might actually be simpler than you fear.", "Your curiosity makes you interesting.", "You can start again without calling it a failure.", "Notice what feels steady—that’s your foundation.", "You are allowed to take joy seriously.", "The effort still counts, even if no one saw it.", "Today’s honesty will simplify tomorrow.", "You don’t have to decide everything at once.", "What you repeat becomes your environment.", "You are allowed to ask for clarification.", "The work you do when no one’s watching still shapes you.", "This moment doesn’t define you—but it does inform you.", "A little consistency beats a lot of intensity.", "You don’t need to prove your worth; you can use it.", "Something unfinished is not something wasted.", "Your perspective is part of the solution.", "You are allowed to enjoy being competent.", "The thing you’re practicing patience on is teaching you something else too.", "You can hold ambition and contentment at the same time.", "What feels slow is often deep.", "You’re learning how to trust yourself—notice that.", "Noticing is a form of care.", "You don’t need to optimize everything.", "The best questions improve with time.", "You are allowed to take up space calmly.", "What you’re building doesn’t need to be loud to be solid.", "Today’s curiosity will become tomorrow’s skill.", "You don’t need certainty to take the next step.", "The fact that you’re trying already matters.", "You can be disciplined without being harsh.", "The thing that excites you is worth paying attention to.", "You don’t have to finish this perfectly to finish it well.", "You’re allowed to keep what works and discard the rest.", "A clear intention beats a crowded plan.", "You can trust yourself to adapt.", "The habit of noticing good things trains resilience.", "You are allowed to be quietly proud.", "The right effort often feels boring at first.", "You don’t need to rush to be relevant.", "Something you’re learning now will feel obvious later.", "You are allowed to change direction without drama.", "Consistency is kindness toward your future self.", "What you’re practicing becomes easier than you expect.", "You don’t need to be fearless to move forward.", "Your attention can turn ordinary moments meaningful.", "A thoughtful “no” protects many good “yeses.”", "You are allowed to enjoy progress in small doses.", "The work is shaping you even when results lag.", "You don’t have to compare paths to respect your own.", "Something you love can also be something you’re good at.", "The next right step is usually smaller than you think.", "You’re allowed to trust what you’ve learned.", "Calm persistence outlasts bursts of urgency.", "You’re doing better than yesterday’s worries predicted."];
-const treeQuotes=wisdomQuotes.slice(0,50),wellQuotes=wisdomQuotes.slice(50);
+const treeQuotes=wisdomQuotes.slice(0,49),wellQuotes=wisdomQuotes.slice(50);
 let sets=[
 {name:'The Rose',icon:'🌹',subtitle:'A rose is a rose is a rose',choices:[['🌹','ROSE','beauty'],['🌱','SEED','beginnings'],['🪞','MIRROR','reflection'],['🗝️','KEY','discovery']],fortunes:[['The patient rose','What is true does not need to shout to be recognised.','🌹'],['A little unfolding','Something lovely may be taking shape before you can see it.','🌱'],['The thorn’s advice','A boundary can protect beauty without destroying it.','✦'],['The garden remembers','What you tend with care may surprise you later.','🌿']]},
 {name:'The Moon',icon:'☾',subtitle:'A little lunar wisdom',choices:[['☾','MOON','quiet light'],['🪟','WINDOW','another view'],['☁️','CLOUD','passing thought'],['⭐','STAR','distant guide']],fortunes:[['Borrowed light','You need not make all your own light to help someone see.','☾'],['The quiet hour','A pause is not the same thing as standing still.','✧'],['The far side','There is more to a situation than the part you can see.','◐'],['Night counsel','Let the unanswered question rest until morning.','☆']]},
@@ -978,9 +976,9 @@ function showFortune(f){closeFloatingMenus();
 }
 function flashStarfield(){document.body.classList.add('starfield-flash');setTimeout(()=>document.body.classList.remove('starfield-flash'),260);}
 function downloadText(text,name){const blob=new Blob([String(text)],{type:'text/plain;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name||'download.txt';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
-const treeLabels=['Patience','Curiosity','Courage','Rest','Creativity','Kindness','Learning','Change','Attention','Beginnings','Boundaries','Joy','Wisdom','Practice','Perspective','Confidence','Time','Questions','Steadiness','Hope','Effort','Freedom','Care','Growth','Listening','Pride','Possibility','Balance','Trust','Progress','Honesty','Focus','Resilience','Wonder','Calm','Purpose','Adaptation','Self-respect','Play','Persistence','Understanding','Choice','Gratitude','Simplicity','Discovery','Renewal','Imagination','Gentleness','Bravery','Presence'];
+const treeLabels=['Patience','Curiosity','Courage','Rest','Creativity','Kindness','Learning','Change','Attention','Beginnings','Boundaries','Joy','Wisdom','Practice','Perspective','Confidence','Time','Questions','Steadiness','Hope','Effort','Freedom','Care','Growth','Listening','Pride','Possibility','Balance','Trust','Progress','Honesty','Focus','Resilience','Wonder','Calm','Purpose','Adaptation','Self-respect','Play','Persistence','Understanding','Choice','Gratitude','Simplicity','Discovery','Renewal','Imagination','Gentleness','Bravery'];
 const wellLabels=['Perspective','Questions','Learning','Change','Attention','Beginnings','Boundaries','Joy','Wisdom','Practice','Confidence','Time','Steadiness','Hope','Effort','Freedom','Care','Growth','Listening','Pride','Possibility','Balance','Trust','Progress','Honesty','Focus','Resilience','Wonder','Calm','Purpose','Adaptation','Self-respect','Play','Persistence','Understanding','Choice','Gratitude','Simplicity','Discovery','Renewal','Imagination','Gentleness','Bravery','Presence','Patience','Curiosity','Courage','Rest','Kindness'];
-const treeIcons=['🌳','🌲','🌴','🌿','🍃','🌱','🌵','🎋','🍂','🌳','🌲','🌿','🌴','🌱','🍀','🌾','🪴','🌳','🌲','🍃','🌿','🌱','🌵','🎋','🍂','🌳','🌲','🌴','🍀','🌿','🌱','🪴','🌳','🌲','🍃','🌿','🌴','🌱','🌵','🎋','🍂','🌳','🌲','🌴','🍀','🌿','🌱','🪴','🌳','🌲'];
+const treeIcons=['🌳','🌲','🌴','🌿','🍃','🌱','🌵','🎋','🍂','🌳','🌲','🌿','🌴','🌱','🍀','🌾','🪴','🌳','🌲','🍃','🌿','🌱','🌵','🎋','🍂','🌳','🌲','🌴','🍀','🌿','🌱','🪴','🌳','🌲','🍃','🌿','🌴','🌱','🌵','🎋','🍂','🌳','🌲','🌴','🍀','🌿','🌱','🪴','🌳'];
 const wellIcons=['🪷','💧','⛲','🌊','🐚','🫧','🪨','🌧️','🪷','💧','⛲','🌊','🐚','🫧','🪨','🌧️','🪷','💧','⛲','🌊','🐚','🫧','🪨','🌧️','🪷','💧','⛲','🌊','🐚','🫧','🪨','🌧️','🪷','💧','⛲','🌊','🐚','🫧','🪨','🌧️','🪷','💧','⛲','🌊','🐚','🫧','🪨','🌧️','🪷','💧'];
 function showOrchard(which,fromReturn=false){if(!fromReturn)closeFloatingMenus();document.body.classList.remove('fortune-focus');
  const managePanelExisting=$('voiceManagePanel');if(managePanelExisting)managePanelExisting.remove();
@@ -2398,10 +2396,6 @@ $('overlay').addEventListener('click',e=>{
 #modal:not(.modal-slideshow)>#returnStarfieldBtn{display:none!important;}
 /* Reusable hover glow for the right-hand controls and each individual wisdom tile. */
 #controls .control-btn:hover,#controls .control-btn:focus-visible{border-color:var(--sf-title-accent)!important;box-shadow:0 0 7px #72f4df66,0 0 15px #72f4df44!important;}
-#orchardGrid .orchard-item{transition:box-shadow .16s,border-color .16s,filter .16s,transform .16s!important;}
-#orchardGrid .orchard-item:hover,#orchardGrid .orchard-item:focus-visible{outline:none!important;border-color:var(--sf-title-accent)!important;box-shadow:0 0 8px #72f4df88,0 0 18px #72f4df55!important;filter:brightness(1.12);transform:translateY(-1px);}
-#orchardGrid .orchard-item .treeIcon{display:inline-block;transition:filter .16s,transform .16s;}
-#orchardGrid .orchard-item:hover .treeIcon,#orchardGrid .orchard-item:focus-visible .treeIcon{filter:drop-shadow(0 0 5px #72f4df) drop-shadow(0 0 10px #72f4df88);transform:scale(1.08);}
 /* Title actions sit immediately to the left of Close; no Return button leaks into other menus. */
 #modal.modal-builder #modalTitle #openFortuneLogFromEdit{position:absolute!important;right:58px!important;top:7px!important;font-size:var(--sf-control-text-compact)!important;padding:var(--sf-control-pad-compact)!important;}
 #modal.modal-builder #modalTitle{padding-right:175px!important;}
@@ -3127,24 +3121,18 @@ html[data-appearance-text] body #modal.modal-music.v29-test-panel[data-kind="mus
  width:18px!important;min-width:18px!important;max-width:18px!important;
  height:102px!important;margin:0 auto!important;padding:0!important;
 }
-/* These are the actual Wisdom Well / Stellar Orchard buttons, not .wisdom-icon. */
-#orchardGrid .orchard-item,
-body.wisdom-grid #orchardGrid .orchard-item,
+/* Shared icon grid selection follows Appearance → select. */
 #modal.modal-clear #orchardGrid .orchard-item{
  border:1px solid transparent!important;border-radius:0!important;
- outline:0!important;box-shadow:none!important;
- background:transparent!important;transition:none!important;
+ outline:0!important;box-shadow:none!important;background:transparent!important;
 }
-#orchardGrid .orchard-item:hover,
-#orchardGrid .orchard-item:focus-visible,
-body.wisdom-grid #orchardGrid .orchard-item:hover,
-body.wisdom-grid #orchardGrid .orchard-item:focus-visible,
-body.wisdom-grid #orchardGrid .orchard-item:active{
- border-radius:0!important;border-color:var(--sf-title-accent)!important;
- outline:0!important;box-shadow:0 0 8px #72f4df88,0 0 18px #72f4df55!important;
- background:rgba(11,27,43,.45)!important;transition:none!important;
+#modal.modal-clear #orchardGrid .orchard-item:is(:hover,:focus-visible,:active){
+ border-color:var(--appearance-selection,#fff)!important;
+ box-shadow:var(--appearance-glow,0 0 8px #fff)!important;
 }
-#orchardGrid .orchard-item .treeIcon{transition:none!important;}
+#modal.modal-clear #orchardGrid .orchard-item:is(:hover,:focus-visible,:active) .treeIcon{
+ filter:drop-shadow(0 0 5px var(--appearance-selection,#fff));
+}
 </style>
 <style id="v57-opaque-media-handoff">
 #mediaStage video.media-current.media-incoming{opacity:1!important;animation:none!important;}
@@ -3905,7 +3893,7 @@ html body #rainbowOpPanel :is(button,#rainbowOpClose){background:var(--appearanc
   }));
   const {text,outline,glow,backing}=palette;
   const shadow=`0 0 6px ${glow},0 0 14px color-mix(in srgb,${glow} 55%,transparent)`;
-  for(const [key,value] of Object.entries({'appearance-text':text,'appearance-outline':outline,'appearance-glow':shadow,'sf-menu-border-blue':outline,'sf-hover-border':outline,'sf-hover-glow':shadow,'fortune-text-backing':backingOn.checked?`color-mix(in srgb,${backing} 90%,transparent)`:'transparent'})){
+  for(const [key,value] of Object.entries({'appearance-text':text,'appearance-outline':outline,'appearance-glow':shadow,'appearance-selection':glow,'sf-menu-border-blue':outline,'sf-hover-border':outline,'sf-hover-glow':shadow,'fortune-text-backing':backingOn.checked?`color-mix(in srgb,${backing} 90%,transparent)`:'transparent'})){
    root.style.setProperty('--'+key,value);
   }
   const drawRoot=drawDocument()?.documentElement;
