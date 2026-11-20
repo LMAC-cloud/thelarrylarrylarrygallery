@@ -1085,6 +1085,7 @@ textarea.leaf-ink::placeholder{color:#776f70;opacity:.72}
   <span class="menu-title">Image &amp; video layer</span>
   <select id="media-base" hidden aria-label="Background source"><option value="none">Backgrounds</option><option value="images">Images</option><option value="videos">Video</option></select>
   <div class="btn-group"><button class="menu-btn" id="load-bg-images">Load images</button><button class="menu-btn" id="load-bg-videos">Load video</button></div>
+  <div class="btn-group"><button type="button" class="menu-btn" id="shared-bg-images">Shared photos</button><button type="button" class="menu-btn" id="shared-bg-videos">Shared videos</button></div>
   <input id="bg-images" type="file" accept="image/*" hidden multiple><input id="bg-videos" type="file" accept="video/*" hidden multiple>
   <div class="btn-group" aria-label="Background playback scope"><button id="media-one" type="button" class="menu-btn">1</button><button id="media-all" type="button" class="menu-btn selected">All</button></div><label><input id="media-slideshow" type="checkbox" checked> Slideshow</label>
   <label class="slider-row">Slide seconds <input id="slide-interval" type="range" min="2" max="120" step="1" value="10"><output>10</output></label>
@@ -2276,7 +2277,55 @@ document.addEventListener('DOMContentLoaded', function() {
   const fields={colour:'visual-colour',back:'visual-back',speed:'visual-speed',size:'visual-size',width:'visual-thickness',rainbow:'visual-rainbow',direction:'visual-direction'};
   const particles=Array.from({length:400},()=>({x:Math.random(),y:Math.random(),size:1.4+Math.random()*4,speed:.55+Math.random(),hue:Math.random()*360}));
   const depthStars=Array.from({length:220},()=>({x:Math.random()-.5,y:Math.random()-.5,z:.04+Math.random()*.96}));
-  const media={images:{items:[],index:0,element:new Image()},videos:{items:[],index:0,element:document.createElement('video')}};
+  const publishedMediaBase='https://lmac-cloud.github.io/thelarrylarrylarrygallery/';
+  const sharedMediaBase=location.href.toLowerCase().startsWith(publishedMediaBase.toLowerCase())
+    ?publishedMediaBase
+    :'https://raw.githubusercontent.com/LMAC-cloud/thelarrylarrylarrygallery/main/';
+  const sharedMediaPaths={
+    images:[
+      "images/BambooPath.jpg",
+      "images/BeachShack.jpg",
+      "images/DockPool.jpg",
+      "images/GardenTable.jpg",
+      "images/GlassKitchen.jpg",
+      "images/MountainRoad.jpg",
+      "images/PlantRoom.jpg",
+      "images/SeaCabin.jpg",
+      "images/SeaCave.jpg",
+      "images/SeaStudio.jpg",
+      "images/SeaWriter.jpg",
+      "images/StoneRoom.jpg",
+      "images/StuccoPool.jpg",
+      "images/SunsetCabin.jpg",
+      "images/TempleRuins.jpg",
+      "images/TempleSteps.jpg",
+      "images/TileKitchen.jpg",
+      "images/WritersShed.jpg",
+    ],
+    videos:[
+      "Videos/CathedralClouds.mp4",
+      "Videos/CityZoom1.mp4",
+      "Videos/CliffWaves.mp4",
+      "Videos/EuroStreetcar.mp4",
+      "Videos/MagicBeach.mp4",
+      "Videos/MonteCristoShip.mp4",
+      "Videos/NiagaraFalls.mp4",
+      "Videos/NiagaraFalls2.mp4",
+      "Videos/NiagaraFalls3.mp4",
+      "Videos/RainyVillage.mp4",
+      "Videos/ShoreTree.mp4",
+    ],
+  };
+  function sharedMediaItems(mode){
+    return sharedMediaPaths[mode].map(path=>({
+      name:path.split('/').pop(),
+      url:new URL(path,sharedMediaBase).href
+    }));
+  }
+  const media={
+    images:{items:sharedMediaItems('images'),index:0,element:new Image()},
+    videos:{items:sharedMediaItems('videos'),index:0,element:document.createElement('video')}
+  };
   const video=media.videos.element;
   video.muted=true;video.loop=true;video.playsInline=true;
   let editMode='stars',randomMode='stars',nextEffect=0,nextSlide=0,lastFrame=0,transition=null,lastBolt=0,bolt=null;
@@ -2391,16 +2440,25 @@ document.addEventListener('DOMContentLoaded', function() {
     nextSlide=now+number('slide-interval')*1000;
     mediaStatus();
   }
+  function replaceMediaItems(mode,items){
+    const active=media[mode];
+    if(mode==='images')resetImageLaunch();
+    active.items.forEach(item=>{
+      if(item.url.startsWith('blob:'))URL.revokeObjectURL(item.url);
+    });
+    active.items=items;
+    active.index=0;
+    setBackgroundSource(mode);
+    focusTypingBox(true);
+  }
   for(const mode of ['images','videos']){
+    byId('shared-bg-'+mode).onclick=()=>replaceMediaItems(mode,sharedMediaItems(mode));
     byId('load-bg-'+mode).onclick=()=>byId('bg-'+mode).click();
     byId('bg-'+mode).onchange=event=>{
       if(!event.target.files.length)return;
-      const active=media[mode];
-      if(mode==='images')resetImageLaunch();
-      active.items.forEach(file=>URL.revokeObjectURL(file.url));
-      active.items=[...event.target.files].map(file=>({name:file.name,url:URL.createObjectURL(file)}));
-      active.index=0;setBackgroundSource(mode);
-      event.target.value='';focusTypingBox(true);
+      const items=[...event.target.files].map(file=>({name:file.name,url:URL.createObjectURL(file)}));
+      replaceMediaItems(mode,items);
+      event.target.value='';
     };
   }
   byId('media-base').onchange=()=>setBackgroundSource(read('media-base'));
@@ -4114,7 +4172,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }else turnMedia(direction);
     };
   }
-  for(const id of ['source-effects','source-images','source-videos','load-bg-images','load-bg-videos']){
+  for(const id of ['source-effects','source-images','source-videos','load-bg-images','load-bg-videos','shared-bg-images','shared-bg-videos']){
     byId(id).addEventListener('click',()=>{arrowLaunchMode=false;});
   }
   byId('btn-clear-effects').onclick=()=>{
