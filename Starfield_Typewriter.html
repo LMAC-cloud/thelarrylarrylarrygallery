@@ -301,7 +301,7 @@
 
   #live-typing-input {
     width: 100%;
-    background: #101012;
+    background: transparent;
     border: 2px solid #555;
     border-radius: 6px;
     padding: 8px 14px;
@@ -586,18 +586,16 @@
 
 #typewriter-body{isolation:isolate}
 #mla-open{position:absolute;bottom:19px;right:20px;z-index:2;min-width:40px;pointer-events:auto}
-#writing-form-canvas{display:none;position:absolute;width:760px;height:445px;left:50%;bottom:28px;transform:translateX(-50%);pointer-events:none}
+#writing-form-canvas{display:none;position:absolute;width:760px;height:445px;left:50%;bottom:var(--form-canvas-bottom,0px);transform:translateX(-50%);pointer-events:none}
 #typewriter-wrapper[data-form]:not([data-form=typewriter]) #writing-form-canvas{display:block}
 #typewriter-wrapper[data-form]:not([data-form=typewriter]) :is(.platen-roller,.chrome-bar){display:none}
 #typewriter-wrapper[data-form]:not([data-form=typewriter]) #typewriter-body{background:none;box-shadow:none;border:none;pointer-events:none}
 #typewriter-wrapper[data-form]:not([data-form=typewriter]) :is(#caret-box-wrapper,.brand-plate){pointer-events:auto}
 #typewriter-wrapper[data-form]:not([data-form=typewriter]) .ribbon-cover{border:0;box-shadow:none;background:transparent}
-#typewriter-wrapper[data-form]:not([data-form=typewriter]) #active-paper-slot{bottom:204px;height:130px;width:480px;perspective:none}
+#typewriter-wrapper[data-form]:not([data-form=typewriter]) #active-paper-slot{bottom:var(--form-paper-bottom);left:calc(50% + var(--form-paper-x));height:var(--form-paper-height);width:var(--form-paper-width);perspective:none}
 #typewriter-wrapper[data-form]:not([data-form=typewriter]) #active-paper{background:none;box-shadow:none;color:#2c2024;transform:none;padding-bottom:20px}
 #typewriter-wrapper[data-form]:not([data-form=typewriter]) #active-paper::after{display:none}
 #typewriter-wrapper[data-form]:not([data-form=typewriter]) #active-lines{zoom:.72}
-#typewriter-wrapper[data-form=whale] #active-paper-slot,#typewriter-wrapper[data-form=teapot] #active-paper-slot{bottom:210px}
-#typewriter-wrapper[data-form=barge] #active-paper-slot{bottom:250px}
 .rainbow-pick{position:relative;display:inline-block;margin-left:4px;flex:0 1 auto;font-size:11px}
 .rainbow-pick summary{cursor:pointer;color:var(--menu-ink);white-space:nowrap}
 .rainbow-pick label{display:flex;gap:5px;margin:5px 0}
@@ -660,9 +658,6 @@
 @keyframes paper-feed{from{opacity:0;translate:0 -120px}35%{opacity:1}to{translate:0 0}}
 #typewriter-wrapper[data-form=typewriter]:not(.paper-roll-on) #active-paper-slot{margin-bottom:var(--sheet-feed,0px);transition:margin-bottom .25s}
 #typewriter-wrapper[data-form=typewriter].paper-roll-on #active-paper-slot{height:var(--machine-paper-length);transition:height .25s}
-#typewriter-wrapper[data-form=typewriter].paper-roll-on[data-drape=recede] #active-paper{transform:perspective(580px) rotateX(35deg);clip-path:polygon(21% 0,79% 0,100% 100%,0 100%);background:linear-gradient(#a69c8a88,transparent 42%),var(--active-paper,#fffdf4);mask-image:linear-gradient(0deg,#000 82%,#0004)}
-#typewriter-wrapper[data-form=typewriter].paper-roll-on[data-drape=hang] #active-paper-slot{bottom:auto;top:75px;z-index:50}
-#typewriter-wrapper[data-form=typewriter].paper-roll-on[data-drape=hang] #active-paper{transform:none;justify-content:flex-start;border-radius:0 0 48% 45% / 0 0 8% 10%;padding-top:14px;background:linear-gradient(180deg,#5f514f88,transparent 30%,#89744844 93%,#251e1d77),var(--active-paper,#fffdf4)}
 #typewriter-wrapper[data-form]:not([data-form=typewriter]) #platen-knob{display:none}
 .fallen-sheet{position:absolute;z-index:16;left:50%;bottom:124px;width:490px;min-height:180px;padding:18px;background:var(--active-paper,#fffdf4);color:var(--active-ink,#191919);pointer-events:none;overflow:hidden;transform-origin:center bottom;animation:sheet-out 1s ease-in forwards}
 @keyframes sheet-out{0%{transform:translate(-50%,0) rotateX(24deg)}30%{transform:translate(-44%,-24px) rotate(6deg)}100%{transform:translate(-32%,470px) rotate(31deg) rotateX(38deg);opacity:0}}
@@ -937,7 +932,7 @@ textarea.leaf-ink::placeholder{color:#776f70;opacity:.72}
 }
 #typewriter-body #live-typing-input:focus,#typewriter-body #live-typing-input{
   border-color:var(--bg-machine-outline,#fff);
-  box-shadow:inset 0 2px 8px #000e,0 1px 0 #ffffff26;
+  box-shadow:0 1px 0 #ffffff26;
   transition:none;
 }
 .machine-input-row{display:flex;align-items:center;justify-content:center;gap:8px;width:min(95%,545px);margin-top:6px}
@@ -1045,9 +1040,10 @@ input[type=range]{accent-color:#595959}
 :is(#menu-panel,.utility-panel,dialog) input[type=color]::-moz-color-swatch{border:0;border-radius:3px}
 
 #draw-panel.utility-panel{
-  top:12px;bottom:auto;left:12px;width:min(360px,calc(100vw - 24px));
+  top:12px;bottom:auto;left:12px;width:min(356px,calc(100vw - 24px));
   min-width:0;max-height:calc(100dvh - var(--draw-menu-top,12px) - 12px);
-  scrollbar-gutter:stable;overflow-anchor:none;
+  overflow-x:hidden;overflow-anchor:none;
+  font-size:clamp(9px,calc(var(--bg-font-size,19px) * .78),15px);
 }
 #draw-panel [hidden]{display:none}
 #draw-panel .draw-options{margin-top:11px}
@@ -1091,7 +1087,7 @@ input[type=range]{accent-color:#595959}
   display:grid;grid-template-columns:repeat(4,max-content);justify-content:start;
 }
 #draw-panel [data-draw-control=launch-line-origin] [data-draw-value=left]{grid-column:1}
-#draw-panel [data-draw-control=ink-layer] .draw-choice-buttons{flex-wrap:nowrap}
+#draw-panel [data-draw-control=ink-layer] .draw-choice-buttons{flex-wrap:wrap}
 #draw-panel .draw-sliders .slider-row{grid-template-columns:minmax(0,75px) 3ch;justify-content:start}
 #draw-panel .draw-footer{display:flex;justify-content:flex-start;gap:6px}
 #draw-panel .draw-footer button{flex:none;padding:3px 7px}
@@ -1156,10 +1152,14 @@ input[type=range]{accent-color:#595959}
 .typewriter-colours>summary,.tw-colour-row{
   display:grid;grid-template-columns:5.4em 3.6em;align-items:center;gap:5px;
 }
-.typewriter-colours>summary{grid-template-columns:5.4em 3.6em auto;justify-content:start}
+.typewriter-colours>summary{grid-template-columns:5.4em 3.6em;justify-content:start}
+.typewriter-colours>summary>span:first-child{grid-row:1;grid-column:1}
+.tw-colour-head{grid-row:1;grid-column:2}
+.typewriter-colours>summary::after{grid-row:1;grid-column:1;justify-self:end}
+.typewriter-colours:not([open]) .tw-colour-head{visibility:hidden}
 .tw-colour-head{font-size:.73em;text-align:center}
 .tw-colour-row{margin:3px 0}
-.tw-colour-row>label:first-child{display:flex;align-items:center;justify-content:flex-start;gap:5px;margin:0}
+.tw-colour-row>label:first-child{display:grid;grid-template-columns:3.75em 1.4em;align-items:center;gap:3px;margin:0}
 #menu-section-typewriter .tw-colour-row .inline-rainbow{margin:0;justify-self:center}
 #menu-section-typewriter label.tw-inline-field{justify-content:flex-start;gap:8px}
 #menu-section-typewriter .tw-inline-field input{max-width:58%;width:auto}
@@ -1170,8 +1170,8 @@ input[type=range]{accent-color:#595959}
 #screen-button-options label{display:grid;grid-template-columns:14px 1fr;align-items:center;gap:5px;margin:0;text-transform:none}
 #screen-button-options input{margin:0}
 #bottom-left-controls .tw-key,#bottom-right-controls .tw-key{
-  width:min(var(--screen-key-size,48px),var(--screen-key-max,48px));height:min(var(--screen-key-size,48px),var(--screen-key-max,48px));
-  font-size:calc(min(var(--screen-key-size,48px),var(--screen-key-max,48px))*.44);
+  width:min(var(--screen-key-size,36px),var(--screen-key-max,48px));height:min(var(--screen-key-size,36px),var(--screen-key-max,48px));
+  font-size:calc(min(var(--screen-key-size,36px),var(--screen-key-max,48px))*.44);
 }
 #bg-appearance .appearance-colour{grid-template-columns:minmax(0,1fr) auto auto}
 #bg-appearance .appearance-rainbow-label{white-space:nowrap;font-size:.75em;gap:2px}
@@ -1211,17 +1211,6 @@ input[type=range]{accent-color:#595959}
 #scroll-top-rod::before,#scroll-bottom-rod::before{left:-14px}
 #scroll-top-rod::after,#scroll-bottom-rod::after{right:-14px}
 #roll-view .roll-head .menu-btn{background:transparent;box-shadow:none}
-#typewriter-wrapper[data-form=typewriter].paper-roll-on[data-drape=recede] #active-paper{
-  transform:perspective(660px) rotateX(22deg);clip-path:polygon(7% 0,93% 0,100% 100%,0 100%);
-}
-#typewriter-wrapper[data-form=typewriter].paper-roll-on[data-drape=hang] #active-paper-slot{
-  top:auto;bottom:146px;z-index:15;
-}
-#typewriter-wrapper[data-form=typewriter].paper-roll-on[data-drape=hang] #active-paper{
-  transform:perspective(520px) rotateX(23deg);transform-origin:bottom center;justify-content:flex-end;
-  border-radius:44% 44% 9% 9% / 22% 22% 5% 5%;
-  background:linear-gradient(180deg,#30212b59,transparent 38%,#fff2 70%,#4b313967),var(--active-paper,#fffdf4);
-}
 .paper-colour-row{display:flex;align-items:center;gap:8px;margin:4px 0}
 #menu-section-paper .paper-colour-row label{display:flex;align-items:center;flex-wrap:nowrap;gap:5px;margin:0}
 #menu-section-paper .paper-colour-row .inline-rainbow{margin:0}
@@ -1246,7 +1235,7 @@ input[type=range]{accent-color:#595959}
 #bg-appearance .appearance-checks :is(label,button){justify-self:start}
 #bg-appearance .appearance-rainbow-word{text-align:right;font-size:.65em}
 #bg-appearance .appearance-rainbow-label{margin:0;padding:0}
-#bottom-right-controls :is(#btn-prev-page,#btn-next-page){font-size:calc(min(var(--screen-key-size,48px),var(--screen-key-max,48px))*.59)}
+#bottom-right-controls :is(#btn-prev-page,#btn-next-page){font-size:calc(min(var(--screen-key-size,36px),var(--screen-key-max,48px))*.59)}
 #paper-page-controls{top:calc(100% + 8px);bottom:auto}
 #menu-section-typewriter>details{border-top:1px solid color-mix(in srgb,var(--bg-outline) 48%,transparent);padding-top:5px;margin:6px 0}
 #menu-section-typewriter .tw-inline-field{display:flex;justify-content:flex-start;gap:6px}
@@ -1263,11 +1252,6 @@ input[type=range]{accent-color:#595959}
 #typewriter-wrapper[data-form]:not([data-form=typewriter]) :is(.ribbon-cover,#platen-knob,#machine-download,#mla-open){display:none}
 #typewriter-wrapper[data-form]:not([data-form=typewriter]) #active-paper{justify-content:flex-start;padding:0;overflow:hidden}
 #typewriter-wrapper[data-form]:not([data-form=typewriter]) #active-lines{zoom:1;max-height:100%}
-#typewriter-wrapper[data-form=ship] #active-paper-slot{bottom:228px;width:315px;height:98px}
-#typewriter-wrapper[data-form=barge] #active-paper-slot{bottom:326px;width:270px;height:87px}
-#typewriter-wrapper[data-form=mobile] #active-paper-slot{bottom:238px;width:292px;height:66px}
-#typewriter-wrapper[data-form=whale] #active-paper-slot{bottom:258px;width:225px;height:84px}
-#typewriter-wrapper[data-form=teapot] #active-paper-slot{bottom:279px;width:250px;height:82px}
 
 :is(#menu-panel,.utility-panel,dialog) input[type=color]{
   border:1px solid #c4c4c4;border-radius:0;padding:0;
@@ -1277,8 +1261,8 @@ input[type=range]{accent-color:#595959}
 :is(#menu-panel,.utility-panel,dialog) input[type=color]::-moz-color-swatch{border:0;border-radius:0}
 #draw-panel [data-draw-control=launch-line-origin] [data-origin-first-end]{grid-column:auto}
 #draw-panel .draw-sliders .slider-row{
-  grid-template-columns:auto minmax(25px,48px) 3ch;
-  align-items:center;gap:2px 4px;line-height:1.2;white-space:nowrap;
+  grid-template-columns:minmax(0,auto) minmax(0,48px) 3ch;
+  align-items:center;gap:2px 4px;line-height:1.2;overflow-wrap:anywhere;
 }
 #draw-panel .draw-sliders .slider-row .step-label{grid-column:1;grid-row:1}
 #draw-panel .draw-sliders .slider-row input{grid-column:2;grid-row:1;margin:0}
@@ -1354,7 +1338,9 @@ input[type=range]{accent-color:#595959}
 #bg-appearance .utility-heading .appearance-rainbow-word{justify-self:start}
 .utility-heading .menu-title{font-size:.8em;font-weight:400}
 #radio-panel .utility-heading .menu-title{font-weight:400}
-#radio-panel .radio-actions{justify-content:flex-start;gap:8px}
+#radio-panel .radio-actions{justify-content:space-between;gap:8px}
+#radio-panel .radio-playback{display:inline-flex;flex:0 0 auto;align-items:center;gap:6px}
+#radio-panel .radio-playback .menu-btn{flex:0 0 auto;width:auto;min-width:0;margin:0;white-space:nowrap}
 #radio-panel .radio-actions button{padding:2px 0}
 #radio-panel :is(#radio-time,#radio-songs>summary,#radio-song-list .list-word){font-size:.76em}
 #radio-songs>summary,#bg-panel #toggle-media-list{
@@ -1369,7 +1355,7 @@ input[type=range]{accent-color:#595959}
 }
 #radio-volume-level{writing-mode:vertical-lr;direction:rtl;width:14px;height:77px;accent-color:#ddd}
 #radio-panel #radio-progress::-webkit-slider-runnable-track{background:transparent;border:0;box-shadow:none}
-#bg-panel.utility-panel,#draw-panel.utility-panel,
+#bg-panel.utility-panel,
 #menu-section-paper.utility-panel,#menu-section-typewriter.utility-panel,
 #menu-section-c-button.utility-panel,#menu-builder.utility-panel{
   width:min(340px,calc(100vw - 32px));
@@ -1395,7 +1381,7 @@ input[type=range]{accent-color:#595959}
 }
 #items-panel .item-kind-row{grid-template-columns:minmax(0,1fr) auto}
 #items-panel .item-kind-row label{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
-#menu-section-typewriter #machine-name{text-transform:lowercase;width:min(10em,100%)}
+#menu-section-typewriter #machine-name{text-transform:lowercase;width:7em;padding:2px 4px;font:inherit;font-size:.9em}
 #menu-section-typewriter>details{width:100%;box-sizing:border-box}
 #menu-section-typewriter #font-options{width:100%;max-width:none}
 #menu-section-typewriter>details:has(#font-options){border-bottom:1px solid color-mix(in srgb,var(--bg-outline) 48%,transparent);padding-bottom:5px}
@@ -1410,6 +1396,40 @@ input[type=range]{accent-color:#595959}
 }
 #menu-section-typewriter .typewriter-sound input[type=range],
 #menu-section-typewriter :is(#active-opacity,#machine-paper-length){width:62px;max-width:100%}
+#typewriter-wrapper[data-form]:not([data-form=typewriter]){
+  --tw-scale:var(--form-scale,1);
+  translate:none!important;
+}
+#typewriter-wrapper[data-form]:not([data-form=typewriter]) #typewriter-body{
+  height:auto;padding:0 0 3px;
+}
+#typewriter-wrapper[data-form]:not([data-form=typewriter]) .machine-input-row{margin-top:0}
+#typewriter-wrapper[data-form]:not([data-form=typewriter]) #active-paper{align-items:center}
+#typewriter-wrapper[data-form]:not([data-form=typewriter]) #active-lines{flex-shrink:0}
+#typewriter-wrapper[data-form]:not([data-form=typewriter]):is([data-drape=normal],[data-drape=scroll]) #active-paper-slot{
+  width:min(660px,84vw);height:var(--machine-paper-length);left:50%;
+}
+#typewriter-wrapper[data-form]:not([data-form=typewriter])[data-drape=normal] #active-paper{
+  background:var(--active-paper,#fffdf4);color:var(--active-ink,#141414);
+  justify-content:flex-end;
+}
+#typewriter-wrapper[data-drape=scroll] #active-paper{
+  transform:none;clip-path:polygon(44% 0,56% 0,100% 100%,0 100%);
+  background:linear-gradient(#8d879e88,transparent 64%),var(--active-paper,#fffdf4);
+  color:var(--active-ink,#141414);padding:0;
+}
+#typewriter-wrapper[data-drape=scroll] #active-paper::after{display:none}
+#typewriter-wrapper[data-drape=scroll] #active-lines{
+  position:absolute;inset:0;width:100%!important;height:100%;overflow:hidden;
+}
+.font-apply-footer{display:flex;justify-content:flex-end;margin-top:4px}
+#bg-appearance .appearance-size-row{display:flex;align-items:center;gap:9px}
+#bg-appearance .appearance-size-row .slider-row,
+#bg-appearance .appearance-sliders .slider-row{
+  grid-template-columns:max-content minmax(45px,75px) 3ch;justify-content:start;gap:5px;
+}
+#bg-appearance .appearance-size-row :is(input,output){grid-row:auto;grid-column:auto}
+#menu-section-typewriter #slider-tw:disabled{opacity:.38;cursor:default}
 </style>
 </head>
 <body>
@@ -1469,7 +1489,7 @@ input[type=range]{accent-color:#595959}
       <div class="platen-roller"></div><button type="button" id="platen-knob" aria-label="Advance paper" title="Advance paper"></button>
       <div class="chrome-bar"></div>
       <div class="ribbon-cover">
-        <div class="brand-plate" title="Drag writing instrument">laurentian 2026</div>
+        <div class="brand-plate" title="Drag writing instrument">laurentian</div>
       </div>
       <div class="machine-input-row"><button type="button" class="menu-btn" id="machine-download" title="Download writing" aria-label="Download writing">↓</button><div id="caret-box-wrapper">
         <div id="input-echo" aria-hidden="true"></div><input type="text" id="live-typing-input" aria-label="Typewriter input" autocomplete="off" spellcheck="false" autofocus>
@@ -1525,9 +1545,9 @@ input[type=range]{accent-color:#595959}
   <div id="custom-menu-controls"></div>
 </section>
 <section id="menu-section-typewriter" class="utility-panel menu-section-popup hidden" aria-label="Typewriter"><div class="utility-heading"><span class="menu-title">Typewriter</span><button type="button" class="menu-btn text-close" id="close-menu-section-typewriter">Close</button></div><div class="slider-row">
-        <span>Typewriter</span>
+        <span>Size</span>
         <input type="range" id="slider-tw" min="0.5" max="1.25" step="0.05" value="1">
-      </div><label class="tw-inline-field">Shape <select id="writing-form"><option value="typewriter">Typewriter</option><option value="ship">Pirate ship</option><option value="barge">Lar barge</option><option value="mobile">Larry Mobile</option><option value="whale">Blue whale</option><option value="teapot">Brown teapot</option></select></label><details class="typewriter-font-section"><summary>Font</summary><div class="btn-group" id="font-options">
+      </div><label class="tw-inline-field">Model <select id="writing-form"><option value="typewriter">Typewriter</option><option value="ship">Pirate ship</option><option value="barge">Lar barge</option><option value="mobile">Larry Mobile</option><option value="whale">Blue whale</option><option value="teapot">Brown teapot</option></select></label><details class="typewriter-font-section"><summary>Font</summary><div class="btn-group" id="font-options">
         <button type="button" class="menu-btn selected text-action" data-font="'Courier New', Courier, monospace">Classic</button>
         <button type="button" class="menu-btn text-action" data-font="'Lucida Console', Monaco, monospace">Sharp</button>
         <button type="button" class="menu-btn text-action" data-font="'Consolas', monospace">Modern</button>
@@ -1544,7 +1564,7 @@ input[type=range]{accent-color:#595959}
         <button class="menu-btn text-action" data-font="TypewriterLocal0, monospace">Bohemian</button>
         <button type="button" class="menu-btn text-action" data-font="'Chomsky', serif">Chomsky</button>
         <button type="button" class="menu-btn text-action" data-font="'Dune Rise', sans-serif">Dune Rise</button>
-      </div></details><details class="typewriter-colours"><summary><span>Colour</span><span class="tw-colour-head">Rainbow</span></summary><div class="tw-colour-row"><label>Body <input type="color" id="machine-colour" value="#272727"></label></div><div class="tw-colour-row"><label>Paper <input type="color" id="active-colour" value="#fffdf4"></label></div><div class="tw-colour-row"><label>Ink <input type="color" id="active-ink" value="#141414"></label></div><div class="tw-colour-row"><label>Input <input type="color" id="input-ink" value="#ffffff"></label></div><div class="tw-colour-row"><label>Outline <input type="color" id="bg-appearance-machine-outline" value="#16b16e"></label><label class="inline-rainbow"><input type="checkbox" id="bg-appearance-rainbow-machine-outline" aria-label="Rainbow machine outline"></label></div><div class="tw-colour-row"><label>Title <input type="color" id="bg-appearance-machine-title" value="#ffffff"></label><label class="inline-rainbow"><input type="checkbox" id="bg-appearance-rainbow-machine-title" aria-label="Rainbow machine title"></label></div><label class="tw-inline-field">Paper opacity <input type="range" id="active-opacity" min="0.15" max="1" step="0.01" value="1"><output for="active-opacity">1</output></label><label class="slider-row">Paper length <input id="machine-paper-length" type="range" min="65" max="360" value="125"><output>125</output></label></details><label class="tw-inline-field">On the typewriter <select id="paper-drape"><option value="normal" selected>Normal page</option><option value="recede">Rise into the distance</option><option value="hang">Hang down</option></select></label><label class="tw-inline-field">Paper feed <select id="paper-feed"><option value="auto">Automatic</option><option value="manual">Manual</option></select></label><div class="typewriter-nameplate"><label class="tw-inline-field">Nameplate <input id="machine-name" type="text" maxlength="22" value="laurentian 2026" autocapitalize="none"></label><label><input id="echo-enabled" type="checkbox" checked> Show typing in input</label><label><input id="bg-appearance-link-machine" type="checkbox"> Match menu outline</label>
+      </div><div class="font-apply-footer"><button type="button" class="menu-btn text-action" id="apply-writing-font-all">Apply all</button></div></details><details class="typewriter-colours"><summary><span>Colour</span><span class="tw-colour-head">Rainbow</span></summary><div class="tw-colour-row"><label>Body <input type="color" id="machine-colour" value="#272727"></label></div><div class="tw-colour-row"><label>Paper <input type="color" id="active-colour" value="#fffdf4"></label></div><div class="tw-colour-row"><label>Ink <input type="color" id="active-ink" value="#141414"></label></div><div class="tw-colour-row"><label>Input <input type="color" id="input-ink" value="#ffffff"></label></div><div class="tw-colour-row"><label>Outline <input type="color" id="bg-appearance-machine-outline" value="#16b16e"></label><label class="inline-rainbow"><input type="checkbox" id="bg-appearance-rainbow-machine-outline" aria-label="Rainbow machine outline"></label></div><div class="tw-colour-row"><label>Title <input type="color" id="bg-appearance-machine-title" value="#ffffff"></label><label class="inline-rainbow"><input type="checkbox" id="bg-appearance-rainbow-machine-title" aria-label="Rainbow machine title"></label></div><label class="tw-inline-field">Paper opacity <input type="range" id="active-opacity" min="0.15" max="1" step="0.01" value="1"><output for="active-opacity">1</output></label><label class="slider-row">Paper length <input id="machine-paper-length" type="range" min="65" max="2200" value="125"><output>125</output></label></details><label class="tw-inline-field">Paper style <select id="paper-drape"><option value="novelty">Novelty</option><option value="normal" selected>Normal paper</option><option value="scroll">Scroll</option></select></label><label class="tw-inline-field">Paper feed <select id="paper-feed"><option value="auto">Automatic</option><option value="manual">Manual</option></select></label><div class="typewriter-nameplate"><label class="tw-inline-field">Nameplate <input id="machine-name" type="text" maxlength="22" value="laurentian" autocapitalize="none"></label><label><input id="echo-enabled" type="checkbox" checked> Show typing in input</label><label><input id="bg-appearance-link-machine" type="checkbox"> Match menu outline</label>
     <label class="slider-row">Typewriter title font <select id="bg-appearance-title-font"><option value="">Menu font</option></select></label></div><details class="typewriter-sound"><summary>Sound</summary><div class="writing-audio-row"><label class="slider-row">Typing <select id="typing-sound"><option value="synth">Synthetic keys</option><option value="recorded">Recorded keys</option><option value="local-extra">Click</option><option value="mute">Off</option></select></label><button type="button" class="menu-btn text-action load-writing-audio" id="load-typing-audio">Load audio</button></div><input id="typing-file" type="file" accept="audio/*" hidden=""><input id="return-file" type="file" accept="audio/*" hidden=""><div class="writing-audio-row"><label class="slider-row">Return <select id="return-sound"><option value="recorded">Recorded carriage return</option><option value="local-extra">Ramsamba carriage return</option><option value="bell" selected>Bell</option><option value="wood">Wood tap</option><option value="chime">Soft chime</option><option value="click">Mechanical click</option><option value="off">Off</option></select></label><button type="button" class="menu-btn text-action load-writing-audio" id="load-return-audio">Load audio</button></div><p id="sample-status" aria-live="polite"></p><label class="slider-row">Typing <input type="range" id="typing-volume" min="0" max="1" step="0.01" value="0.7"><output for="typing-volume">0.7</output></label><label class="slider-row">Line return <input type="range" id="return-volume" min="0" max="1" step="0.01" value="0.55"><output for="return-volume">0.55</output></label><label class="slider-row">New page <input type="range" id="page-volume" min="0" max="1" step="0.01" value="0.5"><output for="page-volume">0.5</output></label></details></section>
 <section id="menu-section-paper" class="utility-panel menu-section-popup hidden" aria-label="Paper"><div class="utility-heading"><span class="menu-title">Paper</span><button type="button" class="menu-btn text-close" id="close-menu-section-paper">Close</button></div><div class="paper-tabs" role="group" aria-label="Paper format"><button id="paper-card" class="menu-btn text-action selected" type="button">Cue card</button><button id="paper-letter" class="menu-btn text-action" type="button">8.5×11</button><button id="paper-roll" class="menu-btn text-action" type="button" aria-pressed="false">Scroll</button></div><hr class="panel-divider"><div id="paper-options-card"><div class="slider-row">
         <span>Size</span>
@@ -1556,9 +1576,9 @@ input[type=range]{accent-color:#595959}
         <button type="button" class="menu-btn" id="download">Download writing</button>
       </div></details><details class="paragraph-extras"><summary>Editing options</summary><label><input id="paper-edit-enabled" type="checkbox" checked> Edit paper and cards</label><label><input id="keep-edit-focus" type="checkbox" checked> Keep typing focus</label><label><input id="show-paper-caret" type="checkbox" checked> Show paper cursor</label><label><input type="checkbox" id="type-over"> Type over mistakes</label><label><input type="checkbox" id="show-clipboard"> Show copy/paste tools</label>
       <label><input id="text-rainbow" type="checkbox"> Rainbow lettering</label></details><button type="button" class="menu-btn text-action" id="btn-bank">Writing Bank</button></section>
-<section id="menu-section-c-button" class="utility-panel menu-section-popup hidden" aria-label="Keys"><div class="utility-heading"><span class="menu-title">Keys</span><button type="button" class="menu-btn text-close" id="close-menu-section-c-button">Close</button></div><label><input type="checkbox" id="clear-menus" checked> Close menus</label><label><input type="checkbox" id="clear-images" checked> Clear image launches</label><label><input type="checkbox" id="clear-ink" checked> Clear drawn and launched lines</label><div id="screen-button-options"></div><label class="slider-row keys-size">Key size <input id="screen-key-size" type="range" min="24" max="48" value="48"><output>48</output></label></section>
+<section id="menu-section-c-button" class="utility-panel menu-section-popup hidden" aria-label="Keys"><div class="utility-heading"><span class="menu-title">Keys</span><button type="button" class="menu-btn text-close" id="close-menu-section-c-button">Close</button></div><label><input type="checkbox" id="clear-menus" checked> Close menus</label><label><input type="checkbox" id="clear-images" checked> Clear image launches</label><label><input type="checkbox" id="clear-ink" checked> Clear drawn and launched lines</label><div id="screen-button-options"></div><label class="slider-row keys-size">Key size <input id="screen-key-size" type="range" min="24" max="48" value="36"><output>36</output></label></section>
 
-<section id="items-panel" class="utility-panel hidden" aria-label="Items"><div class="utility-heading"><span class="menu-title">Items</span><button class="menu-btn text-close" id="close-items" type="button">Close</button></div><div class="items-tabs" role="group" aria-label="Item options"><button type="button" class="menu-btn text-action" data-item-options="candle" aria-controls="item-options-candle" aria-pressed="true">candle</button><button type="button" class="menu-btn text-action" data-item-options="incense" aria-controls="item-options-incense" aria-pressed="false">incense</button><button type="button" class="menu-btn text-action" data-item-options="crystal" aria-controls="item-options-crystal" aria-pressed="false">crystal</button><button type="button" class="menu-btn text-action" data-item-options="parrot" aria-controls="item-options-parrot" aria-pressed="false">parrot</button><button type="button" class="menu-btn text-action" data-item-options="lightbulb" aria-controls="item-options-lightbulb" aria-pressed="false">lightbulb</button><button type="button" class="menu-btn text-action" data-item-options="table" aria-controls="item-options-table" aria-pressed="false">table</button></div><div id="item-options-candle" class="item-category"><div class="items-row"><button class="menu-btn text-action" id="add-candle" type="button">Add candle</button><button class="menu-btn text-action remove-item" id="remove-candle" type="button">Remove candle</button></div><div class="items-row item-kind-row"><label class="slider-row">Type <select id="candle-kind"><option selected>Beeswax</option><option>Vanilla</option><option>Cedar</option><option>Midnight Violet</option></select></label><button class="menu-btn text-action remove-item" id="snuff-candle" type="button">Extinguish candle</button></div><label class="slider-row">Height <input id="candle-height" type="range" min=".45" max="5" step=".05" value="1"><output>1</output></label><label class="slider-row">Width <input id="candle-width" type="range" min=".45" max="5" step=".05" value="1"><output>1</output></label><label class="slider-row">Colour <input id="candle-colour" type="color" value="#f2c069"></label></div><div id="item-options-incense" class="item-category" hidden><div class="items-row"><button class="menu-btn text-action" id="add-incense" type="button">Add incense</button><button class="menu-btn text-action remove-item" id="remove-incense" type="button">Remove incense</button></div><div class="items-row item-kind-row"><label class="slider-row">Type <select id="incense-kind"><option selected>Angel</option><option>Sandalwood</option><option>Wood Musk</option><option>Rain Garden</option></select></label><button class="menu-btn text-action remove-item" id="snuff-incense" type="button">Extinguish incense</button></div><label class="slider-row">Size <input id="incense-size" type="range" min=".5" max="2" step=".05" value="1"></label><label class="slider-row">Colour <input id="incense-colour" type="color" value="#906048"></label></div><div id="item-options-crystal" class="item-category" hidden><div class="items-row"><button class="menu-btn text-action" id="add-crystal" type="button">Add crystal</button><button class="menu-btn text-action remove-item" id="clear-crystals" type="button">Remove crystal</button></div><div class="items-row item-kind-row"><label>Type <select id="crystal-kind"><option selected>Quartz</option><option>Obsidian</option><option>Onyx</option><option>Tourmaline</option><option>Turquoise</option><option>Lar Amberglass</option><option>Barge Agate</option><option>Fuffonbass Smokestone</option><option>Custom</option></select></label><button id="snuff-crystal" class="menu-btn text-action remove-item" type="button">Extinguish crystal</button></div><label class="slider-row">Size <input id="crystal-size" type="range" min=".35" max="2.8" step=".05" value="1"></label><label class="slider-row">Colour <input id="crystal-colour" type="color" value="#b2b5da"></label><label class="slider-row">Glow <input id="crystal-glow" type="range" min="0" max="35" value="14"></label><label>Shape <select id="crystal-shape"><option value="point">Point cluster</option><option value="smooth">Smooth stone</option><option value="prism">Tumbled prism</option></select></label><label><input id="crystal-board" type="checkbox"> Crystal board</label><label class="slider-row">Board size <input id="crystal-board-size" type="range" min=".5" max="3" step=".05" value="1"><output>1</output></label></div><div id="item-options-parrot" class="item-category" hidden><div class="items-row"><button class="menu-btn text-action" id="show-parrot" type="button">Add parrot</button><button class="menu-btn text-action remove-item" id="remove-parrot" type="button">Remove parrot</button></div><label class="slider-row">Size <input id="parrot-size" aria-label="Parrot size" type="range" min=".45" max="3" step=".05" value="1"><output>1</output></label><label><input id="show-parrot-perch" type="checkbox"> Parrot perch</label><label class="slider-row">Perch size <input id="parrot-perch-size" type="range" min=".5" max="2.5" step=".05" value="1"><output>1</output></label></div><div id="item-options-lightbulb" class="item-category" hidden><div class="items-lamp-row"><button id="items-lamp" class="menu-btn text-action" type="button">Groovy lightbulb</button></div><input id="lamp-visible" type="checkbox" hidden><div class="lamp-bulb-row"><label>Bulb <select id="lamp-kind"><option value="white">White</option><option value="colour">Coloured</option><option value="rainbow">Rainbow</option><option value="blacklight">Black light</option></select></label><input id="lamp-colour" type="color" value="#ffffff" aria-label="Bulb colour"></div><label class="slider-row">Brightness <input id="lamp-brightness" type="range" min="0" max="100" value="53"><output>53</output></label><label><input id="lamp-flicker" type="checkbox"> Flicker</label><label class="slider-row">Rainbow speed <input id="lamp-speed" type="range" min=".1" max="8" step=".1" value="1"><output>1</output></label><label class="slider-row">Size <input id="lamp-size" type="range" min=".6" max="2.5" step=".05" value="1"><output>1</output></label></div><div id="item-options-table" class="item-category" hidden><label><input id="show-table" type="checkbox"> Side table</label><label class="slider-row">Size <input id="table-size" aria-label="Table size" type="range" min=".6" max="2" step=".05" value="1"><output>1</output></label></div><details><summary>Shop</summary><div class="item-links"><a id="items-shop" href="https://larrysvariety.ca/Larrys_Variety_Department_Store.html#storefront" target="_blank" rel="noopener">Storefront</a><a href="https://larrysvariety.ca/Ghostprint.html" target="_blank" rel="noopener">Ghostprint</a><a href="https://larrysvariety.ca/Angel_Tarot.html" target="_blank" rel="noopener">Angel Tarot</a><a href="https://larrysvariety.ca/Bamboo_Gate_I_Ching.html" target="_blank" rel="noopener">Bamboo Gate I Ching</a><a href="https://larrysvariety.ca/Old_Road_Tarot.html" target="_blank" rel="noopener">Old Road Tarot</a></div>
+<section id="items-panel" class="utility-panel hidden" aria-label="Items"><div class="utility-heading"><span class="menu-title">Items</span><button class="menu-btn text-close" id="close-items" type="button">Close</button></div><div class="items-tabs" role="group" aria-label="Item options"><button type="button" class="menu-btn text-action" data-item-options="candle" aria-controls="item-options-candle" aria-pressed="true">candle</button><button type="button" class="menu-btn text-action" data-item-options="incense" aria-controls="item-options-incense" aria-pressed="false">incense</button><button type="button" class="menu-btn text-action" data-item-options="crystal" aria-controls="item-options-crystal" aria-pressed="false">crystal</button><button type="button" class="menu-btn text-action" data-item-options="parrot" aria-controls="item-options-parrot" aria-pressed="false">parrot</button><button type="button" class="menu-btn text-action" data-item-options="lightbulb" aria-controls="item-options-lightbulb" aria-pressed="false">lightbulb</button><button type="button" class="menu-btn text-action" data-item-options="table" aria-controls="item-options-table" aria-pressed="false">table</button></div><div id="item-options-candle" class="item-category"><div class="items-row"><button class="menu-btn text-action" id="add-candle" type="button">Add candle</button><button class="menu-btn text-action remove-item" id="remove-candle" type="button">Remove candle</button></div><div class="items-row item-kind-row"><label class="slider-row">Type <select id="candle-kind"><option selected>Beeswax</option><option>Vanilla</option><option>Cedar</option><option>Midnight Violet</option></select></label><button class="menu-btn text-action remove-item" id="snuff-candle" type="button">Extinguish candle</button></div><label class="slider-row">Height <input id="candle-height" type="range" min=".45" max="5" step=".05" value="1"><output>1</output></label><label class="slider-row">Width <input id="candle-width" type="range" min=".45" max="5" step=".05" value="1"><output>1</output></label><label class="slider-row">Colour <input id="candle-colour" type="color" value="#f2c069"></label></div><div id="item-options-incense" class="item-category" hidden><div class="items-row"><button class="menu-btn text-action" id="add-incense" type="button">Add incense</button><button class="menu-btn text-action remove-item" id="remove-incense" type="button">Remove incense</button></div><div class="items-row item-kind-row"><label class="slider-row">Type <select id="incense-kind"><option selected>Angel</option><option>Sandalwood</option><option>Wood Musk</option><option>Rain Garden</option></select></label><button class="menu-btn text-action remove-item" id="snuff-incense" type="button">Extinguish incense</button></div><label class="slider-row">Size <input id="incense-size" type="range" min=".5" max="2" step=".05" value="1"></label><label class="slider-row">Colour <input id="incense-colour" type="color" value="#906048"></label></div><div id="item-options-crystal" class="item-category" hidden><div class="items-row"><button class="menu-btn text-action" id="add-crystal" type="button">Add crystal</button><button class="menu-btn text-action remove-item" id="clear-crystals" type="button">Remove crystal</button></div><div class="items-row item-kind-row"><label>Type <select id="crystal-kind"><option selected>Quartz</option><option>Obsidian</option><option>Onyx</option><option>Tourmaline</option><option>Turquoise</option><option>Lar Amberglass</option><option>Barge Agate</option><option>Fuffonbass Smokestone</option><option>Custom</option></select></label><button id="snuff-crystal" class="menu-btn text-action remove-item" type="button">Extinguish crystal</button></div><label class="slider-row">Size <input id="crystal-size" type="range" min=".35" max="2.8" step=".05" value="1"></label><label class="slider-row">Colour <input id="crystal-colour" type="color" value="#b2b5da"></label><label class="slider-row">Glow <input id="crystal-glow" type="range" min="0" max="35" value="14"></label><label>Shape <select id="crystal-shape"><option value="point">Point cluster</option><option value="smooth">Smooth stone</option><option value="prism">Tumbled prism</option></select></label><label><input id="crystal-board" type="checkbox"> Crystal board</label><label class="slider-row">Board size <input id="crystal-board-size" type="range" min=".5" max="3" step=".05" value="1"><output>1</output></label></div><div id="item-options-parrot" class="item-category" hidden><div class="items-row"><button class="menu-btn text-action" id="show-parrot" type="button">Add parrot</button><button class="menu-btn text-action remove-item" id="remove-parrot" type="button">Remove parrot</button></div><label class="slider-row">Size <input id="parrot-size" aria-label="Parrot size" type="range" min=".45" max="3" step=".05" value="1"><output>1</output></label><label><input id="show-parrot-perch" type="checkbox"> Parrot perch</label><label class="slider-row">Perch size <input id="parrot-perch-size" type="range" min=".5" max="2.5" step=".05" value="1"><output>1</output></label></div><div id="item-options-lightbulb" class="item-category" hidden><div class="items-lamp-row"><button id="items-lamp" class="menu-btn text-action" type="button">Groovy lightbulb</button></div><input id="lamp-visible" type="checkbox" hidden><div class="lamp-bulb-row"><label>Bulb <select id="lamp-kind"><option value="white">White</option><option value="colour">Coloured</option><option value="rainbow">Rainbow</option><option value="blacklight">Black light</option></select></label><input id="lamp-colour" type="color" value="#ffffff" aria-label="Bulb colour"></div><label class="slider-row">Brightness <input id="lamp-brightness" type="range" min="0" max="100" value="53"><output>53</output></label><label><input id="lamp-flicker" type="checkbox"> Flicker</label><label class="slider-row">Rainbow speed <input id="lamp-speed" type="range" min=".1" max="8" step=".1" value="1"><output>1</output></label><label class="slider-row">Size <input id="lamp-size" type="range" min=".6" max="2.5" step=".05" value="1"><output>1</output></label></div><div id="item-options-table" class="item-category" hidden><label><input id="show-table" type="checkbox"> Side table</label><label class="slider-row">Size <input id="table-size" aria-label="Table size" type="range" min=".6" max="2" step=".05" value="1"><output>1</output></label></div><details><summary>Shop</summary><div class="item-links"><a id="items-shop" href="https://lmac-cloud.github.io/thelarrylarrylarrygallery/lar-mazon.html" target="_blank" rel="noopener">Storefront</a><a href="https://larrysvariety.ca/Ghostprint.html" target="_blank" rel="noopener">Ghostprint</a><a href="https://larrysvariety.ca/Angel_Tarot.html" target="_blank" rel="noopener">Angel Tarot</a><a href="https://larrysvariety.ca/Bamboo_Gate_I_Ching.html" target="_blank" rel="noopener">Bamboo Gate I Ching</a><a href="https://larrysvariety.ca/Old_Road_Tarot.html" target="_blank" rel="noopener">Old Road Tarot</a></div>
   <label title="Changes the destination of the Storefront link" class="slider-row">Shop address <input type="url" id="items-shop-url" placeholder="https://larrysvariety.ca/…"></label></details></section>
 
 <section id="bg-panel" class="utility-panel hidden" aria-label="Backgrounds">
@@ -1571,7 +1591,7 @@ input[type=range]{accent-color:#595959}
 </div>
 <label class="slider-row">Random interval (s) <input title="Seconds between effects. Select two or more effects to limit Random to those effects." id="bg-interval" type="range" min="2" max="120" step="1" value="15" disabled><output>15</output></label>
 <hr class="panel-divider"><div class="opart-current-row"><p id="opart-current" aria-live="polite">moving stars</p><button type="button" class="menu-btn text-action" id="opart-reset">Reset</button></div>
-<label class="slider-row">Direction <select id="visual-direction"><option value="spiral" hidden disabled>Spiral</option><option value="down">Down / clockwise</option><option value="up">Up / counterclockwise</option><option value="left">Left</option><option value="right">Right</option><option value="random">Random</option></select></label>
+<label class="slider-row">Direction <select id="visual-direction"><option value="forward" selected>Forward</option><option value="backward">Backward</option><option value="spiral">Spiral</option><option value="down">Down / clockwise</option><option value="up">Up / counterclockwise</option><option value="left">Left</option><option value="right">Right</option><option value="random">Random</option></select></label>
 <label class="slider-row">Speed <input id="visual-speed" type="range" min="0" max="12" step="0.1" value="1"><output>1</output></label>
 <label class="slider-row">Size <input id="visual-size" type="range" min="0.25" max="60" step="0.25" value="1"><output>1</output></label>
 <label class="slider-row">Width <input id="visual-thickness" type="range" min="0.5" max="48" step="0.5" value="1.5"><output>1.5</output></label>
@@ -1638,7 +1658,7 @@ input[type=range]{accent-color:#595959}
     <div class="radio-popup" id="radio-volume-popup" popover><input aria-label="Audio volume" id="radio-volume-level" type="range" min="0" max="1" step=".01" value=".55"></div>
     <div class="radio-popup" id="radio-more-popup" popover><button type="button" class="menu-btn text-action" id="radio-download" aria-label="Download current track">↓</button></div>
   </div><div class="radio-progress-row"><input id="radio-progress" type="range" aria-label="Track position" value="0" min="0" max="1000" disabled><span id="radio-time">0:00 / 0:00</span></div>
-  <div class="bg-inline radio-actions"><button type="button" class="menu-btn text-action" id="radio-load">Load</button><button type="button" class="menu-btn text-action" id="radio-play">Play</button><button type="button" class="menu-btn text-action" id="radio-mode" aria-label="Playback mode: repeat one">one</button><span class="radio-arrows"><button type="button" class="menu-btn text-action" id="radio-prev" aria-label="Previous track">←</button><button type="button" class="menu-btn text-action" id="radio-next" aria-label="Next track">→</button></span></div>
+  <div class="radio-actions"><span class="radio-playback"><button type="button" class="menu-btn text-action" id="radio-load">Load</button><button type="button" class="menu-btn text-action" id="radio-play">Play</button><button type="button" class="menu-btn text-action" id="radio-mode" aria-label="Playback mode: repeat one">one</button></span><span class="radio-arrows"><button type="button" class="menu-btn text-action" id="radio-prev" aria-label="Previous track">←</button><button type="button" class="menu-btn text-action" id="radio-next" aria-label="Next track">→</button></span></div>
   <input type="file" id="radio-files" accept="audio/*,.mp3,.wav,.ogg,.m4a" multiple hidden>
   <p id="radio-status" role="status"></p>
     <details id="radio-songs"><summary>Show list</summary>
@@ -1668,7 +1688,7 @@ input[type=range]{accent-color:#595959}
   <label class="slider-row">Outline width <input id="bg-appearance-outline-width" type="range" min="1" max="6" value="1"><output>1</output></label>
   <label class="slider-row">Opacity <input id="bg-appearance-opacity" type="range" min="0" max="100" value="21"><output>21</output></label>
   </div><hr class="panel-divider">
-  <label class="slider-row">Font size <input id="bg-appearance-size" type="range" min="10" max="24" value="19"><output>19</output></label>
+  <div class="appearance-size-row"><label class="slider-row">Size <input id="bg-appearance-size" type="range" min="10" max="24" value="12"><output>12</output></label><button type="button" class="menu-btn text-action" id="apply-menu-font-all">Apply all</button></div>
   <div class="appearance-font-row"><label class="slider-row">Font <select id="bg-appearance-font"><option value="">Studio default</option><option>Arial</option><option>Verdana</option><option>Georgia</option></select></label>
   <button type="button" class="menu-btn" id="bg-appearance-load-font">Load font</button>
     </div><div class="bg-inline">
@@ -1716,8 +1736,8 @@ input[type=range]{accent-color:#595959}
         <label class="slider-row">Flight speed <input id="launch-line-duration" type="range" min=".2" max="7.2" step=".1" value="1"><output>1</output></label>
         <label class="slider-row">Travel %<input id="launch-line-travel" type="range" min="0" max="115" step="1" value="52"><output>52</output></label>
         <label class="slider-row">Repeats<input id="launch-line-repeats" type="range" min="1" max="10" step="1" value="1"><output>1</output></label>
-        <label class="slider-row">Copies<input id="launch-line-count" type="range" min="1" max="10" step="1" value="1"><output>1</output></label>
-        <label class="slider-row">Spacing<input id="launch-line-spacing" type="range" min="0" max="400" step="1" value="22"><output>22</output></label>
+        <label class="slider-row">Copies<input id="launch-line-count" type="range" min="1" max="10" step="1" value="2"><output>2</output></label>
+        <label class="slider-row">Spacing<input id="launch-line-spacing" type="range" min="0" max="400" step="1" value="7"><output>7</output></label>
         <label class="slider-row">Width<input id="launch-line-width" type="range" min="1" max="100" step="1" value="5"><output>5</output></label>
         <label class="slider-row">Glow <input id="launch-line-glow" type="range" min="0" max="45" value="12"><output>12</output></label><label class="slider-row">Start scale % <input id="launch-line-start-size" type="range" min="1" max="400" step="1" value="3"><output>3</output></label>
       </div>
@@ -1871,9 +1891,19 @@ document.addEventListener('DOMContentLoaded', function() {
   const content = byId('ream-content');
   const preview = byId('active-lines');
   const machine = byId('typewriter-wrapper');
+  // Model coordinates are measured on the 760 × 445 artwork.
+  const formBottomInset=8;
+  const formAreas={
+    ship:{base:375,center:375,top:152,bottom:241,width:290},
+    barge:{base:367,center:385,top:57,bottom:113,width:285},
+    mobile:{base:383,center:374,top:171,bottom:231,width:292},
+    whale:{base:393,center:382,top:137,bottom:196,width:171},
+    teapot:{base:387,center:383,top:115,bottom:174,width:176}
+  };
   const menu = byId('menu-panel');
+  const startupFont="'Dune Rise', sans-serif";
   const settings = {
-    font: "'Chomsky', serif", size: 20, spacing: 1.4,
+    font:startupFont, size: 20, spacing: 1.4,
     margin: 124, vertical: 72, align: 'right', poetry: false
   };
   const dimensions = { card: [560, 350], letter: [561, 726] };
@@ -2070,6 +2100,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.documentElement.style.setProperty('--ream-scale', scale);
     const machineScale = Math.min(Number(byId('slider-tw').value), innerWidth / 735);
     document.documentElement.style.setProperty('--tw-scale', machineScale);
+    machine.style.setProperty('--form-scale',Math.min(1,innerWidth/780,innerHeight/410));
   }
 
   function updateDisplay(target = position) {
@@ -2090,14 +2121,16 @@ document.addEventListener('DOMContentLoaded', function() {
       content.append(line);
     }
     const currentPage = pages[pageIndex];
+    const scrolling=read('paper-drape')==='scroll';
+    const formArea=formAreas[machine.dataset.form];
+    const novelty=formArea&&read('paper-drape')==='novelty';
     const activeRows = currentPage.rows.filter(row => row.start <= position).slice(rollOpen?-18:-4);
     const previous = documentText[position - 1];
     const rowAtCaret = activeRows.at(-1);
     const returnBreak = previous && (previous.char === '\n' || previous.char === '\f'
       || (previous.char === ' ' && previous.style.poetry));
     const blank = !rowAtCaret || (returnBreak && rowAtCaret.start !== position);
-    const formAreas={ship:315,barge:270,mobile:292,whale:225,teapot:250};
-    const formWidth=formAreas[machine.dataset.form];
+    const formWidth=novelty?formArea.width:undefined;
     const formRow=row=>formWidth?{...row,indent:0,style:{...row.style,align:'center',margin:8}}:row;
     for(const row of activeRows.slice(formWidth?-2:rollOpen?-18:-4)){
       preview.append(paintRow(formRow(row),formWidth||width));
@@ -2109,6 +2142,13 @@ document.addEventListener('DOMContentLoaded', function() {
       }),formWidth||width));
     }
     if(paperLoaded)drawCaret(preview, true);
+    if(scrolling)paintMachineScroll(width,blank);
+    if(formWidth){
+      const area=formArea;
+      const rows=[...preview.querySelectorAll('.writing-row')];
+      const total=rows.reduce((sum,row)=>sum+parseFloat(row.style.height),0);
+      preview.style.zoom=total>0?Math.min(1,(area.bottom-area.top)/total):1;
+    }else preview.style.removeProperty('zoom');
     if (paperEditing && !selection && byId('show-paper-caret').checked) drawCaret(content);
     byId('page-indicator').textContent = [byId('number-prefix').value.trim(),pageIndex+1].filter(Boolean).join(' ');
     updateAppearance();
@@ -2121,6 +2161,25 @@ document.addEventListener('DOMContentLoaded', function() {
     byId('paper-prev').disabled = pageIndex === 0;
     refreshRoll();
     syncMachinePaper();
+  }
+
+  function paintMachineScroll(width,blank){
+    const height=machinePaperLength();
+    const rows=paginate('roll').flatMap(page=>page.rows).filter(row=>row.start<=position);
+    let distance=blank?settings.size*settings.spacing:0;
+    const fragment=document.createDocumentFragment();
+    for(let i=rows.length-1;i>=0;i--){
+      const row=rows[i];
+      const near=height/(height+distance);
+      const far=height/(height+distance+row.height);
+      if(near<.12)break;
+      const line=paintRow(row,width);
+      line.style.cssText+=`position:absolute;bottom:${height*(1-near)}px;left:50%;transform-origin:bottom left;transform:scale(${near*far}) translateX(-50%);`;
+      line.style.left=`calc(50% - ${parseFloat(line.style.marginLeft)*near*far}px)`;
+      fragment.append(line);
+      distance+=row.height;
+    }
+    preview.replaceChildren(fragment);
   }
 
   function focusTypingBox(preserveSelection = false) {
@@ -2362,7 +2421,7 @@ document.addEventListener('DOMContentLoaded', function() {
     input.addEventListener('keydown', event => {
       if (event.isComposing || composing) return;
       const key = event.key;
-      if(input===liveInput&&byId('paper-feed').value==='manual'&&!paperLoaded&&!event.ctrlKey&&!event.metaKey&&
+      if(input===liveInput&&read('paper-drape')!=='scroll'&&byId('paper-feed').value==='manual'&&!paperLoaded&&!event.ctrlKey&&!event.metaKey&&
          (key.length===1||['Backspace','Delete','Enter'].includes(key))){
         event.preventDefault();return;
       }
@@ -2442,7 +2501,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function insert(text) {
     if (!text) return;
-    if(byId('paper-feed').value==='manual'&&!paperLoaded&&!machine.classList.contains('hidden')&&!paperEditing)return;
+    if(read('paper-drape')!=='scroll'&&byId('paper-feed').value==='manual'&&!paperLoaded&&!machine.classList.contains('hidden')&&!paperEditing)return;
     const lastPage = pageIndex;
     previewSnapshot=paperLoaded&&!rollOpen&&pages[pageIndex]?.rows.length?preview.cloneNode(true):null;
     if(previewSnapshot)previewSnapshot.removeAttribute('id');
@@ -2532,8 +2591,8 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   byId('paper-kind').addEventListener('change', () => updateDisplay(selection?.[0] ?? position));
   byId('return-sound').addEventListener('change', playReturn);
-  ['slider-tw', 'slider-ream','slider-letter'].forEach(id => byId(id).addEventListener('input', applyPaperScale));
-  window.addEventListener('resize', applyPaperScale);
+  ['slider-tw','slider-ream','slider-letter'].forEach(id=>byId(id).addEventListener('input',()=>updateDisplay(selection?.[0]??position)));
+  window.addEventListener('resize',()=>updateDisplay(selection?.[0]??position));
 
   let panelDepth=120;
   function raisePanel(panel){panel.style.zIndex=String(++panelDepth);}
@@ -2936,13 +2995,15 @@ document.addEventListener('DOMContentLoaded', function() {
     colour:'#ffffff',back:'#000000',speed:1,size:1,width:1.5,rainbow:false,rainbowStart:0,
     backRainbow:false,backStart:0,direction:'down',phase:0,randomAngle:0,nextDirection:0
   };
-  const configurations=Object.fromEntries(labels.map(button=>[button.dataset.bg,{...visualDefaults}]));
+  const configurations=Object.fromEntries(labels.map(button=>[button.dataset.bg,{
+    ...visualDefaults,direction:button.dataset.bg==='stars'?'forward':visualDefaults.direction
+  }]));
   const fields={colour:'visual-colour',back:'visual-back',speed:'visual-speed',size:'visual-size',width:'visual-thickness',rainbow:'visual-rainbow',backRainbow:'visual-back-rainbow',direction:'visual-direction'};
   const depthStars=Array.from({length:220},()=>({
     x:Math.random()-.5,y:Math.random()-.5,
     size:.45+Math.random()**3*1.9,opacity:.28+Math.random()*.72
   }));
-  let starDriftX=0,starDriftY=1,starSpin=0;
+  let starDriftX=0,starDriftY=0,starSpin=0,starDepth=1;
   const publishedMediaBase='https://lmac-cloud.github.io/thelarrylarrylarrygallery/';
   const sharedMediaBase=location.href.toLowerCase().startsWith(publishedMediaBase.toLowerCase())
     ?publishedMediaBase
@@ -3014,8 +3075,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function syncVisuals(){
     const settings=configurations[editMode];
-    const spiralOption=byId('visual-direction').querySelector('[value=spiral]');
-    spiralOption.hidden=spiralOption.disabled=editMode!=='stars';
+    for(const option of byId('visual-direction').querySelectorAll('[value=spiral],[value=forward],[value=backward]')){
+      option.hidden=option.disabled=editMode!=='stars';
+    }
     for(const [key,id] of Object.entries(fields)){
       const input=byId(id);
       if(input.type==='checkbox')input.checked=settings[key];
@@ -3082,6 +3144,7 @@ document.addEventListener('DOMContentLoaded', function() {
   byId('bg-interval').oninput=()=>{nextEffect=performance.now()+number('bg-interval')*1000;};
   byId('opart-reset').onclick=()=>{
     for(const config of Object.values(configurations))Object.assign(config,visualDefaults,{lastPaint:undefined});
+    configurations.stars.direction='forward';
     for(const tick of ticks)tick.checked=false;
     byId('bg-random').checked=false;
     byId('bg-random').onchange();
@@ -3284,7 +3347,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       return config.randomAngle;
     }
-    return {down:0,up:Math.PI,left:Math.PI/2,right:-Math.PI/2,spiral:0}[config.direction];
+    return {down:0,up:Math.PI,left:Math.PI/2,right:-Math.PI/2,spiral:0,forward:0,backward:0}[config.direction];
   }
   function oriented(w,h,angle,draw){
     const sideways=Math.abs(Math.sin(angle))>.5;
@@ -3300,19 +3363,27 @@ document.addEventListener('DOMContentLoaded', function() {
   function flyStars(w,h,config,elapsed,angle){
     const spiral=config.direction==='spiral';
     const easing=1-Math.exp(-elapsed/280);
-    starDriftX+=((spiral?0:Math.sin(angle))-starDriftX)*easing;
-    starDriftY+=((spiral?0:Math.cos(angle))-starDriftY)*easing;
+    const backward=config.direction==='backward';
+    const straight=spiral||backward||config.direction==='forward';
+    starDepth+=((backward?-1:1)-starDepth)*easing;
+    starDriftX+=((straight?0:Math.sin(angle))-starDriftX)*easing;
+    starDriftY+=((straight?0:Math.cos(angle))-starDriftY)*easing;
     starSpin+=((spiral?1:0)-starSpin)*easing;
     const travel=elapsed*config.speed*.00024;
     const aspect=w/h;
     for(const star of depthStars){
       const x=star.x,y=star.y;
-      star.x+=travel*(x*.8+starDriftX*.7-y*starSpin/aspect);
-      star.y+=travel*(y*.8+starDriftY*.7+x*starSpin*aspect);
+      star.x+=travel*(x*.8*starDepth+starDriftX*.7-y*starSpin/aspect);
+      star.y+=travel*(y*.8*starDepth+starDriftY*.7+x*starSpin*aspect);
       if(Math.abs(star.x)>.53||Math.abs(star.y)>.53){
         // Refill the field across the viewport to keep its density steady.
         star.x=(Math.random()-.5)*.98;
         star.y=(Math.random()-.5)*.98;
+      }
+      if(starDepth<0&&travel>0&&Math.hypot(star.x,star.y)<.025){
+        const edge=Math.random()-.5;
+        const side=Math.random()<.5?-.5:.5;
+        [star.x,star.y]=Math.random()<.5?[side,edge]:[edge,side];
       }
       ctx.globalAlpha=star.opacity;
       ctx.beginPath();
@@ -3851,7 +3922,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const coverFields=['book-format','cover-title','cover-subtitle','cover-font','cover-colour','cover-ink','cover-position','cover-title-size','cover-fill','cover-image-size','cover-image-x','cover-image-y','book-edge','book-binding'];
   const leafFields={'book-font':'font','book-size':'size','book-spacing':'spacing','book-align':'align','book-paper-colour':'paper','book-page-ink':'ink'};
   const bookLeaves=[byId('book-left'),byId('book-right')];
-  const makeLeaf=()=>({text:'',font:'Georgia, serif',size:20,spacing:1.4,align:'left',paper:byId('book-paper-all').checked?byId('book-paper-colour').value:'#f5f1e8',ink:'#242020',images:[]});
+  const makeLeaf=()=>({text:'',font:startupFont,size:20,spacing:1.4,align:'left',paper:byId('book-paper-all').checked?byId('book-paper-colour').value:'#f5f1e8',ink:'#242020',images:[]});
   let bookPages=[makeLeaf(),makeLeaf()],coverImage='',spread=0,side=0,frameDrag=null,armedFrame=null;
   let coverReadVersion=0;
   const currentLeaf=()=>bookPages[spread*2+side];
@@ -4553,6 +4624,15 @@ document.addEventListener('DOMContentLoaded', function() {
   function drawWritingForm(now=performance.now()){
     const mode=byId('writing-form').value;
     machine.dataset.form=mode;
+    byId('slider-tw').disabled=mode!=='typewriter';
+    const area=formAreas[mode];
+    if(area){
+      machine.style.setProperty('--form-canvas-bottom',formBottomInset+area.base-formCanvas.height+'px');
+      machine.style.setProperty('--form-paper-bottom',formBottomInset+area.base-area.bottom+'px');
+      machine.style.setProperty('--form-paper-height',area.bottom-area.top+'px');
+      machine.style.setProperty('--form-paper-width',area.width+'px');
+      machine.style.setProperty('--form-paper-x',area.center-formCanvas.width/2+'px');
+    }
     const c=formInk;
     c.clearRect(0,0,760,445);
     if(mode==='typewriter')return;
@@ -4613,7 +4693,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   machine.dataset.form='typewriter';
-  byId('writing-form').onchange=()=>{drawWritingForm();updateDisplay();};
+  byId('writing-form').onchange=()=>{
+    const next=read('writing-form');
+    if(read('paper-drape')!=='scroll')byId('paper-drape').value=next==='typewriter'?'normal':'novelty';
+    drawWritingForm();updateDisplay();
+  };
 
   const citationDialog=byId('mla-dialog');
   const citationForm=byId('mla-form');
@@ -4729,7 +4813,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const rollView=byId('roll-view'),rollScroll=byId('roll-scroll'),rollWriting=byId('roll-writing');
   let rollOpen=false;
   function setRoll(open){
-    const wasOpen=rollOpen;
     if(open&&!ream.classList.contains('hidden'))byId('btn-toggle-paper').click();
     rollOpen=open;
     rollView.classList.toggle('roll-stowed',!open);
@@ -4738,7 +4821,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const paperShown=open||!ream.classList.contains('hidden');
     byId('btn-toggle-paper').classList.toggle('active',paperShown);
     byId('btn-toggle-paper').setAttribute('aria-expanded',String(paperShown));
-    if(wasOpen&&!open)byId('paper-drape').value='normal';
     syncPaperButtons();
     refreshRoll();syncMachinePaper();
   }
@@ -4920,11 +5002,10 @@ document.addEventListener('DOMContentLoaded', function() {
     for(let repeat=0;repeat<repeats;repeat++){
       for(let i=0;i<count;i++){
         const spread=fan&&count>1 ? (groupAngle===undefined?TAU*i/count:groupAngle+(i/(count-1)-.5)*1.55) : groupAngle;
-        const stagger=fan?0:i*5;
         flyingLines.push({
           stroke:{...stroke,...copyInk,width:matchLine?stroke.width:number('launch-line-width'),glow:matchLine?stroke.glow:number('launch-line-glow'),build:matchLine?stroke.build:false},points,length,mode,endScale,center,travel,duration,edge,direction,
           startScale:number('launch-line-start-size')/100,
-          start:now+repeat*duration*.72+stagger,spin:checked('launch-line-spin'),
+          start:now+repeat*duration*.72,spin:checked('launch-line-spin'),
           reverse:origin==='behind'||checked('launch-line-reverse'),fuseReverse:checked('launch-line-fuse-reverse'),angle:spread,
           offset:count===1||fan?0:(i-(count-1)/2)*number('launch-line-spacing'),
           x:(bounds.left+bounds.right)/2,y:(bounds.top+bounds.bottom)/2
@@ -4959,7 +5040,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     drawing.save();
     drawing.globalAlpha=Math.min(1,p*14,(1-p)*6);
-    drawing.translate((flight.edge?.[0]??(flight.center?drawWidth/2:flight.x+13))+dx+flight.offset,(flight.edge?.[1]??(flight.center?drawHeight/2:flight.y-13))+dy-flight.offset);
+    const spacingAngle=angle??0;
+    drawing.translate(
+      (flight.edge?.[0]??(flight.center?drawWidth/2:flight.x+13))+dx-Math.sin(spacingAngle)*flight.offset,
+      (flight.edge?.[1]??(flight.center?drawHeight/2:flight.y-13))+dy+Math.cos(spacingAngle)*flight.offset
+    );
     if(flight.spin)drawing.rotate(p*TAU);
     drawing.scale(zoom,zoom);drawing.translate(-flight.x,-flight.y);
     drawing.lineWidth=stroke.width;drawing.shadowBlur=stroke.glow;
@@ -5005,19 +5090,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
   let paperLoaded=true,paperAdvanced=0,previewSnapshot=null;
   const activeSlot=byId('active-paper-slot');
+  function machinePaperLength(){
+    const area=formAreas[machine.dataset.form];
+    const scale=area?Math.min(1,innerWidth/780,innerHeight/410):Math.min(number('slider-tw'),innerWidth/735);
+    const base=area?formBottomInset+area.base-area.bottom:146;
+    return Math.max(24,Math.min(number('machine-paper-length'),innerHeight/scale-base-6));
+  }
   function syncMachinePaper(){
-    const manual=byId('paper-feed').value==='manual';
+    const drape=read('paper-drape');
+    const manual=drape==='normal'&&read('paper-feed')==='manual';
     machine.classList.toggle('manual-feed',manual);
     machine.classList.toggle('paper-empty',manual&&!paperLoaded);
     machine.classList.toggle('paper-ready',manual&&!paperLoaded);
-    const drape=byId('paper-drape').value;
-    machine.classList.toggle('paper-roll-on',drape!=='normal');
+    machine.classList.toggle('paper-roll-on',drape==='scroll');
     machine.dataset.drape=drape;
-    const paperLength=number('machine-paper-length');
+    byId('paper-drape').querySelector('[value=novelty]').disabled=!formAreas[machine.dataset.form];
+    byId('paper-feed').disabled=drape==='scroll';
+    const paperLength=machinePaperLength();
     const length=manual?9+paperAdvanced*(paperLength-9)/10
       :paperLength;
     machine.style.setProperty('--machine-paper-length',length+'px');
-    byId('platen-knob').disabled=false;
+    byId('platen-knob').disabled=drape==='scroll';
   }
   function hideMachineForPaper(){
     if(machine.classList.contains('hidden'))return;
@@ -5027,7 +5120,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if(!ream.classList.contains('hidden')&&byId('paper-edit-enabled').checked)focusPaper();
   }
   function fallMachinePaper(manual){
-    if(machine.classList.contains('hidden')||!paperLoaded)return;
+    if(read('paper-drape')==='scroll'||machine.classList.contains('hidden')||!paperLoaded)return;
     const sheet=document.createElement('div');
     sheet.className='fallen-sheet floating-sheet';
     if(previewSnapshot)sheet.append(previewSnapshot);
@@ -5057,8 +5150,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     focusTypingBox(true);
   };
-  byId('paper-drape').onchange=syncMachinePaper;
-  byId('machine-paper-length').addEventListener('input',syncMachinePaper);
+  byId('paper-drape').onchange=()=>updateDisplay();
+  byId('machine-paper-length').addEventListener('input',()=>updateDisplay());
   byId('paper-roll').addEventListener('click',syncMachinePaper);
   byId('roll-close').addEventListener('click',syncMachinePaper);
   byId('paper-card').addEventListener('click',syncMachinePaper);
@@ -5153,7 +5246,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   const paletteGroups={
-    Typewriter:[['font-options','Font'],['slider-tw','Size'],['machine-colour','Body colour'],['writing-form','Shape']],
+    Typewriter:[['font-options','Font'],['slider-tw','Size'],['machine-colour','Body colour'],['writing-form','Model']],
     Paper:[['paper-card','Cue card'],['paper-letter','Letter'],['paper-roll','Scroll'],['paper-align-palette','Align'],['size','Text size'],['card-colour','Cue card colour'],['paper-prev','Previous page'],['paper-next','Next page']],
     'Page options':[['page-title-text','Page title'],['btn-new-page','New page'],['download','Download']],
     Book:[['open-book','Open book']],
@@ -5328,11 +5421,49 @@ document.addEventListener('DOMContentLoaded', function() {
     appearanceFont.add(new Option(button.textContent.trim(),family));
     titleFont.add(new Option(button.textContent.trim(),family));
   }
-  appearanceFont.value="'Chomsky', serif";
+  function applyFontEverywhere(family){
+    if(documentText.length)rememberEdit();
+    settings.font=family;
+    for(const item of documentText)item.style={...item.style,font:family};
+    document.documentElement.style.setProperty('--font-family',family);
+    const label=[...appearanceFont.options].find(option=>option.value===family)?.textContent||family;
+    for(const id of ['bg-appearance-font','bg-appearance-title-font','bg-text-font','cover-font','book-font']){
+      const select=byId(id);
+      if(![...select.options].some(option=>option.value===family))select.add(new Option(label,family));
+      select.value=family;
+    }
+    applyBackgroundAppearance();
+    byId('bg-text-font').dispatchEvent(new Event('change',{bubbles:true}));
+    for(const leaf of bookPages)leaf.font=family;
+    updateCover();
+    showSpread();
+    widths.clear();
+    syncFormatting();
+    updateDisplay();
+  }
+  byId('apply-writing-font-all').onclick=()=>{
+    const chosen=document.querySelector('#font-options [data-font].selected');
+    applyFontEverywhere(chosen?.dataset.font||settings.font);
+  };
+  byId('apply-menu-font-all').onclick=()=>applyFontEverywhere(appearanceFont.value||"'Courier New', monospace");
+  appearanceFont.value=startupFont;
+  for(const id of ['bg-text-font','cover-font','book-font'])byId(id).value=startupFont;
   titleFont.value='';
   const appearanceDefaults=appearanceFields.map(field=>field.type==='checkbox'?field.checked:field.value);
+  let appliedMenuFont;
   function applyBackgroundAppearance(){
     const setting=key=>read('bg-appearance-'+key);
+    const font=setting('font');
+    if(font!==appliedMenuFont){
+      appliedMenuFont=font;
+      const name=appearanceFont.selectedOptions[0]?.textContent.trim().replace(/[ _-]/g,'').toLowerCase();
+      if(name==='dunerise'){
+        const size=byId('bg-appearance-size');
+        size.value='12';
+        size.nextElementSibling.value=size.value;
+        size.style.setProperty('--fill',100*(size.value-size.min)/(size.max-size.min)+'%');
+      }
+    }
     for(const key of ['text','outline','select','backing','button-text','outer','button-face','machine-outline','machine-title']){
       appearanceRoot.style.setProperty('--bg-'+key,setting(key));
     }
