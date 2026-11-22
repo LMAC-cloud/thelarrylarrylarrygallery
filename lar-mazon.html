@@ -51,7 +51,7 @@ function productHref(value){
  }catch{return ''}
 }
 const featuredIds = ['digital-ghostprint','digital-typewriter','digital-fortunes-starfield','digital-mathelebet','digital-budgie','digital-casino','digital-starfield','digital-angel','digital-bamboo','digital-old-road'];
-const publishedFiles = new Set(['Ghostprint.html','Starfield_Typewriter.html','Fortunes_Starfield.html','Angel_Tarot.html','Bamboo_Gate_I_Ching.html','Mathelebet.html','Budgie_Bazaar_Merge.html','Starfield_First_Experiment.html','niagara_lar_casino.html','Old_Road_Tarot.html']);
+const publishedFiles = new Set(['Ghostprint.html','Starfield_Typewriter.html','Fortunes_Starfield.html','Angel_Tarot.html','Bamboo_Gate_I_Ching.html','Mathelebet.html','Budgie_Bazaar_Merge.html','MissionEnterprose.html','niagara_lar_casino.html','Old_Road_Tarot.html']);
 function publishedLink(value){
  const filename = (value || '').replace(/^\.\//,'');
  return publishedFiles.has(filename) ? 'https://larrysvariety.ca/' + filename : value;
@@ -137,7 +137,7 @@ const DIGITAL_LISTINGS=[["typewriter", "Starfield Typewriter", "Writing Studio",
 DIGITAL_LISTINGS.push(
  ['fortunes-starfield','Fortunes Starfield','Starfield','Choose a fortune among the stars and visit the Wisdom Well or Stellar Orchard.','Fortunes_Starfield.html','Open'],
  ['budgie','Budgie Bazaar Merge','Games','Visit the Budgie Bazaar and see what happens when two matching birds meet.','Budgie_Bazaar_Merge.html','Play'],
- ['starfield','Starfield First Experiment','Starfield','Open the first Starfield experiment.','Starfield_First_Experiment.html','Open'],
+ ['starfield','Mission Enterprose','Starfield','Open Mission Enterprose.','MissionEnterprose.html','Open'],
  ['casino','Niagara Lar Casino','Games','Visit the Niagara Lar Casino.','niagara_lar_casino.html','Play'],
  ['old-road','Old Road Tarot','Fortune Decks','Open the Old Road Tarot deck.','Old_Road_Tarot.html','Open deck']
 );
