@@ -2351,6 +2351,91 @@ body {
     -webkit-filter: none !important;
 }
 
+/* River carriers from the barrel, surfboard and floating-frame editions. */
+.paintingWrap[data-river-carrier^="barrel"]:not(.immortalized)::before,
+.paintingWrap[data-river-carrier^="barrel"]:not(.immortalized)::after {
+    display: none !important;
+}
+.paintingWrap[data-river-carrier^="barrel"]:not(.immortalized) .paintingFrame {
+    display: grid;
+    place-items: center;
+    box-sizing: border-box;
+    width: clamp(150px, 16vw, 220px) !important;
+    height: clamp(76px, 8.15vw, 112px) !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 26% / 25% !important;
+    overflow: hidden;
+    background:
+        linear-gradient(0deg, #281103b8, transparent 33% 68%, #ffbd6445),
+        repeating-linear-gradient(0deg, #723c1b 0 2px, transparent 2px 12px),
+        linear-gradient(90deg, #391b0a, #9a5422 19%, #783c17 45%, #a95f2a 65%, #391b0a) !important;
+    box-shadow: inset 0 0 16px #32180a, 0 10px 20px #0009 !important;
+}
+.paintingWrap[data-river-carrier^="barrel"]:not(.immortalized) .paintingFrame::before,
+.paintingWrap[data-river-carrier^="barrel"]:not(.immortalized) .paintingFrame::after {
+    content: "" !important;
+    position: absolute;
+    inset: 6% auto !important;
+    width: 6%;
+    border: 0 !important;
+    border-radius: 5px !important;
+    background: linear-gradient(90deg,#151515,#4a4740,#141414);
+    box-shadow: 1px 0 4px #000a !important;
+}
+.paintingWrap[data-river-carrier^="barrel"]:not(.immortalized) .paintingFrame::before { left: 9% !important; }
+.paintingWrap[data-river-carrier^="barrel"]:not(.immortalized) .paintingFrame::after { right: 9% !important; }
+.paintingWrap[data-river-carrier^="barrel"]:not(.immortalized) .paintingCanvas {
+    width: 32% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    aspect-ratio: 1.28;
+    object-fit: cover;
+    box-sizing: border-box;
+    border: 3px solid #d7be91 !important;
+    border-radius: 4px;
+}
+.riverSurfboard {
+    position: absolute;
+    left: 50%;
+    top: calc(100% - 6px);
+    width: 160%;
+    height: clamp(20px, 2.5vw, 36px);
+    box-sizing: border-box;
+    transform: translateX(-50%) rotate(7deg);
+    border: 2px solid #c9c9c5;
+    border-radius: 58% 58% 22% 22% / 48% 48% 24% 24%;
+    background: linear-gradient(#fff, #fbfbfa 48%, #e8e8e5);
+    box-shadow: 0 7px 13px #0007, inset 0 -3px 5px #0002;
+    pointer-events: none;
+}
+.riverSurfboard::after {
+    content: "";
+    position: absolute;
+    inset: auto 7% -13px auto;
+    width: 14px;
+    height: 16px;
+    background: linear-gradient(90deg, #c7c7c3, #fff, #b3b3af);
+    clip-path: polygon(0 0, 100% 0, 55% 100%);
+}
+.paintingWrap[data-river-carrier="frame-board"] .riverSurfboard { width: 200%; }
+.riverSurfMast {
+    position: absolute;
+    left: 3px;
+    top: -24px;
+    bottom: -14px;
+    width: 5px;
+    background: linear-gradient(90deg,#7b6a4c,#d8c89d,#6d5b3d);
+    border-radius: 2px;
+    box-shadow: 0 1px 4px #0009;
+    pointer-events: none;
+}
+.riverSurfboard.departingRiverBoard {
+    position: fixed;
+    z-index: 8;
+    transform: none;
+}
+
 /* Popup image/frame remain crisp and substantial; only image blur changes. */
 #inspectionFrame,
 #inspectionFrame::before,
@@ -3846,6 +3931,7 @@ function immortalizePainting(
     painting.dataset.revealed = "false";
     painting.dataset.rescued = "true";
     painting.dataset.rescuing = "false";
+    delete painting.dataset.riverCarrier;
     painting.classList.add("immortalized");
     painting.style.pointerEvents = "auto";
 
@@ -4418,6 +4504,7 @@ function ropeRescue(
     painting.style.opacity = "1";
 
     painting.dataset.rescuing = "true";
+    releaseRiverBoard(painting);
     painting.dataset.ropeCatchX = String(catchX);
     painting.dataset.ropeCatchY = String(catchY);
     painting.dataset.frozenCenterX = String(frozenCenterX);
@@ -4534,6 +4621,56 @@ function createBrokenRopes(
    CREATE PAINTING
    ============================================================ */
 
+const riverCarrierDeck = [];
+
+function addRiverCarrier(painting) {
+    if (!riverCarrierDeck.length) {
+        riverCarrierDeck.push("barrel", "barrel-board", "frame-board", "frame");
+    }
+    const index = Math.floor(Math.random() * riverCarrierDeck.length);
+    const [carrier] = riverCarrierDeck.splice(index, 1);
+    painting.dataset.riverCarrier = carrier;
+
+    if (carrier.endsWith("-board")) {
+        const surfboard = document.createElement("div");
+        surfboard.className = "riverSurfboard";
+        surfboard.setAttribute("aria-hidden", "true");
+        painting.prepend(surfboard);
+    }
+
+    if (carrier === "frame-board") {
+        const mast = document.createElement("div");
+        mast.className = "riverSurfMast";
+        mast.setAttribute("aria-hidden", "true");
+        painting.prepend(mast);
+    }
+}
+
+function releaseRiverBoard(painting) {
+    const board = painting.querySelector(".riverSurfboard");
+    if (!board) return;
+
+    const rect = board.getBoundingClientRect();
+    board.remove();
+    painting.querySelector(".riverSurfMast")?.remove();
+
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    board.classList.add("departingRiverBoard");
+    Object.assign(board.style, {
+        left: rect.left + "px",
+        top: rect.top + "px",
+        width: rect.width + "px",
+        height: rect.height + "px"
+    });
+    document.body.appendChild(board);
+    const drift = board.animate([
+        { transform: "rotate(7deg)", opacity: 1 },
+        { transform: `translate(${-innerWidth * .16}px, ${innerHeight - rect.top + 90}px) rotate(28deg)`, opacity: 0 }
+    ], { duration: 3800, easing: "ease-in", fill: "forwards" });
+    drift.finished.then(() => board.remove(), () => board.remove());
+}
+
 function createPainting(
     image
 ) {
@@ -4578,6 +4715,8 @@ function createPainting(
         frame
     );
 
+
+    addRiverCarrier(wrap);
 
     wrap.dataset.image =
         image;
