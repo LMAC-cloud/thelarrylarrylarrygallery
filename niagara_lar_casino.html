@@ -1825,9 +1825,8 @@ body {
 }
 
 #larCasinoButton {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+    position: relative;
+    display: inline-block;
     margin-left: 8px;
     padding: 6px 9px;
     color: #fff3d0;
@@ -1839,16 +1838,38 @@ body {
     text-decoration: none;
     vertical-align: middle;
 }
-.casinoTokens { display: inline-flex; align-items: center; padding-left: 3px; }
-.casinoTokens img {
-    width: 19px;
-    height: 19px;
-    margin-left: -3px;
-    object-fit: cover;
-    border: 2px solid #241408;
-    border-radius: 50%;
-    background: #d3a56a;
+/* An unframed drop area ends at the top of the casino button. */
+.casinoTokens {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    width: 76px;
+    height: 76px;
+    transform: translateX(-50%);
+    overflow: hidden;
     pointer-events: none;
+}
+.casinoTokens img {
+    position: absolute;
+    top: 0;
+    left: var(--lane);
+    width: 20px;
+    height: 20px;
+    object-fit: cover;
+    border-radius: 50%;
+    animation: casinoTokenDrop 2.8s linear var(--delay) infinite both;
+}
+.casinoTokens img:nth-child(1) { --lane: 7px; --delay: -.35s; }
+.casinoTokens img:nth-child(2) { --lane: 30px; --delay: -1.25s; }
+.casinoTokens img:nth-child(3) { --lane: 49px; --delay: -2.1s; }
+@keyframes casinoTokenDrop {
+    0% { transform: translateY(-22px) rotate(-16deg); opacity: 0; }
+    13% { opacity: 1; }
+    68% { opacity: 1; }
+    84%, 100% { transform: translateY(76px) rotate(45deg); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .casinoTokens { display: none; }
 }
 #larCasinoButton:hover { filter: brightness(1.1); }
 
@@ -2586,6 +2607,7 @@ body {
         <span class="casinoTokens" aria-hidden="true">
             <img src="Artwork/LMAC-ArquaneTheQuietTeenPoet.jpg" alt="" draggable="false">
             <img src="Artwork/LMAC-AstropopEffect.jpg" alt="" draggable="false">
+            <img src="Artwork/LMAC-AtGulliversMuseumOfAbstractArt.jpg" alt="" draggable="false">
         </span>
         LAR CASINO
     </a>
