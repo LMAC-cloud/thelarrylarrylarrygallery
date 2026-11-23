@@ -1825,7 +1825,9 @@ body {
 }
 
 #larCasinoButton {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     margin-left: 8px;
     padding: 6px 9px;
     color: #fff3d0;
@@ -1836,6 +1838,17 @@ body {
     font: 700 11px Georgia, serif;
     text-decoration: none;
     vertical-align: middle;
+}
+.casinoTokens { display: inline-flex; align-items: center; padding-left: 3px; }
+.casinoTokens img {
+    width: 19px;
+    height: 19px;
+    margin-left: -3px;
+    object-fit: cover;
+    border: 2px solid #241408;
+    border-radius: 50%;
+    background: #d3a56a;
+    pointer-events: none;
 }
 #larCasinoButton:hover { filter: brightness(1.1); }
 
@@ -2570,6 +2583,10 @@ body {
     </button>
 
     <a href="larrystampmerge.html" id="larCasinoButton" aria-label="Enter the LAR Stamp Casino">
+        <span class="casinoTokens" aria-hidden="true">
+            <img src="Artwork/LMAC-ArquaneTheQuietTeenPoet.jpg" alt="" draggable="false">
+            <img src="Artwork/LMAC-AstropopEffect.jpg" alt="" draggable="false">
+        </span>
         LAR CASINO
     </a>
 
@@ -3928,6 +3945,8 @@ function immortalizePainting(
     originScale = null
 ) {
 
+    if (painting.dataset.rescued === "true") return;
+    painting.dataset.ascending = "true";
     savePainting(image);
 
     painting.dataset.approved = "false";
@@ -4001,6 +4020,14 @@ function immortalizePainting(
         painting.style.left = targetX + "px";
         painting.style.top = targetY + "px";
         painting.style.transform = "translate(-50%,-50%) scale(.58)";
+
+        // Start wind only after the single ascent has finished.
+        setTimeout(function() {
+            if (!document.body.contains(painting)) return;
+            painting.style.transition = "none";
+            delete painting.dataset.ascending;
+            startSkyWind(painting);
+        }, 3050);
     });
 
     /* V33: sky paintings are true draggable objects.
@@ -4018,7 +4045,7 @@ function immortalizePainting(
         let dragMoved = false;
 
         painting.addEventListener("pointerdown", function(e) {
-            if (painting.dataset.rescued !== "true" || e.button !== 0) return;
+            if (painting.dataset.rescued !== "true" || painting.dataset.ascending === "true" || e.button !== 0) return;
 
             const r = painting.getBoundingClientRect();
             dragStartX = e.clientX;
@@ -4472,6 +4499,7 @@ function ropeRescue(
     clickX = null,
     clickY = null
 ) {
+    if (painting.dataset.rescuing === "true" || painting.dataset.ascending === "true") return;
     if (painting.dataset.rescued === "true") {
         inspectPainting(image, painting);
         return;
@@ -4756,6 +4784,8 @@ function createPainting(
 
             e.preventDefault();
             e.stopPropagation();
+
+            if (wrap.dataset.rescuing === "true" || wrap.dataset.ascending === "true") return;
 
             if (wrap.dataset.skySuppressClick === "true") {
                 wrap.dataset.skySuppressClick = "false";
@@ -6591,6 +6621,7 @@ function startSkyWind(painting) {
     const sidePhase = Math.random() * Math.PI * 2;
     const speed = 0.00038 + Math.random() * 0.00020;
     const sideSpeed = 0.00028 + Math.random() * 0.00016;
+    let windStart = null;
 
     painting._resetSkyWindBase = function() {
         const r = painting.getBoundingClientRect();
@@ -6603,9 +6634,12 @@ function startSkyWind(painting) {
 
         if (painting.dataset.windPaused !== 'true' &&
             painting.dataset.skyDragging !== 'true') {
-            const vertical = Math.sin(now * speed + phase);
-            const horizontal = Math.sin(now * sideSpeed + sidePhase);
-            const scaleWave = 0.91 + 0.16 * ((vertical + 1) / 2);
+            windStart ??= now;
+            const elapsed = now - windStart;
+            const blend = Math.min(1, elapsed / 900);
+            const vertical = Math.sin(elapsed * speed + phase) * blend;
+            const horizontal = Math.sin(elapsed * sideSpeed + sidePhase) * blend;
+            const scaleWave = 1 + (0.08 * vertical - 0.01 * blend);
 
             painting.style.left = (baseLeft + horizontal * 34) + 'px';
             painting.style.top = (baseTop + vertical * 12) + 'px';
@@ -6619,23 +6653,6 @@ function startSkyWind(painting) {
 
     requestAnimationFrame(windFrame);
 }
-
-/* Start wind after each rescued painting reaches the sky. */
-const originalImmortalizePainting = immortalizePainting;
-immortalizePainting = function(painting, image, originX = null, originY = null) {
-    originalImmortalizePainting(painting, image, originX, originY);
-
-    setTimeout(function() {
-        if (document.body.contains(painting) &&
-            painting.dataset.rescued === 'true') {
-            const r = painting.getBoundingClientRect();
-            painting.style.left = (r.left + r.width / 2) + 'px';
-            painting.style.top = (r.top + r.height / 2) + 'px';
-            painting.style.transform = 'translate(-50%,-50%) scale(.58)';
-            startSkyWind(painting);
-        }
-    }, 3050);
-};
 
 /* ============================================================
    LAR STAMP CASINO + SLOW MIST REVEAL
