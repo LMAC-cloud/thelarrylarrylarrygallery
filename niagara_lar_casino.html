@@ -4625,7 +4625,7 @@ const riverCarrierDeck = [];
 
 function addRiverCarrier(painting) {
     if (!riverCarrierDeck.length) {
-        riverCarrierDeck.push("barrel", "barrel-board", "frame-board", "frame");
+        riverCarrierDeck.push(...Array(8).fill("barrel"), "frame", "frame", "barrel-board", "frame-board");
     }
     const index = Math.floor(Math.random() * riverCarrierDeck.length);
     const [carrier] = riverCarrierDeck.splice(index, 1);
@@ -5287,11 +5287,9 @@ function sendPaintingGroup(
     }
 
 
+    // The painting already launched just ahead of this group counts toward the total.
     const amount =
-        8 +
-        Math.floor(
-            Math.random() * 5
-        );
+        1 + Math.floor(Math.random() * 2);
 
 
     const group = [];
