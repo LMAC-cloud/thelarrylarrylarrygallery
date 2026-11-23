@@ -1,8 +1,7 @@
-// Radio Laurentis audio playlist
-
+// Radio Laurentis playlist. Paths match the filenames on GitHub Pages.
 window.LAR_AUDIO_TRACKS = [
-  "Audio/Drumbo.mp3",
-  "Audio/KingLortTheThird.mp3",
-  "Audio/OmsBurnOne.mp3",
-  "Audio/TheFloatingSong.mp3"
+  "Audio/DRUMBO.mp3",
+  "Audio/KING LORT III.mp3",
+  "Audio/OMS BURN 1.mp3",
+  "Audio/THE FLOATING SONG.mp3"
 ];
