@@ -20,7 +20,7 @@
     background:repeating-conic-gradient(from 0deg,#000 0deg 10deg,#fff 10deg 20deg);
     transform:translate(-50%,-50%) rotate(0deg);
     z-index:-10;
-    animation:spinSpiral 5s linear infinite;
+    animation:spinSpiral 16s linear infinite;
   }
   @keyframes spinSpiral {
     from { transform:translate(-50%,-50%) rotate(0deg); }
@@ -117,7 +117,7 @@
   }
   #gameCanvas { width:100%; height:100%; display:block; cursor:none; }
   #tankGenerator {
-    position:absolute; left:68px; top:calc(100% - 145px); width:56px; height:56px;
+    position:absolute; left:68px; top:calc(100% - 145px); width:46px; height:46px;
     transform:translate(-50%,-50%) rotate(-2deg);
     z-index:35; cursor:none; display:block;
     background:linear-gradient(145deg,#a76b36 0%,#7b451f 52%,#5d3217 100%);
@@ -136,8 +136,8 @@
     border-radius:4px; pointer-events:none;
   }
   #tankGenerator .bagTop, #tankGenerator .bagBottom { position:relative; z-index:2; font-weight:900; letter-spacing:.08em; text-shadow:1px 2px 0 #4a2814; }
-  #tankGenerator .bagTop { margin-top:20px; font-size:12px; }
-  #tankGenerator .bagBottom { font-size:10px; margin-top:2px; }
+  #tankGenerator .bagTop { margin-top:16px; font-size:10px; }
+  #tankGenerator .bagBottom { font-size:9px; margin-top:2px; }
   #tankGenerator:active { cursor:none; transform:translate(-50%,-50%) rotate(2deg) scale(.98); }
   #clearBoardBtn { background:#6b3f1d; color:#fff; border-color:#f1d9b2; }
   #clearBoardBtn:hover { background:#8a5229; }
@@ -286,7 +286,7 @@
   #stampModal.show { display:flex; }
   #stampModalCard {
     width:min(520px,86vw); max-height:88vh; overflow:auto;
-    background:#e7d5ae; color:#2d1a0c;
+    background:#342317; color:#fff3d0;
     border:8px solid #6b3f1d; border-radius:18px; padding:18px;
     text-align:center; box-shadow:0 16px 45px rgba(0,0,0,.65);
   }
@@ -300,8 +300,8 @@
   }
   #stampModalTitle { font-size:24px; font-weight:bold; margin:14px 0 8px; line-height:1.15; }
   #stampModalClose {
-    border:2px solid #5b350e; border-radius:10px; background:#efe0bd;
-    color:#2a170e; font-weight:bold; padding:9px 18px; cursor:pointer;
+    border:2px solid #5b350e; border-radius:10px; background:#6b3f1d;
+    color:#fff3d0; font-weight:bold; padding:9px 18px; cursor:pointer;
   }
   #stampModalNav {
     display:flex; align-items:center; justify-content:center; gap:18px;
@@ -312,7 +312,7 @@
     touch-action:none;
     width:46px; height:38px;
     border:3px solid #6b3f1d; border-radius:10px;
-    background:#f4e6c5; color:#2d1a0c;
+    background:#6b3f1d; color:#fff3d0;
     font:bold 28px Georgia,serif; line-height:1;
     cursor:pointer;
     box-shadow:0 3px 0 #5a351d;
@@ -340,14 +340,20 @@
   .miniCarIcon { width:34px; height:20px; display:inline-block; }
   #carLotModal { position:fixed; inset:0; background:rgba(0,0,0,.78); display:none; align-items:center; justify-content:center; z-index:260; }
   #carLotModal.show { display:flex; }
-  #carLotCard { width:min(940px,94vw); max-height:90vh; overflow:auto; background:#e7d5ae; color:#2d1a0c; border:7px solid #6b3f1d; border-radius:20px; padding:16px; box-shadow:0 16px 55px rgba(0,0,0,.75); }
+  #carLotCard { width:min(940px,94vw); max-height:90vh; overflow:auto; background:#342317; color:#fff3d0; border:7px solid #6b3f1d; border-radius:20px; padding:16px; box-shadow:0 16px 55px rgba(0,0,0,.75); }
   #carLotHead { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:10px; }
   #carLotTitle { font:bold 28px Georgia,serif; }
   #carLotInfo { font:14px Georgia,serif; margin-bottom:12px; }
   #carLotGrid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
-  .carLotItem { background:#f7ecd2; border:3px solid #8a6a40; border-radius:12px; padding:8px; text-align:center; box-shadow:inset 0 0 0 2px rgba(107,63,29,.12); }
+  .carLotItem { background:#49301f; border:3px solid #8a6a40; border-radius:12px; padding:8px; text-align:center; box-shadow:inset 0 0 0 2px rgba(107,63,29,.12); }
   .carLotItem.current { border-color:#b07a19; box-shadow:0 0 0 3px rgba(183,122,25,.22); }
-  .carLotSvg { width:100%; height:76px; display:block; }
+  .carLotSvg { position:relative; width:100%; height:76px; display:block; }
+  button.carLotSvg { background:transparent; border:0; padding:0; cursor:pointer; }
+  .carLotSvg svg { display:block; width:100%; height:100%; }
+  #carLotModal.revealing #carLotCard { visibility:hidden; }
+  .carLotReveal { position:absolute; width:min(480px,76vw); text-align:center; }
+  .carLotReveal .carLotSvg { height:clamp(110px,24vw,215px); }
+  .carLotReveal .carLotName { display:inline-block; padding:7px 16px; font-size:18px; }
   .carLotSvg .carBody, .carLotSvg .carHighlight, .carLotSvg .window, .carLotSvg .brownTrim, .carLotSvg .wheel, .carLotSvg .hub { vector-effect:non-scaling-stroke; }
   .carLotSvg .carBody { fill:#6f3d1d; stroke:#2b160b; stroke-width:2.2; }
   .carLotSvg .carHighlight { fill:#825027; opacity:.82; }
@@ -358,8 +364,8 @@
   .carLotSvg .smoke { fill:#5a5a58; opacity:.76; }
 
   .carLotName { font:bold 13px Georgia,serif; margin:5px 0 3px; padding:5px 4px; border-radius:6px; background:#5a3017; color:#fff3d0; border:2px solid #32180b; text-shadow:1px 1px 0 #2a1509; line-height:1.08; }
-  .carLotPrice { font:bold 12px Arial; color:#5d3018; }
-  .carLotFunny { font:italic 11px Georgia,serif; color:#4b2a16; margin-top:3px; min-height:26px; }
+  .carLotPrice { font:bold 12px Arial; color:#f1d9b2; }
+  .carLotFunny { font:italic 11px Georgia,serif; color:#ead6b5; margin-top:3px; min-height:26px; }
   .larOilSpot { position:absolute; width:15px; height:9px; border-radius:50%; background:rgba(8,8,8,.86); filter:blur(1.5px); pointer-events:none; z-index:8; animation:larOilFall 1.35s ease-in forwards; }
   @keyframes larOilFall { 0%{transform:translate(0,0) scale(.35);opacity:.1} 18%{opacity:.9} 70%{transform:translate(0,150px) scale(1.25);opacity:.88} 100%{transform:translate(0,250px) scale(1.55);opacity:0} }
   .carLotAction { margin-top:6px; width:100%; padding:7px 5px; border:2px solid #5b350e; border-radius:8px; background:#d9b66f; color:#241404; font-weight:bold; cursor:pointer; }
@@ -402,10 +408,7 @@
     background:#ffd172;box-shadow:0 0 4px #ff963d;animation:larTailSpark .23s ease-out 3;
   }
   @keyframes larTailSpark { to { transform:translate(10px,-5px); opacity:0; } }
-  body.lar-no-smoke #postalCursor.vroom::after { display:none; }
-  .burstSmoke { position:absolute; width:18px; height:18px; border-radius:50%; background:rgba(150,150,145,.78); filter:blur(3px); pointer-events:none; animation:burstSmoke 1.15s ease-out forwards; }
   @keyframes larSmoke8 { 0%{transform:translate(0,0) scale(.28);opacity:.78} 100%{transform:translate(30px,-28px) scale(1.5);opacity:0} }
-  @keyframes burstSmoke { 0%{transform:translate(0,0) scale(.45);opacity:.3} 35%{opacity:.26} 100%{transform:translate(25px,-16px) scale(1.8);opacity:0} }
   #postalCursor path { fill:none; stroke:#f4e6c5; stroke-width:4; stroke-linecap:round; stroke-linejoin:round; }
   #wasteMailbox.is-dragging { cursor:grabbing; }
   body.mailbox-dragging #postalCursor { display:none !important; }
@@ -532,11 +535,9 @@
   #sidebarButtons > button:hover, #sidebarButtons > a:hover, #radioDock #radioLaurentisBtn:hover {
     color:#ffa137; text-shadow:0 0 5px #ff811a; text-decoration:none;
   }
-  #sidebarButtons button[aria-pressed="true"], #sidebarButtons button.active, #sidebarButtons .smokeOff { background:#6f4825; }
+  #sidebarButtons button[aria-pressed="true"], #sidebarButtons button.active { background:#6f4825; }
   #sidebarButtons #carLotButton, #sidebarButtons #inspectBtn, #sidebarButtons #radioDock { grid-column:1 / -1; }
   #radioDock #radioLaurentisBtn { height:100%; }
-  body.lar-no-smoke #postalCursor .smoke { display:none !important; }
-  body.lar-no-smoke #gamePanel::after { opacity:0 !important; }
 
 </style>
 
@@ -622,8 +623,8 @@
         <button id="dropBtn">DROP ONCE</button>
         <button id="tankModeBtn">LAR TANK: OFF</button>
         <button id="mergeModeBtn" type="button" aria-pressed="false">MERGE: ON RELEASE</button>
-        <button id="clearAirBtn" type="button" title="Clear the exhaust and toggle smoke">CLEAR AIR</button>
-        <button id="clearBoardBtn">CLEAR LAR BOARD</button>
+        <button id="clearAirBtn" type="button" title="Clear the exhaust haze">CLEAR AIR</button>
+        <button id="clearBoardBtn">CLEAR LAR TANK</button>
         <button id="carLotButton" title="Open Larry's Variety Car Lot">LARRY'S VARIETY CAR LOT</button>
         <button id="inspectBtn">INSPECT LAR STAMPS</button>
         <button id="muteGameBtn" type="button" aria-pressed="false">MUTE</button>
@@ -802,6 +803,7 @@ function saveLarBucks() {
 }
 
 let W = 900, H = 700;
+const boardSideInset = 4;
 let wallLeft, wallRight, floor, bookShelf;
 let stamps = [];
 let nextId = 1;
@@ -876,18 +878,18 @@ function resize() {
     if (!b?.plugin) continue;
     const r=b.plugin.radius;
     Body.setPosition(b,{
-      x:Math.max(56+r,Math.min(W-56-r,b.position.x)),
+      x:Math.max(boardSideInset+r,Math.min(W-boardSideInset-r,b.position.x)),
       y:Math.max(r+3,Math.min(H-154-r,b.position.y))
     });
   }
 }
 
 function makeWorld() {
-  wallLeft = Bodies.rectangle(28,H/2,56,H,{isStatic:true,label:'wall'});
-  wallRight = Bodies.rectangle(W-28,H/2,56,H,{isStatic:true,label:'wall'});
+  wallLeft = Bodies.rectangle(boardSideInset-28,H/2,56,H,{isStatic:true,label:'wall'});
+  wallRight = Bodies.rectangle(W-boardSideInset+28,H/2,56,H,{isStatic:true,label:'wall'});
   floor = Bodies.rectangle(W/2,H-18,W,36,{isStatic:true,label:'floor'});
   // A broad "book" shelf at the bottom leaves a generous collection chamber above it.
-  bookShelf = Bodies.rectangle(W/2,H-145,W-80,18,{isStatic:true,label:'bookShelf'});
+  bookShelf = Bodies.rectangle(W/2,H-145,W,18,{isStatic:true,label:'bookShelf'});
   Composite.add(world,[wallLeft,wallRight,floor,bookShelf]);
 }
 
@@ -1467,7 +1469,7 @@ mergeModeButton.addEventListener('click', () => {
   mergeModeButton.textContent = mergeOnContact ? 'MERGE: ON CONTACT' : 'MERGE: ON RELEASE';
 });
 
-Events.on(engine,'collisionStart', event => {
+Events.on(engine,'collisionStart collisionActive', event => {
   for (const pair of event.pairs) {
     const a=pair.bodyA, b=pair.bodyB;
     if (a.label==='stamp' && b.label==='stamp' && !a.plugin?.dragging && !b.plugin?.dragging && !window.larTankMode) tryMerge(a,b);
@@ -1504,7 +1506,7 @@ Events.on(engine,'afterUpdate', ({delta}) => {
   for (const b of stamps) {
     if (!b || !b.plugin || b.plugin.popped) continue;
     const r=b.plugin.radius;
-    const minX=56+r, maxX=Math.max(minX,W-56-r);
+    const minX=boardSideInset+r, maxX=Math.max(minX,W-boardSideInset-r);
     const minY=r+3, maxY=Math.max(minY,H-154-r);
     let x=Math.max(minX,Math.min(maxX,b.position.x));
     let y=Math.max(minY,Math.min(maxY,b.position.y));
@@ -1791,7 +1793,7 @@ stampNext.addEventListener('pointerdown', e => startStampNavHold(1,e));
 });
 stampModal.addEventListener('click', e => { if (e.target === stampModal) closeStampModal(); });
 window.addEventListener('keydown', e => {
-  if (e.code === 'Escape') { closeStampModal(); carLotModal?.classList.remove('show'); carLotModal?.setAttribute('aria-hidden','true'); }
+  if (e.code === 'Escape') { closeStampModal(); if (carLotModal.classList.contains('show')) closeCarLot(); }
   if (stampModal.classList.contains('show') && e.code === 'ArrowLeft') {
     e.preventDefault();
     modalTier = modalTier <= 1 ? images.length : modalTier - 1;
@@ -1817,11 +1819,35 @@ window.addEventListener('keydown',e=> {
   }
 });
 
+function emitLarExhaust(car) {
+  if (!car) return;
+  const isCursor=car.id==='postalCursor';
+  const matrix=car.querySelector('svg')?.getScreenCTM();
+  const tail=matrix && new DOMPoint(158,48).matrixTransform(matrix);
+  const bounds=car.getBoundingClientRect();
+  if (isCursor) {
+    car.classList.remove('vroom');
+    void car.offsetWidth;
+    car.classList.add('vroom');
+    clearTimeout(emitLarExhaust.sparkTimer);
+    emitLarExhaust.sparkTimer=setTimeout(()=>car.classList.remove('vroom'),700);
+  }
+  for (let i=0;i<7;i++) {
+    const puff=document.createElement('span');
+    puff.className='clickExhaustBurst';
+    const size=8+Math.random()*8;
+    puff.style.width=puff.style.height=size+'px';
+    puff.style.left=tail ? (tail.x-bounds.left-size/2)+'px' : 'calc(100% - 2px)';
+    puff.style.top=tail ? (tail.y-bounds.top-size/2)+'px' : '29px';
+    puff.style.animationDelay=(Math.random()*.19)+'s';
+    car.appendChild(puff);
+    setTimeout(()=>puff.remove(),1650);
+  }
+}
+
 function vroomLarryCar() {
   const car=document.getElementById('postalCursor');
   if (!car) return;
-  car.classList.remove('vroom'); void car.offsetWidth; car.classList.add('vroom');
-  setTimeout(()=>car.classList.remove('vroom'),700);
   try {
     audioCtx ||= new (window.AudioContext || window.webkitAudioContext)();
     if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -1832,11 +1858,7 @@ function vroomLarryCar() {
     o.connect(g).connect(stampAudioOutput(audioCtx)); o.start(now); o.stop(now+.5);
   } catch(e) {}
   if((LARRY_CARS[currentLarCar]||LARRY_CARS[0]).oil){ for(let j=0;j<4;j++) setTimeout(spawnLarOil,j*110); }
-  for(let i=0;i<5 && !document.body.classList.contains('lar-no-smoke');i++){
-    const s=document.createElement('span'); s.className='burstSmoke'; const size=5+Math.random()*6;
-    s.style.width=size+'px'; s.style.height=size+'px'; s.style.left='calc(100% - 2px)'; s.style.top='29px'; s.style.animationDelay=(Math.random()*.16)+'s';
-    car.appendChild(s); setTimeout(()=>s.remove(),1500);
-  }
+  emitLarExhaust(car);
 }
 
 function spawnLarOil(){
@@ -1982,24 +2004,49 @@ function renderCarLot() {
   LARRY_CARS.forEach((car,i)=>{
     const item=document.createElement('div'); item.className='carLotItem'+(i===currentLarCar?' current':'');
     const owned=ownedLarCars.has(i), equal=ownedLarCars.has(currentLarCar) && car.price===LARRY_CARS[currentLarCar].price;
-    item.innerHTML=`<div class="carLotSvg">${carSvg(i,true)}</div><div class="carLotName">${car.name}</div><div class="carLotFunny">${car.joke}</div><div class="carLotPrice">${car.price} LAR-BUCKS • TRADE ${car.price}</div>`;
+    item.innerHTML=`<button type="button" class="carLotSvg" aria-label="Rev ${car.name}">${carSvg(i,true)}</button><div class="carLotName">${car.name}</div><div class="carLotFunny">${car.joke}</div><div class="carLotPrice">${car.price} LAR-BUCKS • TRADE ${car.price}</div>`;
+    const preview=item.querySelector('.carLotSvg');
+    preview.addEventListener('click',()=>emitLarExhaust(preview));
     const btn=document.createElement('button'); btn.className='carLotAction';
     if(i===currentLarCar){btn.textContent='CURRENT LAR CAR';btn.disabled=true;}
     else if(equal){btn.textContent='EQUAL TRADE';}
     else {btn.textContent=owned?'USE THIS CAR':'BUY FOR '+car.price+' LAR-BUCKS'; btn.disabled=!owned && bucks<car.price;}
     btn.addEventListener('click',()=>{
-      if(equal){ applyLarCar(i); closeCarLot(); return; }
-      if(owned){ applyLarCar(i); closeCarLot(); return; }
-      if(bucks<car.price) return;
-      bucks-=car.price; saveLarBucks(); ownedLarCars.add(i); localStorage.setItem('larOwnedCars',[...ownedLarCars].join(',')); applyLarCar(i); closeCarLot(); showMessage('LARRY CAR ACQUIRED!',900);
+      if (!equal && !owned) {
+        if (bucks<car.price) return;
+        bucks-=car.price;
+        saveLarBucks();
+        ownedLarCars.add(i);
+        localStorage.setItem('larOwnedCars',[...ownedLarCars].join(','));
+      }
+      revealLarCar(i);
     });
     item.appendChild(btn); grid.appendChild(item);
   });
 }
 const carLotModal=document.getElementById('carLotModal');
+let carLotReveal, carLotFade;
+function revealLarCar(index) {
+  applyLarCar(index);
+  carLotReveal=document.createElement('div');
+  carLotReveal.className='carLotReveal';
+  carLotReveal.innerHTML=`<div class="carLotSvg">${carSvg(index,true)}</div><div class="carLotName">${LARRY_CARS[index].name}</div>`;
+  carLotModal.appendChild(carLotReveal);
+  carLotModal.classList.add('revealing');
+  emitLarExhaust(carLotReveal.querySelector('.carLotSvg'));
+  const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  carLotFade=carLotModal.animate([{opacity:1},{opacity:0}],{
+    delay:850, duration:reducedMotion ? 0 : 650, easing:'ease-in-out', fill:'forwards'
+  });
+  carLotFade.finished.then(closeCarLot,()=>{});
+}
 document.getElementById('carLotButton').addEventListener('click',()=>{renderCarLot();carLotModal.classList.add('show');carLotModal.setAttribute('aria-hidden','false');});
 function closeCarLot() {
-  carLotModal.classList.remove('show');
+  carLotModal.classList.remove('show','revealing');
+  carLotFade?.cancel();
+  carLotReveal?.remove();
+  carLotFade=null;
+  carLotReveal=null;
   carLotModal.setAttribute('aria-hidden','true');
   document.getElementById('carLotButton').focus();
 }
@@ -2070,12 +2117,12 @@ function draw() {
 
   // The bottom of the chamber is the responsive stamp-collection book.
   const bookY = H-140;
-  ctx.fillStyle='rgba(231,213,174,.98)';
-  ctx.fillRect(45,bookY,W-90,128);
-  ctx.strokeStyle='#6b3f1d';
+  ctx.fillStyle='#342317';
+  ctx.fillRect(2.5,bookY,W-5,128);
+  ctx.strokeStyle='#825131';
   ctx.lineWidth=5;
-  ctx.strokeRect(45,bookY,W-90,128);
-  ctx.fillStyle='#3b210e';
+  ctx.strokeRect(2.5,bookY,W-5,128);
+  ctx.fillStyle='#fff3d0';
   ctx.font='bold 18px Georgia';
   ctx.textAlign='center';
   ctx.fillText(`YOUR NEW LAR STAMPS!!! — LEVEL ${levelNumber}`,W/2,bookY+24);
@@ -2092,16 +2139,16 @@ function draw() {
     activePageTiers.push(i+1);
   }
   const pageTiers = activePageTiers;
-  const gap = 8;
-  const innerX = 58;
-  const innerW = W-116;
+  const gap = 4;
+  const innerX = 5;
+  const innerW = W-2*innerX;
   const slotW = (innerW - gap*(pageTiers.length-1)) / Math.max(1,pageTiers.length);
   const slotY = bookY+36;
   const slotH = 78;
 
   pageTiers.forEach((tier,i)=>{
     const x = innerX + i*(slotW+gap);
-    ctx.fillStyle = collected.has(tier) ? '#f8edcf' : '#c9b58b';
+    ctx.fillStyle = collected.has(tier) ? '#855432' : '#49301f';
     ctx.fillRect(x,slotY,slotW,slotH);
     ctx.strokeStyle = collected.has(tier) ? '#b07a19' : '#8a6a40';
     ctx.lineWidth = collected.has(tier) ? 3 : 2;
@@ -2116,12 +2163,12 @@ function draw() {
       ctx.drawImage(im,x+3,slotY+3,imageW-6,slotH-6);
       ctx.restore();
     }
-    ctx.fillStyle='#fff';
+    ctx.fillStyle='#5d391f';
     ctx.fillRect(x+slotW-numBoxW-2,slotY+slotH/2-12,numBoxW,24);
-    ctx.strokeStyle='#6b3f1d';
+    ctx.strokeStyle='#825131';
     ctx.lineWidth=1;
     ctx.strokeRect(x+slotW-numBoxW-2,slotY+slotH/2-12,numBoxW,24);
-    ctx.fillStyle='#3b210e';
+    ctx.fillStyle='#fff3d0';
     ctx.font='bold 12px Arial';
     ctx.textAlign='center';
     ctx.fillText(String(tier).padStart(2,'0'),x+slotW-numBoxW/2-2,slotY+slotH/2+4);
@@ -2461,14 +2508,7 @@ animateMailbox();
       populateLarTank(10);
       window.larTankMusicStart?.();
     } else {
-      stopAutoLarry();
-      clearLarBoard();
-      if (mouseConstraint) {
-        mouseConstraint.body = null;
-        mouseConstraint.constraint.bodyB = null;
-        mouseConstraint.constraint.pointB = null;
-      }
-      showMessage('LAR TANK OFF — BOARD CLEARED',1200);
+      showMessage('LAR TANK OFF — MATCHING STAMPS MERGE ON CONTACT',1200);
       window.larTankMusicStop?.();
     }
   });
@@ -2483,7 +2523,8 @@ animateMailbox();
     if(!moving) return;
     const p=gamePanel.getBoundingClientRect();
     if(Math.abs(e.movementX)+Math.abs(e.movementY)>2) moved=true;
-    const x=Math.max(65,Math.min(p.width-65,e.clientX-p.left-dx));
+    const halfWidth=gen.offsetWidth/2;
+    const x=Math.max(halfWidth,Math.min(p.width-halfWidth,e.clientX-p.left-dx));
     // Keep the bag above the stamp collection display in all modes.
     const minY=45, maxY=Math.max(minY,p.height-38);
     const y=Math.max(minY,Math.min(maxY,e.clientY-p.top-dy));
@@ -2770,7 +2811,6 @@ function nextLine(){
     if (radioOn) syncRadioDJVolume();
   });
 
-  let smokeEnabled = true;
   let smokeProgress = .015;
 
   function boardEl(){ return document.getElementById('gamePanel'); }
@@ -2783,7 +2823,6 @@ function nextLine(){
   }
 
   function addHaze(amount=.018){
-    if(!smokeEnabled) return;
     const ceiling=Math.min(1,Math.max(.015,smokeProgress));
     haze=Math.min(ceiling,haze+amount);
     setHaze();
@@ -2870,11 +2909,11 @@ function nextLine(){
     .lar-radio-track input{appearance:none;flex:none;width:10px;height:10px;border:1px solid #c99c5c;border-radius:50%;margin:0 3px 0 0;cursor:pointer}
     .lar-radio-track input:checked{background:#dfaa63;box-shadow:inset 0 0 0 2px #1b120c}
     .clickExhaustBurst{position:absolute;width:16px;height:16px;border-radius:50%;
-      background:rgba(155,155,150,.82);filter:blur(3px);pointer-events:none;z-index:999;
+      background:rgba(170,165,155,.78);filter:blur(3px);pointer-events:none;z-index:999;
       animation:clickExhaustBurst 1.35s ease-out forwards}
     @keyframes clickExhaustBurst{
       0%{transform:translate(0,0) scale(.35);opacity:.3}
-      25%{opacity:.24}100%{transform:translate(27px,-18px) scale(1.9);opacity:0}
+      25%{opacity:.24}100%{transform:translate(42px,-24px) scale(2.15);opacity:0}
     }
   `;
   document.head.appendChild(style);
@@ -3431,47 +3470,18 @@ function ensureRadioUI(){
     },700);
   }
 
-  function makeClickSmoke(){
-    if(!smokeEnabled)return;
-    const car=document.getElementById('postalCursor');
-    if(!car)return;
-    car.classList.remove('vroom');void car.offsetWidth;car.classList.add('vroom');
-    setTimeout(()=>car.classList.remove('vroom'),700);
-    for(let i=0;i<6;i++){
-      const s=document.createElement('span');s.className='clickExhaustBurst';
-      const size=5+Math.random()*7;
-      s.style.width=size+'px';s.style.height=size+'px';
-      s.style.left='calc(100% - 2px)';s.style.top='29px';
-      s.style.animationDelay=(Math.random()*.22)+'s';
-      car.appendChild(s);setTimeout(()=>s.remove(),1700);
-    }
-  }
-
-  function setSmokeEnabled(on){
-    smokeEnabled=!!on;
-    document.body.classList.toggle('lar-no-smoke',!smokeEnabled);
-    const btn=document.getElementById('clearAirBtn');
-    if(btn){
-      btn.classList.toggle('smokeOff',!smokeEnabled);
-      btn.textContent=smokeEnabled?'CLEAR AIR':'SMOKE OFF';
-      btn.title=smokeEnabled?'Clear the exhaust and turn smoke off':'Turn the Larrymobile smoke effect back on';
-    }
-    if(!smokeEnabled)clearHaze();
-  }
-
   function hookClearAir(){
-    const btn=document.getElementById('clearAirBtn');
-    if(!btn||btn.dataset.hooked)return;
-    btn.dataset.hooked='1';
-    btn.addEventListener('click',()=>{
-      if(smokeEnabled){clearHaze();setSmokeEnabled(false);}
-      else setSmokeEnabled(true);
+    document.getElementById('clearAirBtn').addEventListener('click',()=>{
+      clearHaze();
+      document.querySelectorAll('.clickExhaustBurst').forEach(puff=>puff.remove());
+      document.getElementById('postalCursor').classList.remove('vroom');
     });
   }
 
   function handleClick(e){
-    if(e.target?.closest?.('#clearBoardBtn, #radioDock, #larRadioCard, #carLotModal, #stampModal'))return;
-    addHaze(.055);makeClickSmoke();
+    if(e.target?.closest?.('#clearAirBtn, #clearBoardBtn, #radioDock, #larRadioCard, #carLotModal, #stampModal'))return;
+    addHaze(.055);
+    emitLarExhaust(document.getElementById('postalCursor'));
   }
 
   window.addEventListener('click',handleClick,false);
