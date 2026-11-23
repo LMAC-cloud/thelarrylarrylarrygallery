@@ -468,15 +468,15 @@
   }
   #levelCelebration.show { display:flex; }
   #celebrationCard {
-    position:relative; z-index:3; width:min(620px,82%);
-    padding:24px 30px; text-align:center;
+    position:relative; z-index:3; width:min(320px,72%);
+    padding:10px 14px; text-align:center;
     background:rgba(25,8,8,.94); color:#fff;
     border:5px solid #f4d36a; border-radius:22px;
     box-shadow:0 0 0 4px #6b3f1d, 0 14px 40px rgba(0,0,0,.65);
     font-family:Georgia,serif;
   }
-  #celebrationTitle { font-size:clamp(25px,3.2vw,42px); font-weight:bold; line-height:1.08; }
-  #celebrationSub { margin-top:9px; font-size:18px; font-weight:bold; }
+  #celebrationTitle { font-size:clamp(15px,2vw,24px); font-weight:bold; line-height:1.08; }
+  #celebrationSub { margin-top:4px; font-size:11px; font-weight:bold; }
   .confetti { position:absolute; width:9px; height:18px; top:-30px; opacity:.95; animation:confettiFall var(--dur) linear infinite; transform:rotate(var(--rot)); }
   @keyframes confettiFall { to { transform:translate3d(var(--dx),110vh,0) rotate(720deg); } }
   .firework { position:absolute; width:14px; height:14px; border-radius:50%; left:var(--x); top:var(--y); background:#fff; box-shadow:0 0 16px 6px rgba(255,255,255,.95); animation:fireworkPop 1.5s ease-out infinite; }
@@ -971,9 +971,9 @@ muteGameBtn.addEventListener('click', () => {
   muteGameBtn.setAttribute('aria-pressed', String(stampGameMuted));
   muteGameBtn.textContent = stampGameMuted ? 'UNMUTE' : 'MUTE';
   for (const output of stampAudioOutputs.values()) output.gain.value = stampGameMuted ? 0 : 1;
-  if (stampGameMuted) {
-    window.RadioLaurentisDJ?.stop(true);
-    window.speechSynthesis?.cancel();
+  if (!window.radioLaurentisOn) {
+    if (stampGameMuted) window.speechSynthesis?.pause();
+    else window.speechSynthesis?.resume();
   }
   window.dispatchEvent(new Event('lar-game-mute'));
 });
@@ -1169,12 +1169,13 @@ function speakLarry(text, options={}) {
     u.rate = options.rate ?? .58;
     u.pitch = options.pitch ?? .34;
     u.volume = options.volume ?? .92;
+    speechSynthesis.resume();
     speechSynthesis.speak(u);
   } catch(e) {}
 }
 
 function randomLarryAnnouncement() {
-  if (!larrySpeechArmed || !larryAnnouncements.length) return;
+  if (!larrySpeechArmed || !larryAnnouncements.length || stampGameMuted) return;
   let i;
   do { i = Math.floor(Math.random()*larryAnnouncements.length); }
   while (i === lastLarryAnnouncement && larryAnnouncements.length > 1);
@@ -1447,9 +1448,7 @@ function tryMerge(a,b) {
     if (nextTier > unlockedTier) unlockedTier = nextTier;
     // Clean Lar merge: a quick white flash, then the new Lar grows into place.
     // No decorative rings, orbit lines, or outlines are drawn during the merge.
-    const angle = Math.atan2(a.position.y-b.position.y,a.position.x-b.position.x);
-    mergeAnimations.push({x,y,tier:nextTier,fromTier:tier,angle,progress:0,duration:620,
-      autoSource:(autoWaitingBody===a || autoWaitingBody===b)});
+    mergeAnimations.push({ x, y, tier:nextTier, fromTier:tier, fromR:Math.max(10, stampRadius(tier)*.18), progress:0, duration:235, effect:'white', autoSource:(autoWaitingBody===a || autoWaitingBody===b) });
   }
   flashMerge(x, y, stampRadius(tier));
 }
@@ -2169,15 +2168,8 @@ function draw() {
     const r=b.plugin.radius;
     ctx.save();
     ctx.globalAlpha = 1;
-    let drawX = b.position.x, drawY = b.position.y;
-    if (b === previewHeld && joining) {
-      const dx = drawX-joining.position.x, dy = drawY-joining.position.y;
-      const angle = Math.atan2(dy,dx);
-      const distance = r+joining.plugin.radius-2;
-      drawX = joining.position.x+Math.cos(angle)*distance;
-      drawY = joining.position.y+Math.sin(angle)*distance;
-    }
-    ctx.translate(drawX,drawY);
+    if (b === previewHeld && joining) ctx.globalAlpha = .65;
+    ctx.translate(b.position.x,b.position.y);
 
     const im=b.plugin.image;
     // Flat Lar circles: vivid artwork, clean black edge, no frame and no halo.
@@ -2223,36 +2215,40 @@ function draw() {
     const targetR=stampRadius(m.tier);
     const oldR=stampRadius(m.fromTier || Math.max(1,m.tier-1));
     const im=imgs[m.tier-1];
+    const easeOut=1-Math.pow(1-t,4);
+    const easeIn=1-Math.pow(1-Math.min(1,t*1.12),3);
+
     ctx.save();
     ctx.translate(m.x,m.y);
-    if (t < .5) {
-      const join = t/.5;
-      const offset = oldR*(1-join);
-      const previous = imgs[m.fromTier-1];
-      for (const side of [-1,1]) {
+
+    if(m.effect==='white') {
+      const flash = Math.max(0, 1 - Math.min(1, t / .30));
+      const grow = Math.max(0, Math.min(1, (t - .07) / .93));
+      const ease = 1 - Math.pow(1-grow, 3);
+      const r = targetR * (.12 + .88 * ease);
+
+      // Soft white bloom, not a ring.
+      ctx.save();
+      ctx.globalAlpha = flash * .95;
+      const grad = ctx.createRadialGradient(0,0,0,0,0,Math.max(oldR,targetR)*1.08);
+      grad.addColorStop(0,'rgba(255,255,255,1)');
+      grad.addColorStop(.38,'rgba(255,255,255,.78)');
+      grad.addColorStop(1,'rgba(255,255,255,0)');
+      ctx.fillStyle=grad;
+      ctx.beginPath(); ctx.arc(0,0,Math.max(oldR,targetR)*1.08,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+
+      if (grow > 0) {
         ctx.save();
-        ctx.translate(Math.cos(m.angle)*offset*side, Math.sin(m.angle)*offset*side);
-        ctx.beginPath();
-        ctx.arc(0,0,oldR,0,Math.PI*2);
-        ctx.fillStyle='#d8c49a';
-        ctx.fill();
-        ctx.clip();
-        if (previous?.complete && previous.naturalWidth) ctx.drawImage(previous,-oldR,-oldR,oldR*2,oldR*2);
+        ctx.globalAlpha = Math.min(1, grow * 1.8);
+        ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.clip();
+        if(im?.complete && im.naturalWidth) ctx.drawImage(im,-r,-r,r*2,r*2);
         ctx.restore();
       }
-    } else {
-      const grow = (t-.5)/.5;
-      const radius = oldR+(targetR-oldR)*(1-Math.pow(1-grow,3));
-      ctx.beginPath();
-      ctx.arc(0,0,radius,0,Math.PI*2);
-      ctx.fillStyle='#d8c49a';
-      ctx.fill();
-      ctx.clip();
-      if (im?.complete && im.naturalWidth) ctx.drawImage(im,-radius,-radius,radius*2,radius*2);
-      ctx.fillStyle=`rgba(255,235,184,${.7*(1-grow)})`;
-      ctx.fillRect(-radius,-radius,radius*2,radius*2);
     }
+
     ctx.restore();
+
   }
 
   for (let i = mergeBursts.length - 1; i >= 0; i--) {
@@ -2649,42 +2645,62 @@ function nextLine(){
     return base+" "+extra;
   }
     let current = null;
+
     function speak(line, {volume = 1, onEnd} = {}) {
         const synth = window.speechSynthesis;
-        if (!synth || volume <= 0) {
+        if (!synth) {
             setTimeout(() => onEnd?.(), 300);
             return;
         }
         stop();
         const text = String(line).replace(/\bLAR\b/gi, 'LAIR');
-        const utterance = new SpeechSynthesisUtterance(text);
+        // Queue silent speech at a usable volume, then pause it until unmuted.
+        const job = {text, onEnd, volume: volume > 0 ? volume : 1,
+            muted:volume <= 0, offset:0, utterance:null};
+        current = job;
+        queueUtterance(job);
+    }
+
+    function queueUtterance(job) {
+        const synth = window.speechSynthesis;
+        const offset = job.offset;
+        const utterance = new SpeechSynthesisUtterance(job.text.slice(offset));
         utterance.lang = 'en-CA';
         utterance.rate = .62;
         utterance.pitch = .47;
-        utterance.volume = Math.max(0, Math.min(1, volume));
+        utterance.volume = Math.max(0, Math.min(1, job.volume));
+        job.utterance = utterance;
         let timer;
         let started = false;
-        function finish(notify = true) {
+        job.cleanup = () => {
             clearTimeout(timer);
             synth.removeEventListener('voiceschanged', start);
-            if (current?.utterance !== utterance) return;
+        };
+        const active = () => current === job && job.utterance === utterance;
+        const finish = () => {
+            if (!active()) return;
+            job.cleanup();
             current = null;
-            if (notify) onEnd?.();
-        }
+            job.onEnd?.();
+        };
         function start() {
-            if (started || current?.utterance !== utterance) return;
+            if (started || !active()) return;
             started = true;
-            clearTimeout(timer);
-            synth.removeEventListener('voiceschanged', start);
+            job.cleanup();
             const voices = synth.getVoices();
             const preferred = /\b(male|david|mark|daniel|george)\b/i;
             const voice = voices.find(v => /^en-CA/i.test(v.lang) && preferred.test(v.name))
                 || voices.find(v => /^en/i.test(v.lang) && preferred.test(v.name))
                 || voices.find(v => /^en/i.test(v.lang));
             if (voice) utterance.voice = voice;
+            job.started = true;
+            if (job.muted) synth.pause();
+            else synth.resume();
             try { synth.speak(utterance); } catch { finish(); }
         }
-        current = {utterance, finish, line, onEnd};
+        utterance.onboundary = event => {
+            if (active() && event.name === 'word') job.offset = offset + event.charIndex;
+        };
         utterance.onend = utterance.onerror = finish;
         if (synth.getVoices().length) start();
         else {
@@ -2695,19 +2711,33 @@ function nextLine(){
 
     function stop(notify = false) {
         if (!current) return;
-        const previous = current;
-        previous.finish(notify);
-        window.speechSynthesis.cancel();
+        const job = current;
+        current = null;
+        job.cleanup();
+        if (job.started) window.speechSynthesis.cancel();
+        if (notify) job.onEnd?.();
     }
 
     function setVolume(volume) {
-        if (!current) return;
+        const job = current;
+        if (!job) return;
+        const synth = window.speechSynthesis;
         if (volume <= 0) {
-            stop(true);
+            job.muted = true;
+            if (job.started) synth.pause();
             return;
         }
-        const {line, onEnd} = current;
-        speak(line, {volume, onEnd});
+        job.muted = false;
+        if (volume === job.volume) {
+            if (job.started) synth.resume();
+            return;
+        }
+        job.volume = volume;
+        job.cleanup();
+        job.utterance = null;
+        if (job.started) synth.cancel();
+        job.started = false;
+        queueUtterance(job);
     }
 
     window.RadioLaurentisDJ = {nextLine, speak, stop, setVolume};
@@ -2737,6 +2767,7 @@ function nextLine(){
   const uncheckedRadioTracks = new Set();
   window.addEventListener('lar-game-mute', () => {
     if (radioAudioEl) radioAudioEl.muted=stampGameMuted;
+    if (radioOn) syncRadioDJVolume();
   });
 
   let smokeEnabled = true;
@@ -2907,10 +2938,12 @@ function nextLine(){
     radioMelodyIndex = -1;
   }
 
-  function playRadioAudioTrack(track) {
+  function playRadioAudioTrack(track, useRootCopy = false) {
     stopRadioMelody();
     stopRadioAudioTrack();
-    const audio = new Audio(track.path);
+    const isFloatingSong = track.key === 'Audio/THE FLOATING SONG.mp3';
+    const path = useRootCopy ? 'THE FLOATING SONG.mp3' : track.path;
+    const audio = new Audio(path);
     radioAudioEl = audio;
     radioAudioPath = track.key;
     audio.loop = !radioRepeatAll;
@@ -2920,7 +2953,9 @@ function nextLine(){
       if (radioAudioEl === audio && radioRepeatAll) nextRadioHit();
     });
     const reportFailure = () => {
-      if (radioAudioEl === audio) setRadioText('COULD NOT PLAY: ' + track.name);
+      if (radioAudioEl !== audio) return;
+      if (isFloatingSong && !useRootCopy) playRadioAudioTrack(track,true);
+      else setRadioText('COULD NOT PLAY: ' + track.name);
     };
     audio.addEventListener('error', reportFailure, {once:true});
     setRadioText(track.name);
@@ -3043,10 +3078,10 @@ function ensureRadioUI(){
         fillSlider(djSlider);
         radioDJVolume=Number(djSlider.value);
         localStorage.setItem('larRadioDJVolume',String(radioDJVolume));
-        if (radioDJVolume === 0) window.RadioLaurentisDJ.stop(true);
+        if (radioDJVolume === 0) syncRadioDJVolume();
       };
       djSlider.onchange=()=>{
-        if (!radioDJMuted && !stampGameMuted) window.RadioLaurentisDJ.setVolume(radioDJVolume);
+        syncRadioDJVolume();
       };
     }
     const control = id => document.getElementById('larRadio'+id);
@@ -3091,7 +3126,7 @@ function ensureRadioUI(){
       radioDJMuted = !radioDJMuted;
       control('DJMute').textContent = radioDJMuted ? 'DJ ON' : 'DJ OFF';
       control('DJMute').setAttribute('aria-pressed', String(radioDJMuted));
-      if (radioDJMuted) window.RadioLaurentisDJ.stop(true);
+      syncRadioDJVolume();
     };
     control('Load').onclick = () => control('Files').click();
     control('Files').onchange = event => {
@@ -3114,10 +3149,18 @@ function ensureRadioUI(){
     btn.onclick=()=>toggleRadio(!radioOn);
   }
 
+  function effectiveDJVolume() {
+    return stampGameMuted || radioDJMuted ? 0 : radioDJVolume;
+  }
+
+  function syncRadioDJVolume() {
+    window.RadioLaurentisDJ.setVolume(effectiveDJVolume());
+  }
+
   function sayRadio(line, onEnd){
     radioSpeaking=true;
     window.RadioLaurentisDJ.speak(line, {
-      volume:stampGameMuted || radioDJMuted ? 0 : radioDJVolume,
+      volume:effectiveDJVolume(),
       onEnd:()=>{
         radioSpeaking=false;
         onEnd?.();
@@ -3327,9 +3370,11 @@ function ensureRadioUI(){
       radioSpeaking=false;
       stopRadioAudioTrack();
       stopRadioMelody();
+      if (!stampGameMuted) window.speechSynthesis?.resume();
       return;
     }
 
+    window.speechSynthesis?.cancel();
     document.getElementById('larRadioSource').setAttribute('aria-pressed','false');
     document.getElementById('larRadioMusicPicker').hidden = true;
     document.getElementById('larRadioSelectMusic').setAttribute('aria-expanded','false');
