@@ -27,7 +27,7 @@
     to { transform:translate(-50%,-50%) rotate(360deg); }
   }
   #app {
-    width:min(1010px, 96vw);
+    width:min(1150px, 96vw);
     height:100dvh;
     margin:auto;
     display:grid;
@@ -148,14 +148,10 @@
     min-height:0;
     display:flex;
     flex-direction:column;
-    gap:9px;
-    overflow-y:auto;
-    scrollbar-width:thin;
+    align-items:stretch;
+    gap:7px;
   }
-  #side > .panel { flex:none; zoom:1; }
-  #side > .panel:nth-child(2) { flex:1 0 auto; }
-  @media (max-height:820px) { #side > .panel { zoom:.89; } }
-  @media (max-height:690px) { #side > .panel { zoom:.76; } }
+  #side > .panel { flex:none; zoom:var(--sidebar-zoom, .85); }
   .panel {
     background:rgba(15,15,15,.90);
     border:3px solid #ddd;
@@ -529,7 +525,7 @@
   @media (max-width:900px) {
     #app { grid-template-columns:1fr; grid-template-rows:85px minmax(0,1fr) 310px; }
     #header { grid-column:1; }
-    #side { display:grid; grid-template-columns:1fr 1fr; }
+
     #book { grid-column:1 / -1; }
 
   }
@@ -870,6 +866,7 @@ let mailboxTargetX = 0.5;
 let lastDropTime = 0;
 let unlockedTier = 1;
 let levelNumber = 1;
+let levelTransitionPending = false;
 const LEVEL_LENGTHS = [7,7,7,7,7,7,7,7,7,7,2];
 const LEVEL_STARTS = LEVEL_LENGTHS.reduce((a,n,i)=>(a.push((a[i-1]||0)+(i?LEVEL_LENGTHS[i-1]:0)),a),[]);
 function levelIndexForTier(tier){ for(let i=LEVEL_STARTS.length-1;i>=0;i--) if(tier>LEVEL_STARTS[i]) return i; return 0; }
@@ -950,7 +947,7 @@ function stampRadius(tier) {
   const len = LEVEL_LENGTHS[idx] || 7;
   const local = Math.max(1, tier - LEVEL_STARTS[idx]);
   const t = len <= 1 ? 1 : (local - 1) / (len - 1);
-  return 35 + t * 41;
+  return 42 + t * 49;
 }
 
 function createStamp(tier, x, y, registerCollection = true) {
@@ -1377,12 +1374,10 @@ function launchCelebration(nextStart) {
   // has happened. The celebration itself begins first.
   launchCelebration.levelTimer=setTimeout(()=>{
     generatorStart=nextStart;
-    const previousRadioUnlocks=radioUnlockedCount();
     levelNumber = levelIndexForTier(generatorStart + 1) + 1;
     unlockedTier=generatorStart+1;
     pageStart=generatorStart;
-    updateRadioUnlockDisplay();
-    if(radioUnlockedCount()>previousRadioUnlocks) announceNewRadioHit();
+    levelTransitionPending = false;
     updateLevelBadge();
     updateHeldStamp();
     showCurrentLevelInBook();
@@ -1390,6 +1385,7 @@ function launchCelebration(nextStart) {
       window.larTankPopulateLevel();
     }
     showMessage(`LAR LEVEL ${levelNumber}`,900);
+    window.dispatchEvent(new Event("lar-level-advanced"));
   },2000);
 
   // Keep the neon electricity on screen for the full musical celebration.
@@ -1460,7 +1456,8 @@ function tryMerge(a,b) {
   // when two #7 Lars have been merged, producing the next level transition.
   // For the final 2-stamp set, the equivalent final-tier merge completes the game.
   const completesLevelByFinalMerge = tier === groupEnd;
-  if (completesLevelByFinalMerge) {
+  if (completesLevelByFinalMerge && !levelTransitionPending) {
+    levelTransitionPending = true;
     const nextStart = generatorStart + currentLevelLength();
     if (nextStart < images.length) {
       launchCelebration(nextStart);
@@ -2501,7 +2498,14 @@ animateMailbox();
       populateLarTank(10);
       window.larTankMusicStart?.();
     } else {
-      showMessage('LAR TANK OFF — NORMAL CONTACT MERGING',1200);
+      stopAutoLarry();
+      clearLarBoard();
+      if (mouseConstraint) {
+        mouseConstraint.body = null;
+        mouseConstraint.constraint.bodyB = null;
+        mouseConstraint.constraint.pointB = null;
+      }
+      showMessage('LAR TANK OFF — BOARD CLEARED',1200);
       window.larTankMusicStop?.();
     }
   });
@@ -2713,7 +2717,7 @@ function nextLine(){
             if (voice) utterance.voice = voice;
             try { synth.speak(utterance); } catch { finish(); }
         }
-        current = {utterance, finish};
+        current = {utterance, finish, line, onEnd};
         utterance.onend = utterance.onerror = finish;
         if (synth.getVoices().length) start();
         else {
@@ -2729,9 +2733,20 @@ function nextLine(){
         window.speechSynthesis.cancel();
     }
 
-    window.RadioLaurentisDJ = {nextLine, speak, stop};
+    function setVolume(volume) {
+        if (!current) return;
+        if (volume <= 0) {
+            stop(true);
+            return;
+        }
+        const {line, onEnd} = current;
+        speak(line, {volume, onEnd});
+    }
+
+    window.RadioLaurentisDJ = {nextLine, speak, stop, setVolume};
 })();
 </script>
+<script src="larAudio.js"></script>
 <script id="lar-board-exhaust-haze">
 (() => {
   let haze = 0;
@@ -2739,22 +2754,23 @@ function nextLine(){
   let radioCtx = null;
   let radioMaster = null;
   let radioDucker = null;
-  let radioTimer = null;
   let radioMelodyIndex = -1;
   let radioSpeaking = false;
+  let radioDJMuted = false;
   let radioNextBreak = null;
   let radioMusicVolume = Number(localStorage.getItem('larRadioMusicVolume') || .72);
   let radioDJVolume = Number(localStorage.getItem('larRadioDJVolume') || 1.0);
-  let radioBackgroundSelection = JSON.parse(localStorage.getItem('larRadioBackgroundSelection') || 'null');
-  let radioRandomMelody = localStorage.getItem('larRadioRandomMelody') !== 'false';
   let radioAudioEl = null;
   let radioAudioPath = null;
+  let radioSource = 'audio';
+  let radioRepeatAll = false;
+  let radioPaused = false;
+  let melodyStart = null;
+  const excludedRadioTracks = new Set();
+  const uncheckedRadioTracks = new Set();
   window.addEventListener('lar-game-mute', () => {
     if (radioAudioEl) radioAudioEl.muted=stampGameMuted;
   });
-  let radioDJQueue = [];
-  let radioDJActive = false;
-  let radioDJToken = 0;
 
   let smokeEnabled = true;
   let smokeProgress = .015;
@@ -2814,7 +2830,7 @@ function nextLine(){
       100%{opacity:0;transform:translate(10%,-8%) scale(.7)}
     }
 
-    #radioDock{display:block;margin:0;padding:8px;background:transparent;border:0;box-shadow:none}
+    #radioDock{display:block;margin:0;padding:4px 6px;background:transparent;border:0;box-shadow:none}
     #radioDock #radioLaurentisBtn{margin-top:0}
     #radioLaurentisBtn{
       display:block;width:100%;margin-top:8px;padding:10px 7px;
@@ -2832,91 +2848,42 @@ function nextLine(){
       min-height:15px;
     }
     .lar-radio-card{
-      position:fixed;right:24px;bottom:24px;z-index:10000;
-      width:300px;min-width:260px;max-width:80vw;
-      height:auto;min-height:180px;max-height:82vh;
+      position:fixed;right:var(--radio-right, 12px);bottom:12px;z-index:10000;
+      width:var(--radio-width, 230px);
       background:#1b120c;color:#f0d49b;
-      border:3px solid #8b5a2b;border-radius:12px;padding:13px;
-      box-shadow:0 8px 30px #000;display:none;font-family:Georgia,serif;
-      resize:both;overflow:auto;
+      border:2px solid #8b5a2b;border-radius:9px;padding:9px;
+      box-shadow:0 8px 24px #0009;display:none;font-family:Georgia,serif;
     }
-    .lar-radio-card{container-type:inline-size;container-name:laradio}
-    .lar-radio-card .lar-radio-title{font-size:clamp(18px,6cqw,34px)}
-    .lar-radio-card .lar-radio-dial{font-size:clamp(10px,3.2cqw,18px)}
-    .lar-radio-card .lar-radio-now{font-size:clamp(12px,3.7cqw,22px);line-height:1.38}
-    .lar-radio-card .lar-radio-audio-status{font-size:clamp(9px,2.5cqw,15px)}
-    .lar-radio-card .lar-radio-unlock{font-size:clamp(10px,2.8cqw,17px)}
-    .lar-radio-card .lar-radio-next{font-size:clamp(10px,2.8cqw,17px);padding:7px 10px}
-    .lar-radio-card .lar-radio-controls label{font-size:clamp(10px,2.8cqw,17px)}
-    .lar-radio-card .lar-radio-picker-title{font-size:clamp(10px,2.8cqw,17px)}
-    .lar-radio-card .lar-radio-picker label{font-size:clamp(10px,2.8cqw,17px)}
-    .lar-radio-card .lar-radio-controls label input[type="range"]{width:100%!important}
-    .lar-radio-card .lar-radio-controls{gap:10px}
-    .lar-radio-title{cursor:grab;user-select:none}
-    .lar-radio-title:active{cursor:grabbing}
     .lar-radio-card.on{display:block}
-    .lar-radio-title{font-size:22px;font-weight:bold;letter-spacing:1px}
-    .lar-radio-now{margin-top:7px;font-size:13px;line-height:1.35}\n    .lar-radio-audio-status{margin-top:5px;font-size:10px;color:#b99563;min-height:13px}
-    .lar-radio-dial{font-size:12px;color:#c99c5c;margin-top:6px}
-    .lar-radio-close{float:right;background:none;border:0;color:#f0d49b;font-size:20px;cursor:pointer}
-        .lar-radio-unlock{margin-top:7px;font-size:11px;color:#e8c77f;font-weight:bold}
-            .lar-radio-check{justify-content:flex-start!important}
-    .lar-radio-check input{width:auto}
-    .lar-radio-picker{margin-top:8px;padding:8px;border:1px solid #70441f;background:#130d08;max-height:230px;overflow:auto}
-    .lar-radio-picker-title{font:bold 11px Arial,sans-serif;color:#e8c77f;margin-bottom:6px}
-    .lar-radio-picker label{display:flex;align-items:center;gap:6px;font:11px Arial,sans-serif;color:#e0c18d;margin:5px 0}
-    .lar-radio-picker input{width:auto}
-.lar-radio-next{margin-top:7px;width:100%;padding:5px 8px;border:1px solid #8b5a2b;background:#24170d;color:#e9c27e;font:bold 11px Arial,sans-serif;cursor:pointer}
-    .lar-radio-next:hover{background:#3a2414}
-
-    .lar-radio-controls{
-      margin-top:10px;padding-top:8px;border-top:1px solid #70441f;
-      display:flex;flex-direction:column;gap:7px;
+    .lar-radio-title{font-size:15px;font-weight:bold;cursor:grab;user-select:none}
+    .lar-radio-title:active{cursor:grabbing}
+    .lar-radio-close{float:right;background:none;border:0;color:inherit;font-size:16px;cursor:pointer;line-height:1}
+    .lar-radio-now,.lar-radio-audio-status{
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;
+      font:11px/16px Arial,sans-serif;height:16px;
     }
-    .lar-radio-controls label{
-      display:grid!important;
-      grid-template-columns:minmax(110px,1fr) 130px;
-      align-items:center;gap:10px;
-      width:100%;margin:0!important;
-      font:11px Arial,sans-serif;color:#d8b77c;
+    .lar-radio-now{margin-top:5px}
+    .lar-radio-audio-status{color:#c99c5c}
+    .lar-radio-toolbar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin-top:5px}
+    .lar-radio-next{min-width:0;padding:4px 1px;border:1px solid #8b5a2b;border-radius:3px;background:#2a1b12;color:#f0d49b;font:10px/14px Arial,sans-serif;cursor:pointer}
+    .lar-radio-next:hover,.lar-radio-next[aria-pressed="true"]{background:#573719}
+    #larRadioProgress{width:100%;height:4px;display:block;margin:7px 0;accent-color:#dfaa63}
+    #larRadioProgress::-webkit-progress-bar{background:#70441f}
+    #larRadioProgress::-webkit-progress-value{background:#dfaa63}
+    .lar-radio-controls{display:grid;gap:3px}
+    .lar-radio-controls label{display:grid;grid-template-columns:44px minmax(0,1fr);align-items:center;font:10px/14px Arial,sans-serif}
+    .lar-radio-controls input{width:100%;height:12px;margin:0;accent-color:#b77932}
+    .lar-radio-picker{
+      position:absolute;right:-2px;bottom:calc(100% + 5px);width:calc(100% + 4px);padding:7px;
+      border:2px solid #8b5a2b;border-radius:8px;background:#1b120c;
     }
-    .lar-radio-controls label input[type="range"]{
-      width:130px!important;margin:0;
-      height:16px;accent-color:#b77932;
-      cursor:pointer;
-    }
-    .lar-radio-controls input[type="range"]::-webkit-slider-runnable-track{
-      height:4px;border-radius:2px;background:#70441f;
-    }
-    .lar-radio-controls input[type="range"]::-webkit-slider-thumb{
-      -webkit-appearance:none;
-      appearance:none;
-      width:9px;height:17px;margin-top:-6.5px;
-      border-radius:1px;border:1px solid #d6a05a;background:#b77932;
-      box-shadow:0 1px 2px #000;cursor:pointer;
-    }
-    .lar-radio-controls input[type="range"]::-moz-range-track{
-      height:4px;border-radius:2px;background:#70441f;
-    }
-    .lar-radio-controls input[type="range"]::-moz-range-thumb{
-      width:9px;height:17px;border-radius:1px;
-      border:1px solid #d6a05a;background:#b77932;
-      box-shadow:0 1px 2px #000;cursor:pointer;
-    }
-    .lar-radio-check{
-      display:flex!important;
-      justify-content:flex-start!important;
-      grid-template-columns:none!important;
-    }
-.lar-radio-controls{margin-top:10px;padding-top:8px;border-top:1px solid #70441f}
-    .lar-radio-controls label{display:flex;align-items:center;justify-content:space-between;gap:8px;font:11px Arial,sans-serif;color:#d8b77c;margin:5px 0}
-    .lar-radio-controls input{width:130px;accent-color:#b77932}
-.lar-radio-bars{height:9px;margin-top:9px;display:flex;gap:3px;align-items:end}
-    .lar-radio-bars i{display:block;width:7px;background:#c98d42;animation:radioBar .55s ease-in-out infinite alternate}
-    .lar-radio-bars i:nth-child(1){height:3px}.lar-radio-bars i:nth-child(2){height:8px;animation-delay:.1s}
-    .lar-radio-bars i:nth-child(3){height:6px;animation-delay:.2s}.lar-radio-bars i:nth-child(4){height:10px;animation-delay:.3s}
-    .lar-radio-bars i:nth-child(5){height:5px;animation-delay:.4s}
-    @keyframes radioBar{to{transform:scaleY(.35)}}
+    .lar-radio-card.tracks-below .lar-radio-picker{bottom:auto;top:calc(100% + 5px)}
+    .lar-radio-unlock{font:10px/14px Arial,sans-serif}
+    #larRadioMusicList{height:var(--track-list-height, 120px);overflow:auto;margin-top:4px;font:11px/18px Arial,sans-serif}
+    .lar-radio-track{display:flex;align-items:center;justify-content:space-between;gap:5px}
+    .lar-radio-track label{display:flex;align-items:center;gap:4px;min-width:0;flex:1}
+    .lar-radio-track label span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .lar-radio-remove{flex:none;padding:0 5px}
     .clickExhaustBurst{position:absolute;width:16px;height:16px;border-radius:50%;
       background:rgba(155,155,150,.82);filter:blur(3px);pointer-events:none;z-index:999;
       animation:clickExhaustBurst 1.35s ease-out forwards}
@@ -2959,150 +2926,103 @@ function nextLine(){
     {name:"FIVE DOLLAR FOG",bpm:84,root:49,notes:[0,2,3,7,8,11,9,5],organ:[12,15,18,16]}
   ];
 
-  const uploadedTracks = [
-    "Audio/AFRIGHANISTAN.mp3",
-    "Audio/ALL ABOUT MY HEART.mp3",
-    "Audio/ANAKINS ALARMBEL.mp3",
-    "Audio/AT CLUB LIBRA.mp3",
-    "Audio/CHAKRA PEOPLE.mp3",
-    "Audio/CHILL OUT DUDE.mp3",
-    "Audio/COOLER MINDED ME.mp3",
-    "Audio/DRUMBO.mp3",
-    "Audio/EASEUS FISHE.mp3",
-    "Audio/FUNNY SPIRITS.mp3",
-    "Audio/GET UP.mp3",
-    "Audio/KING LORT III.mp3",
-    "Audio/LAST DAY OF SCHOOL.mp3",
-    "Audio/LET THE BEAT.mp3",
-    "Audio/LEX LUTHOR.mp3",
-    "Audio/LMAC DJ NERDWOLFE.mp3",
-    "Audio/LMAC OBEY THE ROOL.mp3",
-    "Audio/LMAC THE YEAR OF THE FROG.mp3",
-    "Audio/LMAC WESTMINSTER ABBY.mp3",
-    "Audio/LMAC WHEN FORGIVENESS COMES TO ME.mp3",
-    "Audio/LMAC WHO WILL FREE THE LION.mp3",
-    "Audio/OMS BURN 1.mp3",
-    "Audio/PUSHING TO THE TOP.mp3",
-    "Audio/SHUT UP & RELAX ALREADY.mp3",
-    "Audio/THE BOAT RIDE.mp3",
-    "Audio/THE COOL ABILITY.mp3",
-    "Audio/THE FLOATING SONG.mp3",
-    "Audio/THE PIZZA TONITE DELIVERY DUDE IN TRAFFIC.mp3",
-    "Audio/WALLETFULLAMONEY.mp3",
-    "Audio/ZUZANNE'S DANCE.mp3",
-    "Audio/ZUZANNE'S X FILES.mp3"
-];
   const drumboPath = 'Audio/DRUMBO.mp3';
   const renamedRadioTracks = {
-    'Audio/Drumbo.mp3':'Audio/DRUMBO.mp3',
-    'Audio/KingLortTheThird.mp3':'Audio/KING LORT III.mp3',
-    'Audio/OmsBurnOne.mp3':'Audio/OMS BURN 1.mp3',
-    'Audio/TheFloatingSong.mp3':'Audio/THE FLOATING SONG.mp3'
+    'Audio/Drumbo.mp3': drumboPath,
+    'Audio/KingLortTheThird.mp3': 'Audio/KING LORT III.mp3',
+    'Audio/OmsBurnOne.mp3': 'Audio/OMS BURN 1.mp3',
+    'Audio/TheFloatingSong.mp3': 'Audio/THE FLOATING SONG.mp3'
   };
-  if (Array.isArray(radioBackgroundSelection)) {
-    radioBackgroundSelection = radioBackgroundSelection.map(key => {
-      const renamed = renamedRadioTracks[key.slice(6)];
-      return key.startsWith('audio:') && renamed ? 'audio:' + renamed : key;
-    });
+  const regularTracks = [...new Set(
+    (Array.isArray(window.LAR_AUDIO_TRACKS) ? window.LAR_AUDIO_TRACKS : Object.keys(renamedRadioTracks))
+      .filter(path => typeof path === 'string' && path.trim())
+      .map(path => renamedRadioTracks[path] || path)
+  )].map(path => ({key:path, path, name:path.split('/').pop().replace(/\.[^.]+$/, '')}));
+
+  function stopRadioAudioTrack() {
+    if (radioAudioEl) radioAudioEl.pause();
+    radioAudioEl = null;
+    radioAudioPath = null;
   }
 
-  function getLarAudioTracks(){
-    return uploadedTracks;
+  function stopRadioMelody() {
+    melodyStart = null;
+    radioMaster?.disconnect();
+    radioDucker?.disconnect();
+    radioMaster = radioDucker = null;
+    radioMelodyIndex = -1;
   }
 
-function stopRadioAudioTrack(){
-    if(radioAudioEl){
-      try{radioAudioEl.pause();radioAudioEl.currentTime=0;}catch(e){}
-      radioAudioEl=null;
-      radioAudioPath=null;
-    }
-  }
-
-function playRadioAudioTrack(path){
+  function playRadioAudioTrack(track) {
+    stopRadioMelody();
     stopRadioAudioTrack();
-    const a=new Audio(path);
-    a.loop=true;
-    a.muted=stampGameMuted;
-    a.volume=Math.max(0,Math.min(1,radioMusicVolume));
-    radioAudioEl=a;
-    radioAudioPath=path;
-    const label = path.split('/').pop().replace(/\.mp3$/i, '');
+    const audio = new Audio(track.path);
+    radioAudioEl = audio;
+    radioAudioPath = track.key;
+    audio.loop = !radioRepeatAll;
+    audio.muted = stampGameMuted;
+    audio.volume = Math.max(0, Math.min(1, radioMusicVolume));
+    audio.addEventListener('ended', () => {
+      if (radioAudioEl === audio && radioRepeatAll) nextRadioHit();
+    });
     const reportFailure = () => {
-      if (radioAudioEl === a) setRadioText('COULD NOT PLAY: ' + label);
+      if (radioAudioEl === audio) setRadioText('COULD NOT PLAY: ' + track.name);
     };
-    a.addEventListener('error', reportFailure, {once:true});
-    setRadioText('NOW PLAYING: ' + label);
-    a.play().catch(reportFailure);
+    audio.addEventListener('error', reportFailure, {once:true});
+    setRadioText('NOW PLAYING: ' + track.name);
+    if (!radioPaused) audio.play().catch(reportFailure);
   }
 
-  function radioSelectedChoices(){
-    const audio=getLarAudioTracks().map((path,i)=>({
-      kind:'audio', path, index:i,
-      name:String(path).split('/').pop().split('\\').pop().replace(/\.[^.]+$/,'')
-    }));
+  function getRadioTracks() {
+    const tracks = radioSource === 'audio' ? regularTracks : radioMelodies.flatMap((song,index) =>
+      index < radioUnlockedCount() || index >= 17 ? [{key:'organ:'+index,index,name:song.name}] : []
+    );
+    return tracks.filter(track => !excludedRadioTracks.has(track.key));
+  }
 
-    const melodies=radioMelodies.map((song,i)=>({
-      kind:'melody', index:i, name:song.name
-    }));
+  function availableRadioTracks() {
+    return getRadioTracks().filter(track => !uncheckedRadioTracks.has(track.key));
+  }
 
-    const defaultSelection=[
-      ...audio,
-      ...melodies.slice(0,Math.min(17,Math.max(1,Number(levelNumber)||1))),
-      ...melodies.slice(17)
-    ];
-
-    if(!Array.isArray(radioBackgroundSelection) || !radioBackgroundSelection.length){
-      return defaultSelection;
+  function deleteRadioTracks(tracks) {
+    const current = radioSource === 'audio' ? radioAudioPath : 'organ:'+radioMelodyIndex;
+    for (const track of tracks) {
+      excludedRadioTracks.add(track.key);
+      if (track.path?.startsWith('blob:')) URL.revokeObjectURL(track.path);
     }
-
-    const byKey=new Map([
-      ...audio.map(x=>['audio:'+x.path,x]),
-      ...melodies.map(x=>['melody:'+x.index,x])
-    ]);
-
-    const chosen=radioBackgroundSelection
-      .map(key=>byKey.get(key))
-      .filter(Boolean);
-
-    return chosen.length ? chosen : defaultSelection;
+    if (tracks.some(track => track.key === current)) startChosenRadioBackground();
+    populateRadioMusicPicker();
   }
 
-  function populateRadioMusicPicker(){
-    const list=document.getElementById('larRadioMusicList');
-    if(!list)return;
-    const chosen=new Set(Array.isArray(radioBackgroundSelection)
-      ? radioBackgroundSelection : []);
-
-    const rows=[];
-    getLarAudioTracks().forEach((path,i)=>{
-      const key='audio:'+path;
-      const id='larAudioChoice'+i;
-      const label=String(path).split('/').pop().split('\\').pop().replace(/\.[^.]+$/,'');
-      rows.push(
-        '<label><input type="checkbox" data-radio-key="'+key.replace(/"/g,'&quot;')+'" '+
-        (!chosen.size || chosen.has(key)?'checked':'')+'><span>'+label.replace(/[&<>]/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[s]))+'</span></label>'
-      );
-    });
-
-    radioMelodies.forEach((song,i)=>{
-      const key='melody:'+i;
-      const checked=chosen.size ? chosen.has(key)
-        : (i<Math.min(17,Math.max(1,Number(levelNumber)||1)) || i>=17);
-      rows.push(
-        '<label><input type="checkbox" data-radio-key="'+key+'" '+
-        (checked?'checked':'')+'><span>'+song.name+'</span></label>'
-      );
-    });
-
-    list.innerHTML=rows.join('');
-    list.querySelectorAll('input[data-radio-key]').forEach(cb=>{
-      cb.addEventListener('change',()=>{
-        const keys=[...list.querySelectorAll('input[data-radio-key]:checked')]
-          .map(x=>x.dataset.radioKey);
-        radioBackgroundSelection=keys;
-        localStorage.setItem('larRadioBackgroundSelection',JSON.stringify(keys));
-      });
-    });
+  function populateRadioMusicPicker() {
+    const list = document.getElementById('larRadioMusicList');
+    if (!list) return;
+    list.replaceChildren();
+    for (const track of getRadioTracks()) {
+      const row = document.createElement('div');
+      row.className = 'lar-radio-track';
+      const label = document.createElement('label');
+      const select = document.createElement('input');
+      select.type = 'checkbox';
+      select.checked = !uncheckedRadioTracks.has(track.key);
+      select.onchange = () => {
+        if (select.checked) uncheckedRadioTracks.delete(track.key);
+        else uncheckedRadioTracks.add(track.key);
+      };
+      const name = document.createElement('span');
+      name.textContent = track.name;
+      name.title = track.name;
+      label.append(select, name);
+      const remove = document.createElement('button');
+      remove.className = 'lar-radio-next lar-radio-remove';
+      remove.type = 'button';
+      remove.textContent = '×';
+      remove.setAttribute('aria-label', 'Remove '+track.name);
+      remove.onclick = () => deleteRadioTracks([track]);
+      row.append(label, remove);
+      list.append(row);
+    }
+    if (!list.childElementCount) list.textContent = 'No tracks in this list.';
   }
 
 function ensureRadioUI(){
@@ -3124,22 +3044,30 @@ function ensureRadioUI(){
       card.id='larRadioCard'; card.className='lar-radio-card';
       card.innerHTML='<button class="lar-radio-close" aria-label="Close">×</button>'+
         '<div class="lar-radio-title">RADIO LAURENTIS</div>'+
-        '<div class="lar-radio-dial">AM — Broadcasting from Larry’s Variety · NEWS · SPORTS · DEALS · TUBA · ORGAN</div>'+
         '<div class="lar-radio-now">Tuning...</div>'+
         '<div class="lar-radio-audio-status"></div>'+
-        '<div class="lar-radio-unlock"></div>'+
-        '<button class="lar-radio-next" id="larRadioNextHit">NEXT LAR HIT</button>'+
-        '<button class="lar-radio-next" id="larRadioSelectMusic">BACKGROUND MUSIC</button>'+
-        '<div class="lar-radio-bars"><i></i><i></i><i></i><i></i><i></i></div>'+
+        '<progress id="larRadioProgress" aria-label="Music progress" value="0" max="1"></progress>'+
+        '<div class="lar-radio-toolbar">'+
+          '<button class="lar-radio-next" id="larRadioPlay">PAUSE</button>'+
+          '<button class="lar-radio-next" id="larRadioRepeat" title="Toggle repeat one or all">ONE</button>'+
+          '<button class="lar-radio-next" id="larRadioNextHit">NEXT</button>'+
+          '<button class="lar-radio-next" id="larRadioSource" aria-pressed="false" title="Organ and tuba">ORGAN</button>'+
+          '<button class="lar-radio-next" id="larRadioSelectMusic" aria-expanded="false">TRACKS</button>'+
+          '<button class="lar-radio-next" id="larRadioDJMute" aria-pressed="false">DJ ON</button>'+
+        '</div>'+
         '<div class="lar-radio-controls">'+
-          '<label>MUSIC VOLUME <input id="larRadioMusicVolume" type="range" min="0" max="1" step=".01"></label>'+
-          '<label>DJ VOLUME <input id="larRadioDJVolume" type="range" min="0" max="1" step=".01"></label>'+
-          '<label class="lar-radio-check"><input id="larRadioRandomMelody" type="checkbox"> RANDOM NEW MELODY</label>'+
+          '<label>MUSIC <input id="larRadioMusicVolume" type="range" min="0" max="1" step=".01"></label>'+
+          '<label>DJ VOL <input id="larRadioDJVolume" type="range" min="0" max="1" step=".01"></label>'+
         '</div>'+
         '<div id="larRadioMusicPicker" class="lar-radio-picker" hidden>'+
-          '<div class="lar-radio-picker-title">SELECT BACKGROUND MUSIC</div>'+
+          '<div class="lar-radio-unlock"></div>'+
+          '<div class="lar-radio-toolbar">'+
+            '<button class="lar-radio-next" id="larRadioLoad">LOAD AUDIO</button>'+
+            '<button class="lar-radio-next" id="larRadioSelectAll">SELECT ALL</button>'+
+            '<button class="lar-radio-next" id="larRadioDelete">DELETE</button>'+
+          '</div>'+
+          '<input type="file" id="larRadioFiles" accept="audio/*,.mp3,.m4a,.ogg,.wav,.flac,.opus" multiple hidden>'+
           '<div id="larRadioMusicList"></div>'+
-          '<button class="lar-radio-next" id="larRadioMusicDone">DONE</button>'+
         '</div>';
       document.body.appendChild(card);
       card.querySelector('.lar-radio-close').onclick=()=>toggleRadio(false);
@@ -3169,7 +3097,7 @@ function ensureRadioUI(){
         card.style.left=x+'px';
         card.style.top=y+'px';
       });
-      const stopDrag=()=>{dragging=false};
+      const stopDrag=()=>{dragging=false; fitRadioTracks();};
       title.addEventListener('pointerup',stopDrag);
       title.addEventListener('pointercancel',stopDrag);
     }
@@ -3194,39 +3122,70 @@ function ensureRadioUI(){
       djSlider.oninput=()=>{
         radioDJVolume=Number(djSlider.value);
         localStorage.setItem('larRadioDJVolume',String(radioDJVolume));
-        const live=window._larCurrentDJUtterance;
-        if(live){
-          try{live.volume=radioDJVolume;}catch(e){}
-        }
+        if (radioDJVolume === 0) window.RadioLaurentisDJ.stop(true);
+      };
+      djSlider.onchange=()=>{
+        if (!radioDJMuted && !stampGameMuted) window.RadioLaurentisDJ.setVolume(radioDJVolume);
       };
     }
-    const nextHit=document.getElementById('larRadioNextHit');
-    if(nextHit) nextHit.onclick=()=>nextRadioHit();
-
-    const randomBox=document.getElementById('larRadioRandomMelody');
-    if(randomBox){
-      randomBox.checked=radioRandomMelody;
-      randomBox.onchange=()=>{
-        radioRandomMelody=randomBox.checked;
-        localStorage.setItem('larRadioRandomMelody',String(radioRandomMelody));
-      };
-    }
-
-    const pickerBtn=document.getElementById('larRadioSelectMusic');
-    const picker=document.getElementById('larRadioMusicPicker');
-    const done=document.getElementById('larRadioMusicDone');
-    if(pickerBtn) pickerBtn.onclick=(ev)=>{
-      ev.preventDefault();
-      ev.stopPropagation();
-      populateRadioMusicPicker();
-      if(picker)picker.hidden=!picker.hidden;
-    };
-    if(done) done.onclick=(ev)=>{
-      ev.preventDefault();
-      ev.stopPropagation();
-      if(picker)picker.hidden=true;
+    const control = id => document.getElementById('larRadio'+id);
+    control('NextHit').onclick = nextRadioHit;
+    control('Source').onclick = () => {
+      radioSource = radioSource === 'audio' ? 'organ' : 'audio';
+      control('Source').setAttribute('aria-pressed', String(radioSource === 'organ'));
+      control('Load').disabled = radioSource !== 'audio';
+      updateRadioUnlockDisplay();
       startChosenRadioBackground();
+      populateRadioMusicPicker();
     };
+    control('Play').onclick = () => {
+      radioPaused = !radioPaused;
+      control('Play').textContent = radioPaused ? 'PLAY' : 'PAUSE';
+      if (radioAudioEl) {
+        if (radioPaused) radioAudioEl.pause();
+        else radioAudioEl.play().catch(() => setRadioText('COULD NOT RESUME AUDIO'));
+      } else if (melodyStart !== null) {
+        if (radioPaused) void radioCtx.suspend();
+        else void radioCtx.resume();
+      } else if (!radioPaused) startChosenRadioBackground();
+    };
+    control('Repeat').onclick = () => {
+      radioRepeatAll = !radioRepeatAll;
+      control('Repeat').textContent = radioRepeatAll ? 'ALL' : 'ONE';
+      if (radioAudioEl) radioAudioEl.loop = !radioRepeatAll;
+    };
+    control('SelectMusic').onclick = () => {
+      const picker = control('MusicPicker');
+      picker.hidden = !picker.hidden;
+      control('SelectMusic').setAttribute('aria-expanded', String(!picker.hidden));
+      if (!picker.hidden) {
+        populateRadioMusicPicker();
+        fitRadioTracks();
+      }
+    };
+    control('DJMute').onclick = () => {
+      radioDJMuted = !radioDJMuted;
+      control('DJMute').textContent = radioDJMuted ? 'DJ OFF' : 'DJ ON';
+      control('DJMute').setAttribute('aria-pressed', String(radioDJMuted));
+      if (radioDJMuted) window.RadioLaurentisDJ.stop(true);
+    };
+    control('Load').onclick = () => control('Files').click();
+    control('Files').onchange = event => {
+      const loaded = Array.from(event.target.files, file => {
+        const path = URL.createObjectURL(file);
+        return {key:path,path,name:file.name};
+      });
+      regularTracks.push(...loaded);
+      event.target.value = '';
+      if (!radioAudioEl && loaded.length) startChosenRadioBackground();
+      populateRadioMusicPicker();
+    };
+    control('SelectAll').onclick = () => {
+      for (const track of getRadioTracks()) uncheckedRadioTracks.delete(track.key);
+      populateRadioMusicPicker();
+    };
+    control('Delete').onclick = () => deleteRadioTracks(availableRadioTracks());
+    populateRadioMusicPicker();
 
     updateRadioUnlockDisplay();
     btn.onclick=()=>toggleRadio(!radioOn);
@@ -3235,7 +3194,7 @@ function ensureRadioUI(){
   function sayRadio(line, onEnd){
     radioSpeaking=true;
     window.RadioLaurentisDJ.speak(line, {
-      volume:stampGameMuted ? 0 : radioDJVolume,
+      volume:stampGameMuted || radioDJMuted ? 0 : radioDJVolume,
       onEnd:()=>{
         radioSpeaking=false;
         onEnd?.();
@@ -3255,30 +3214,25 @@ function ensureRadioUI(){
   function updateRadioUnlockDisplay(){
     const n=document.querySelector('#larRadioCard .lar-radio-unlock');
     if(!n) return;
-    n.textContent=`LEVEL HITS: ${radioUnlockedCount()} / 17 · 5 BONUS HITS ALWAYS AVAILABLE`;
+    n.textContent=radioSource === "organ" ? `LAR Organ · ${radioUnlockedCount()} unlocked` : "Audio tracks";
   }
 
-  function announceNewRadioHit(){
-    const count=radioUnlockedCount();
-    if(count<=1) return;
-    const song=radioMelodies[count-1];
-    setRadioText('NEW LAR HIT UNLOCKED: '+song.name);
-    showMessage('NEW RADIO LAURENTIS HIT UNLOCKED!',1400);
-    if(radioOn){
-      sayRadio('ATTENTION LAIR-LISTENERS. A new Radio Laurentis hit has been unlocked. '+song.name+'. The music is becoming considerably more sophisticated.',()=>{});
-    }
+  window.addEventListener('lar-level-advanced', () => {
     updateRadioUnlockDisplay();
-  }
-
+    if (radioSource === 'organ') populateRadioMusicPicker();
+  });
 
   function midi(root,semi){ return root*Math.pow(2,semi/12); }
 
   function playRadioMelody(index){
     if(!radioOn)return;
     stopRadioAudioTrack();
+    stopRadioMelody();
+    radioMelodyIndex = index;
     try{
       if(!radioCtx) radioCtx=new(window.AudioContext||window.webkitAudioContext)();
-      if(radioCtx.state==='suspended') radioCtx.resume();
+      if (radioPaused) void radioCtx.suspend();
+      else if (radioCtx.state==='suspended') void radioCtx.resume();
       if(radioMaster) try{radioMaster.disconnect();}catch(e){}
       if(radioDucker) try{radioDucker.disconnect();}catch(e){}
       radioDucker=radioCtx.createGain();
@@ -3290,6 +3244,7 @@ function ensureRadioUI(){
       const song=radioMelodies[index];
       const beat=60/song.bpm;
       const start=radioCtx.currentTime+.04;
+      melodyStart = start;
       const total=Math.max(1,Math.round(33/beat));
       const richness=Math.min(1,index/16);
 
@@ -3360,27 +3315,14 @@ function ensureRadioUI(){
       });
 
       setRadioText('NOW PLAYING: '+song.name+' · TUBA + PIPE ORGAN');
-      clearTimeout(radioTimer);
-      radioTimer=setTimeout(()=>{
-        if(!radioOn)return;
-        const chosen=radioSelectedChoices().filter(x=>x.kind==='melody');
-        if(chosen.length){
-          let at=chosen.findIndex(x=>x.index===radioMelodyIndex);
-          at=(at+1)%chosen.length;
-          radioMelodyIndex=chosen[at].index;
-        }else{
-          radioMelodyIndex=(radioMelodyIndex+1)%radioUnlockedCount();
-        }
-        playRadioMelody(radioMelodyIndex);
-        setTimeout(()=>radioInterruption(),450);
-      },33000);
     }catch(e){}
   }
 
   function radioInterruption(){
     if(!radioOn || radioSpeaking)return;
     const dj=window.RadioLaurentisDJ.nextLine();
-    setRadioText(dj);
+    const status = document.querySelector('#larRadioCard .lar-radio-audio-status');
+    if (status) { status.textContent = dj; status.title = dj; }
     // Music deliberately continues underneath the complete announcement.
     sayRadio(dj,()=>{
       if(!radioOn)return;
@@ -3388,50 +3330,55 @@ function ensureRadioUI(){
     });
   }
 
-  function startChosenRadioBackground(){
-    if(!radioOn)return;
-    const choices=radioSelectedChoices();
-    const uploaded=choices.filter(x=>x.kind==='audio');
-    if(uploaded.length){
-      const pick=uploaded[Math.floor(Math.random()*uploaded.length)];
-      playRadioAudioTrack(pick.path);
-      clearTimeout(radioTimer);
-      return;
-    }
+  function startChosenRadioBackground(preferDrumbo = false) {
+    if (!radioOn) return;
     stopRadioAudioTrack();
-    const generated=choices.filter(x=>x.kind==='melody');
-    if(generated.length){
-      const pick=radioRandomMelody
-        ? generated[Math.floor(Math.random()*generated.length)]
-        : generated[0];
-      radioMelodyIndex=pick.index;
-      playRadioMelody(radioMelodyIndex);
-    }
+    stopRadioMelody();
+    const tracks = availableRadioTracks();
+    const track = (preferDrumbo && tracks.find(item => item.key === drumboPath)) || tracks[0];
+    if (track) {
+      if (radioSource === 'audio') playRadioAudioTrack(track);
+      else playRadioMelody(track.index);
+    } else setRadioText('NO TRACKS SELECTED');
   }
 
-  function nextRadioHit(){
-    if(!radioOn) return;
-    const choices=radioSelectedChoices();
-    const uploaded=choices.filter(x=>x.kind==='audio');
-    clearTimeout(radioTimer);
-    clearTimeout(radioNextBreak);
-    if(uploaded.length){
-      const at=uploaded.findIndex(track=>track.path===radioAudioPath);
-      playRadioAudioTrack(uploaded[(at+1)%uploaded.length].path);
-    }else{
-      const generated=choices.filter(x=>x.kind==='melody');
-      if(!generated.length)return;
-      let at=generated.findIndex(x=>x.index===radioMelodyIndex);
-      at=(at+1)%generated.length;
-      radioMelodyIndex=generated[at].index;
-      playRadioMelody(radioMelodyIndex);
+  function nextRadioHit() {
+    if (!radioOn) return;
+    const tracks = availableRadioTracks();
+    if (!tracks.length) {
+      startChosenRadioBackground();
+      return;
     }
-    setTimeout(()=>{ if(radioOn && !radioSpeaking) radioInterruption(); },700);
+    const current = radioSource === 'audio' ? radioAudioPath : 'organ:'+radioMelodyIndex;
+    const at = tracks.findIndex(track => track.key === current);
+    const next = tracks[(at+1)%tracks.length];
+    if (radioSource === 'audio') playRadioAudioTrack(next);
+    else playRadioMelody(next.index);
   }
+
+  setInterval(() => {
+    if (!radioOn) return;
+    const progress = document.getElementById('larRadioProgress');
+    if (radioAudioEl) {
+      progress.value = Number.isFinite(radioAudioEl.duration) && radioAudioEl.duration > 0
+        ? radioAudioEl.currentTime / radioAudioEl.duration : 0;
+    } else if (melodyStart !== null) {
+      const elapsed = Math.max(0, radioCtx.currentTime-melodyStart);
+      progress.value = Math.min(1, elapsed/33);
+      if (!radioPaused && elapsed >= 33) {
+        if (radioRepeatAll) nextRadioHit();
+        else playRadioMelody(radioMelodyIndex);
+      }
+    } else progress.value = 0;
+  }, 100);
 
   function toggleRadio(on){
     radioOn=!!on;
     window.radioLaurentisOn=radioOn;
+    if (radioOn) {
+      radioSource = 'audio';
+      radioPaused = false;
+    }
     ensureRadioUI();
 
     const btn=document.getElementById('radioLaurentisBtn');
@@ -3440,25 +3387,29 @@ function ensureRadioUI(){
     if(btn)btn.classList.toggle('active',radioOn);
     if(status)status.textContent=radioOn?'ON AIR — AM':'AM — LARRY’S VARIETY';
     if(card)card.classList.toggle('on',radioOn);
+    if (radioOn) {
+      card.style.left = card.style.top = card.style.right = card.style.bottom = '';
+      fitRadioColumn();
+    }
 
-    clearTimeout(radioTimer);
     clearTimeout(radioNextBreak);
 
     if(!radioOn){
       window.radioLaurentisOn=false;
       window.RadioLaurentisDJ.stop();
       radioSpeaking=false;
-      try{if(radioMaster)radioMaster.disconnect();}catch(e){}
-      try{if(radioDucker)radioDucker.disconnect();}catch(e){}
       stopRadioAudioTrack();
-      radioMaster=null;
-      radioDucker=null;
+      stopRadioMelody();
       return;
     }
 
-    try{playRadioAudioTrack(drumboPath);}catch(e){
-      try{stopRadioAudioTrack();playRadioMelody(0);}catch(_){}
-    }
+    document.getElementById('larRadioSource').setAttribute('aria-pressed','false');
+    document.getElementById('larRadioMusicPicker').hidden = true;
+    document.getElementById('larRadioSelectMusic').setAttribute('aria-expanded','false');
+    document.getElementById('larRadioPlay').textContent = 'PAUSE';
+    document.getElementById('larRadioLoad').disabled = false;
+    document.querySelector('#larRadioCard .lar-radio-audio-status').textContent = '';
+    startChosenRadioBackground(true);
 
     setTimeout(()=>{
       if(!radioOn)return;
@@ -3517,6 +3468,48 @@ function ensureRadioUI(){
 
   window.addEventListener('click',handleClick,false);
   ensureRadioUI();
+
+  const sidebar = document.getElementById('side');
+  function fitSidebar() {
+    const panels = [...sidebar.querySelectorAll(':scope > .panel')];
+    let zoom = .95;
+    for (let pass = 0; pass < 7; pass++) {
+      sidebar.style.setProperty('--sidebar-zoom', zoom);
+      const used = panels.at(-1).getBoundingClientRect().bottom - sidebar.getBoundingClientRect().top;
+      if (used <= sidebar.clientHeight) break;
+      zoom *= Math.max(.5, (sidebar.clientHeight - 5) / used);
+    }
+  }
+
+  function fitRadioColumn() {
+    const tank = document.getElementById('gamePanel').getBoundingClientRect();
+    const column = sidebar.getBoundingClientRect();
+    const right = Math.min(innerWidth - 6, column.right);
+    const width = column.left >= tank.right ? right-column.left : Math.min(column.width,230);
+    const card = document.getElementById('larRadioCard');
+    card.style.setProperty('--radio-width', Math.max(1,width)+'px');
+    card.style.setProperty('--radio-right', (innerWidth-right)+'px');
+  }
+
+  function fitRadioTracks() {
+    const card = document.getElementById('larRadioCard');
+    const bounds = card.getBoundingClientRect();
+    const above = bounds.top;
+    const below = innerHeight - bounds.bottom;
+    const useBelow = above < 195 && below > above;
+    card.classList.toggle('tracks-below', useBelow);
+    card.style.setProperty('--track-list-height', Math.max(24,Math.min(150,(useBelow ? below : above)-64))+'px');
+  }
+
+  function fitStampInterface() {
+    fitSidebar();
+    fitRadioColumn();
+    fitRadioTracks();
+  }
+
+  new ResizeObserver(fitStampInterface).observe(sidebar);
+  window.addEventListener('resize',fitStampInterface);
+  fitStampInterface();
   hookClearAir();
 
   document.querySelectorAll('button').forEach(btn=>{
