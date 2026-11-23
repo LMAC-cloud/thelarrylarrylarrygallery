@@ -27,11 +27,11 @@
     to { transform:translate(-50%,-50%) rotate(360deg); }
   }
   #app {
-    width:min(1320px, 96vw);
-    height:100vh;
+    width:min(1220px, 96vw);
+    height:100dvh;
     margin:auto;
     display:grid;
-    grid-template-columns:minmax(0, 1fr) 245px;
+    grid-template-columns:minmax(0, 1fr) 230px;
     grid-template-rows:105px minmax(0,1fr);
     gap:10px;
     padding:10px;
@@ -147,8 +147,13 @@
     min-height:0;
     display:flex;
     flex-direction:column;
-    gap:10px;
+    gap:9px;
+    overflow-y:auto;
+    scrollbar-width:thin;
   }
+  #side > .panel { flex:none; zoom:.86; }
+  @media (max-height:820px) { #side > .panel { zoom:.76; } }
+  @media (max-height:690px) { #side > .panel { zoom:.68; } }
   .panel {
     background:rgba(15,15,15,.90);
     border:3px solid #ddd;
@@ -385,7 +390,7 @@
 
   #postalCursor {
     position:fixed; width:76px; height:46px; pointer-events:none; z-index:100;
-    transform:translate(-50%,-50%); display:none;
+    transform:translate(var(--hood-x, -2px), -28px); display:none;
     filter:drop-shadow(2px 3px 2px rgba(0,0,0,.72));
   }
   #postalCursor svg { width:100%; height:100%; overflow:visible; }
@@ -395,6 +400,7 @@
   #postalCursor .brownTrim { fill:#4a2814; stroke:#2b160b; stroke-width:1.2; }
   #postalCursor .wheel { fill:#17110e; stroke:#080605; stroke-width:1.6; }
   #postalCursor .hub { fill:#5a3017; stroke:#2c1a0f; stroke-width:1; }
+  #postalCursor .carSmoke { opacity:.36; }
   #postalCursor .smoke { fill:#5a5a58; opacity:.76; transform-box:fill-box; transform-origin:center; }
   #postalCursor .smoke1 { animation:larSmoke1 1.35s linear infinite; }
   #postalCursor .smoke2 { animation:larSmoke2 1.55s linear infinite .25s; }
@@ -414,8 +420,8 @@
   #postalCursor.vroom { animation:larCarVroom .22s steps(2,end) 3; }
   .burstSmoke { position:absolute; width:18px; height:18px; border-radius:50%; background:rgba(150,150,145,.78); filter:blur(3px); pointer-events:none; animation:burstSmoke 1.15s ease-out forwards; }
   @keyframes larSmoke8 { 0%{transform:translate(0,0) scale(.28);opacity:.78} 100%{transform:translate(30px,-28px) scale(1.5);opacity:0} }
-  @keyframes larCarVroom { 0%,100%{transform:translate(-50%,-50%) rotate(0deg)} 50%{transform:translate(calc(-50% - 1px),calc(-50% + 1px)) rotate(-2deg)} }
-  @keyframes burstSmoke { 0%{transform:translate(0,0) scale(.45);opacity:.9} 35%{opacity:.82} 100%{transform:translate(48px,-30px) scale(3.8);opacity:0} }
+  @keyframes larCarVroom { 0%,100%{transform:translate(var(--hood-x, -2px),-28px)} 50%{transform:translate(var(--hood-x, -2px),-27px)} }
+  @keyframes burstSmoke { 0%{transform:translate(0,0) scale(.45);opacity:.3} 35%{opacity:.26} 100%{transform:translate(25px,-16px) scale(1.8);opacity:0} }
   #postalCursor path { fill:none; stroke:#f4e6c5; stroke-width:4; stroke-linecap:round; stroke-linejoin:round; }
   #gamePanel:hover #postalCursor { display:block; }
 
@@ -533,6 +539,7 @@
     background:#d7c09a; color:#241404; font:bold 10px Arial,sans-serif;
     cursor:pointer; vertical-align:middle;
   }
+  #mergeModeBtn { width:100%; margin:4px 0; }
   #clearAirBtn.smokeOff { background:#5a3017; color:#fff3d0; }
   body.lar-no-smoke #postalCursor .smoke { display:none !important; }
   body.lar-no-smoke #gamePanel::after { opacity:0 !important; }
@@ -654,11 +661,12 @@
         <button class="smallBtn" id="tankModeBtn">LAR TANK: OFF</button>
         <button class="smallBtn clearBoardBtn" id="clearBoardBtn">CLEAR LAR BOARD</button>
       </div>
+      <button class="smallBtn" id="mergeModeBtn" type="button" aria-pressed="false">MERGE: ON RELEASE</button>
       <button id="carLotButton" title="Open Larry's Variety Car Lot">
         <svg class="miniCarIcon" viewBox="0 0 120 70" aria-hidden="true"><path d="M4 43L39 43L47 29L80 29L89 36L110 36L117 42L117 50L4 50Z" fill="#6f3d1d" stroke="#2b160b" stroke-width="3"/><path d="M49 29L49 21L62 21L68 29Z" fill="#090909"/><path d="M69 29L65 21L79 21L86 29Z" fill="#090909"/><circle cx="31" cy="51" r="9" fill="#17110e"/><circle cx="91" cy="51" r="9" fill="#17110e"/></svg>
         LARRY'S VARIETY CAR LOT
       </button>
-      <div id="hint">Click the Lar Mail to drop the stamp. Auto Larry releases a stamp for you every second. Drag a stamp through the pile onto a matching stamp to merge it. Try the Lar Tank!</div>
+      <div id="hint">Click the Lar Mail to drop a stamp. Drag it to a match to merge. Auto Larry drops stamps for you.</div>
       <a id="larBusButton" href="index.html" title="Return to the LAR BUS">🚌 LAR BUS — RETURN</a>
       <button id="clearAirBtn" type="button" title="Clear the exhaust and toggle the smoke effect">
         CLEAR AIR
@@ -1471,11 +1479,18 @@ function flashMerge(x, y, r) {
 
 const mergeBursts = [];
 const mergeAnimations = [];
+const mergeModeButton = document.getElementById('mergeModeBtn');
+let mergeOnContact = false;
+mergeModeButton.addEventListener('click', () => {
+  mergeOnContact = !mergeOnContact;
+  mergeModeButton.setAttribute('aria-pressed', String(mergeOnContact));
+  mergeModeButton.textContent = mergeOnContact ? 'MERGE: ON CONTACT' : 'MERGE: ON RELEASE';
+});
 
 Events.on(engine,'collisionStart', event => {
   for (const pair of event.pairs) {
     const a=pair.bodyA, b=pair.bodyB;
-    if (a.label==='stamp' && b.label==='stamp' && !window.larTankMode) tryMerge(a,b);
+    if (a.label==='stamp' && b.label==='stamp' && !a.plugin?.dragging && !b.plugin?.dragging && !window.larTankMode) tryMerge(a,b);
   }
 });
 
@@ -1515,6 +1530,17 @@ Events.on(engine,'afterUpdate', () => {
     let y=Math.max(minY,Math.min(maxY,b.position.y));
     if(x!==b.position.x || y!==b.position.y) Body.setPosition(b,{x,y});
     if (b.plugin.dragging) {
+      if (mergeOnContact && mouseConstraint?.body === b && mouseConstraint.mouse.button === 0) {
+        const match = findDragMatch(b);
+        if (match?.touching) {
+          tryMerge(b, match.touching);
+          mouseConstraint.mouse.button = -1;
+          mouseConstraint.body = null;
+          mouseConstraint.constraint.bodyB = null;
+          mouseConstraint.constraint.pointB = null;
+          continue;
+        }
+      }
       Body.setVelocity(b,{x:0,y:0});
       Body.setAngularVelocity(b,0);
       continue;
@@ -1799,7 +1825,7 @@ window.addEventListener('keydown', e => {
 });
 
 window.addEventListener('keydown',e=> {
-  if(e.code==='Space' && !e.repeat) {
+  if(e.code==='Space' && !e.repeat && !e.target?.closest?.('button, a, input, select, textarea')) {
     e.preventDefault();
     dropStamp();
   }
@@ -1826,8 +1852,8 @@ function vroomLarryCar() {
     o.connect(g).connect(audioCtx.destination); o.start(now); o.stop(now+.5);
   } catch(e) {}
   if((LARRY_CARS[currentLarCar]||LARRY_CARS[0]).oil){ for(let j=0;j<4;j++) setTimeout(spawnLarOil,j*110); }
-  for(let i=0;i<18;i++){
-    const s=document.createElement('span'); s.className='burstSmoke'; const size=12+Math.random()*18;
+  for(let i=0;i<5 && !document.body.classList.contains('lar-no-smoke');i++){
+    const s=document.createElement('span'); s.className='burstSmoke'; const size=5+Math.random()*6;
     s.style.width=size+'px'; s.style.height=size+'px'; s.style.left=(82+Math.random()*12)+'%'; s.style.top=(38+Math.random()*18)+'%'; s.style.animationDelay=(Math.random()*.16)+'s';
     car.appendChild(s); setTimeout(()=>s.remove(),1500);
   }
@@ -1880,14 +1906,13 @@ function setupDragging() {
 
   Events.on(mouseConstraint, 'enddrag', event => {
     const body=event.body;
-    if(!body || body.label!=='stamp' || !body.plugin) return;
+    if(!body || body.label!=='stamp' || !body.plugin || body.plugin.merged || body.plugin.popped) return;
 
     body.plugin.dragging=false;
     body.collisionFilter.mask=body.plugin.savedMask ?? 0xFFFFFFFF;
     body.collisionFilter.category=body.plugin.savedCategory ?? 0x0001;
 
-    // Release is the only moment a deliberately dragged stamp can merge.
-    // There is no aiming/homing and no merge while the mouse button is held.
+    // Preserve the original release tolerance in release mode.
     let target=null, best=Infinity;
     for(const other of stamps){
       if(other===body || !other.plugin || other.plugin.merged || other.plugin.popped || other.plugin.dragging) continue;
@@ -1898,7 +1923,7 @@ function setupDragging() {
       const limit=body.plugin.radius+other.plugin.radius+5;
       if(d<=limit && d<best){ best=d; target=other; }
     }
-    if(target) tryMerge(body,target);
+    if(target && !mergeOnContact) tryMerge(body,target);
 
     // The old, weighty control: when released without a matching target,
     // the stamp simply settles rather than being launched by a throw gesture.
@@ -1935,10 +1960,10 @@ let ownedLarCars = new Set((localStorage.getItem('larOwnedCars') || '0').split('
 if (!ownedLarCars.has(0)) ownedLarCars.add(0);
 function carSvg(index, small=false) {
   const c=LARRY_CARS[index]||LARRY_CARS[0], type=c.type;
-  const smokeCount = Math.min(12, 2 + Math.floor(c.price/18));
+  const smokeCount = Math.min(5, 2 + Math.floor(c.price/50));
   const smokeX = ['van','boxVan','bus','stationBus','limo','superLimo','hearse'].includes(type) ? 145 : 132;
   let smoke='';
-  for(let i=0;i<smokeCount;i++){ const r=4.5+(i%4)*1.4; smoke += `<circle class="smoke smoke${(i%8)+1}" cx="${smokeX+(i%3)*2}" cy="${43+(i%3)*2}" r="${r}"/>`; }
+  for(let i=0;i<smokeCount;i++){ const r=2.6+(i%4)*.8; smoke += `<circle class="smoke smoke${(i%8)+1}" cx="${smokeX+(i%3)*2}" cy="${43+(i%3)*2}" r="${r}"/>`; }
   let body='', windows='', details='', wheels='';
   if(type==='sedan'){ body=`<path class="carBody" d="M4 45H38L45 31H80L91 37H119L133 43V51H4Z"/>`; windows=`<path class="window" d="M47 31V23H62L69 31Z"/><path class="window" d="M71 31L67 23H82L91 31Z"/>`; details=`<path d="M7 41H38" stroke="#4a2814" stroke-width="4"/>`; }
   else if(type==='tiny'){ body=`<path class="carBody" d="M7 45H32L38 35H69L77 40H112L121 45V51H7Z"/>`; windows=`<path class="window" d="M41 35L47 27H58L65 35Z"/><path class="window" d="M68 35L66 27H77L82 35Z"/>`; details=`<circle cx="16" cy="40" r="3" fill="#2b160b"/>`; }
@@ -1966,7 +1991,11 @@ function carSvg(index, small=false) {
 }
 function applyLarCar(index) {
   currentLarCar=index; localStorage.setItem('larCurrentCar',String(index));
-  const car=document.getElementById('postalCursor'); if(car) car.innerHTML=carSvg(index);
+  const car=document.getElementById('postalCursor'); if(car) {
+    car.innerHTML=carSvg(index);
+    const hood=Number(car.querySelector('.carBody').getAttribute('d').match(/^M([0-9.]+)/)[1]);
+    car.style.setProperty('--hood-x', `${-hood*76/160}px`);
+  }
   updateOilLeak();
 }
 function renderCarLot() {
@@ -2029,17 +2058,19 @@ window.addEventListener('mousemove', e => {
 
 function findDragMatch(body) {
   if (!body?.plugin?.dragging) return null;
-  let best=null, bestD=Infinity;
+  let best=null, bestD=Infinity, touching=null, touchingD=Infinity;
   for (const other of stamps) {
     if (!other || other===body || !other.plugin || other.plugin.popped || other.plugin.merged || other.plugin.dragging) continue;
     if (other.plugin.tier !== body.plugin.tier) continue;
     const d=Math.hypot(body.position.x-other.position.x, body.position.y-other.position.y);
-    const threshold=body.plugin.radius+other.plugin.radius+48;
+    const edge=body.plugin.radius+other.plugin.radius;
+    const threshold=edge+48;
+    if(d<=edge && d<touchingD){ touching=other; touchingD=d; }
     if(d<=threshold && d<bestD){ best=other; bestD=d; }
   }
   if(!best) return null;
   const overlap=body.plugin.radius+best.plugin.radius;
-  return {target:best, distance:bestD, near:bestD<=overlap+30, over:bestD<=overlap+8};
+  return {target:best, touching, distance:bestD, near:bestD<=overlap+30, over:bestD<=overlap+8};
 }
 
 function draw() {
@@ -2697,8 +2728,8 @@ animateMailbox();
       background:rgba(155,155,150,.82);filter:blur(3px);pointer-events:none;z-index:999;
       animation:clickExhaustBurst 1.35s ease-out forwards}
     @keyframes clickExhaustBurst{
-      0%{transform:translate(0,0) scale(.35);opacity:.92}
-      25%{opacity:.86}100%{transform:translate(52px,-34px) scale(4.6);opacity:0}
+      0%{transform:translate(0,0) scale(.35);opacity:.3}
+      25%{opacity:.24}100%{transform:translate(27px,-18px) scale(1.9);opacity:0}
     }
   `;
   document.head.appendChild(style);
@@ -3348,9 +3379,9 @@ function ensureRadioUI(){
     if(!car)return;
     car.classList.remove('vroom');void car.offsetWidth;car.classList.add('vroom');
     setTimeout(()=>car.classList.remove('vroom'),700);
-    for(let i=0;i<24;i++){
+    for(let i=0;i<6;i++){
       const s=document.createElement('span');s.className='clickExhaustBurst';
-      const size=12+Math.random()*25;
+      const size=5+Math.random()*7;
       s.style.width=size+'px';s.style.height=size+'px';
       s.style.left=(82+Math.random()*15)+'%';s.style.top=(40+Math.random()*20)+'%';
       s.style.animationDelay=(Math.random()*.22)+'s';
