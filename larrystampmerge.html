@@ -404,10 +404,10 @@
   @keyframes larSmoke7 { 0%{transform:translate(0,0) scale(.22);opacity:.5} 100%{transform:translate(42px,-34px) scale(1.9);opacity:0} }
   #postalCursor .smoke8 { animation:larSmoke8 2.05s linear infinite 1s; }
   #postalCursor.vroom::after {
-    content:"";position:absolute;left:calc(100% - 1px);top:28px;width:3px;height:3px;
+    content:"";position:absolute;left:0;top:28px;width:3px;height:3px;
     background:#ffd172;box-shadow:0 0 4px #ff963d;animation:larTailSpark .23s ease-out 3;
   }
-  @keyframes larTailSpark { to { transform:translate(10px,-5px); opacity:0; } }
+  @keyframes larTailSpark { to { transform:translate(-10px,-5px); opacity:0; } }
   @keyframes larSmoke8 { 0%{transform:translate(0,0) scale(.28);opacity:.78} 100%{transform:translate(30px,-28px) scale(1.5);opacity:0} }
   #postalCursor path { fill:none; stroke:#f4e6c5; stroke-width:4; stroke-linecap:round; stroke-linejoin:round; }
   #wasteMailbox.is-dragging { cursor:grabbing; }
@@ -1826,9 +1826,8 @@ function emitLarExhaust(car) {
   const svg=car.querySelector('svg');
   if (!svg?.clientWidth || !svg.clientHeight) return;
   const {width,height}=svg.viewBox.baseVal;
-  const mirrored=svg.dataset.exhaustSide==='left';
   const scale=Math.min(svg.clientWidth/width,svg.clientHeight/height);
-  const tailX=(svg.clientWidth-width*scale)/2 + (mirrored ? 2 : 158)*scale;
+  const tailX=(svg.clientWidth-width*scale)/2 + 2*scale;
   const tailY=(svg.clientHeight-height*scale)/2 + 48*scale;
   if (isCursor) {
     car.classList.remove('vroom');
@@ -1844,7 +1843,6 @@ function emitLarExhaust(car) {
     puff.style.width=puff.style.height=size+'px';
     puff.style.left=(tailX-size/2)+'px';
     puff.style.top=(tailY-size/2)+'px';
-    if (mirrored) puff.style.setProperty('--exhaust-travel','-42px');
     puff.style.animationDelay=(Math.random()*.19)+'s';
     car.appendChild(puff);
     setTimeout(()=>puff.remove(),1650);
@@ -1994,8 +1992,11 @@ function carSvg(index, mirrored=false) {
   const rearWheel=['bus','limo','superLimo','hearse','stationBus','boxVan'].includes(type)?128:108;
   wheels=`<circle class="wheel" cx="30" cy="51" r="9"/><circle class="hub" cx="30" cy="51" r="3.3"/><circle class="wheel" cx="${rearWheel}" cy="51" r="9"/><circle class="hub" cx="${rearWheel}" cy="51" r="3.3"/>`;
   const tail=['bus','van','boxVan','stationBus','limo','superLimo','hearse'].includes(type)?151:139;
-  const orientation=mirrored ? ' transform="translate(160 0) scale(-1 1)"' : '';
-  return `<svg data-exhaust-side="${mirrored ? 'left' : 'right'}" viewBox="0 0 160 70" aria-hidden="true"><g${orientation}><g class="carSmoke">${smoke}</g>${body}${windows}${details}${wheels}<path d="M${tail} 46L158 46L158 49L${tail} 49Z" fill="#4a2814"/></g></svg>`;
+  const flip='transform="translate(160 0) scale(-1 1)"';
+  return `<svg viewBox="0 0 160 70" aria-hidden="true">
+    <g ${mirrored ? flip : ''}>${body}${windows}${details}${wheels}</g>
+    <g ${flip}><g class="carSmoke">${smoke}</g><path style="fill:#4a2814;stroke:none" d="M${tail} 46H158V49H${tail}Z"/></g>
+  </svg>`;
 }
 function applyLarCar(index) {
   currentLarCar=index; localStorage.setItem('larCurrentCar',String(index));
@@ -2128,10 +2129,12 @@ function draw() {
   ctx.strokeStyle='#825131';
   ctx.lineWidth=3;
   ctx.strokeRect(1.5,bookY+1.5,W-3,stampShelfHeight-3);
+  ctx.fillStyle='#49301f';
+  ctx.fillRect(3,bookY+3,W-6,11);
   ctx.fillStyle='#fff3d0';
-  ctx.font='bold 18px Georgia';
+  ctx.font='bold 8px Georgia';
   ctx.textAlign='center';
-  ctx.fillText(`YOUR NEW LAR STAMPS!!! — LEVEL ${levelNumber}`,W/2,bookY+22);
+  ctx.fillText(`YOUR NEW LAR STAMPS!!! — LEVEL ${levelNumber}`,W/2,bookY+11);
 
   // The bottom display is the ACTIVE LEVEL display, not the player's
   // manually browsed collection page. Every completed level therefore swaps
@@ -2145,39 +2148,25 @@ function draw() {
     activePageTiers.push(i+1);
   }
   const pageTiers = activePageTiers;
-  const gap = 4;
-  const innerX = 15;
-  const innerW = W-2*innerX;
-  const slotW = (innerW - gap*(pageTiers.length-1)) / Math.max(1,pageTiers.length);
-  const slotY = bookY+34;
-  const slotH = 57;
+  const sidePadding = Math.min(42,W*.06);
+  const slotWidth = (W-2*sidePadding) / Math.max(1,pageTiers.length);
+  const stampSize = Math.min(66,slotWidth*.8);
+  const stampY = bookY+18;
 
   pageTiers.forEach((tier,i)=>{
-    const x = innerX + i*(slotW+gap);
-    ctx.fillStyle = collected.has(tier) ? '#855432' : '#49301f';
-    ctx.fillRect(x,slotY,slotW,slotH);
-    ctx.strokeStyle = collected.has(tier) ? '#b07a19' : '#8a6a40';
-    ctx.lineWidth = collected.has(tier) ? 3 : 2;
-    ctx.strokeRect(x,slotY,slotW,slotH);
-
+    const centerX = sidePadding+(i+.5)*slotWidth;
     const im=imgs[tier-1];
-    const numBoxW = Math.min(30, slotW*.24);
-    const imageW = slotW-numBoxW-5;
-    if(im && im.complete && im.naturalWidth){
+    if(im && im.complete && im.naturalWidth && im.naturalHeight){
+      const crop = Math.min(im.naturalWidth,im.naturalHeight);
       ctx.save();
       ctx.globalAlpha = collected.has(tier) ? 1 : .22;
-      ctx.drawImage(im,x+3,slotY+3,imageW-6,slotH-6);
+      ctx.drawImage(im,(im.naturalWidth-crop)/2,(im.naturalHeight-crop)/2,crop,crop,
+        centerX-stampSize/2,stampY,stampSize,stampSize);
       ctx.restore();
     }
-    ctx.fillStyle='#5d391f';
-    ctx.fillRect(x+slotW-numBoxW-2,slotY+slotH/2-12,numBoxW,24);
-    ctx.strokeStyle='#825131';
-    ctx.lineWidth=1;
-    ctx.strokeRect(x+slotW-numBoxW-2,slotY+slotH/2-12,numBoxW,24);
     ctx.fillStyle='#fff3d0';
-    ctx.font='bold 12px Arial';
-    ctx.textAlign='center';
-    ctx.fillText(String(tier).padStart(2,'0'),x+slotW-numBoxW/2-2,slotY+slotH/2+4);
+    ctx.font='bold 8px Arial';
+    ctx.fillText(String(tier).padStart(2,'0'),centerX,stampY+stampSize+10);
   });
 
   // Held Lar smoke: a thin, loose brown haze hugs the black rim. There is no ring.
@@ -2919,7 +2908,7 @@ function nextLine(){
       animation:clickExhaustBurst 1.35s ease-out forwards}
     @keyframes clickExhaustBurst{
       0%{transform:translate(0,0) scale(.35);opacity:.3}
-      25%{opacity:.24}100%{transform:translate(var(--exhaust-travel,42px),-24px) scale(2.15);opacity:0}
+      25%{opacity:.24}100%{transform:translate(-42px,-24px) scale(2.15);opacity:0}
     }
   `;
   document.head.appendChild(style);
