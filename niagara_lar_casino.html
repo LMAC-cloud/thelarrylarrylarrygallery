@@ -2408,10 +2408,25 @@ body {
 }
 
 </style>
+<style>
+#bus-arrival { display:none; }
+#bus-arrival:target {
+    display:block;
+    position:fixed;
+    inset:0;
+    z-index:2147483647;
+    background:#000;
+    pointer-events:none;
+    animation:bus-arrival-fade 1.05s ease-out both;
+}
+@keyframes bus-arrival-fade { from {opacity:1} to {opacity:0} }
+@media (prefers-reduced-motion:reduce) { #bus-arrival:target {display:none} }
+</style>
 </head>
 
 
 <body>
+<div id="bus-arrival" aria-hidden="true"></div>
 
 
 <!-- ============================================================
@@ -6371,7 +6386,7 @@ setTimeout(
             riverGeneration
         );
     },
-    1800
+    location.hash === "#bus-arrival" ? 2450 : 1800
 );
 
 scheduleSeagulls();
