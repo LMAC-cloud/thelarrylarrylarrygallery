@@ -1388,6 +1388,27 @@ function dropStamp(isAuto = false) {
   return body;
 }
 
+function popEarlierLevelOnContact(a,b) {
+  if (!a.plugin || !b.plugin || a.plugin.merged || b.plugin.merged || a.plugin.popped || b.plugin.popped) return false;
+  const aEarlier = a.plugin.tier <= generatorStart;
+  const bEarlier = b.plugin.tier <= generatorStart;
+  if (aEarlier === bEarlier) return false;
+
+  const old = aEarlier ? a : b;
+  old.plugin.popped = true;
+  if (mouseConstraint?.body === old) {
+    mouseConstraint.body = null;
+    mouseConstraint.constraint.bodyB = null;
+    mouseConstraint.constraint.pointB = null;
+  }
+  if (autoWaitingBody === old) autoWaitingBody = null;
+  Composite.remove(world,old);
+  stamps = stamps.filter(body => body !== old);
+  mergeBursts.push({x:old.position.x,y:old.position.y,r:Math.max(16,old.plugin.radius*.45),life:1,pop:true});
+  sound('pop');
+  return true;
+}
+
 function tryMerge(a,b) {
   if (!a.plugin || !b.plugin || a.plugin.merged || b.plugin.merged || a.plugin.popped || b.plugin.popped) return;
   if (a.plugin.tier !== b.plugin.tier) return;
@@ -1470,7 +1491,8 @@ mergeModeButton.addEventListener('click', () => {
 Events.on(engine,'collisionStart collisionActive', event => {
   for (const pair of event.pairs) {
     const a=pair.bodyA, b=pair.bodyB;
-    if (a.label==='stamp' && b.label==='stamp' && !a.plugin?.dragging && !b.plugin?.dragging && !window.larTankMode) tryMerge(a,b);
+    if (a.label!=='stamp' || b.label!=='stamp' || a.plugin?.dragging || b.plugin?.dragging) continue;
+    if (!popEarlierLevelOnContact(a,b) && !window.larTankMode) tryMerge(a,b);
   }
 });
 
@@ -1496,6 +1518,16 @@ Events.on(engine,'afterUpdate', ({delta}) => {
     let y=Math.max(minY,Math.min(maxY,b.position.y));
     if(x!==b.position.x || y!==b.position.y) Body.setPosition(b,{x,y});
     if (b.plugin.dragging) {
+      // Dragged stamps have their Matter collision mask disabled.
+      for (const other of stamps) {
+        if (other === b || !other.plugin || other.plugin.dragging) continue;
+        const edge = r+other.plugin.radius;
+        if (Math.hypot(x-other.position.x,y-other.position.y) <= edge) {
+          popEarlierLevelOnContact(b,other);
+          if (b.plugin.popped) break;
+        }
+      }
+      if (b.plugin.popped) continue;
       if (mergeOnContact && mouseConstraint?.body === b && mouseConstraint.mouse.button === 0) {
         const match = findDragMatch(b);
         if (match?.touching) {
@@ -2173,7 +2205,7 @@ function draw() {
   const pageTiers = activePageTiers;
   const sidePadding = Math.min(42,W*.06);
   const slotWidth = (W-2*sidePadding) / Math.max(1,pageTiers.length);
-  const stampSize = Math.min(66,slotWidth*.8);
+  const stampSize = Math.min(66,slotWidth*.68);
   const stampY = bookY+18;
 
   pageTiers.forEach((tier,i)=>{
@@ -2187,7 +2219,8 @@ function draw() {
     }
     ctx.fillStyle='#fff3d0';
     ctx.font='bold 8px Arial';
-    ctx.fillText(String(tier).padStart(2,'0'),centerX,stampY+stampSize+10);
+    ctx.textAlign='left';
+    ctx.fillText(String(tier).padStart(2,'0'),centerX+stampSize/2+4,stampY+stampSize/2+3);
   });
 
   // Held Lar smoke: a thin, loose brown haze hugs the black rim. There is no ring.
@@ -2862,8 +2895,8 @@ function nextLine(){
   style.textContent=`
     #sidebarButtons #clearAirBtn {
       --clear-air-glow:0;
-      background:linear-gradient(rgba(255,171,65,calc(var(--clear-air-glow)*.42)),rgba(255,171,65,calc(var(--clear-air-glow)*.42))),#342317;
-      box-shadow:0 0 calc(18px * var(--clear-air-glow)) rgba(255,172,68,var(--clear-air-glow));
+      background:linear-gradient(rgba(255,115,0,calc(var(--clear-air-glow)*.68)),rgba(255,108,0,calc(var(--clear-air-glow)*.68))),#342317;
+      box-shadow:0 0 calc(24px * var(--clear-air-glow)) rgba(255,111,0,var(--clear-air-glow)), inset 0 0 8px rgba(255,147,0,var(--clear-air-glow));
       text-shadow:0 0 5px rgba(255,213,135,var(--clear-air-glow));
       transition:background .2s,box-shadow .2s,text-shadow .2s;
     }
