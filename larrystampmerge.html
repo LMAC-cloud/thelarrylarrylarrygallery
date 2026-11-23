@@ -2938,12 +2938,29 @@ function nextLine(){
     radioMelodyIndex = -1;
   }
 
-  function playRadioAudioTrack(track, useRootCopy = false) {
+  function resumeRadioMedia(audio) {
+    audio.play().catch(error => {
+      if (radioAudioEl !== audio || error.name === 'AbortError') return;
+      if (error.name === 'NotAllowedError') {
+        radioPaused = true;
+        document.getElementById('larRadioPlay').textContent = 'PLAY';
+        setRadioText('PRESS PLAY TO CONTINUE');
+      } else {
+        audio.dispatchEvent(new Event('error'));
+      }
+    });
+  }
+
+  function playRadioAudioTrack(track, useRootCopy = false, failed = new Set(), direction = 1) {
     stopRadioMelody();
     stopRadioAudioTrack();
     const isFloatingSong = track.key === 'Audio/THE FLOATING SONG.mp3';
     const path = useRootCopy ? 'THE FLOATING SONG.mp3' : track.path;
-    const audio = new Audio(path);
+    const source = new URL(path, document.baseURI);
+    if (source.protocol === 'https:' || source.protocol === 'http:') {
+      source.searchParams.set('lar-audio', '22');
+    }
+    const audio = new Audio(source.href);
     radioAudioEl = audio;
     radioAudioPath = track.key;
     audio.loop = !radioRepeatAll;
@@ -2954,12 +2971,28 @@ function nextLine(){
     });
     const reportFailure = () => {
       if (radioAudioEl !== audio) return;
-      if (isFloatingSong && !useRootCopy) playRadioAudioTrack(track,true);
-      else setRadioText('COULD NOT PLAY: ' + track.name);
+      if (isFloatingSong && !useRootCopy) {
+        playRadioAudioTrack(track, true, failed, direction);
+        return;
+      }
+      failed.add(track.key);
+      const tracks = availableRadioTracks();
+      const from = tracks.findIndex(item => item.key === track.key);
+      for (let step = 1; step <= tracks.length; step++) {
+        const candidate = tracks[(from + direction * step + tracks.length * 2) % tracks.length];
+        if (!failed.has(candidate.key)) {
+          playRadioAudioTrack(candidate, false, failed, direction);
+          return;
+        }
+      }
+      stopRadioAudioTrack();
+      radioPaused = true;
+      document.getElementById('larRadioPlay').textContent = 'PLAY';
+      setRadioText('NO PLAYABLE TRACKS — PRESS PLAY TO RETRY');
     };
     audio.addEventListener('error', reportFailure, {once:true});
     setRadioText(track.name);
-    if (!radioPaused) audio.play().catch(reportFailure);
+    if (!radioPaused) resumeRadioMedia(audio);
   }
 
   function getRadioTracks() {
@@ -3100,7 +3133,7 @@ function ensureRadioUI(){
       control('Play').textContent = radioPaused ? 'PLAY' : 'PAUSE';
       if (radioAudioEl) {
         if (radioPaused) radioAudioEl.pause();
-        else radioAudioEl.play().catch(() => setRadioText('COULD NOT RESUME AUDIO'));
+        else resumeRadioMedia(radioAudioEl);
       } else if (melodyStart !== null) {
         if (radioPaused) void radioCtx.suspend();
         else void radioCtx.resume();
@@ -3325,7 +3358,7 @@ function ensureRadioUI(){
     const current = radioSource === 'audio' ? radioAudioPath : 'organ:'+radioMelodyIndex;
     const at = tracks.findIndex(track => track.key === current);
     const next = tracks[at === -1 ? (direction < 0 ? tracks.length-1 : 0) : (at+direction+tracks.length)%tracks.length];
-    if (radioSource === 'audio') playRadioAudioTrack(next);
+    if (radioSource === 'audio') playRadioAudioTrack(next, false, new Set(), direction);
     else playRadioMelody(next.index);
   }
 
