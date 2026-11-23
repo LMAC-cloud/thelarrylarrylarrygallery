@@ -27,6 +27,8 @@ body {
 
 body {
     font-family: Georgia, serif;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 
@@ -42,6 +44,7 @@ body {
     height: 100%;
 
     object-fit: cover;
+    transform: translateZ(0);
 
     z-index: 1;
 
@@ -1746,9 +1749,9 @@ body {
     position: relative;
     transform-origin: center center;
 
-    width: 126px;
-    min-height: 52px;
-    padding: 16px 10px 10px;
+    width: auto;
+    min-height: 34px;
+    padding: 10px 8px 5px;
 
     background:
         linear-gradient(
@@ -1792,9 +1795,9 @@ body {
     position: absolute;
     left: -2px;
     right: -2px;
-    top: 7px;
+    top: 3px;
 
-    height: 7px;
+    height: 4px;
 
     background:
         linear-gradient(
@@ -1824,13 +1827,13 @@ body {
 #larCasinoButton {
     display: inline-block;
     margin-left: 8px;
-    padding: 8px 14px;
+    padding: 6px 9px;
     color: #fff3d0;
     background: linear-gradient(#9a5b2e, #5f3018);
     border: 3px solid #3e210f;
     border-radius: 9px;
     box-shadow: 0 3px 8px rgba(0,0,0,.7), inset 0 1px rgba(255,255,255,.25);
-    font: 700 14px Georgia, serif;
+    font: 700 11px Georgia, serif;
     text-decoration: none;
     vertical-align: middle;
 }
@@ -1851,7 +1854,7 @@ body {
     color:
         rgba(255,255,255,.75);
 
-    font-size: 13px;
+    font-size: 11px;
 
     pointer-events: none;
 }
@@ -2229,8 +2232,8 @@ body {
 
 /* River artwork is only moderately blurred; the frame stays crisp. */
 .paintingWrap:not(.immortalized) .paintingCanvas {
-    filter: blur(3px) !important;
-    -webkit-filter: blur(2px) !important;
+    filter: blur(1px) !important;
+    -webkit-filter: blur(1px) !important;
 }
 
 /* Substantial ornate river frame.  No blur is ever applied to it. */
@@ -2298,19 +2301,19 @@ body {
 
 /* Mildly soft river artwork; frame remains perfectly crisp. */
 .paintingWrap:not(.immortalized) .paintingCanvas {
-    filter: blur(3px) !important;
-    -webkit-filter: blur(2px) !important;
+    filter: blur(1px) !important;
+    -webkit-filter: blur(1px) !important;
 }
 
 /* More obvious bobbing while the painting is genuinely in the river. */
 @keyframes V31RiverBob {
-    0%, 100% { margin-top: -20px; }
-    50%      { margin-top: 20px; }
+    0%, 100% { translate: 0 -20px; }
+    50%      { translate: 0 20px; }
 }
 
 .paintingWrap:not(.immortalized):not([data-rescuing="true"]) {
     animation: V31RiverBob 2.2s ease-in-out infinite;
-    will-change: margin-top;
+    will-change: translate;
 }
 
 .paintingWrap[data-rescuing="true"],
@@ -2567,14 +2570,14 @@ body {
     </button>
 
     <a href="larrystampmerge.html" id="larCasinoButton" aria-label="Enter the LAR Stamp Casino">
-        LAR CASINO — COLLECT ’EM ALL
+        LAR CASINO
     </a>
 
 </div>
 
 
 <div id="savedCounter">
-    Immortalized: 0 | Lar Bucks: 0
+    Collected: 0 | Lar Bucks: 0
 </div>
 
 
@@ -2752,10 +2755,10 @@ const images = [
 
 <script>
 
-function flashOctopusClick(e) {
+function flashOctopusClick(e, loss) {
     const f = document.createElement("div");
     f.className = "octopus-click-flash";
-    f.textContent = "WARNING — ALL LAR BUCKS LOST";
+    f.textContent = loss ? `−${loss} LAR BUCKS` : "NO LAR BUCKS TO LOSE";
     f.style.left = ((e && e.clientX) || window.innerWidth/2) + "px";
     f.style.top = ((e && e.clientY) || window.innerHeight/2) + "px";
     document.body.appendChild(f);
@@ -2984,7 +2987,7 @@ function updateSavedCounter() {
             "savedCounter"
         )
         .textContent =
-        "Immortalized: " +
+        "Collected: " +
         savedPaintings.length +
         " | Lar Bucks: " +
         larBucks;
@@ -5876,10 +5879,13 @@ function sendOctopus() {
         e.preventDefault();
         e.stopPropagation();
 
-        flashOctopusClick(e);
+        if (octopus.dataset.clicked === "true") return;
+        octopus.dataset.clicked = "true";
+        const loss = Math.min(50, Math.max(0, larBucks));
+        flashOctopusClick(e, loss);
 
-        larBucks = 0;
-        try { localStorage.setItem("larBucks", "0"); } catch (error) {}
+        larBucks -= loss;
+        try { localStorage.setItem("larBucks", String(larBucks)); } catch (error) {}
         updateSavedCounter();
 
         octopus.style.transition = "transform .5s ease, opacity .7s ease";
