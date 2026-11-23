@@ -149,7 +149,7 @@
     align-items:stretch;
     gap:7px;
   }
-  #side > .panel { flex:none; zoom:var(--sidebar-zoom, .85); }
+  #side > .panel, #side > .lar-radio-card { flex:none; zoom:var(--sidebar-zoom, .85); }
   .panel {
     background:rgba(15,15,15,.90);
     border:3px solid #ddd;
@@ -370,7 +370,7 @@
 
   #postalCursor {
     position:fixed; width:76px; height:46px; pointer-events:none; z-index:100;
-    transform:translate(-.95px, -29px) scaleX(-1); display:none;
+    transform:translate(-50%, -29px); display:none;
     filter:drop-shadow(2px 3px 2px rgba(0,0,0,.72));
   }
   #postalCursor svg { width:100%; height:100%; overflow:visible; }
@@ -515,10 +515,12 @@
 
   }
 
-  #gameSidebar #title { font-size:14px; }
+  #gameSidebar #title { font-size:11px; white-space:nowrap; }
   #gameSidebar #subtitle, #gameSidebar #levelBadge { font-size:10px; }
-  #gameSidebar .stat { font-size:10px; padding:5px; }
-  #gameSidebar .stat b { font-size:14px; }
+  #gameSidebar #levelBadge { margin:4px auto 0; padding:0; color:#f4dfb8; background:none; border:0; }
+  #gameSidebar #stats { margin-top:4px; gap:4px; }
+  #gameSidebar .stat { font-size:10px; padding:0; color:#f4dfb8; background:none; }
+  #gameSidebar .stat b { display:inline; margin-left:4px; font-size:11px; }
   #sidebarButtons { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:5px; margin-top:8px; }
   #sidebarButtons > button, #sidebarButtons > a, #radioDock #radioLaurentisBtn {
     width:100%; min-width:0; min-height:32px; margin:0; padding:4px 3px;
@@ -527,39 +529,15 @@
     color:#f4dfb8; font:700 10px/1.15 Arial,sans-serif; text-align:center;
     text-decoration:none; box-shadow:none; cursor:pointer;
   }
-  #sidebarButtons > button:hover, #sidebarButtons > a:hover, #radioDock #radioLaurentisBtn:hover { background:#523721; }
+  #sidebarButtons > button:hover, #sidebarButtons > a:hover, #radioDock #radioLaurentisBtn:hover {
+    color:#ffa137; text-shadow:0 0 5px #ff811a; text-decoration:none;
+  }
   #sidebarButtons button[aria-pressed="true"], #sidebarButtons button.active, #sidebarButtons .smokeOff { background:#6f4825; }
-  #sidebarButtons #carLotButton { grid-column:1 / -1; }
+  #sidebarButtons #carLotButton, #sidebarButtons #inspectBtn, #sidebarButtons #radioDock { grid-column:1 / -1; }
   #radioDock #radioLaurentisBtn { height:100%; }
   body.lar-no-smoke #postalCursor .smoke { display:none !important; }
   body.lar-no-smoke #gamePanel::after { opacity:0 !important; }
 
-  /* Radio controls: two perfectly aligned rows with rectangular knobs. */
-  .lar-radio-controls{
-    display:flex!important;
-    flex-direction:column!important;
-    align-items:stretch!important;
-    gap:6px!important;
-  }
-  .lar-radio-controls label{
-    display:grid!important;
-    grid-template-columns:112px minmax(0,1fr)!important;
-    align-items:center!important;
-    gap:10px!important;
-    width:100%!important;
-    margin:0!important;
-  }
-  .lar-radio-controls input[type="range"]{
-    width:100%!important;
-    margin:0!important;
-  }
-  .lar-radio-controls input[type="range"]::-webkit-slider-thumb{
-    width:9px!important;height:17px!important;margin-top:-6.5px!important;
-    border-radius:1px!important;
-  }
-  .lar-radio-controls input[type="range"]::-moz-range-thumb{
-    width:9px!important;height:17px!important;border-radius:1px!important;
-  }
 </style>
 
 
@@ -646,9 +624,9 @@
         <button id="mergeModeBtn" type="button" aria-pressed="false">MERGE: ON RELEASE</button>
         <button id="clearAirBtn" type="button" title="Clear the exhaust and toggle smoke">CLEAR AIR</button>
         <button id="clearBoardBtn">CLEAR LAR BOARD</button>
+        <button id="carLotButton" title="Open Larry's Variety Car Lot">LARRY'S VARIETY CAR LOT</button>
         <button id="inspectBtn">INSPECT LAR STAMPS</button>
         <button id="muteGameBtn" type="button" aria-pressed="false">MUTE</button>
-        <button id="carLotButton" title="Open Larry's Variety Car Lot">LARRY'S VARIETY CAR LOT</button>
         <a id="larBusButton" href="index.html" title="Return to the LAR BUS">LAR BUS RETURN</a>
         <div id="radioDock"></div>
       </div>
@@ -1469,7 +1447,9 @@ function tryMerge(a,b) {
     if (nextTier > unlockedTier) unlockedTier = nextTier;
     // Clean Lar merge: a quick white flash, then the new Lar grows into place.
     // No decorative rings, orbit lines, or outlines are drawn during the merge.
-    mergeAnimations.push({ x, y, tier:nextTier, fromTier:tier, fromR:Math.max(10, stampRadius(tier)*.18), progress:0, duration:235, effect:'white', autoSource:(autoWaitingBody===a || autoWaitingBody===b) });
+    const angle = Math.atan2(a.position.y-b.position.y,a.position.x-b.position.x);
+    mergeAnimations.push({x,y,tier:nextTier,fromTier:tier,angle,progress:0,duration:620,
+      autoSource:(autoWaitingBody===a || autoWaitingBody===b)});
   }
   flashMerge(x, y, stampRadius(tier));
 }
@@ -1497,7 +1477,7 @@ Events.on(engine,'collisionStart', event => {
 
 const MAX_UPWARD_BOUNCE = 5.5;
 const MAX_SIDE_SPEED = 10;
-Events.on(engine,'afterUpdate', () => {
+Events.on(engine,'afterUpdate', ({delta}) => {
   // In Lar Tank mode, a new-level stamp touching an old leftover makes the old one pop.
   if (window.larTankMode) {
     const activeStart = generatorStart + 1;
@@ -1513,7 +1493,7 @@ Events.on(engine,'afterUpdate', () => {
   }
 
   for (let i=mergeAnimations.length-1; i>=0; i--) {
-    const m=mergeAnimations[i]; m.progress += 16.7/m.duration;
+    const m=mergeAnimations[i]; m.progress += delta/m.duration;
     if(m.progress>=1){
       const body=createStamp(m.tier,m.x,m.y,false);
       if(m.autoSource) autoWaitingBody=body;
@@ -2009,18 +1989,23 @@ function renderCarLot() {
     else if(equal){btn.textContent='EQUAL TRADE';}
     else {btn.textContent=owned?'USE THIS CAR':'BUY FOR '+car.price+' LAR-BUCKS'; btn.disabled=!owned && bucks<car.price;}
     btn.addEventListener('click',()=>{
-      if(equal){ applyLarCar(i); renderCarLot(); return; }
-      if(owned){ applyLarCar(i); renderCarLot(); return; }
+      if(equal){ applyLarCar(i); closeCarLot(); return; }
+      if(owned){ applyLarCar(i); closeCarLot(); return; }
       if(bucks<car.price) return;
-      bucks-=car.price; saveLarBucks(); ownedLarCars.add(i); localStorage.setItem('larOwnedCars',[...ownedLarCars].join(',')); applyLarCar(i); renderCarLot(); showMessage('LARRY CAR ACQUIRED!',900);
+      bucks-=car.price; saveLarBucks(); ownedLarCars.add(i); localStorage.setItem('larOwnedCars',[...ownedLarCars].join(',')); applyLarCar(i); closeCarLot(); showMessage('LARRY CAR ACQUIRED!',900);
     });
     item.appendChild(btn); grid.appendChild(item);
   });
 }
 const carLotModal=document.getElementById('carLotModal');
 document.getElementById('carLotButton').addEventListener('click',()=>{renderCarLot();carLotModal.classList.add('show');carLotModal.setAttribute('aria-hidden','false');});
-document.getElementById('carLotClose').addEventListener('click',()=>{carLotModal.classList.remove('show');carLotModal.setAttribute('aria-hidden','true');});
-carLotModal.addEventListener('click',e=>{if(e.target===carLotModal){carLotModal.classList.remove('show');carLotModal.setAttribute('aria-hidden','true');}});
+function closeCarLot() {
+  carLotModal.classList.remove('show');
+  carLotModal.setAttribute('aria-hidden','true');
+  document.getElementById('carLotButton').focus();
+}
+document.getElementById('carLotClose').addEventListener('click',closeCarLot);
+carLotModal.addEventListener('click',e=>{if(e.target===carLotModal)closeCarLot();});
 applyLarCar(Math.max(0,Math.min(LARRY_CARS.length-1,currentLarCar)));
 
 window.addEventListener('pointerup',()=>{
@@ -2172,15 +2157,27 @@ function draw() {
   }
 
   const drawOrder = [
-    ...stamps.filter(b => b && b.plugin && b.plugin.dragging),
-    ...stamps.filter(b => b && b.plugin && !b.plugin.dragging)
+    ...stamps.filter(b => b && b.plugin && !b.plugin.dragging),
+    ...stamps.filter(b => b && b.plugin && b.plugin.dragging)
   ];
+  const previewHeld = mergeOnContact ? null : drawOrder.find(b => b.plugin.dragging);
+  const match = previewHeld && findDragMatch(previewHeld);
+  const joining = match && match.distance <= previewHeld.plugin.radius+match.target.plugin.radius+5
+    ? match.target : null;
   for(const b of drawOrder) {
     if(!b.position || !b.plugin) continue;
     const r=b.plugin.radius;
     ctx.save();
     ctx.globalAlpha = 1;
-    ctx.translate(b.position.x,b.position.y);
+    let drawX = b.position.x, drawY = b.position.y;
+    if (b === previewHeld && joining) {
+      const dx = drawX-joining.position.x, dy = drawY-joining.position.y;
+      const angle = Math.atan2(dy,dx);
+      const distance = r+joining.plugin.radius-2;
+      drawX = joining.position.x+Math.cos(angle)*distance;
+      drawY = joining.position.y+Math.sin(angle)*distance;
+    }
+    ctx.translate(drawX,drawY);
 
     const im=b.plugin.image;
     // Flat Lar circles: vivid artwork, clean black edge, no frame and no halo.
@@ -2197,7 +2194,7 @@ function draw() {
     ctx.restore();
 
     ctx.lineWidth=4;
-    ctx.strokeStyle='#000';
+    ctx.strokeStyle=joining && (b === previewHeld || b === joining) ? '#ffc46a' : '#000';
     ctx.beginPath();
     ctx.arc(0,0,r-1,0,Math.PI*2);
     ctx.stroke();
@@ -2226,40 +2223,36 @@ function draw() {
     const targetR=stampRadius(m.tier);
     const oldR=stampRadius(m.fromTier || Math.max(1,m.tier-1));
     const im=imgs[m.tier-1];
-    const easeOut=1-Math.pow(1-t,4);
-    const easeIn=1-Math.pow(1-Math.min(1,t*1.12),3);
-
     ctx.save();
     ctx.translate(m.x,m.y);
-
-    if(m.effect==='white') {
-      const flash = Math.max(0, 1 - Math.min(1, t / .30));
-      const grow = Math.max(0, Math.min(1, (t - .07) / .93));
-      const ease = 1 - Math.pow(1-grow, 3);
-      const r = targetR * (.12 + .88 * ease);
-
-      // Soft white bloom, not a ring.
-      ctx.save();
-      ctx.globalAlpha = flash * .95;
-      const grad = ctx.createRadialGradient(0,0,0,0,0,Math.max(oldR,targetR)*1.08);
-      grad.addColorStop(0,'rgba(255,255,255,1)');
-      grad.addColorStop(.38,'rgba(255,255,255,.78)');
-      grad.addColorStop(1,'rgba(255,255,255,0)');
-      ctx.fillStyle=grad;
-      ctx.beginPath(); ctx.arc(0,0,Math.max(oldR,targetR)*1.08,0,Math.PI*2); ctx.fill();
-      ctx.restore();
-
-      if (grow > 0) {
+    if (t < .5) {
+      const join = t/.5;
+      const offset = oldR*(1-join);
+      const previous = imgs[m.fromTier-1];
+      for (const side of [-1,1]) {
         ctx.save();
-        ctx.globalAlpha = Math.min(1, grow * 1.8);
-        ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2); ctx.clip();
-        if(im?.complete && im.naturalWidth) ctx.drawImage(im,-r,-r,r*2,r*2);
+        ctx.translate(Math.cos(m.angle)*offset*side, Math.sin(m.angle)*offset*side);
+        ctx.beginPath();
+        ctx.arc(0,0,oldR,0,Math.PI*2);
+        ctx.fillStyle='#d8c49a';
+        ctx.fill();
+        ctx.clip();
+        if (previous?.complete && previous.naturalWidth) ctx.drawImage(previous,-oldR,-oldR,oldR*2,oldR*2);
         ctx.restore();
       }
+    } else {
+      const grow = (t-.5)/.5;
+      const radius = oldR+(targetR-oldR)*(1-Math.pow(1-grow,3));
+      ctx.beginPath();
+      ctx.arc(0,0,radius,0,Math.PI*2);
+      ctx.fillStyle='#d8c49a';
+      ctx.fill();
+      ctx.clip();
+      if (im?.complete && im.naturalWidth) ctx.drawImage(im,-radius,-radius,radius*2,radius*2);
+      ctx.fillStyle=`rgba(255,235,184,${.7*(1-grow)})`;
+      ctx.fillRect(-radius,-radius,radius*2,radius*2);
     }
-
     ctx.restore();
-
   }
 
   for (let i = mergeBursts.length - 1; i >= 0; i--) {
@@ -2806,41 +2799,41 @@ function nextLine(){
 
     #radioDock #radioLaurentisBtn.active{background:#6f4825}
     .lar-radio-card{
-      position:fixed;right:var(--radio-right, 12px);bottom:12px;z-index:10000;
-      width:var(--radio-width, 230px);
+      width:100%;flex:none;
       background:#1b120c;color:#f0d49b;
       border:2px solid #8b5a2b;border-radius:9px;padding:9px;
       box-shadow:0 8px 24px #0009;display:none;font-family:Georgia,serif;
     }
     .lar-radio-card.on{display:block}
-    .lar-radio-title{font-size:12px;font-weight:bold;cursor:grab;user-select:none}
-    .lar-radio-close{float:right;padding:0;background:none;border:0;color:inherit;font:10px Arial,sans-serif;cursor:pointer}
+    .lar-radio-title{font-size:10px;font-weight:bold;user-select:none}
+    .lar-radio-close{float:right;padding:0;background:none;border:0;color:inherit;font:9px Arial,sans-serif;cursor:pointer}
     .lar-radio-now,.lar-radio-audio-status{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:11px/16px Arial,sans-serif;height:16px}
     .lar-radio-audio-status{color:#c99c5c;margin:5px 0}
     .lar-radio-audio-status span{display:inline-block}
-    .lar-radio-audio-status .scrolling{animation:larNewsScroll var(--news-time) linear infinite alternate}
-    @keyframes larNewsScroll { 0%,12%{transform:translateX(0)} 88%,100%{transform:translateX(var(--news-offset))} }
-    @media(prefers-reduced-motion:reduce){.lar-radio-audio-status .scrolling{animation:none}}
     .lar-radio-row{display:flex;gap:6px;align-items:center;min-height:20px}
     .lar-radio-next{padding:0;background:none;border:0;color:#f0d49b;font:10px/16px Arial,sans-serif;cursor:pointer;white-space:nowrap}
-    .lar-radio-next:hover,.lar-radio-next[aria-pressed="true"]{color:#fff;text-decoration:underline}
+    .lar-radio-card button:not(:disabled):hover,.lar-radio-track:hover{color:#ffa137;text-shadow:0 0 5px #ff811a;text-decoration:none}
+    .lar-radio-next[aria-pressed="true"]{color:#ffa137}
+    #larRadioLoad{margin-left:auto}
+    .lar-radio-now{height:13px;line-height:12px}
+    .lar-radio-progress-row{min-height:11px}
     .lar-radio-next:disabled{opacity:.45;cursor:default}
-    #larRadioProgress{min-width:0;flex:1;width:100%;height:4px;display:block;accent-color:#dfaa63}
+    #larRadioProgress{min-width:0;flex:1;width:100%;height:7px;display:block;accent-color:#dfaa63}
     #larRadioProgress::-webkit-progress-bar{background:#70441f}
     #larRadioProgress::-webkit-progress-value{background:#dfaa63}
     .lar-radio-controls{display:grid;gap:3px}
     .lar-radio-controls label{flex:1;display:grid;grid-template-columns:32px minmax(0,1fr);align-items:center;gap:4px;font:10px Arial,sans-serif}
     .lar-radio-controls button{width:38px;text-align:right}
-    .lar-radio-controls input{appearance:none;width:100%;height:5px;margin:0;background:#70441f;cursor:pointer;border-radius:0}
-    .lar-radio-controls input::-webkit-slider-thumb{appearance:none;width:8px;height:12px;border:0;border-radius:0;background:#dfaa63}
-    .lar-radio-controls input::-moz-range-thumb{width:8px;height:12px;border:0;border-radius:0;background:#dfaa63}
-    .lar-radio-list-row{justify-content:space-between}
-    .lar-radio-picker{
-      position:absolute;right:-2px;bottom:calc(100% + 5px);width:calc(100% + 4px);padding:7px;
-      border:2px solid #8b5a2b;border-radius:8px;background:#1b120c;
+    .lar-radio-controls input{
+      appearance:none;width:100%;height:7px;margin:0;
+      background:linear-gradient(to right,#dfaa63 var(--fill, 0%),#70441f var(--fill, 0%));
+      cursor:pointer;border-radius:0;
     }
-    .lar-radio-card.tracks-below .lar-radio-picker{bottom:auto;top:calc(100% + 5px)}
-    #larRadioMusicList{height:var(--track-list-height, 120px);overflow:auto;margin-top:4px;font:11px/18px Arial,sans-serif}
+    .lar-radio-controls input::-webkit-slider-thumb{appearance:none;width:0;height:7px;border:0}
+    .lar-radio-controls input::-moz-range-thumb{width:0;height:7px;border:0}
+    .lar-radio-list-row{justify-content:space-between}
+    .lar-radio-picker{border-top:1px solid #795336;margin-top:3px}
+    #larRadioMusicList{height:72px;overflow:auto;margin-top:3px;font:11px/18px Arial,sans-serif}
     .lar-radio-track{display:flex;align-items:center;justify-content:space-between;gap:5px;cursor:pointer}
     .lar-radio-track span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .lar-radio-track input{appearance:none;flex:none;width:10px;height:10px;border:1px solid #c99c5c;border-radius:50%;margin:0 3px 0 0;cursor:pointer}
@@ -2995,7 +2988,7 @@ function ensureRadioUI(){
         '<div class="lar-radio-title">RADIO LAURENTIS</div>'+
         '<div class="lar-radio-audio-status"><span></span></div>'+
         '<div class="lar-radio-now"></div>'+
-        '<div class="lar-radio-row">'+
+        '<div class="lar-radio-row lar-radio-progress-row">'+
           '<progress id="larRadioProgress" aria-label="Music progress" value="0" max="1"></progress>'+
           '<button class="lar-radio-next" id="larRadioPrevHit" aria-label="Previous track">◀</button>'+
           '<button class="lar-radio-next" id="larRadioNextHit" aria-label="Next track">▶</button>'+
@@ -3003,6 +2996,7 @@ function ensureRadioUI(){
         '<div class="lar-radio-row">'+
           '<button class="lar-radio-next" id="larRadioPlay">PAUSE</button>'+
           '<button class="lar-radio-next" id="larRadioRepeat" title="Toggle repeat one or all">ONE</button>'+
+          '<button class="lar-radio-next" id="larRadioLoad">LOAD MUSIC</button>'+
         '</div>'+
         '<div class="lar-radio-controls">'+
           '<div class="lar-radio-row"><label>MUSIC <input id="larRadioMusicVolume" aria-label="Music volume" type="range" min="0" max="1" step=".01"></label>'+
@@ -3016,47 +3010,21 @@ function ensureRadioUI(){
           '<button class="lar-radio-next" id="larRadioDelete" hidden>DELETE ALL</button>'+
         '</div>'+
         '<div id="larRadioMusicPicker" class="lar-radio-picker" hidden>'+
-          '<button class="lar-radio-next" id="larRadioLoad">LOAD AUDIO</button>'+
           '<input type="file" id="larRadioFiles" accept="audio/*,.mp3,.m4a,.ogg,.wav,.flac,.opus" multiple hidden>'+
           '<div id="larRadioMusicList"></div>'+
         '</div>';
-      document.body.appendChild(card);
+      document.getElementById("side").insertBefore(card,document.getElementById("book"));
       card.querySelector('.lar-radio-close').onclick=()=>toggleRadio(false);
     }
 
-    if(!card.dataset.dragReady){
-      card.dataset.dragReady='1';
-      const title=card.querySelector('.lar-radio-title');
-      let dragging=false,dx=0,dy=0;
-      title.addEventListener('pointerdown',(ev)=>{
-        if(ev.button!==0)return;
-        dragging=true;
-        const r=card.getBoundingClientRect();
-        dx=ev.clientX-r.left; dy=ev.clientY-r.top;
-        card.style.left=r.left+'px';
-        card.style.top=r.top+'px';
-        card.style.right='auto';
-        card.style.bottom='auto';
-        title.setPointerCapture(ev.pointerId);
-      });
-      title.addEventListener('pointermove',(ev)=>{
-        if(!dragging)return;
-        const maxX=Math.max(0,window.innerWidth-card.offsetWidth);
-        const maxY=Math.max(0,window.innerHeight-card.offsetHeight);
-        const x=Math.max(0,Math.min(maxX,ev.clientX-dx));
-        const y=Math.max(0,Math.min(maxY,ev.clientY-dy));
-        card.style.left=x+'px';
-        card.style.top=y+'px';
-      });
-      const stopDrag=()=>{dragging=false; fitRadioTracks();};
-      title.addEventListener('pointerup',stopDrag);
-      title.addEventListener('pointercancel',stopDrag);
-    }
     const musicSlider=document.getElementById('larRadioMusicVolume');
     const djSlider=document.getElementById('larRadioDJVolume');
+    const fillSlider = slider => slider.style.setProperty('--fill', Number(slider.value)*100+'%');
     if(musicSlider){
       musicSlider.value=String(radioMusicVolume);
+      fillSlider(musicSlider);
       musicSlider.oninput=()=>{
+        fillSlider(musicSlider);
         radioMusicVolume=Number(musicSlider.value);
         localStorage.setItem('larRadioMusicVolume',String(radioMusicVolume));
         if(radioMaster && radioCtx){
@@ -3070,7 +3038,9 @@ function ensureRadioUI(){
     }
     if(djSlider){
       djSlider.value=String(radioDJVolume);
+      fillSlider(djSlider);
       djSlider.oninput=()=>{
+        fillSlider(djSlider);
         radioDJVolume=Number(djSlider.value);
         localStorage.setItem('larRadioDJVolume',String(radioDJVolume));
         if (radioDJVolume === 0) window.RadioLaurentisDJ.stop(true);
@@ -3114,8 +3084,8 @@ function ensureRadioUI(){
       control('SelectAll').hidden = control('Delete').hidden = picker.hidden;
       if (!picker.hidden) {
         populateRadioMusicPicker();
-        fitRadioTracks();
       }
+      fitSidebar();
     };
     control('DJMute').onclick = () => {
       radioDJMuted = !radioDJMuted;
@@ -3271,12 +3241,11 @@ function ensureRadioUI(){
     const text = area.firstElementChild;
     text.textContent = line.replace(/\bLAIR\b/gi, match => match === match.toUpperCase() ? 'LAR' : 'Lar');
     text.title = text.textContent;
-    text.classList.remove('scrolling');
-    const distance = text.scrollWidth - area.clientWidth;
-    if (distance > 0) {
-      text.style.setProperty('--news-offset', -distance+'px');
-      text.style.setProperty('--news-time', Math.max(4,distance/38)+'s');
-      text.classList.add('scrolling');
+    text.getAnimations().forEach(animation => animation.cancel());
+    if (text.scrollWidth > area.clientWidth && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const distance = text.scrollWidth;
+      text.animate([{transform:'translateX(0)'},{transform:`translateX(-${distance}px)`}],
+        {duration:distance/38*1000,easing:'linear',fill:'forwards'});
     }
   }
 
@@ -3348,10 +3317,7 @@ function ensureRadioUI(){
     if(btn)btn.classList.toggle('active',radioOn);
     if(status)status.textContent=radioOn?'ON AIR — AM':'AM — LARRY’S VARIETY';
     if(card)card.classList.toggle('on',radioOn);
-    if (radioOn) {
-      card.style.left = card.style.top = card.style.right = card.style.bottom = '';
-      fitRadioColumn();
-    }
+    fitSidebar();
 
     clearTimeout(radioNextBreak);
 
@@ -3371,6 +3337,7 @@ function ensureRadioUI(){
     document.getElementById('larRadioLoad').disabled = false;
     document.getElementById('larRadioSelectMusic').textContent = 'SHOW LIST';
     document.getElementById('larRadioSelectAll').hidden = document.getElementById('larRadioDelete').hidden = true;
+    fitSidebar();
     showRadioNews('LAR NEWS');
     startChosenRadioBackground(true);
 
@@ -3434,7 +3401,7 @@ function ensureRadioUI(){
 
   const sidebar = document.getElementById('side');
   function fitSidebar() {
-    const panels = [...sidebar.querySelectorAll(':scope > .panel')];
+    const panels = [...sidebar.querySelectorAll(':scope > .panel, :scope > .lar-radio-card.on')];
     let zoom = .95;
     for (let pass = 0; pass < 7; pass++) {
       sidebar.style.setProperty('--sidebar-zoom', zoom);
@@ -3444,35 +3411,9 @@ function ensureRadioUI(){
     }
   }
 
-  function fitRadioColumn() {
-    const tank = document.getElementById('gamePanel').getBoundingClientRect();
-    const column = sidebar.getBoundingClientRect();
-    const right = innerWidth - 12;
-    const width = column.left >= tank.right ? Math.min(column.width,right-tank.right-6) : Math.min(column.width,230);
-    const card = document.getElementById('larRadioCard');
-    card.style.setProperty('--radio-width', Math.max(1,width)+'px');
-    card.style.setProperty('--radio-right', (innerWidth-right)+'px');
-  }
-
-  function fitRadioTracks() {
-    const card = document.getElementById('larRadioCard');
-    const bounds = card.getBoundingClientRect();
-    const above = bounds.top;
-    const below = innerHeight - bounds.bottom;
-    const useBelow = above < 195 && below > above;
-    card.classList.toggle('tracks-below', useBelow);
-    card.style.setProperty('--track-list-height', Math.max(24,Math.min(150,(useBelow ? below : above)-64))+'px');
-  }
-
-  function fitStampInterface() {
-    fitSidebar();
-    fitRadioColumn();
-    fitRadioTracks();
-  }
-
-  new ResizeObserver(fitStampInterface).observe(sidebar);
-  window.addEventListener('resize',fitStampInterface);
-  fitStampInterface();
+  new ResizeObserver(fitSidebar).observe(sidebar);
+  window.addEventListener('resize',fitSidebar);
+  fitSidebar();
   hookClearAir();
 
   document.querySelectorAll('button').forEach(btn=>{
