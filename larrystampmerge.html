@@ -27,12 +27,12 @@
     to { transform:translate(-50%,-50%) rotate(360deg); }
   }
   #app {
-    width:min(1220px, 96vw);
+    width:min(1010px, 96vw);
     height:100dvh;
     margin:auto;
     display:grid;
     grid-template-columns:minmax(0, 1fr) 230px;
-    grid-template-rows:105px minmax(0,1fr);
+    grid-template-rows:85px minmax(0,1fr);
     gap:10px;
     padding:10px;
   }
@@ -45,23 +45,24 @@
   }
   #wasteMailbox {
     position:absolute;
-    top:30px;
-    width:min(310px, 44vw);
-    height:80px;
+    top:26px;
+    width:min(230px, 44vw);
+    height:58px;
     border-radius:18px 18px 28px 28px;
     background:linear-gradient(#8a5229,#5a3017);
     border:5px solid #32180b;
     box-shadow:0 10px 0 rgba(0,0,0,.45), inset 0 5px 0 rgba(255,255,255,.18);
     cursor:grab;
     z-index:20;
-    transition:left .05s linear;
+    touch-action:none;
+    -webkit-user-drag:none;
   }
   #wasteText {
     position:absolute; inset:0;
-    padding-left:70px;
+    padding-left:49px;
     display:flex; align-items:center; justify-content:center;
     font-family:Impact, Haettenschweiler, "Arial Black", sans-serif;
-    font-size:clamp(22px,2.4vw,34px);
+    font-size:clamp(18px,2vw,26px);
     letter-spacing:.18em;
     color:#fff;
     text-shadow:3px 3px 0 #32180b;
@@ -71,10 +72,10 @@
      The actual stamp is created directly beneath this preview when dropped. */
   #heldStamp {
     position:absolute;
-    left:18px;
-    top:12px;
-    width:56px;
-    height:56px;
+    left:12px;
+    top:7px;
+    width:39px;
+    height:39px;
     border-radius:4px;
     border:3px solid #f4e6c5;
     box-shadow:0 3px 0 rgba(0,0,0,.38), 0 0 0 1px #5a351d;
@@ -96,13 +97,13 @@
     border:1px solid #6b3f1d;
   }
   #mailFlag {
-    position:absolute; right:18px; top:-42px;
-    width:9px; height:45px; background:#32180b;
+    position:absolute; right:18px; top:-29px;
+    width:7px; height:31px; background:#32180b;
     pointer-events:none;
   }
   #mailFlag::after {
     content:""; position:absolute; top:0; left:0;
-    width:35px; height:20px; background:#f2c14e;
+    width:26px; height:15px; background:#f2c14e;
     border:3px solid #32180b;
   }
   #gamePanel {
@@ -151,9 +152,10 @@
     overflow-y:auto;
     scrollbar-width:thin;
   }
-  #side > .panel { flex:none; zoom:.86; }
-  @media (max-height:820px) { #side > .panel { zoom:.76; } }
-  @media (max-height:690px) { #side > .panel { zoom:.68; } }
+  #side > .panel { flex:none; zoom:1; }
+  #side > .panel:nth-child(2) { flex:1 0 auto; }
+  @media (max-height:820px) { #side > .panel { zoom:.89; } }
+  @media (max-height:690px) { #side > .panel { zoom:.76; } }
   .panel {
     background:rgba(15,15,15,.90);
     border:3px solid #ddd;
@@ -423,7 +425,8 @@
   @keyframes larCarVroom { 0%,100%{transform:translate(var(--hood-x, -2px),-28px)} 50%{transform:translate(var(--hood-x, -2px),-27px)} }
   @keyframes burstSmoke { 0%{transform:translate(0,0) scale(.45);opacity:.3} 35%{opacity:.26} 100%{transform:translate(25px,-16px) scale(1.8);opacity:0} }
   #postalCursor path { fill:none; stroke:#f4e6c5; stroke-width:4; stroke-linecap:round; stroke-linejoin:round; }
-  #gamePanel:hover #postalCursor { display:block; }
+  #wasteMailbox.is-dragging { cursor:grabbing; }
+  body.mailbox-dragging #postalCursor { display:none !important; }
 
   /* FINAL PRIZE: silver hovering moon gateway */
   #silverMoon {
@@ -524,11 +527,11 @@
   }
   #hint { font-size:12px; line-height:1.3; text-align:center; }
   @media (max-width:900px) {
-    #app { grid-template-columns:1fr; grid-template-rows:105px minmax(0,1fr) 310px; }
+    #app { grid-template-columns:1fr; grid-template-rows:85px minmax(0,1fr) 310px; }
     #header { grid-column:1; }
     #side { display:grid; grid-template-columns:1fr 1fr; }
     #book { grid-column:1 / -1; }
-    #wasteMailbox { width:48vw; }
+
   }
 
   #larBusButton, #clearAirBtn { box-sizing:border-box; }
@@ -539,6 +542,7 @@
     background:#d7c09a; color:#241404; font:bold 10px Arial,sans-serif;
     cursor:pointer; vertical-align:middle;
   }
+  #muteGameBtn { margin-top:4px; }
   #mergeModeBtn { width:100%; margin:4px 0; }
   #clearAirBtn.smokeOff { background:#5a3017; color:#fff3d0; }
   body.lar-no-smoke #postalCursor .smoke { display:none !important; }
@@ -574,7 +578,7 @@
 
 
 
-  <script src="larAudio.js"></script>
+
 </head>
 <body>
 <div id="app">
@@ -668,6 +672,7 @@
       </button>
       <div id="hint">Click the Lar Mail to drop a stamp. Drag it to a match to merge. Auto Larry drops stamps for you.</div>
       <a id="larBusButton" href="index.html" title="Return to the LAR BUS">🚌 LAR BUS — RETURN</a>
+      <button class="smallBtn" id="muteGameBtn" type="button" aria-pressed="false">MUTE</button>
       <button id="clearAirBtn" type="button" title="Clear the exhaust and toggle the smoke effect">
         CLEAR AIR
       </button>
@@ -861,7 +866,7 @@ let autoWaitingBody = null;
 let dropLock = false;
 let mailboxX = 0.5;
 let mailboxTargetX = 0.5;
-let draggingMailbox = false;
+
 let lastDropTime = 0;
 let unlockedTier = 1;
 let levelNumber = 1;
@@ -945,7 +950,7 @@ function stampRadius(tier) {
   const len = LEVEL_LENGTHS[idx] || 7;
   const local = Math.max(1, tier - LEVEL_STARTS[idx]);
   const t = len <= 1 ? 1 : (local - 1) / (len - 1);
-  return 48 + t * 58;
+  return 35 + t * 41;
 }
 
 function createStamp(tier, x, y, registerCollection = true) {
@@ -998,6 +1003,29 @@ function updateHeldStamp() {
 }
 
 
+let stampGameMuted = false;
+const stampAudioOutputs = new Map();
+function stampAudioOutput(context) {
+  if (!stampAudioOutputs.has(context)) {
+    const output = context.createGain();
+    output.gain.value = stampGameMuted ? 0 : 1;
+    output.connect(context.destination);
+    stampAudioOutputs.set(context, output);
+  }
+  return stampAudioOutputs.get(context);
+}
+const muteGameBtn = document.getElementById('muteGameBtn');
+muteGameBtn.addEventListener('click', () => {
+  stampGameMuted = !stampGameMuted;
+  muteGameBtn.setAttribute('aria-pressed', String(stampGameMuted));
+  muteGameBtn.textContent = stampGameMuted ? 'UNMUTE' : 'MUTE';
+  for (const output of stampAudioOutputs.values()) output.gain.value = stampGameMuted ? 0 : 1;
+  if (stampGameMuted) {
+    window.RadioLaurentisDJ?.stop(true);
+    window.speechSynthesis?.cancel();
+  }
+  window.dispatchEvent(new Event('lar-game-mute'));
+});
 let audioCtx;
 function sound(type) {
   try {
@@ -1009,15 +1037,15 @@ function sound(type) {
     if (type === 'drop') {
       o.type='triangle'; o.frequency.setValueAtTime(280,now); o.frequency.exponentialRampToValueAtTime(120,now+.11);
       g.gain.setValueAtTime(.0001,now); g.gain.exponentialRampToValueAtTime(.10,now+.01); g.gain.exponentialRampToValueAtTime(.0001,now+.13);
-      o.connect(g).connect(audioCtx.destination); o.start(now); o.stop(now+.14);
+      o.connect(g).connect(stampAudioOutput(audioCtx)); o.start(now); o.stop(now+.14);
     } else if (type === 'merge') {
       o.type='sine'; o.frequency.setValueAtTime(330,now); o.frequency.exponentialRampToValueAtTime(660,now+.16);
       g.gain.setValueAtTime(.0001,now); g.gain.exponentialRampToValueAtTime(.16,now+.01); g.gain.exponentialRampToValueAtTime(.0001,now+.2);
-      o.connect(g).connect(audioCtx.destination); o.start(now); o.stop(now+.21);
+      o.connect(g).connect(stampAudioOutput(audioCtx)); o.start(now); o.stop(now+.21);
     } else if (type === 'pop') {
       o.type='square'; o.frequency.setValueAtTime(150,now); o.frequency.exponentialRampToValueAtTime(70,now+.08);
       g.gain.setValueAtTime(.0001,now); g.gain.exponentialRampToValueAtTime(.09,now+.005); g.gain.exponentialRampToValueAtTime(.0001,now+.09);
-      o.connect(g).connect(audioCtx.destination); o.start(now); o.stop(now+.1);
+      o.connect(g).connect(stampAudioOutput(audioCtx)); o.start(now); o.stop(now+.1);
     } else if (type === 'unlock') {
       // Low tuba-like unlock: slide downward into the lowest register.
       o.type='sawtooth';
@@ -1035,7 +1063,7 @@ function sound(type) {
       g2.gain.setValueAtTime(.0001,now);
       g2.gain.exponentialRampToValueAtTime(.10,now+.04);
       g2.gain.exponentialRampToValueAtTime(.0001,now+.78);
-      o.connect(g); sub.connect(g2); g.connect(audioCtx.destination); g2.connect(audioCtx.destination);
+      o.connect(g); sub.connect(g2); g.connect(stampAudioOutput(audioCtx)); g2.connect(stampAudioOutput(audioCtx));
       o.start(now); sub.start(now); o.stop(now+.8); sub.stop(now+.8);
     }
   } catch(e) {}
@@ -1180,7 +1208,7 @@ function getDeepRobotVoice() {
 
 function speakLarry(text, options={}) {
   try {
-    if (window.radioLaurentisOn) return;
+    if (stampGameMuted || window.radioLaurentisOn) return;
     if (!('speechSynthesis' in window)) return;
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
@@ -1281,7 +1309,7 @@ function playTubaCelebration(duration=10000) {
     master.gain.linearRampToValueAtTime(.18, start+.35);
     master.gain.setValueAtTime(.18, end-.6);
     master.gain.linearRampToValueAtTime(.0001, end);
-    filter.connect(master).connect(audioCtx.destination);
+    filter.connect(master).connect(stampAudioOutput(audioCtx));
 
     const notes = [65.41,73.42,82.41,65.41,58.27,65.41,73.42,55.00,
                    65.41,73.42,82.41,73.42,65.41,58.27,55.00,49.00];
@@ -1739,38 +1767,38 @@ function positionMailbox() {
   mailbox.style.left=left+'px';
 }
 
-function setMailboxFromClientX(clientX) {
-  const header=document.getElementById('header');
-  const rect=header.getBoundingClientRect();
-  mailboxTargetX=Math.max(.08,Math.min(.92,(clientX-rect.left)/rect.width));
-}
-
-let mailboxMoved=false;
-mailboxTargetX=mailboxX;
+let mailboxDrag = null;
 mailbox.addEventListener('pointerdown',e=> {
-  // A simple click must NOT reposition the mailbox. The player aims first,
-  // then clicks it to drop. Repositioning only begins once the pointer moves.
-  draggingMailbox=true;
-  mailboxMoved=false;
+  if (e.button !== 0 || mailboxDrag) return;
+  e.preventDefault();
+  mailboxDrag = {id:e.pointerId, startX:e.clientX,
+    offset:e.clientX-mailbox.getBoundingClientRect().left, moved:false};
   mailbox.setPointerCapture(e.pointerId);
+  mailbox.classList.add('is-dragging');
+  document.body.classList.add('mailbox-dragging');
 });
-let mailboxDownX=0;
-mailbox.addEventListener('pointerdown',e=> { mailboxDownX=e.clientX; });
 mailbox.addEventListener('pointermove',e=> {
-  if(draggingMailbox && Math.abs(e.clientX-mailboxDownX)>3) {
-    mailboxMoved=true;
-    setMailboxFromClientX(e.clientX);
-  }
+  if (mailboxDrag?.id !== e.pointerId) return;
+  if (!mailboxDrag.moved && Math.abs(e.clientX-mailboxDrag.startX)<=3) return;
+  mailboxDrag.moved=true;
+  const header=mailbox.parentElement;
+  const headerRect=header.getBoundingClientRect();
+  const width=mailbox.offsetWidth;
+  const left=Math.max(0,Math.min(header.clientWidth-width,e.clientX-headerRect.left-mailboxDrag.offset));
+  mailboxX=mailboxTargetX=(left+width/2)/header.clientWidth;
+  positionMailbox();
 });
-mailbox.addEventListener('pointerup',e=> {
-  if(!draggingMailbox) return;
-  draggingMailbox=false;
-  if(!mailboxMoved) dropStamp();
-});
-mailbox.addEventListener('pointercancel',e=> {
-  draggingMailbox=false;
-  mailboxMoved=false;
-});
+function endMailboxDrag(e) {
+  if (mailboxDrag?.id !== e.pointerId) return;
+  const drop=e.type==='pointerup' && !mailboxDrag.moved;
+  mailboxDrag=null;
+  mailbox.classList.remove('is-dragging');
+  document.body.classList.remove('mailbox-dragging');
+  if (drop) dropStamp();
+}
+for (const type of ['pointerup','pointercancel','lostpointercapture']) {
+  mailbox.addEventListener(type,endMailboxDrag);
+}
 
 dropBtn.addEventListener('click', dropStamp);
 inspectBtn.addEventListener('click', () => openStampModal(pageStart + 1));
@@ -1849,7 +1877,7 @@ function vroomLarryCar() {
     const o=audioCtx.createOscillator(), g=audioCtx.createGain();
     o.type='sawtooth'; o.frequency.setValueAtTime(92,now); o.frequency.exponentialRampToValueAtTime(42,now+.42);
     g.gain.setValueAtTime(.0001,now); g.gain.exponentialRampToValueAtTime(.13,now+.035); g.gain.exponentialRampToValueAtTime(.0001,now+.48);
-    o.connect(g).connect(audioCtx.destination); o.start(now); o.stop(now+.5);
+    o.connect(g).connect(stampAudioOutput(audioCtx)); o.start(now); o.stop(now+.5);
   } catch(e) {}
   if((LARRY_CARS[currentLarCar]||LARRY_CARS[0]).oil){ for(let j=0;j<4;j++) setTimeout(spawnLarOil,j*110); }
   for(let i=0;i<5 && !document.body.classList.contains('lar-no-smoke');i++){
@@ -2283,9 +2311,11 @@ function draw() {
 function animateMailbox() {
   // Ease toward the pointer target rather than jumping from pointer event
   // to pointer event. This gives the mailbox a smooth, physical slide.
-  mailboxX += (mailboxTargetX - mailboxX) * 0.22;
-  if (Math.abs(mailboxTargetX-mailboxX) < 0.0004) mailboxX = mailboxTargetX;
-  positionMailbox();
+  if (!mailboxDrag && mailboxX !== mailboxTargetX) {
+    mailboxX += (mailboxTargetX - mailboxX) * 0.22;
+    if (Math.abs(mailboxTargetX-mailboxX) < 0.0004) mailboxX = mailboxTargetX;
+    positionMailbox();
+  }
   requestAnimationFrame(animateMailbox);
 }
 
@@ -2368,7 +2398,7 @@ animateMailbox();
       tankGain=tankCtx.createGain();
       tankGain.gain.setValueAtTime(.0001,tankCtx.currentTime);
       tankGain.gain.linearRampToValueAtTime(.16,tankCtx.currentTime+.7);
-      tankFilter.connect(tankGain).connect(tankCtx.destination);
+      tankFilter.connect(tankGain).connect(stampAudioOutput(tankCtx));
 
       const play=()=>{
         if(!tankPlaying)return;
@@ -2542,6 +2572,166 @@ animateMailbox();
 
 <!-- Larrymobile / held-glow / 7+7 level-completion build. -->
 
+<script id="radio-laurentis-dj">
+/* Radio Laurentis DJ. Load this classic script, then call
+   RadioLaurentisDJ.speak(RadioLaurentisDJ.nextLine(), { volume: 0.8 });
+   RadioLaurentisDJ.stop() cancels this announcer's current line.
+   The browser's available English voices determine the exact voice. */
+(() => {
+const ads=[
+    "ATTENTION LAIR-LISTENERS. This is Radio Laurentis, and the latest Lair deal is already underway. We have surplus items in quantities that management calls completely reasonable.",
+    "THE LAIR NEWS. A local Lair has reportedly discovered another Lair. Officials say the situation is very Lair-like and extremely positive.",
+    "LAIR SPORTS. In today's Lair league, the home team had the ball, the other team wanted the ball, and everyone agreed it was a terrific Lair game.",
+    "LAIR WEATHER. Conditions are favourable for Lair activity, with a strong chance of brown vehicles and absolutely no reason to stay home.",
+    "ATTENTION LAIR-LISTENERS. Price drop on a mysterious product at Larry's Variety. We cannot describe it because that would remove the mystery.",
+    "THE LAIR REPORT. Analysts are describing today's surplus as unusually surplus-like. More after this song.",
+    "LAIR SPORTS DESK. The Lairmobile has won the parking-lot championship by arriving first and leaving last.",
+    "LAIR TRAFFIC. Heavy Lair-like congestion reported near Larry's Variety. Fortunately, the congestion is heading toward the sale.",
+    "ATTENTION. A new Lair product may be arriving soon at Larry's Variety. It is real, it is in development, or both.",
+    "THE LAIR BUSINESS REPORT. cash are currently being spent at an alarming but encouraging rate.",
+    "LAIR SPORTS. The score is Lair to Lair. Nobody is sure what that means, but it sounds excellent.",
+    "ATTENTION LAIR-LISTENERS. Surplus mufflers have been reduced. There are many mufflers. There may be too many mufflers.",
+    "THE LAIR NEWS. A mysterious brown van has been seen making several completely unnecessary turns. Authorities are delighted.",
+    "LAIR WEATHER UPDATE. Smoke is expected to increase throughout the afternoon, especially around vehicles that should probably be repaired.",
+    "ATTENTION. Larry's Variety has found another box in the back. The contents are being described as possibly useful.",
+    "LAIR SPORTS. The Lair team has announced a strategic victory over the concept of being late.",
+    "THE LAIR NEWS. Experts have confirmed that something excellent is happening somewhere. We recommend heading toward Larry's Variety.",
+    "ATTENTION LAIR-LISTENERS. Run, don't walk. The deal is apparently becoming impatient.",
+    "LAIR MARKET REPORT. Prices are moving downward. Nobody touch anything.",
+    "LAIR PUBLIC SERVICE ANNOUNCEMENT. Please remain calm during this exceptionally Lair-like period of commerce.",
+    "ATTENTION. This is your official warning that a deal may disappear if you take too long to finish this sentence.",
+    "THE LAIR SPORTS HOUR. Tonight's big event is the annual Long Trunk Invitational. The trunks are very long.",
+    "LAIR NEWS AT THE TOP OF THE HOUR. Everything remains strangely positive.",
+    "LAIR TRAVEL. If you're going to Larry's Variety, you're already going in the right direction.",
+    "ATTENTION LAIR-LISTENERS. New stock, old stock, mysterious stock, and stock that management has no memory of ordering.",
+    "THE LAIR BUSINESS MINUTE. Surplus is our business, and apparently there is a lot of it.",
+    "LAIR SPORTS. The Lairmobile pit crew has requested a larger parking space and considerably more smoke.",
+    "THE LAIR WEATHER CENTRE. Tonight: dark. Tomorrow: probably brown.",
+    "ATTENTION. A price drop has occurred. We don't know why. We recommend taking advantage of it before somebody notices.",
+    "THE LAIR NEWS. This just in: Larry's Variety is still there. Please go there.",
+    "LAIR SPORTS. The final score is extremely favourable to the Lair side.",
+    "ATTENTION LAIR-LISTENERS. Products real and in development may be arriving soon at Larry's Variety. Maybe.",
+    "THE LAIR TRAFFIC REPORT. No delays are expected on the road to the sale.",
+    "LAIR NEWS. Today's most important story is whatever is currently on sale.",
+    "LAIR SPORTS. The Lairmobile has been declared undefeated in the category of being brown.",
+    "ATTENTION. Surplus inventory has reached what experts call a lot.",
+    "LAIR WEATHER. A warm front is moving in, followed by an unnecessary amount of exhaust.",
+    "THE LAIR BUSINESS REPORT. Today's recommended investment is a trip to Larry's Variety.",
+    "ATTENTION LAIR-LISTENERS. Run, don't walk. The deal is apparently becoming impatient.",
+    "LAIR NEWS. More news after this long silence.",
+    "ATTENTION LAIR-LISTENERS. Tired of not having enough stuff? Sick of carrying around surplus cash? No problem. Larry's is just a hop, skip, and a dump. Jump away. Not a dump. Larry's is NOT a dump. It is the land of deals and steals. Solve your problems. Bring your money.",
+    "LAIR SPECIAL REPORT. Have too little merchandise and far too much money? There is a place for that. Larry's Variety has surplus, bargains, reductions, oddments, and solutions to problems you had not yet realized you possessed.",
+    "ATTENTION. Is your wallet feeling unnecessarily healthy? Is your home suspiciously free of unusual objects? Visit Larry's Variety, where your money can become merchandise before it develops opinions.",
+    "THE LAIR BUSINESS REPORT. Why pay ordinary prices for ordinary things when you can pay extraordinary attention to extraordinary surplus? Larry's Variety: the economical answer to an economically unnecessary question.",
+    "LAIR ALERT. Tired of shopping somewhere sensible? Sick of knowing what you are buying? Larry's Variety invites you to discover the thrilling middle ground between a bargain and a mystery.",
+    "THIS IS RADIO LAURENTIS. Do you have cash that has been sitting around doing absolutely nothing? Put it to work. Larry's has deals, steals, markdowns, overstock, under-surplus and other highly persuasive arrangements.",
+    "LAIR WEATHER. Forecast calls for bargains with scattered markdowns and a strong chance of merchandise. Bring money. Leave hesitation. Larry's Variety is expecting you.",
+    "LAIR SPORTS. Today's most exciting event is the race between you and everyone else trying to reach the same surplus table. Larry's Variety recommends moving at a brisk but responsible pace.",
+    "ATTENTION LAIR-LISTENERS. Your household may be suffering from a severe shortage of stuff. Symptoms include empty shelves, suspiciously clear corners, and money remaining in your possession. Larry's has the treatment.",
+    "LAIR NEWS. A cash surplus has been spotted in the region. Experts recommend immediate conversion into Larry's Variety merchandise before the condition becomes chronic.",
+    "THE LAIR REPORT. Why throw money away when you can exchange it for something you can carry home? Larry's Variety: because money was never meant to sit around looking smug.",
+    "ATTENTION. Your problem may not be that you have too much stuff. Your problem may be that you don't have the RIGHT stuff. Fortunately, Larry's Variety has absolutely no intention of helping you remain undecided.",
+    "LAIR TRAFFIC. Heavy movement is developing in the direction of Larry's Variety. Drivers are advised that this is probably good news. Proceed toward the deals. Please avoid unnecessary detours toward places with normal prices.",
+    "LAIR SHOPPING ADVISORY. If you have been waiting for the perfect moment to spend your surplus cash on something completely unexpected, this is almost certainly not that moment. Go anyway.",
+    "ATTENTION LAIR-LISTENERS. Larry's Variety has reduced selected prices because apparently the merchandise was becoming too affordable at the previous price. Please take advantage before reason returns.",
+    "THE LAIR BUSINESS REPORT. Surplus is not merely excess inventory. It is opportunity wearing a slightly dusty hat. Larry's Variety has plenty of both.",
+    "LAIR ALERT. Do you need something? Do you not know what you need? Excellent. Larry's Variety specializes in situations precisely like this.",
+    "ATTENTION. Are your pockets too heavy with cash? Are your shelves too light on strange treasures? The solution is obvious, economical, and probably brown. Larry's Variety.",
+    "LAIR NEWS. Management has confirmed that Larry's Variety is not a dump. Repeat: NOT A DUMP. It is a highly organized land of deals and steals which may contain things you cannot currently explain.",
+    "LAIR SPORTS DESK. In today's bargain championship, Larry's Variety is leading by several mysterious points. The competition has been asked to bring more surplus.",
+    "LAIR WEATHER UPDATE. Conditions remain excellent for bargain hunting. Visibility may decrease near the exhaust of certain Larrymobiles. This is considered atmospheric encouragement.",
+    "ATTENTION LAIR-LISTENERS. Stop hoarding your money. Release it into the wild. More specifically, release it at Larry's Variety in exchange for something considerably more interesting.",
+    "THE LAIR REPORT. If your home looks too normal, Larry's Variety can help. If your home already looks strange, Larry's Variety can help further.",
+    "LAIR CONSUMER ADVISORY. Before purchasing an ordinary item at an ordinary price, ask yourself one important question: why have you not gone to Larry's Variety?",
+    "ATTENTION. Larry's Variety: where a bargain may be a deal, a deal may be a steal, and a steal may be something you are completely certain you were not expecting.",
+    "LAIR ALERT. Have you been burdened by an unreasonable amount of available money? We regret the inconvenience. Larry's Variety offers a practical solution: spend some of it on surplus.",
+    "THE LAIR BUSINESS REPORT. Analysts say the future belongs to people who know where the deals are. Analysts are currently standing outside Larry's Variety.",
+    "ATTENTION LAIR-LISTENERS. Your money wants adventure. Your cupboards want surprises. Your curiosity wants answers it probably should not receive. Larry's Variety is prepared.",
+    "LAIR NEWS. Another successful day has been reported at Larry's Variety, where the inventory continues to be both mysterious and remarkably available.",
+    "LAIR SPORTS. The fastest route to a bargain is generally the route toward Larry's Variety. The second-fastest route is also toward Larry's Variety.",
+    "ATTENTION. Do not panic if you discover that you have bought something you did not know existed. This is a normal stage of Larry's Variety shopping.",
+    "THE LAIR REPORT. Excess cash? Excess curiosity? Excess enthusiasm? Larry's Variety is equipped for all three and several other forms of excess.",
+    "LAIR SHOPPING NEWS. Deals have been seen. Steals have been suspected. Surplus has been confirmed. Larry's Variety recommends immediate investigation.",
+    "ATTENTION LAIR-LISTENERS. Why settle for less when you can settle for surplus? Why settle for ordinary when you can settle for Larry's? This message has no further questions.",
+    "LAIR ALERT. Larry's Variety is just a hop, skip, and a jump from wherever you are. Unless you are very far away. In that case, it is still worth considering.",
+    "THE LAIR BUSINESS REPORT. Prices are moving downward. Spirits are moving upward. Merchandise is moving outward. Money is moving toward Larry's Variety.",
+    "ATTENTION. Sick of having too little? Tired of having too much? Larry's Variety has a solution for both, although the solution will probably involve carrying something home.",
+    "LAIR NEWS. A surplus has been discovered and immediately declared too useful to remain in storage. The public has been invited to participate in its relocation.",
+    "LAIR TRAFFIC. Heavy movement toward the deals has been observed. Experts recommend joining the traffic rather than asking why it exists.",
+    "ATTENTION LAIR-LISTENERS. Larry's Variety is not a dump. It is not a warehouse. It is not a mysterious brown cloud. It is the land of deals and steals, occasionally accompanied by smoke.",
+    "LAIR SPECIAL. If your money is lonely, Larry's Variety has merchandise willing to keep it company for a very short period.",
+    "THE LAIR REPORT. A bargain today may save you money tomorrow, unless you spend the savings at Larry's Variety on something else. Management considers this excellent economic activity."
+
+  ];
+function nextLine(){
+    const base=ads[Math.floor(Math.random()*ads.length)];
+    const extras=[
+      " We repeat, this is important for reasons we are not permitted to explain.",
+      " Management has asked us to emphasize the word surplus.",
+      " Please make your way toward Larry's Variety at your earliest reasonable convenience.",
+      " This announcement has been approved by absolutely nobody.",
+      " We will now continue with further information.",
+      " More developments are expected shortly.",
+      " And that concludes this portion of the Lair report."
+    ];
+    const extra=extras[Math.floor(Math.random()*extras.length)];
+    return base+" "+extra;
+  }
+    let current = null;
+    function speak(line, {volume = 1, onEnd} = {}) {
+        const synth = window.speechSynthesis;
+        if (!synth || volume <= 0) {
+            setTimeout(() => onEnd?.(), 300);
+            return;
+        }
+        stop();
+        const text = String(line).replace(/\bLAR\b/gi, 'LAIR');
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-CA';
+        utterance.rate = .62;
+        utterance.pitch = .47;
+        utterance.volume = Math.max(0, Math.min(1, volume));
+        let timer;
+        let started = false;
+        function finish(notify = true) {
+            clearTimeout(timer);
+            synth.removeEventListener('voiceschanged', start);
+            if (current?.utterance !== utterance) return;
+            current = null;
+            if (notify) onEnd?.();
+        }
+        function start() {
+            if (started || current?.utterance !== utterance) return;
+            started = true;
+            clearTimeout(timer);
+            synth.removeEventListener('voiceschanged', start);
+            const voices = synth.getVoices();
+            const preferred = /\b(male|david|mark|daniel|george)\b/i;
+            const voice = voices.find(v => /^en-CA/i.test(v.lang) && preferred.test(v.name))
+                || voices.find(v => /^en/i.test(v.lang) && preferred.test(v.name))
+                || voices.find(v => /^en/i.test(v.lang));
+            if (voice) utterance.voice = voice;
+            try { synth.speak(utterance); } catch { finish(); }
+        }
+        current = {utterance, finish};
+        utterance.onend = utterance.onerror = finish;
+        if (synth.getVoices().length) start();
+        else {
+            synth.addEventListener('voiceschanged', start);
+            timer = setTimeout(start, 300);
+        }
+    }
+
+    function stop(notify = false) {
+        if (!current) return;
+        const previous = current;
+        previous.finish(notify);
+        window.speechSynthesis.cancel();
+    }
+
+    window.RadioLaurentisDJ = {nextLine, speak, stop};
+})();
+</script>
 <script id="lar-board-exhaust-haze">
 (() => {
   let haze = 0;
@@ -2559,6 +2749,9 @@ animateMailbox();
   let radioRandomMelody = localStorage.getItem('larRadioRandomMelody') !== 'false';
   let radioAudioEl = null;
   let radioAudioPath = null;
+  window.addEventListener('lar-game-mute', () => {
+    if (radioAudioEl) radioAudioEl.muted=stampGameMuted;
+  });
   let radioDJQueue = [];
   let radioDJActive = false;
   let radioDJToken = 0;
@@ -2766,97 +2959,55 @@ animateMailbox();
     {name:"FIVE DOLLAR FOG",bpm:84,root:49,notes:[0,2,3,7,8,11,9,5],organ:[12,15,18,16]}
   ];
 
-  const ads=[
-    "ATTENTION LAIR-LISTENERS. This is Radio Laurentis, and the latest Lair deal is already underway. We have surplus items in quantities that management calls completely reasonable.",
-    "THE LAIR NEWS. A local Lair has reportedly discovered another Lair. Officials say the situation is very Lair-like and extremely positive.",
-    "LAIR SPORTS. In today's Lair league, the home team had the ball, the other team wanted the ball, and everyone agreed it was a terrific Lair game.",
-    "LAIR WEATHER. Conditions are favourable for Lair activity, with a strong chance of brown vehicles and absolutely no reason to stay home.",
-    "ATTENTION LAIR-LISTENERS. Price drop on a mysterious product at Larry's Variety. We cannot describe it because that would remove the mystery.",
-    "THE LAIR REPORT. Analysts are describing today's surplus as unusually surplus-like. More after this song.",
-    "LAIR SPORTS DESK. The Lairmobile has won the parking-lot championship by arriving first and leaving last.",
-    "LAIR TRAFFIC. Heavy Lair-like congestion reported near Larry's Variety. Fortunately, the congestion is heading toward the sale.",
-    "ATTENTION. A new Lair product may be arriving soon at Larry's Variety. It is real, it is in development, or both.",
-    "THE LAIR BUSINESS REPORT. Lar-Bucks are currently being spent at an alarming but encouraging rate.",
-    "LAIR SPORTS. The score is Lair to Lair. Nobody is sure what that means, but it sounds excellent.",
-    "ATTENTION LAIR-LISTENERS. Surplus mufflers have been reduced. There are many mufflers. There may be too many mufflers.",
-    "THE LAIR NEWS. A mysterious brown van has been seen making several completely unnecessary turns. Authorities are delighted.",
-    "LAIR WEATHER UPDATE. Smoke is expected to increase throughout the afternoon, especially around vehicles that should probably be repaired.",
-    "ATTENTION. Larry's Variety has found another box in the back. The contents are being described as possibly useful.",
-    "LAIR SPORTS. The Lair team has announced a strategic victory over the concept of being late.",
-    "THE LAIR NEWS. Experts have confirmed that something excellent is happening somewhere. We recommend heading toward Larry's Variety.",
-    "ATTENTION LAIR-LISTENERS. Run, don't walk. The deal is apparently becoming impatient.",
-    "LAIR MARKET REPORT. Prices are moving downward. Nobody touch anything.",
-    "LAIR PUBLIC SERVICE ANNOUNCEMENT. Please remain calm during this exceptionally Lair-like period of commerce.",
-    "ATTENTION. This is your official warning that a deal may disappear if you take too long to finish this sentence.",
-    "THE LAIR SPORTS HOUR. Tonight's big event is the annual Long Trunk Invitational. The trunks are very long.",
-    "LAIR NEWS AT THE TOP OF THE HOUR. Everything remains strangely positive.",
-    "LAIR TRAVEL. If you're going to Larry's Variety, you're already going in the right direction.",
-    "ATTENTION LAIR-LISTENERS. New stock, old stock, mysterious stock, and stock that management has no memory of ordering.",
-    "THE LAIR BUSINESS MINUTE. Surplus is our business, and apparently there is a lot of it.",
-    "LAIR SPORTS. The Lairmobile pit crew has requested a larger parking space and considerably more smoke.",
-    "THE LAIR WEATHER CENTRE. Tonight: dark. Tomorrow: probably brown.",
-    "ATTENTION. A price drop has occurred. We don't know why. We recommend taking advantage of it before somebody notices.",
-    "THE LAIR NEWS. This just in: Larry's Variety is still there. Please go there.",
-    "LAIR SPORTS. The final score is extremely favourable to the Lair side.",
-    "ATTENTION LAIR-LISTENERS. Products real and in development may be arriving soon at Larry's Variety. Maybe.",
-    "THE LAIR TRAFFIC REPORT. No delays are expected on the road to the sale.",
-    "LAIR NEWS. Today's most important story is whatever is currently on sale.",
-    "LAIR SPORTS. The Lairmobile has been declared undefeated in the category of being brown.",
-    "ATTENTION. Surplus inventory has reached what experts call a lot.",
-    "LAIR WEATHER. A warm front is moving in, followed by an unnecessary amount of exhaust.",
-    "THE LAIR BUSINESS REPORT. Today's recommended investment is a trip to Larry's Variety.",
-    "ATTENTION LAIR-LISTENERS. Run, don't walk. The deal is apparently becoming impatient.",
-    "LAIR NEWS. More news after this long silence.",
-    "ATTENTION LAIR-LISTENERS. Tired of not having enough stuff? Sick of carrying around surplus cash? No problem. Larry's is just a hop, skip, and a dump. Jump away. Not a dump. Larry's is NOT a dump. It is the land of deals and steals. Solve your problems. Bring your money.",
-    "LAIR SPECIAL REPORT. Have too little merchandise and far too much money? There is a place for that. Larry's Variety has surplus, bargains, reductions, oddments, and solutions to problems you had not yet realized you possessed.",
-    "ATTENTION. Is your wallet feeling unnecessarily healthy? Is your home suspiciously free of unusual objects? Visit Larry's Variety, where your money can become merchandise before it develops opinions.",
-    "THE LAIR BUSINESS REPORT. Why pay ordinary prices for ordinary things when you can pay extraordinary attention to extraordinary surplus? Larry's Variety: the economical answer to an economically unnecessary question.",
-    "LAIR ALERT. Tired of shopping somewhere sensible? Sick of knowing what you are buying? Larry's Variety invites you to discover the thrilling middle ground between a bargain and a mystery.",
-    "THIS IS RADIO LAURENTIS. Do you have cash that has been sitting around doing absolutely nothing? Put it to work. Larry's has deals, steals, markdowns, overstock, under-surplus and other highly persuasive arrangements.",
-    "LAIR WEATHER. Forecast calls for bargains with scattered markdowns and a strong chance of merchandise. Bring money. Leave hesitation. Larry's Variety is expecting you.",
-    "LAIR SPORTS. Today's most exciting event is the race between you and everyone else trying to reach the same surplus table. Larry's Variety recommends moving at a brisk but responsible pace.",
-    "ATTENTION LAIR-LISTENERS. Your household may be suffering from a severe shortage of stuff. Symptoms include empty shelves, suspiciously clear corners, and money remaining in your possession. Larry's has the treatment.",
-    "LAIR NEWS. A cash surplus has been spotted in the region. Experts recommend immediate conversion into Larry's Variety merchandise before the condition becomes chronic.",
-    "THE LAIR REPORT. Why throw money away when you can exchange it for something you can carry home? Larry's Variety: because money was never meant to sit around looking smug.",
-    "ATTENTION. Your problem may not be that you have too much stuff. Your problem may be that you don't have the RIGHT stuff. Fortunately, Larry's Variety has absolutely no intention of helping you remain undecided.",
-    "LAIR TRAFFIC. Heavy movement is developing in the direction of Larry's Variety. Drivers are advised that this is probably good news. Proceed toward the deals. Please avoid unnecessary detours toward places with normal prices.",
-    "LAIR SHOPPING ADVISORY. If you have been waiting for the perfect moment to spend your surplus cash on something completely unexpected, this is almost certainly not that moment. Go anyway.",
-    "ATTENTION LAIR-LISTENERS. Larry's Variety has reduced selected prices because apparently the merchandise was becoming too affordable at the previous price. Please take advantage before reason returns.",
-    "THE LAIR BUSINESS REPORT. Surplus is not merely excess inventory. It is opportunity wearing a slightly dusty hat. Larry's Variety has plenty of both.",
-    "LAIR ALERT. Do you need something? Do you not know what you need? Excellent. Larry's Variety specializes in situations precisely like this.",
-    "ATTENTION. Are your pockets too heavy with Lar-Bucks? Are your shelves too light on strange treasures? The solution is obvious, economical, and probably brown. Larry's Variety.",
-    "LAIR NEWS. Management has confirmed that Larry's Variety is not a dump. Repeat: NOT A DUMP. It is a highly organized land of deals and steals which may contain things you cannot currently explain.",
-    "LAIR SPORTS DESK. In today's bargain championship, Larry's Variety is leading by several mysterious points. The competition has been asked to bring more surplus.",
-    "LAIR WEATHER UPDATE. Conditions remain excellent for bargain hunting. Visibility may decrease near the exhaust of certain Larrymobiles. This is considered atmospheric encouragement.",
-    "ATTENTION LAIR-LISTENERS. Stop hoarding your money. Release it into the wild. More specifically, release it at Larry's Variety in exchange for something considerably more interesting.",
-    "THE LAIR REPORT. If your home looks too normal, Larry's Variety can help. If your home already looks strange, Larry's Variety can help further.",
-    "LAIR CONSUMER ADVISORY. Before purchasing an ordinary item at an ordinary price, ask yourself one important question: why have you not gone to Larry's Variety?",
-    "ATTENTION. Larry's Variety: where a bargain may be a deal, a deal may be a steal, and a steal may be something you are completely certain you were not expecting.",
-    "LAIR ALERT. Have you been burdened by an unreasonable amount of available money? We regret the inconvenience. Larry's Variety offers a practical solution: spend some of it on surplus.",
-    "THE LAIR BUSINESS REPORT. Analysts say the future belongs to people who know where the deals are. Analysts are currently standing outside Larry's Variety.",
-    "ATTENTION LAIR-LISTENERS. Your money wants adventure. Your cupboards want surprises. Your curiosity wants answers it probably should not receive. Larry's Variety is prepared.",
-    "LAIR NEWS. Another successful day has been reported at Larry's Variety, where the inventory continues to be both mysterious and remarkably available.",
-    "LAIR SPORTS. The fastest route to a bargain is generally the route toward Larry's Variety. The second-fastest route is also toward Larry's Variety.",
-    "ATTENTION. Do not panic if you discover that you have bought something you did not know existed. This is a normal stage of Larry's Variety shopping.",
-    "THE LAIR REPORT. Excess cash? Excess curiosity? Excess enthusiasm? Larry's Variety is equipped for all three and several other forms of excess.",
-    "LAIR SHOPPING NEWS. Deals have been seen. Steals have been suspected. Surplus has been confirmed. Larry's Variety recommends immediate investigation.",
-    "ATTENTION LAIR-LISTENERS. Why settle for less when you can settle for surplus? Why settle for ordinary when you can settle for Larry's? This message has no further questions.",
-    "LAIR ALERT. Larry's Variety is just a hop, skip, and a jump from wherever you are. Unless you are very far away. In that case, it is still worth considering.",
-    "THE LAIR BUSINESS REPORT. Prices are moving downward. Spirits are moving upward. Merchandise is moving outward. Money is moving toward Larry's Variety.",
-    "ATTENTION. Sick of having too little? Tired of having too much? Larry's Variety has a solution for both, although the solution will probably involve carrying something home.",
-    "LAIR NEWS. A surplus has been discovered and immediately declared too useful to remain in storage. The public has been invited to participate in its relocation.",
-    "LAIR TRAFFIC. Heavy movement toward the deals has been observed. Experts recommend joining the traffic rather than asking why it exists.",
-    "ATTENTION LAIR-LISTENERS. Larry's Variety is not a dump. It is not a warehouse. It is not a mysterious brown cloud. It is the land of deals and steals, occasionally accompanied by smoke.",
-    "LAIR SPECIAL. If your money is lonely, Larry's Variety has merchandise willing to keep it company for a very short period.",
-    "THE LAIR REPORT. A bargain today may save you money tomorrow, unless you spend the savings at Larry's Variety on something else. Management considers this excellent economic activity."
+  const uploadedTracks = [
+    "Audio/AFRIGHANISTAN.mp3",
+    "Audio/ALL ABOUT MY HEART.mp3",
+    "Audio/ANAKINS ALARMBEL.mp3",
+    "Audio/AT CLUB LIBRA.mp3",
+    "Audio/CHAKRA PEOPLE.mp3",
+    "Audio/CHILL OUT DUDE.mp3",
+    "Audio/COOLER MINDED ME.mp3",
+    "Audio/DRUMBO.mp3",
+    "Audio/EASEUS FISHE.mp3",
+    "Audio/FUNNY SPIRITS.mp3",
+    "Audio/GET UP.mp3",
+    "Audio/KING LORT III.mp3",
+    "Audio/LAST DAY OF SCHOOL.mp3",
+    "Audio/LET THE BEAT.mp3",
+    "Audio/LEX LUTHOR.mp3",
+    "Audio/LMAC DJ NERDWOLFE.mp3",
+    "Audio/LMAC OBEY THE ROOL.mp3",
+    "Audio/LMAC THE YEAR OF THE FROG.mp3",
+    "Audio/LMAC WESTMINSTER ABBY.mp3",
+    "Audio/LMAC WHEN FORGIVENESS COMES TO ME.mp3",
+    "Audio/LMAC WHO WILL FREE THE LION.mp3",
+    "Audio/OMS BURN 1.mp3",
+    "Audio/PUSHING TO THE TOP.mp3",
+    "Audio/SHUT UP & RELAX ALREADY.mp3",
+    "Audio/THE BOAT RIDE.mp3",
+    "Audio/THE COOL ABILITY.mp3",
+    "Audio/THE FLOATING SONG.mp3",
+    "Audio/THE PIZZA TONITE DELIVERY DUDE IN TRAFFIC.mp3",
+    "Audio/WALLETFULLAMONEY.mp3",
+    "Audio/ZUZANNE'S DANCE.mp3",
+    "Audio/ZUZANNE'S X FILES.mp3"
+];
+  const drumboPath = 'Audio/DRUMBO.mp3';
+  const renamedRadioTracks = {
+    'Audio/Drumbo.mp3':'Audio/DRUMBO.mp3',
+    'Audio/KingLortTheThird.mp3':'Audio/KING LORT III.mp3',
+    'Audio/OmsBurnOne.mp3':'Audio/OMS BURN 1.mp3',
+    'Audio/TheFloatingSong.mp3':'Audio/THE FLOATING SONG.mp3'
+  };
+  if (Array.isArray(radioBackgroundSelection)) {
+    radioBackgroundSelection = radioBackgroundSelection.map(key => {
+      const renamed = renamedRadioTracks[key.slice(6)];
+      return key.startsWith('audio:') && renamed ? 'audio:' + renamed : key;
+    });
+  }
 
-  ];
-
-  
   function getLarAudioTracks(){
-    const raw=(window.LAR_AUDIO_TRACKS && Array.isArray(window.LAR_AUDIO_TRACKS))
-      ? window.LAR_AUDIO_TRACKS : [];
-    return raw.filter(x=>typeof x==='string' && x.trim());
+    return uploadedTracks;
   }
 
 function stopRadioAudioTrack(){
@@ -2871,11 +3022,17 @@ function playRadioAudioTrack(path){
     stopRadioAudioTrack();
     const a=new Audio(path);
     a.loop=true;
+    a.muted=stampGameMuted;
     a.volume=Math.max(0,Math.min(1,radioMusicVolume));
     radioAudioEl=a;
     radioAudioPath=path;
-    a.play().catch(()=>{});
-    setRadioText('NOW PLAYING: '+String(path).split('/').pop().split('\\').pop());
+    const label = path.split('/').pop().replace(/\.mp3$/i, '');
+    const reportFailure = () => {
+      if (radioAudioEl === a) setRadioText('COULD NOT PLAY: ' + label);
+    };
+    a.addEventListener('error', reportFailure, {once:true});
+    setRadioText('NOW PLAYING: ' + label);
+    a.play().catch(reportFailure);
   }
 
   function radioSelectedChoices(){
@@ -2923,7 +3080,7 @@ function playRadioAudioTrack(path){
       const label=String(path).split('/').pop().split('\\').pop().replace(/\.[^.]+$/,'');
       rows.push(
         '<label><input type="checkbox" data-radio-key="'+key.replace(/"/g,'&quot;')+'" '+
-        (chosen.has(key)?'checked':'')+'><span>'+label.replace(/[&<>]/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[s]))+'</span></label>'
+        (!chosen.size || chosen.has(key)?'checked':'')+'><span>'+label.replace(/[&<>]/g,s=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[s]))+'</span></label>'
       );
     });
 
@@ -3076,58 +3233,14 @@ function ensureRadioUI(){
   }
 
   function sayRadio(line, onEnd){
-    if(!('speechSynthesis' in window)){
-      if(typeof onEnd==='function') setTimeout(onEnd,300);
-      return;
-    }
-    const radioLine=String(line)
-      .replace(/\bLAR-like\b/gi,'LAIR-like')
-      .replace(/\bLair-like\b/gi,'LAIR-like')
-      .replace(/\bLAR\b/gi,'LAIR');
-
-    speechSynthesis.cancel();
     radioSpeaking=true;
-
-    const u=new SpeechSynthesisUtterance(radioLine);
-    u.lang='en-CA';
-    u.rate=.62;
-    u.pitch=.47;
-    u.volume=Math.max(0,Math.min(1,radioDJVolume));
-
-    let finished=false;
-    const finish=()=>{
-      if(finished)return;
-      finished=true;
-      radioSpeaking=false;
-      radioDJActive=false;
-      if(window._larCurrentDJUtterance===u)window._larCurrentDJUtterance=null;
-      if(typeof onEnd==='function')onEnd();
-    };
-    u.onend=finish;
-    u.onerror=finish;
-    window._larCurrentDJUtterance=u;
-
-    const speakWithVoice=()=>{
-      if(!window.radioLaurentisOn){ finish(); return; }
-      const vs=speechSynthesis.getVoices()||[];
-      const v=
-        vs.find(v=>/en-CA/i.test(v.lang)&&/male|david|mark|daniel|george/i.test(v.name)) ||
-        vs.find(v=>/en-US/i.test(v.lang)&&/male|david|mark|daniel|george/i.test(v.name)) ||
-        vs.find(v=>/^en/i.test(v.lang)) || vs[0];
-      if(v)u.voice=v;
-      try{speechSynthesis.speak(u);}catch(e){finish();}
-    };
-
-    if((speechSynthesis.getVoices()||[]).length) speakWithVoice();
-    else{
-      const once=()=>{
-        speechSynthesis.removeEventListener('voiceschanged',once);
-        speakWithVoice();
-      };
-      speechSynthesis.addEventListener('voiceschanged',once);
-      setTimeout(()=>{if(!speechSynthesis.speaking&&!finished)speakWithVoice();},300);
-    }
-    // No speech timeout. The DJ is allowed to finish.
+    window.RadioLaurentisDJ.speak(line, {
+      volume:stampGameMuted ? 0 : radioDJVolume,
+      onEnd:()=>{
+        radioSpeaking=false;
+        onEnd?.();
+      }
+    });
   }
 
   function setRadioText(txt){
@@ -3172,7 +3285,7 @@ function ensureRadioUI(){
       radioDucker.gain.setValueAtTime(1,radioCtx.currentTime);
       radioMaster=radioCtx.createGain();
       radioMaster.gain.setValueAtTime(1.75*radioMusicVolume,radioCtx.currentTime);
-      radioDucker.connect(radioMaster).connect(radioCtx.destination);
+      radioDucker.connect(radioMaster).connect(stampAudioOutput(radioCtx));
 
       const song=radioMelodies[index];
       const beat=60/song.bpm;
@@ -3264,24 +3377,9 @@ function ensureRadioUI(){
     }catch(e){}
   }
 
-  function makeDJBreak(){
-    const base=ads[Math.floor(Math.random()*ads.length)];
-    const extras=[
-      " We repeat, this is important for reasons we are not permitted to explain.",
-      " Management has asked us to emphasize the word surplus.",
-      " Please make your way toward Larry's Variety at your earliest reasonable convenience.",
-      " This announcement has been approved by absolutely nobody.",
-      " We will now continue with further information.",
-      " More developments are expected shortly.",
-      " And that concludes this portion of the Lair report."
-    ];
-    const extra=extras[Math.floor(Math.random()*extras.length)];
-    return base+" "+extra;
-  }
-
   function radioInterruption(){
     if(!radioOn || radioSpeaking)return;
-    const dj=makeDJBreak();
+    const dj=window.RadioLaurentisDJ.nextLine();
     setRadioText(dj);
     // Music deliberately continues underneath the complete announcement.
     sayRadio(dj,()=>{
@@ -3318,8 +3416,8 @@ function ensureRadioUI(){
     clearTimeout(radioTimer);
     clearTimeout(radioNextBreak);
     if(uploaded.length){
-      const pick=uploaded[Math.floor(Math.random()*uploaded.length)];
-      playRadioAudioTrack(pick.path);
+      const at=uploaded.findIndex(track=>track.path===radioAudioPath);
+      playRadioAudioTrack(uploaded[(at+1)%uploaded.length].path);
     }else{
       const generated=choices.filter(x=>x.kind==='melody');
       if(!generated.length)return;
@@ -3348,7 +3446,8 @@ function ensureRadioUI(){
 
     if(!radioOn){
       window.radioLaurentisOn=false;
-      if('speechSynthesis' in window)speechSynthesis.cancel();
+      window.RadioLaurentisDJ.stop();
+      radioSpeaking=false;
       try{if(radioMaster)radioMaster.disconnect();}catch(e){}
       try{if(radioDucker)radioDucker.disconnect();}catch(e){}
       stopRadioAudioTrack();
@@ -3357,7 +3456,7 @@ function ensureRadioUI(){
       return;
     }
 
-    try{startChosenRadioBackground();}catch(e){
+    try{playRadioAudioTrack(drumboPath);}catch(e){
       try{stopRadioAudioTrack();playRadioMelody(0);}catch(_){}
     }
 
