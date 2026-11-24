@@ -52,7 +52,7 @@ footer{background:var(--plum);color:#fff6e8;text-align:center;padding:0 1rem 2re
  <select id="coverListing"></select>
  <img id="coverPreview" alt="Current listing picture">
  <label for="coverPath">Image URL or site path</label>
- <input type="text" id="coverPath" placeholder="images/my-picture.jpg">
+ <input type="text" id="coverPath" placeholder="Artwork/my-picture.jpg">
  <label for="coverFile">Or choose a picture from your computer</label>
  <input type="file" id="coverFile" accept="image/*">
  <div class="keys">
@@ -232,7 +232,7 @@ const birthday=Object.entries(BIRTHDAY_STOCK).flatMap(([category,items])=>items.
 const listings=[...digital,...merchandise,...birthday];
 
 const coverSettings = JSON.parse(byId('coverSettings').textContent);
-const defaultCovers = {'digital-gallery':'images/LMAC-AtGulliversMuseumOfAbstractArt.jpg'};
+const defaultCovers = {'digital-gallery':'Artwork/LMAC-AtGulliversMuseumOfAbstractArt.jpg'};
 const initialMarkup = '<!doctype html>\n' + document.documentElement.outerHTML;
 const editor = byId('coverEditor');
 const listingPicker = byId('coverListing');
