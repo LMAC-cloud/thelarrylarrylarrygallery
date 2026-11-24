@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Larry's L.A.R.R.Y. Stamp Collection — v12 Auto Mail Test</title>
+<title>Larry Stamp Merge — 13 Lar-Glove and Prize Planets</title>
 <style>
   * { box-sizing: border-box; }
   html, body { width:100%; height:100%; margin:0; overflow:hidden; }
@@ -117,7 +117,7 @@
   }
   #gameCanvas { width:100%; height:100%; display:block; cursor:none; }
   #tankGenerator {
-    position:absolute; left:68px; top:calc(100% - 122px); width:54px; height:46px;
+    position:absolute; left:56px; top:calc(100% - 45px); width:54px; height:46px;
     transform:translate(-50%,-50%) rotate(-2deg);
     z-index:35; cursor:none; display:block;
     background:linear-gradient(145deg,#a76b36 0%,#7b451f 52%,#5d3217 100%);
@@ -141,7 +141,7 @@
   #tankGenerator:active { cursor:none; transform:translate(-50%,-50%) rotate(2deg) scale(.98); }
   #clearBoardBtn { background:#6b3f1d; color:#fff; border-color:#f1d9b2; }
   #clearBoardBtn:hover { background:#8a5229; }
-  #stampModalNumber { font:bold 18px Arial; color:#6b3f1d; margin-top:10px; letter-spacing:.08em; }
+
   #side {
     min-height:0;
     display:flex;
@@ -285,39 +285,28 @@
   }
   #stampModal.show { display:flex; }
   #stampModalCard {
-    width:min(520px,86vw); max-height:88vh; overflow:auto;
-    background:#342317; color:#fff3d0;
-    border:8px solid #6b3f1d; border-radius:18px; padding:18px;
-    text-align:center; box-shadow:0 16px 45px rgba(0,0,0,.65);
+    box-sizing:border-box;
+    width:min(520px,90vw); max-height:94vh; overflow:auto;
+    background:#121416; color:#f3f4f5;
+    border:4px solid #ddd; border-radius:24px; padding:clamp(9px,2.1vh,18px);
+    text-align:center; box-shadow:0 12px 30px rgba(0,0,0,.65);
   }
   #stampModalCard img {
-    width:min(360px,72vw); height:min(360px,55vh); object-fit:cover;
-    border:5px solid #f4e6c5; box-shadow:0 0 0 3px #5a351d;
+    display:block;margin:auto;width:min(360px,100%,52vh);height:min(360px,72vw,52vh);
+    object-fit:contain;object-position:center;box-sizing:border-box;
+    border:1px solid #6d7478;background:#090a0b;border-radius:9px;
   }
-  #stampModalCard img.lockedStamp {
-    filter:blur(10px) grayscale(100%);
-    opacity:.45;
-  }
-  #stampModalTitle { font-size:24px; font-weight:bold; margin:14px 0 8px; line-height:1.15; }
-  #stampModalClose {
-    border:2px solid #5b350e; border-radius:10px; background:#6b3f1d;
-    color:#fff3d0; font-weight:bold; padding:9px 18px; cursor:pointer;
-  }
-  #stampModalNav {
-    display:flex; align-items:center; justify-content:center; gap:18px;
-    margin:12px 0 14px;
-    font:bold 14px Georgia,serif;
-  }
-  #stampModalNav button {
-    touch-action:none;
-    width:46px; height:38px;
-    border:3px solid #6b3f1d; border-radius:10px;
-    background:#6b3f1d; color:#fff3d0;
-    font:bold 28px Georgia,serif; line-height:1;
+  #stampModalCard img.lockedStamp {filter:blur(10px) grayscale(100%);opacity:.45}
+  #stampModalNumber {font:bold 10px/15px Arial;color:#bec5ca;margin-top:10px;letter-spacing:.08em}
+  #stampModalTitle {height:20px;line-height:20px;font-size:clamp(10px,2.6vw,14px);font-weight:bold;margin:3px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #stampModalNav {display:flex;align-items:center;justify-content:center;gap:12px;margin:7px 0 5px}
+  #stampModalNav button,#stampModalClose {
+    border:1px solid #92999e;border-radius:7px;background:#25282b;color:#f3f4f5;
     cursor:pointer;
-    box-shadow:0 3px 0 #5a351d;
   }
-  #stampModalNav button:active { transform:translateY(2px); box-shadow:0 1px 0 #5a351d; }
+  #stampModalNav button {width:38px;height:28px;font:22px/1 Georgia,serif}
+  #stampModalClose {padding:5px 14px;font:bold 12px Georgia,serif}
+  #stampModalNav button:hover,#stampModalClose:hover {background:#3b4145}
   #larBusButton {
     display:block; width:100%; margin-top:10px;
     box-sizing:border-box; text-decoration:none; text-align:center;
@@ -409,20 +398,45 @@
   @keyframes larSmoke7 { 0%{transform:translate(0,0) scale(.22);opacity:.5} 100%{transform:translate(42px,-34px) scale(1.9);opacity:0} }
   #postalCursor .smoke8 { animation:larSmoke8 2.05s linear infinite 1s; }
   #postalCursor.vroom::after {
-    content:"";position:absolute;left:0;top:28px;width:3px;height:3px;
+    content:"";position:absolute;right:11%;top:29px;width:3px;height:3px;
     background:#ffd172;box-shadow:0 0 4px #ff963d;animation:larTailSpark .23s ease-out 3;
   }
-  @keyframes larTailSpark { to { transform:translate(-10px,-5px); opacity:0; } }
   @keyframes larSmoke8 { 0%{transform:translate(0,0) scale(.28);opacity:.78} 100%{transform:translate(30px,-28px) scale(1.5);opacity:0} }
-  #postalCursor path { fill:none; stroke:#f4e6c5; stroke-width:4; stroke-linecap:round; stroke-linejoin:round; }
+  #postalCursor.lar-glove {width:30px;height:38px;transform:translate(-9px,-2px)}
+  .larGloveOutline {fill:#965b36;stroke:#2e1b12;stroke-width:2;stroke-linejoin:round}
+  .larGloveSeams {fill:none;stroke:#e0a579;stroke-width:1.25;stroke-linecap:round}
+  @keyframes larTailSpark {to{transform:translate(10px,-5px);opacity:0}}
   #wasteMailbox.is-dragging { cursor:grabbing; }
   body.mailbox-dragging #postalCursor { display:none !important; }
 
   /* FINAL PRIZE: silver hovering moon gateway */
+  #prizeGateways {
+    position:absolute;inset:12% 4% auto;z-index:95;text-align:center;pointer-events:none;
+    color:#fff;font-family:Georgia,serif;
+  }
+  #prizeGateways h2 {
+    display:inline-block;margin:0 0 22px;padding:8px 18px;
+    border:1px solid #dae9ff;border-radius:10px;background:#101721;
+    box-shadow:0 0 20px #a9c8fa85;font-size:clamp(17px,3vw,26px);
+  }
+  .prizePlanets {display:flex;justify-content:center;gap:clamp(36px,13%,100px)}
+  .prizePlanets a {
+    position:relative;display:block;width:clamp(64px,16vw,116px);aspect-ratio:1;
+    border-radius:50%;pointer-events:auto;text-decoration:none;
+    animation:silverMoonFloat 3.8s ease-in-out infinite;
+  }
+  .prizePlanets a:focus-visible {outline:3px solid #ffdc80;outline-offset:7px}
+  #enterprosePlanet {
+    background:radial-gradient(circle at 37% 29%,#88bdd5,#394d81 52%,#17192d 82%);
+    border:2px solid #afcaeb;box-shadow:0 0 24px #87b8ee88,inset -10px -8px 20px #15172c;
+  }
+  #enterprosePlanet svg {
+    position:absolute;inset:-22%;width:144%;height:144%;overflow:visible;pointer-events:none;
+    animation:enterproseOrbit 19s linear infinite;
+  }
+  #enterprosePlanet text {fill:#fff6d6;font:700 9px Georgia,serif;letter-spacing:1.1px}
+  @keyframes enterproseOrbit {to{transform:rotate(360deg)}}
   #silverMoon {
-    position:absolute; left:50%; top:43%; width:116px; height:116px;
-    transform:translate(-50%,-50%); border-radius:50%; cursor:pointer;
-    z-index:95; display:none;
     background:
       radial-gradient(circle at 30% 28%, rgba(255,255,255,.95) 0 8%, transparent 9%),
       radial-gradient(circle at 68% 35%, rgba(110,110,110,.34) 0 8%, transparent 9%),
@@ -431,7 +445,7 @@
       radial-gradient(circle at 50% 42%, #fff 0%, #e9e9e9 48%, #bdbdbd 78%, #888 100%);
     border:2px solid rgba(255,255,255,.9);
     box-shadow:0 0 14px 5px rgba(255,255,255,.82), 0 0 38px 14px rgba(210,225,255,.38), inset -14px -12px 22px rgba(50,50,50,.28);
-    animation:silverMoonFloat 3.8s ease-in-out infinite;
+    animation-delay:-1s;
     transition:transform .18s ease, box-shadow .18s ease;
   }
   #silverMoon::before, #silverMoon::after {
@@ -441,16 +455,17 @@
   #silverMoon::before { width:18px; height:13px; left:22px; top:48px; transform:rotate(-16deg); }
   #silverMoon::after { width:11px; height:11px; right:23px; top:23px; }
   #silverMoon:hover {
-    transform:translate(-50%,-50%) scale(1.08);
+    transform:scale(1.08);
     box-shadow:0 0 18px 7px rgba(255,255,255,.95), 0 0 52px 18px rgba(210,225,255,.52), inset -14px -12px 22px rgba(50,50,50,.24);
   }
-  #silverMoonLabel {
-    position:absolute; left:50%; top:calc(50% + 78px); transform:translateX(-50%);
+  .prizePlanetLabel {
+    position:absolute; left:50%; top:calc(100% + 17px); transform:translateX(-50%);
     white-space:nowrap; padding:4px 9px; border-radius:8px;
     background:rgba(0,0,0,.68); color:#fff; border:1px solid rgba(255,255,255,.65);
     font:700 12px Georgia,serif; letter-spacing:.08em; pointer-events:none;
     opacity:.9;
   }
+  @media(prefers-reduced-motion:reduce){.prizePlanets a,#enterprosePlanet svg{animation:none}}
   @keyframes silverMoonFloat {
     0%,100% { margin-top:0; }
     50% { margin-top:-14px; }
@@ -562,37 +577,11 @@
 
   <main id="gamePanel">
     <canvas id="gameCanvas"></canvas>
-    <div id="tankGenerator" aria-label="Larrys Variety tank generator" title="Click to release 10 stamps">
+    <div id="tankGenerator" aria-label="Larrys Variety tank generator" title="Release Lar stamps">
       <div class="bagTop">LARRYS</div>
       <div class="bagBottom">VARIETY</div>
     </div>
-    <div id="postalCursor" aria-hidden="true">
-      <svg viewBox="0 0 120 70" aria-hidden="true">
-        <g>
-          <circle class="smoke smoke1" cx="116" cy="48" r="9"/>
-          <circle class="smoke smoke2" cx="116" cy="48" r="8"/>
-          <circle class="smoke smoke3" cx="116" cy="48" r="7"/>
-          <circle class="smoke smoke4" cx="116" cy="48" r="6"/>
-          <circle class="smoke smoke5" cx="116" cy="48" r="7"/>
-          <circle class="smoke smoke6" cx="116" cy="48" r="5.5"/>
-          <circle class="smoke smoke7" cx="116" cy="48" r="5"/>
-          <circle class="smoke smoke8" cx="116" cy="48" r="4.5"/>
-          <!-- Small 1970s Larrymobile: long square hood LEFT, long square trunk RIGHT. -->
-          <path class="carBody" d="M3 42 L40 42 L47 30 L80 30 L88 36 L108 36 L116 41 L116 50 L3 50 Z"/>
-          <path class="carHighlight" d="M5 40 L39 40 L45 33 L79 33 L85 37 L108 37 L112 40 L5 40 Z"/>
-          <path class="window" d="M48 30 L48 22 L61 22 L67 30 Z"/>
-          <path class="window" d="M68 30 L64 22 L78 22 L85 30 Z"/>
-          <path class="brownTrim" d="M3 42 L28 42 L28 45 L3 45 Z"/>
-          <path class="brownTrim" d="M3 47 L28 47 L28 50 L3 50 Z"/>
-          <path class="brownTrim" d="M102 40 L116 40 L116 44 L102 44 Z"/>
-          <path d="M112 47 L120 47 L120 50 L112 50 Z" fill="#3b2111"/>
-          <circle class="wheel" cx="31" cy="50" r="9"/>
-          <circle class="hub" cx="31" cy="50" r="3.4"/>
-          <circle class="wheel" cx="91" cy="50" r="9"/>
-          <circle class="hub" cx="91" cy="50" r="3.4"/>
-        </g>
-      </svg>
-    </div>
+    <div id="postalCursor" aria-hidden="true"></div>
     <div id="highestPaintingBox" aria-live="polite">
       <img id="highestPaintingImg" alt="Highest Lar painting achieved">
       <div>
@@ -602,9 +591,21 @@
     </div>
     <div id="message"></div>
 
-    <div id="silverMoon" aria-label="Return to Starfield" title="Return to the Starfield">
-      <span id="silverMoonLabel">ENTER THE STARFIELD</span>
-    </div>
+    <section id="prizeGateways" hidden aria-labelledby="prizeHeading">
+      <h2 id="prizeHeading" role="status">You have won a prize!</h2>
+      <div class="prizePlanets">
+        <a id="enterprosePlanet" href="MissionEnterprose.html">
+          <svg viewBox="0 0 160 160" aria-hidden="true">
+            <path id="enterproseOrbitPath" d="M80 10a70 70 0 1 1 0 140a70 70 0 1 1 0-140" fill="none"/>
+            <text><textPath href="#enterproseOrbitPath" textLength="422">BOARD THE S.S. ENTERPROSE • BOARD THE S.S. ENTERPROSE • </textPath></text>
+          </svg>
+          <span class="prizePlanetLabel">Board the S.S. Enterprose</span>
+        </a>
+        <a id="silverMoon" href="starfield.html">
+          <span class="prizePlanetLabel">Enter the Starfield</span>
+        </a>
+      </div>
+    </section>
     <div id="levelCelebration" aria-hidden="true">
       <div id="electricField" aria-hidden="true"></div>
       <div id="celebrationCard">
@@ -624,7 +625,7 @@
         <div class="stat">COLLECTED<b id="count">0/72</b></div>
       </div>
       <div id="sidebarButtons">
-        <button id="doubleBtn">AUTO LARRY — START</button>
+        <button id="doubleBtn" aria-pressed="true">AUTO LARRY — STOP</button>
         <button id="dropBtn">DROP ONCE</button>
         <button id="tankModeBtn">LAR TANK: OFF</button>
         <button id="mergeModeBtn" type="button" aria-pressed="false">MERGE: ON RELEASE</button>
@@ -668,7 +669,7 @@
       <button id="stampPrev" aria-label="Previous stamp">‹</button>
       <button id="stampNext" aria-label="Next stamp">›</button>
     </div>
-    <button id="stampModalClose">CLOSE</button>
+    <button id="stampModalClose">Close</button>
   </div>
 </div>
 
@@ -785,7 +786,7 @@ let modalTier = 1;
 const levelBadge = document.getElementById('levelBadge');
 const levelCelebration = document.getElementById('levelCelebration');
 const silverMoon = document.getElementById('silverMoon');
-const STARFIELD_PAGE = 'starfield.html';
+const prizeGateways = document.getElementById('prizeGateways');
 
 const engine = Engine.create();
 engine.gravity.y = 1.38;
@@ -858,7 +859,7 @@ const imgs = images.map(src => {
 
 function drawStampArtwork(ctx,image,x,y,size) {
   const {naturalWidth:width,naturalHeight:height}=image;
-  const crop=Math.min(width,height)*.86;
+  const crop=Math.min(width,height)*.80;
   ctx.drawImage(image,(width-crop)/2,(height-crop)/2,crop,crop,x,y,size,size);
 }
 
@@ -1300,22 +1301,13 @@ function playTubaCelebration(duration=10000) {
   } catch(e) {}
 }
 
-function showSilverMoonGateway(){
-  if (!silverMoon) return;
-  silverMoon.style.display='block';
-  silverMoon.setAttribute('aria-hidden','false');
-  window.larGameComplete=true;
+function showPrizeGateways(){
+  window.larGameComplete = true;
+  window.clearLarExhaustHaze?.();
+  prizeGateways.hidden = false;
 }
 
-function hideSilverMoonGateway(){
-  if (!silverMoon) return;
-  silverMoon.style.display='none';
-  silverMoon.setAttribute('aria-hidden','true');
-}
-
-if (silverMoon) {
-  silverMoon.addEventListener('click',()=>{ sessionStorage.setItem('starfieldUnlocked','1'); window.location.href=STARFIELD_PAGE; });
-}
+silverMoon.addEventListener('click',()=>{ sessionStorage.setItem('starfieldUnlocked','1'); });
 
 function launchCelebration(nextStart) {
   // The sign is deliberately brief; the electricity and tuba continue underneath it.
@@ -1438,30 +1430,10 @@ function tryMerge(a,b) {
     if (nextStart < images.length) {
       launchCelebration(nextStart);
     } else {
-      launchCelebration.timer = null;
-      levelCelebration.querySelectorAll('.confetti, .firework').forEach(el => el.remove());
-      buildElectricity();
-      playTubaCelebration(5000);
-      document.getElementById('celebrationTitle').textContent='LARRY IS PROUD OF YOU! YOU DID IT!';
-      document.getElementById('celebrationSub').textContent='ALL 72 LAR STAMPS COLLECTED — YOU RECEIVE 1000 LAR-BUCKS!';
       bucks += 1000;
       saveLarBucks();
       stopAutoLarry();
-      updateDoubleButton();
-      levelCelebration.classList.add('show');
-      levelCelebration.setAttribute('aria-hidden','false');
-      clearTimeout(launchCelebration.signTimer);
-      launchCelebration.signTimer=setTimeout(()=>{
-        const card=document.getElementById('celebrationCard');
-        card.style.display='none';
-      },2000);
-      launchCelebration.endTimer=setTimeout(()=>{
-        const card=document.getElementById('celebrationCard');
-        card.style.display='';
-        levelCelebration.classList.remove('show');
-        levelCelebration.setAttribute('aria-hidden','true');
-        showSilverMoonGateway();
-      },5000);
+      showPrizeGateways();
     }
   }
 
@@ -1600,8 +1572,8 @@ function titleFromPath(path) {
 function openStampModal(tier) {
   // Every visit to the viewer starts at the first Lar.
   modalTier = 1;
-  updateStampModal();
   stampModal.classList.add('show');
+  updateStampModal();
   stampModal.setAttribute('aria-hidden','false');
   const prizeLines = [
     "Please go to Larry's Variety to pick up your prize.",
@@ -1627,6 +1599,13 @@ function updateStampModal() {
   stampModalImg.alt = unlocked ? `Lar stamp ${modalTier}` : 'Locked Lar stamp';
   stampModalNumber.textContent = `LAR STAMP #${String(modalTier).padStart(2,'0')}`;
   stampModalTitle.textContent = titleFromPath(images[modalTier-1]);
+  stampModalTitle.title = stampModalTitle.textContent;
+  stampModalTitle.style.fontSize = '';
+  const width = stampModalTitle.clientWidth;
+  if (width && stampModalTitle.scrollWidth > width) {
+    const size = parseFloat(getComputedStyle(stampModalTitle).fontSize);
+    stampModalTitle.style.fontSize = Math.max(8, Math.floor(size * width / stampModalTitle.scrollWidth)) + 'px';
+  }
 }
 
 function closeStampModal() {
@@ -1839,10 +1818,10 @@ function emitLarExhaust(car) {
   if (!car) return;
   const isCursor=car.id==='postalCursor';
   const svg=car.querySelector('svg');
-  if (!svg?.clientWidth || !svg.clientHeight) return;
+  if (!svg?.dataset.exhaustX || !svg.clientWidth || !svg.clientHeight) return;
   const {width,height}=svg.viewBox.baseVal;
   const scale=Math.min(svg.clientWidth/width,svg.clientHeight/height);
-  const tailX=(svg.clientWidth-width*scale)/2 + 2*scale;
+  const tailX=(svg.clientWidth-width*scale)/2 + Number(svg.dataset.exhaustX)*scale;
   const tailY=(svg.clientHeight-height*scale)/2 + 48*scale;
   if (isCursor) {
     car.classList.remove('vroom');
@@ -1865,6 +1844,7 @@ function emitLarExhaust(car) {
 }
 
 function vroomLarryCar() {
+  if (larGloveActive) return;
   const car=document.getElementById('postalCursor');
   if (!car) return;
   try {
@@ -1883,7 +1863,7 @@ function vroomLarryCar() {
 function spawnLarOil(){
   const car=document.getElementById('postalCursor');
   const c=LARRY_CARS[currentLarCar] || LARRY_CARS[0];
-  if(!car || !c.oil) return;
+  if(!car || !c.oil || larGloveActive) return;
   const panel=document.getElementById('gamePanel');
   const pr=panel.getBoundingClientRect();
   const x=cursorX-pr.left + (Math.random()*10-5);
@@ -1899,7 +1879,7 @@ let oilTimer=null;
 function updateOilLeak(){
   clearInterval(oilTimer); oilTimer=null;
   const c=LARRY_CARS[currentLarCar] || LARRY_CARS[0];
-  if(c.oil){ oilTimer=setInterval(()=>spawnLarOil(), Math.max(700, 2600-c.price*9)); }
+  if(c.oil && !larGloveActive){ oilTimer=setInterval(()=>spawnLarOil(), Math.max(700, 2600-c.price*9)); }
 }
 
 function setupDragging() {
@@ -1976,15 +1956,13 @@ const LARRY_CARS = [
   {name:'The Maximum Trunk',price:160,type:'hearse',oil:true,joke:'No one is dead. The car just looks concerned.'},
   {name:'The Grand Larry',price:170,type:'superLimo',oil:true,joke:'The vehicle has become a small brown institution.'}
 ];
+let larGloveActive = true;
 let currentLarCar = Number(localStorage.getItem('larCurrentCar') || 0);
 let ownedLarCars = new Set((localStorage.getItem('larOwnedCars') || '0').split(',').filter(Boolean).map(Number));
 if (!ownedLarCars.has(0)) ownedLarCars.add(0);
-function carSvg(index, mirrored=false) {
+function carSvg(index) {
   const c=LARRY_CARS[index]||LARRY_CARS[0], type=c.type;
   const smokeCount = Math.min(5, 2 + Math.floor(c.price/50));
-  const smokeX = 158;
-  let smoke='';
-  for(let i=0;i<smokeCount;i++){ const r=2.6+(i%4)*.8; smoke += `<circle class="smoke smoke${(i%8)+1}" cx="${smokeX}" cy="48" r="${r}"/>`; }
   let body='', windows='', details='', wheels='';
   if(type==='sedan'){ body=`<path class="carBody" d="M4 45H38L45 31H80L91 37H119L133 43V51H4Z"/>`; windows=`<path class="window" d="M47 31V23H62L69 31Z"/><path class="window" d="M71 31L67 23H82L91 31Z"/>`; details=`<path d="M7 41H38" stroke="#4a2814" stroke-width="4"/>`; }
   else if(type==='tiny'){ body=`<path class="carBody" d="M7 45H32L38 35H69L77 40H112L121 45V51H7Z"/>`; windows=`<path class="window" d="M41 35L47 27H58L65 35Z"/><path class="window" d="M68 35L66 27H77L82 35Z"/>`; details=`<circle cx="16" cy="40" r="3" fill="#2b160b"/>`; }
@@ -2006,19 +1984,36 @@ function carSvg(index, mirrored=false) {
   else { body=`<path class="carBody" d="M2 45H52L60 29H101L111 35H142L154 42V51H2Z"/>`; windows=`<path class="window" d="M62 29V18H77L85 29Z"/><path class="window" d="M88 29L84 18H101L111 29Z"/>`; details=`<path d="M8 41H53M118 39H148" stroke="#4a2814" stroke-width="4"/>`; }
   const rearWheel=['bus','limo','superLimo','hearse','stationBus','boxVan'].includes(type)?128:108;
   wheels=`<circle class="wheel" cx="30" cy="51" r="9"/><circle class="hub" cx="30" cy="51" r="3.3"/><circle class="wheel" cx="${rearWheel}" cy="51" r="9"/><circle class="hub" cx="${rearWheel}" cy="51" r="3.3"/>`;
-  const tail=['bus','van','boxVan','stationBus','limo','superLimo','hearse'].includes(type)?151:139;
-  const flip='transform="translate(160 0) scale(-1 1)"';
-  return `<svg viewBox="0 0 160 70" aria-hidden="true">
-    <g ${mirrored ? flip : ''}>${body}${windows}${details}${wheels}</g>
-    <g ${flip}><g class="carSmoke">${smoke}</g><path style="fill:#4a2814;stroke:none" d="M${tail} 46H158V49H${tail}Z"/></g>
+  const rear = 160 - Number(body.match(/d="M(\d+)/)[1]);
+  const outlet = rear + 7;
+  let smoke = '';
+  for (let i = 0; i < smokeCount; i++) {
+    smoke += `<circle class="smoke smoke${i+1}" cx="${outlet+i*2}" cy="${48-i}" r="${2.6+i*.8}"/>`;
+  }
+  return `<svg viewBox="0 0 182 70" data-exhaust-x="${outlet}" aria-hidden="true">
+    <g transform="translate(160 0) scale(-1 1)">${body}${windows}${details}${wheels}</g>
+    <path fill="#4a2814" d="M${rear-2} 46H${outlet}V50H${rear-2}Z"/><g class="carSmoke">${smoke}</g>
   </svg>`;
 }
-function applyLarCar(index) {
-  currentLarCar=index; localStorage.setItem('larCurrentCar',String(index));
-  const car=document.getElementById('postalCursor'); if(car) {
-    car.innerHTML=carSvg(index);
-  }
+
+const larGloveSvg = `<svg viewBox="0 0 30 38" aria-hidden="true">
+  <path class="larGloveOutline" d="M8 23V6a3 3 0 0 1 6 0v12-2a2.5 2.5 0 0 1 5 0v3a2.5 2.5 0 0 1 5 0v2a2 2 0 0 1 4 0v7l-4 8H12l-2-6-6-6a3 3 0 0 1 4-4l3 2Z"/>
+  <path class="larGloveSeams" d="M11 7v12M15 32h9m-8-7 4 3"/>
+</svg>`;
+
+function updateLarPointer() {
+  const pointer = document.getElementById('postalCursor');
+  pointer.classList.toggle('lar-glove', larGloveActive);
+  pointer.classList.remove('vroom');
+  pointer.innerHTML = larGloveActive ? larGloveSvg : carSvg(currentLarCar);
+  if (larGloveActive) window.clearLarExhaustHaze?.();
   updateOilLeak();
+}
+
+function applyLarCar(index) {
+  currentLarCar = index;
+  localStorage.setItem('larCurrentCar',String(index));
+  updateLarPointer();
 }
 function carLotDetails(car) {
   return `<div class="carLotName">${car.name}</div><div class="carLotFunny">${car.joke}</div><div class="carLotPrice">${car.price} LAR-BUCKS • TRADE ${car.price}</div>`;
@@ -2028,11 +2023,23 @@ function renderCarLot() {
   const grid=document.getElementById('carLotGrid');
   document.getElementById('carLotBucks').textContent=`LAR-BUCKS: ${bucks}`;
   grid.replaceChildren();
+  const glove = document.createElement('button');
+  glove.type = 'button';
+  glove.className = 'carLotItem'+(larGloveActive?' current':'');
+  glove.setAttribute('aria-pressed', String(larGloveActive));
+  glove.innerHTML = `<div class="carLotSvg">${larGloveSvg}</div><div class="carLotName">Lar-Glove</div><div class="carLotPrice">${larGloveActive?'ON — USE LAR MOBILE':'OFF — USE LAR-GLOVE'}</div>`;
+  glove.addEventListener('click',()=>{
+    larGloveActive = !larGloveActive;
+    updateLarPointer();
+    renderCarLot();
+    grid.firstElementChild.focus();
+  });
+  grid.appendChild(glove);
   LARRY_CARS.forEach((car,i)=>{
     const item=document.createElement('button');
     item.type='button';
-    item.className='carLotItem'+(i===currentLarCar?' current':'');
-    item.innerHTML=`<div class="carLotSvg">${carSvg(i,true)}</div>${carLotDetails(car)}`;
+    item.className='carLotItem'+(!larGloveActive && i===currentLarCar?' current':'');
+    item.innerHTML=`<div class="carLotSvg">${carSvg(i)}</div>${carLotDetails(car)}`;
     item.addEventListener('click',()=>previewLarCar(i,item));
     grid.appendChild(item);
   });
@@ -2056,13 +2063,14 @@ function previewLarCar(index, listing) {
   carLotSelection=listing;
   carLotPreview=document.createElement('div');
   carLotPreview.className='carLotReveal carLotPreview';
-  carLotPreview.innerHTML=`<div class="carLotSvg">${carSvg(index,true)}</div>${carLotDetails(car)}`;
+  carLotPreview.innerHTML=`<div class="carLotSvg">${carSvg(index)}</div>${carLotDetails(car)}`;
   const action=document.createElement('button');
   action.type='button';
   action.className='carLotAction';
-  action.textContent=index===currentLarCar ? 'CURRENT LAR CAR' : equal ? 'EQUAL TRADE' :
-    owned ? 'USE THIS CAR' : `BUY FOR ${car.price} LAR-BUCKS`;
-  action.disabled=index===currentLarCar || (!equal && !owned && bucks<car.price);
+  const activeCar = !larGloveActive && index === currentLarCar;
+  action.textContent=activeCar ? 'CURRENT LAR CAR' : owned ? 'USE THIS CAR' :
+    equal ? 'EQUAL TRADE' : `BUY FOR ${car.price} LAR-BUCKS`;
+  action.disabled=activeCar || (!equal && !owned && bucks<car.price);
   action.addEventListener('click',()=>{
     if (action.disabled) return;
     if (!equal && !owned) {
@@ -2088,10 +2096,11 @@ function previewLarCar(index, listing) {
 }
 
 function revealLarCar(index) {
+  larGloveActive = false;
   applyLarCar(index);
   carLotReveal=document.createElement('div');
   carLotReveal.className='carLotReveal';
-  carLotReveal.innerHTML=`<div class="carLotSvg">${carSvg(index,true)}</div><div class="carLotName">${LARRY_CARS[index].name}</div>`;
+  carLotReveal.innerHTML=`<div class="carLotSvg">${carSvg(index)}</div><div class="carLotName">${LARRY_CARS[index].name}</div>`;
   carLotModal.appendChild(carLotReveal);
   carLotModal.classList.add('revealing');
   emitLarExhaust(carLotReveal.querySelector('.carLotSvg'));
@@ -2203,13 +2212,14 @@ function draw() {
     activePageTiers.push(i+1);
   }
   const pageTiers = activePageTiers;
-  const sidePadding = Math.min(42,W*.06);
-  const slotWidth = (W-2*sidePadding) / Math.max(1,pageTiers.length);
-  const stampSize = Math.min(66,slotWidth*.68);
-  const stampY = bookY+18;
+  const shelfLeft = 108;
+  const shelfRight = W-20;
+  const slotWidth = (shelfRight-shelfLeft) / Math.max(1,pageTiers.length);
+  const stampSize = Math.min(66,slotWidth*.72);
+  const stampY = bookY+14+(stampShelfHeight-14-stampSize)/2;
 
   pageTiers.forEach((tier,i)=>{
-    const centerX = sidePadding+(i+.5)*slotWidth;
+    const centerX = shelfLeft+(i+.5)*slotWidth;
     const im=imgs[tier-1];
     if(im && im.complete && im.naturalWidth && im.naturalHeight){
       ctx.save();
@@ -2225,7 +2235,7 @@ function draw() {
 
   // Held Lar smoke: a thin, loose brown haze hugs the black rim. There is no ring.
   const held = stamps.find(b => b?.plugin?.dragging);
-  if (held) {
+  if (held && !larGloveActive) {
     const drawLarSmoke = (body, strength=1) => {
       const x=body.position.x, y=body.position.y, r=body.plugin.radius;
       ctx.save();
@@ -2387,7 +2397,7 @@ levelNumber = 1;
 unlockedTier = generatorStart + 1;
 updateLevelBadge();
 showCurrentLevelInBook();
-updateDoubleButton();
+startAutoLarry();
 updateHeldStamp();
 // Start the first round with one Lar already on the board; it is not collected
 // until it is merged with its matching partner.
@@ -2526,6 +2536,7 @@ animateMailbox();
   }
 
   function populateLarTank(count=10){
+    if (window.larGameComplete) return;
     const first=generatorStart+1, max=Math.min(first+2,currentLevelEnd(),images.length);
     const choices=[]; for(let tier=first;tier<=max;tier++) choices.push(tier); if(!choices.length) return;
     const columns=Math.max(4,Math.min(8,Math.floor((W-220)/115)));
@@ -2570,12 +2581,12 @@ animateMailbox();
   });
   gen.addEventListener('pointermove',e=>{
     if(!moving) return;
-    const p=gamePanel.getBoundingClientRect();
+    const p=panel.getBoundingClientRect();
     if(Math.abs(e.movementX)+Math.abs(e.movementY)>2) moved=true;
     const halfWidth=gen.offsetWidth/2;
     const x=Math.max(halfWidth,Math.min(p.width-halfWidth,e.clientX-p.left-dx));
     // Keep the bag above the stamp collection display in all modes.
-    const minY=45, maxY=Math.max(minY,p.height-38);
+    const minY=45, maxY=Math.max(minY,p.height-28);
     const y=Math.max(minY,Math.min(maxY,e.clientY-p.top-dy));
     gen.style.left=x+'px'; gen.style.top=y+'px';
     gen.style.transform='translate(-50%,-50%) rotate(-2deg)';
@@ -2587,7 +2598,6 @@ animateMailbox();
       vroomLarryCar();
       populateLarTank(10);
       sound('drop');
-      showMessage('10 STAMPS RELEASED',900);
     }
   });
   gen.addEventListener('pointercancel',()=>{moving=false;});
@@ -2869,11 +2879,10 @@ function nextLine(){
     el.style.setProperty('--lar-haze', haze.toFixed(3));
     document.getElementById('clearAirBtn').style.setProperty('--clear-air-glow', Math.sqrt(haze).toFixed(3));
     el.classList.toggle('lar-exhaust-fogged', haze > .72);
-    el.classList.toggle('lar-exhaust-whiteout', haze >= .985);
   }
 
   function addHaze(amount=.018){
-    const ceiling=Math.min(1,Math.max(.015,smokeProgress));
+    const ceiling=Math.min(.88,Math.max(.015,smokeProgress));
     haze=Math.min(ceiling,haze+amount);
     setHaze();
   }
@@ -2911,10 +2920,6 @@ function nextLine(){
           rgba(130,130,127,calc(var(--lar-haze)*.46)) 78%,
           rgba(80,80,78,calc(var(--lar-haze)*.34)) 100%);
       mix-blend-mode:screen;
-    }
-    #gamePanel.lar-exhaust-whiteout::after{
-      background:rgba(250,250,246,.985);
-      mix-blend-mode:normal;
     }
     #gamePanel.lar-haze-clearing::after{
       animation:larHazeVeilExit .8s ease-in forwards;
@@ -2970,7 +2975,7 @@ function nextLine(){
       animation:clickExhaustBurst 1.35s ease-out forwards}
     @keyframes clickExhaustBurst{
       0%{transform:translate(0,0) scale(.35);opacity:.3}
-      25%{opacity:.24}100%{transform:translate(-42px,-24px) scale(2.15);opacity:0}
+      25%{opacity:.24}100%{transform:translate(42px,-24px) scale(2.15);opacity:0}
     }
   `;
   document.head.appendChild(style);
@@ -3548,6 +3553,7 @@ function ensureRadioUI(){
   }
 
   function handleClick(e){
+    if(larGloveActive || window.larGameComplete) return;
     if(e.target?.closest?.('#clearAirBtn, #clearBoardBtn, #radioDock, #larRadioCard, #carLotModal, #stampModal'))return;
     addHaze(.055);
     emitLarExhaust(document.getElementById('postalCursor'));
