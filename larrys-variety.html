@@ -65,16 +65,20 @@ figcaption { display:inline-block; margin-top:8px; padding:4px 9px; background:#
     top:5%;
     left:50%;
     transform:translateX(-50%);
-    width:min(94%, 820px);
+    width:max-content;
+    max-width:calc(100% - 32px);
     margin:0;
-    font-size:clamp(20px,4vw,42px);
+    font-size:clamp(15px,2.4vw,23px);
     text-shadow:0 2px 5px black, 0 0 12px black;
     pointer-events:none;
     box-sizing:border-box;
-    padding:22px clamp(16px,5vw,65px);
-    background:#151515;
-    border:3px solid #d7bd70;
-    box-shadow:0 10px 36px #000b;
+    padding:8px 14px;
+    border:2px solid transparent;
+    border-radius:8px;
+    background:linear-gradient(#151515,#151515) padding-box,
+        linear-gradient(100deg,#ff345c,#ff9628,#fff62a,#39ff93,#24ddff,#8b6aff,#ff53db) border-box;
+    box-shadow:-9px 0 20px #ff345c, 0 -7px 18px #fff62a,
+        8px 0 20px #8b6aff, 0 8px 18px #24ddff;
 }
 .celebration-gull {
     position:absolute;
@@ -112,7 +116,23 @@ figcaption { display:inline-block; margin-top:8px; padding:4px 9px; background:#
     box-shadow:0 0 0 7px #888, 0 10px 25px 7px #0009;
 }
 #tray { border-radius:2px; }
-#board { position:relative; }
+#puzzleBoard { grid-column:2; grid-row:1; min-width:0; position:relative; }
+#leaveBroken {
+    position:absolute;
+    top:calc(100% + 13px);
+    left:50%;
+    transform:translateX(-50%);
+    z-index:1;
+    pointer-events:auto;
+    white-space:nowrap;
+    background:#181512;
+    color:white;
+    border:1px solid #b18d61;
+    border-radius:4px;
+    padding:6px 12px;
+    cursor:pointer;
+}
+#board:empty + #leaveBroken { display:none; }
 .puzzle-slot { fill:#292929; stroke:#777; stroke-width:1; vector-effect:non-scaling-stroke; cursor:pointer; }
 .puzzle-slot:hover, .puzzle-slot:focus-visible { fill:#4d4d4d; }
 #tray {
@@ -151,7 +171,7 @@ figcaption { display:inline-block; margin-top:8px; padding:4px 9px; background:#
 #tray button.carrying .piece-grip { pointer-events:none; }
 @media(max-width:620px) {
     #puzzleLayout { grid-template-columns:var(--board-width, 0px) 1fr; }
-    #board { grid-column:1; }
+    #puzzleBoard { grid-column:1; }
     #tray { grid-column:2; }
 }
 #busSelectionOverlay {
@@ -648,7 +668,11 @@ figcaption { display:inline-block; margin-top:8px; padding:4px 9px; background:#
 @keyframes larGullSwoop{0%,100%{transform:translate3d(0,0,0) rotate(-5deg) scale(.9)}35%{transform:translate3d(var(--gx),var(--gy),0) rotate(12deg) scale(1.15)}70%{transform:translate3d(calc(var(--gx)*-.7),calc(var(--gy)*.8),0) rotate(-14deg) scale(1)}}
 #larOpeningVortex{
   position:absolute;
-  inset:-24%;
+  top:50%;
+  left:50%;
+  width:150vmax;
+  height:150vmax;
+  translate:-50% -50%;
   background:
     repeating-conic-gradient(from 0deg,
       #000 0deg 8deg,
@@ -771,20 +795,25 @@ header nav{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 #artworkGallery{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;padding:16px}
 #artworkGallery .excerpt-figure{display:block;min-width:0;max-width:none;margin:0}
 #artworkGallery figure{margin:0;height:100%}
-#artworkGallery figure>button:first-child{box-sizing:border-box;width:100%;border-width:clamp(3px,.65vw,10px)}
-#artworkGallery figure img{width:100%;height:clamp(65px,11vw,210px);object-fit:contain}
+#artworkGallery figure>button:first-child{position:relative;border:0;border-radius:0;background:transparent;box-shadow:none}
+#artworkGallery figure img{width:auto;height:auto;max-width:100%;max-height:clamp(65px,16vw,250px);filter:drop-shadow(0 5px 8px #0009)}
+.painting-warning{position:absolute;z-index:1;left:50%;top:50%;transform:translate(-50%,-50%);width:max-content;max-width:calc(100% - 8px);box-sizing:border-box;padding:6px 8px;background:#181512;color:white;border:1px solid #b18d61;border-radius:4px;box-shadow:0 3px 12px #000b;font-size:clamp(11px,1.5vw,15px);pointer-events:none}
 #artworkGallery figcaption{max-width:100%;box-sizing:border-box;font-size:clamp(10px,1.15vw,14px);overflow-wrap:anywhere}
 #viewer #closePuzzle,#skipOpening,#galleryAudio{background:#181512;color:white;border:1px solid #b18d61;border-radius:4px;padding:7px 12px;cursor:pointer}
 #viewer #closePuzzle,#skipOpening{position:absolute;top:12px;right:12px;z-index:20}
 #viewer #puzzleStatus{max-width:calc(100% - 230px)}
 #larOpeningIntro{transition-duration:.55s}
-#larOpeningIntro.car-arrive #larOpeningCar{animation-duration:2.25s}
-#larOpeningIntro.smoke-build #larOpeningSmoke{animation-duration:1.1s}
-#larOpeningIntro.smoke-whiteout #larOpeningSmoke{animation-duration:1.05s}
-#larOpeningIntro.intro-shrink #larOpeningTitle{animation-duration:.85s}
-.larOpeningLetter{animation-duration:1.05s;font-size:clamp(21px,8vw,100px)}
-#galleryNotices{position:fixed;inset:auto 14px 14px auto;z-index:5;width:min(260px,75vw);display:grid;gap:6px;pointer-events:none;text-align:left}
-.gallery-notice{background:#211910f2;border:1px solid #ae9266;color:#fff5d5;padding:7px 9px;border-radius:4px;box-shadow:0 2px 8px #0009;font-size:12px}
+#larOpeningIntro.car-arrive #larOpeningCar{animation-duration:2.55s}
+#larOpeningIntro.smoke-build #larOpeningSmoke{animation-duration:1.25s}
+#larOpeningIntro.smoke-whiteout #larOpeningSmoke{animation-duration:1.2s}
+#larOpeningIntro.intro-shrink #larOpeningTitle{animation-duration:.95s}
+.larOpeningLetter{animation-duration:1.2s;font-size:clamp(21px,8vw,100px)}
+#openingWelcome{position:absolute;z-index:12;top:9%;left:50%;transform:translateX(-50%);width:max-content;max-width:85%;margin:0;padding:8px 14px;background:#181512;color:#fff5d5;border:1px solid #b18d61;border-radius:4px;font-size:clamp(15px,3vw,26px)}
+#galleryNotices,#openingNotices{position:fixed;inset:0;z-index:5;pointer-events:none;text-align:left}
+#openingNotices{z-index:11}
+.gallery-notice{position:absolute;width:max-content;max-width:min(230px,65vw);margin:0;animation:galleryAdFade 3s ease both;background:#211910f2;border:1px solid #ae9266;color:#fff5d5;padding:7px 9px;border-radius:4px;box-shadow:0 2px 8px #0009;font-size:12px}
+@keyframes galleryAdFade{0%,100%{opacity:0}18%,65%{opacity:1}}
+@media(prefers-reduced-motion:reduce){.gallery-notice{animation:none}}
 @media(max-width:760px){#artworkGallery{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;padding:9px}}
 @media(max-width:420px){#artworkGallery{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){#larSeagulls,#larOpeningIntro{display:none}body::before{animation:none}}
@@ -794,6 +823,8 @@ header nav{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 <div id="larOpeningIntro" aria-label="Larry's Variety opening">
   <button id="skipOpening" type="button">Skip opening</button>
   <div id="larOpeningVortex"></div>
+  <p id="openingWelcome">Welcome to Larry’s Variety!</p>
+  <div id="openingNotices" aria-hidden="true"></div>
   <div id="larOpeningCar" aria-hidden="true">
     <div class="larCarSmoke"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
     <div class="larCarBody"></div><div class="larCarRoof"></div><div class="larCarWindow"></div><div class="larCarHood"></div><div class="larCarTrunk"></div><div class="larCarTailpipe"></div>
@@ -831,7 +862,10 @@ header nav{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 <button id="closePuzzle" type="button">Close puzzle</button>
 <p id="puzzleStatus" role="status"></p>
 <div id="puzzleLayout">
+<div id="puzzleBoard">
 <svg id="board" aria-label="Jigsaw board"></svg>
+<button id="leaveBroken" type="button">leave it broken</button>
+</div>
 <div id="tray" aria-label="Loose puzzle pieces"></div>
 </div>
 <p id="celebration" role="status" hidden>
@@ -940,6 +974,23 @@ const board = document.getElementById("board");
 const tray = document.getElementById("tray");
 const puzzleStatus = document.getElementById("puzzleStatus");
 const celebration = document.getElementById("celebration");
+const leaveBroken = document.getElementById("leaveBroken");
+let paintingWarningTimer;
+let paintingWarning;
+
+function showPaintingWarning(image, button) {
+    clearTimeout(paintingWarningTimer);
+    paintingWarning?.remove();
+    paintingWarning = document.createElement("span");
+    paintingWarning.className = "painting-warning";
+    paintingWarning.setAttribute("role", "status");
+    paintingWarning.textContent = "you broke it you bought it!";
+    button.append(paintingWarning);
+    paintingWarningTimer = setTimeout(() => {
+        paintingWarning.remove();
+        openJigsaw(image.src, button);
+    }, 900);
+}
 const busRoom = document.getElementById("busSelectionOverlay");
 const portal = document.getElementById("niagaraPortal");
 let activePainting = null;
@@ -953,11 +1004,15 @@ function closeJigsaw(restoreFocus = true) {
     if (restoreFocus) activePainting?.focus({preventScroll:true});
 }
 
-document.getElementById("closePuzzle").onclick = () => closeJigsaw();
+document.getElementById("closePuzzle").onclick = leaveBroken.onclick = () => closeJigsaw();
 document.addEventListener("keydown", event => {
     if (event.key !== "Escape") return;
     if (!viewer.hidden) closeJigsaw();
     else if (portal.style.display === "flex" || busRoom.style.display === "flex") closeBusRoom();
+    else {
+        clearTimeout(paintingWarningTimer);
+        paintingWarning?.remove();
+    }
 });
 
 function revealPrizeCard() {
@@ -981,6 +1036,7 @@ async function celebratePuzzle(source, width, height) {
     tray.hidden = true;
     puzzleStatus.hidden = true;
     celebration.hidden = false;
+    leaveBroken.hidden = true;
     revealPrizeCard();
 
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1045,7 +1101,7 @@ function startJigsaw(source, width, height, ticket) {
     const w = width / 3;
     const h = height / 3;
     const depth = Math.min(w, h) * .23;
-    const layout = board.parentElement;
+    const layout = board.closest("#puzzleLayout");
     const trayRatio = (w + 2 * depth) / width;
     const fullTrayHeight = height + 6 * depth;
     layout.style.setProperty("--board-width", `min(56vw, 580px, calc((100vw - 72px) / ${1 + 2 * trayRatio}), ${70 * width / fullTrayHeight}dvh)`);
@@ -1198,6 +1254,7 @@ function openJigsaw(source, trigger, ticket = false) {
     activePainting = trigger;
     tray.hidden = false;
     celebration.hidden = true;
+    leaveBroken.hidden = false;
     puzzleStatus.hidden = false;
     puzzleStatus.textContent = "Loading painting…";
     viewer.hidden = false;
@@ -1243,7 +1300,7 @@ images.forEach(function(imagePath) {
     button.type = "button";
     button.setAttribute("aria-label", "Play jigsaw: " + image.alt);
     button.appendChild(image);
-    button.addEventListener("click", () => openJigsaw(image.src, button));
+    button.addEventListener("click", () => showPaintingWarning(image, button));
     figure.appendChild(button);
     figure.appendChild(caption);
     item.appendChild(figure);
@@ -1684,7 +1741,7 @@ window.addEventListener("pageshow", event => {
     el.style.setProperty('--sz',(Math.random()*500-250)+'px');
     el.style.setProperty('--ry',(Math.random()*120-60)+'deg');
     el.style.setProperty('--rz',(Math.random()*70-35)+'deg');
-    el.style.setProperty('--delay',(2.55+i*.065)+'s');
+    el.style.setProperty('--delay',(2.9+i*.074)+'s');
   });
 
   const colours=['#ff1b1b','#ff7a00','#ffe600','#39ff5a','#00eaff','#4169ff','#a855ff','#ff35d1'];
@@ -1703,13 +1760,13 @@ window.addEventListener("pageshow", event => {
     }
   }
 
-  after(120,()=>intro.classList.add('car-arrive'));
-  after(430,()=>intro.classList.add('gulls-arrive'));
-  after(1450,()=>intro.classList.add('smoke-build'));
-  after(2500,()=>intro.classList.add('smoke-whiteout'));
-  after(4000,()=>intro.classList.add('intro-burst'));
-  after(5000,()=>intro.classList.add('intro-shrink'));
-  after(5850,finish);
+  after(140,()=>intro.classList.add('car-arrive'));
+  after(490,()=>intro.classList.add('gulls-arrive'));
+  after(1650,()=>intro.classList.add('smoke-build'));
+  after(2850,()=>intro.classList.add('smoke-whiteout'));
+  after(4550,()=>intro.classList.add('intro-burst'));
+  after(5700,()=>intro.classList.add('intro-shrink'));
+  after(6650,finish);
 })();
 </script>
 <script>
@@ -2048,24 +2105,26 @@ window.addEventListener("pageshow", event => {
 "Today's browsing may result in unexpected appreciation.",
 "Larry's Variety is pleased to announce that the pictures remain available."
 ];
-  const host=document.getElementById('galleryNotices');
-  function notices(){
-    if(!document.hidden && document.getElementById('viewer').hidden &&
-       !document.getElementById('larOpeningIntro') &&
-       document.getElementById('busSelectionOverlay').style.display!=='flex' &&
-       document.getElementById('niagaraPortal').style.display!=='flex'){
-      const start=Math.floor(Math.random()*tinyLarryMessages.length);
-      for(let i=0;i<2;i++){
-        const notice=document.createElement('div');
-        notice.className='gallery-notice';
-        notice.textContent=tinyLarryMessages[(start+i)%tinyLarryMessages.length];
-        host.append(notice);
-        setTimeout(()=>notice.remove(),4200);
-      }
+  const galleryNotices = document.getElementById('galleryNotices');
+  const openingNotices = document.getElementById('openingNotices');
+  function notices() {
+    const opening = openingNotices.isConnected &&
+        !openingNotices.parentElement.classList.contains('intro-fade');
+    const host = opening ? openingNotices : galleryNotices;
+    if (!document.hidden && document.getElementById('viewer').hidden &&
+        document.getElementById('busSelectionOverlay').style.display !== 'flex' &&
+        document.getElementById('niagaraPortal').style.display !== 'flex') {
+      const notice = document.createElement('div');
+      notice.className = 'gallery-notice';
+      notice.textContent = tinyLarryMessages[Math.floor(Math.random() * tinyLarryMessages.length)];
+      host.append(notice);
+      notice.style.left = 12 + Math.random() * Math.max(0, host.clientWidth - notice.offsetWidth - 24) + 'px';
+      notice.style.top = 72 + Math.random() * Math.max(0, host.clientHeight - notice.offsetHeight - 84) + 'px';
+      setTimeout(() => notice.remove(), 3000);
     }
-    setTimeout(notices,35000+Math.random()*20000);
+    setTimeout(notices, opening ? 1850 : 2400 + Math.random() * 450);
   }
-  setTimeout(notices,22000);
+  setTimeout(notices, 600);
 })();
 </script>
 </body>
