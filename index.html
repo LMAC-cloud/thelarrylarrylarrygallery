@@ -128,21 +128,27 @@ const LAR_SCRIPT=[
 {id:'casino',title:'Lar Casino',character:'Fancy Woman',text:'For the Lar Casino, our establishment recommends the official Niagara Lar Casino page. To open the casino in a new tab, press 1. To return to the main menu, press 9.',choices:{'1':'CASINO','9':'start'}}
 ];
 const LAR_PRODUCTS=[
-['Blarney’s Emergency Island Survival Kit',49.99,'Pirate Department','A coconut inventory ledger, emergency jam jar, and a very persuasive seagull whistle.','island','#8a5b36'],
-['Lar Barge Navigation Compass',89.95,'Pirate Department','Points reliably toward the nearest invoice, weather permitting.','compass','#a36e3e'],
-['Pirate’s Waterproof Poetry Notebook',17.50,'Pirate Department','For sonnets composed during shipwrecks and other scheduling difficulties.','book','#3d6785'],
-['Niagara Shipwreck Souvenir Collection',125,'Pirate Department','Fictional wreckage recovered from the waters of the imagination.','ship','#517a8b'],
-['Blarney’s Emergency Seagull Whistle',12.99,'Pirate Department','May summon one seagull, or several complaints.','bird','#a5b6c4'],
-['Beatrice’s Complete Insult Collection',24.95,'Shakespeare’s Ladies','Witty repartee for the modern Much Ado enthusiast.','book','#a55c70'],
-['Rosalind’s Forest of Arden Disguise Kit',39.99,'Shakespeare’s Ladies','A costume for the confident comic heroine.','mask','#5b875e'],
-['Portia’s Courtroom Briefcase',175,'Shakespeare’s Ladies','Contains arguments, loopholes, and one entirely imaginary pound of flesh.','case','#7c5479'],
-['Viola’s Identity-Changing Wardrobe',299,'Shakespeare’s Ladies','A fictional travelling trunk with more identities than compartments.','case','#668c9a'],
-['Mistress Quickly’s Confidential Correspondence',18.95,'Shakespeare’s Ladies','Letters which ought never to have been delivered.','letter','#b88350'],
-['Emily Dickinson’s Imaginary Writing Desk',450,'Women Poets','A fictional homage; not a genuine historical artefact.','desk','#937a60'],
-['Marianne Moore’s Remarkable Hat Collection',85,'Women Poets','A fanciful collection celebrating a singular literary style.','hat','#5c7d91'],
-['Elizabeth Barrett Browning’s Infinite Sonnets Box',65,'Women Poets','An imaginary casket of inexhaustible affection and verse.','box','#a86b72'],
-['Christina Rossetti’s Goblin Market Basket',32.50,'Women Poets','A poetic basket for fruit of extremely uncertain provenance.','basket','#9b6a43'],
-['Sappho’s Missing Fragments Recovery Kit',125,'Women Poets','The missing fragments are not included, naturally.','scroll','#8c7096']
+[0,'Blarney’s Emergency Island Survival Kit',49.99,'Pirate Department','A coconut inventory ledger, emergency jam jar, and a very persuasive seagull whistle.','island','#8a5b36'],
+[1,'Lar Barge Navigation Compass',89.95,'Pirate Department','Points reliably toward the nearest invoice, weather permitting.','compass','#a36e3e'],
+[2,'Pirate’s Waterproof Poetry Notebook',17.50,'Pirate Department','For sonnets composed during shipwrecks and other scheduling difficulties.','book','#3d6785'],
+[3,'Niagara Shipwreck Souvenir Collection',125,'Pirate Department','Fictional wreckage recovered from the waters of the imagination.','ship','#517a8b'],
+[4,'Blarney’s Emergency Seagull Whistle',12.99,'Pirate Department','May summon one seagull, or several complaints.','bird','#a5b6c4'],
+[10,'Emily Dickinson’s Imaginary Writing Desk',450,'Women Poets','A fictional homage; not a genuine historical artefact.','desk','#937a60'],
+[11,'Marianne Moore’s Remarkable Hat Collection',85,'Women Poets','A fanciful collection celebrating a singular literary style.','hat','#5c7d91'],
+[12,'Elizabeth Barrett Browning’s Infinite Sonnets Box',65,'Women Poets','An imaginary casket of inexhaustible affection and verse.','box','#a86b72'],
+[13,'Christina Rossetti’s Goblin Market Basket',32.50,'Women Poets','A poetic basket for fruit of extremely uncertain provenance.','basket','#9b6a43'],
+["eliot-names", "The Naming of Cats Collar Set", 18.5, "T. S. Eliot’s Cat Shop", "Three blank tags for a cat’s three names. The third tag is for the name the cat declines to disclose.", "case", "#526552"],
+["eliot-macavity", "Macavity’s Vanishing Catnip Mouse", 8.75, "T. S. Eliot’s Cat Shop", "Check under the sofa, behind the cushion, and with the household’s most plausible suspect.", "box", "#7c6d4a"],
+["eliot-mistoffelees", "Mr Mistoffelees’s Midnight Wand", 12.95, "T. S. Eliot’s Cat Shop", "A feather teaser for the cat who can make a whole evening disappear.", "bird", "#55456d"],
+["eliot-skimbleshanks", "Skimbleshanks’s Railway Sleeper", 34, "T. S. Eliot’s Cat Shop", "A washable carriage-shaped cat bed. Breakfast service begins whenever the passenger says so.", "case", "#556a7a"],
+["pound-pisan", "Pisan Canto Pot Pies", 11.5, "Ezra Pound’s Cantos Freezer & Snacks", "Four frozen mushroom pies. The filling stays put. The footnotes continue on the back of the box.", "box", "#587586"],
+["pound-fugue", "Fugal Freezer Dumplings", 9.75, "Ezra Pound’s Cantos Freezer & Snacks", "Ginger, leek, and mushroom dumplings enter in succession. Serve when all three voices are hot.", "basket", "#54716e"],
+["pound-canto-one", "Canto I Sea-Salt Crackers", 5.25, "Ezra Pound’s Cantos Freezer & Snacks", "A crisp provision for a voyage. The packet contains twelve crackers and an unnecessary detour through the index.", "ship", "#496981"],
+["pound-fragments", "Drafts & Fragments Snack Mix", 6.5, "Ezra Pound’s Cantos Freezer & Snacks", "Pretzel ends, toasted corn, and broken sesame sticks. The fragments are the whole point.", "basket", "#867149"],
+["lynch-pomade", "Static Scene Sculpting Pomade", 14.75, "David Lynch’s Electricity Counter", "A firm hold for hair that looks as though it has just heard a sound from the next room.", "box", "#784859"],
+["lynch-shampoo", "Soft Current Anti-Static Shampoo", 13.25, "David Lynch’s Electricity Counter", "For flyaways, odd reflections, and the morning after your hair took on a life of its own.", "case", "#5a5e76"],
+["lynch-coffee", "Midnight Current Dark Roast", 16.95, "David Lynch’s Electricity Counter", "A smoky whole-bean coffee for the hour when the diner is quiet and the ceiling light begins to hum.", "box", "#775039"],
+["lynch-lamp", "The Humming Hallway Night-Light", 22, "David Lynch’s Electricity Counter", "A little amber plug-in lamp. The corridor is shorter than it looked in your dream.", "compass", "#805b45"],
 ];
 function larSvg(name,kind,tone){
  const shapes={island:'<path d="M30 205 Q170 165 310 205" fill="#cbb58d"/><path d="M168 193V94M168 108Q206 58 248 103Q210 128 168 108" stroke="#4d6748" stroke-width="11" fill="#779b69"/><path d="M165 111Q115 68 89 118Q134 135 165 111" fill="#62855c"/>',compass:'<circle cx="170" cy="140" r="85" fill="#d9b96c" stroke="#6e4c27" stroke-width="14"/><circle cx="170" cy="140" r="65" fill="#f8ebca"/><path d="M170 64L186 141L170 218L154 141Z" fill="#8a4e45"/><circle cx="170" cy="140" r="9" fill="#463d34"/>',book:'<path d="M85 70H265V230H85Q65 225 65 205V90Q65 70 85 70" fill="#f1e5c5" stroke="#58483b" stroke-width="7"/><path d="M85 70V230M110 108H242M110 130H235M110 152H220" stroke="#7e7464" stroke-width="5"/>',ship:'<path d="M40 181H300L260 222H90Z" fill="#704b38"/><path d="M167 180V45M167 58L255 163H167Z" fill="#f4eee0" stroke="#876e5a" stroke-width="4"/><path d="M167 78L88 163H167Z" fill="#d9c5a2"/>',bird:'<path d="M55 153Q115 77 173 151Q233 76 291 143Q229 125 174 181Q116 135 55 153" fill="#fff" stroke="#8f9ba9" stroke-width="5"/><circle cx="192" cy="157" r="5" fill="#292c35"/>',mask:'<path d="M70 94Q170 50 270 94L244 196Q169 245 95 196Z" fill="#eeddbd" stroke="#7d6752" stroke-width="7"/><path d="M92 140Q130 114 155 143Q132 160 92 140M185 143Q213 112 248 140Q213 160 185 143" fill="#4d4143"/>',case:'<rect x="60" y="105" width="220" height="130" rx="12" fill="#9b744c" stroke="#533f34" stroke-width="8"/><path d="M132 105V82Q132 65 150 65H192Q210 65 210 82V105" fill="none" stroke="#5b4538" stroke-width="12"/><path d="M60 155H280" stroke="#e6c78c" stroke-width="7"/>',letter:'<rect x="53" y="83" width="235" height="148" rx="8" fill="#f5ebd9" stroke="#a88c68" stroke-width="6"/><path d="M56 91L170 177L285 91" fill="none" stroke="#b6a082" stroke-width="6"/><circle cx="170" cy="180" r="18" fill="#a65555"/>',desk:'<path d="M53 120H290V155H53Z" fill="#a27650"/><path d="M78 155L65 249M263 155L279 249" stroke="#6c4936" stroke-width="15"/><rect x="112" y="85" width="100" height="35" fill="#e7d6b8"/><path d="M226 115L251 58" stroke="#493d3a" stroke-width="7"/>',hat:'<ellipse cx="170" cy="209" rx="130" ry="26" fill="#3c5568"/><path d="M92 202Q103 77 170 76Q237 77 247 202Z" fill="#5b7c90"/><path d="M95 177H245" stroke="#dec1a1" stroke-width="13"/>',box:'<rect x="70" y="110" width="200" height="125" rx="7" fill="#aa735b" stroke="#704537" stroke-width="7"/><path d="M65 111L103 75H236L275 111Z" fill="#c28b71"/><path d="M169 112V235" stroke="#f0d29a" stroke-width="12"/>',basket:'<path d="M75 130H265L240 240H100Z" fill="#bb8c59" stroke="#704b2e" stroke-width="7"/><path d="M102 131Q105 36 170 35Q235 36 238 131" fill="none" stroke="#8b623e" stroke-width="15"/><path d="M92 170H248M100 201H242" stroke="#e1bd7e" stroke-width="9"/>',scroll:'<path d="M93 65H251V225H93Z" fill="#f5e5c4" stroke="#987f62" stroke-width="5"/><path d="M115 112H225M115 140H218M115 170H227" stroke="#b2a08b" stroke-width="6"/><circle cx="93" cy="65" r="14" fill="#d5b487"/><circle cx="93" cy="225" r="14" fill="#d5b487"/>'};
@@ -248,14 +254,22 @@ const byId=id=>document.getElementById(id);
 const digital=DIGITAL_LISTINGS.map(([id,name,category,description,link,action])=>({
  id:'digital-'+id,name,category,description,link:publishedLink(link),action:action==='Buy'?'Open':action
 })).sort((a,b)=>featuredOrder.get(a.id)-featuredOrder.get(b.id));
-const merchandise=LAR_PRODUCTS.map(([name,price,category,description,kind,tone],index)=>({
- id:'lar-product-'+index,name,price,category,description,
+const merchandise=LAR_PRODUCTS.map(([id,name,price,category,description,kind,tone])=>({
+ id:'lar-product-'+id,name,price,category,description,
  image:'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(larSvg(name,kind,tone))
 }));
 const birthday=Object.entries(BIRTHDAY_STOCK).flatMap(([category,items])=>items.map(([name,character,description],index)=>({
- id:category+'-'+index,name,category,description:character+' · '+description,fictional:true
+ id:category+'-'+index,name,
+ category:character==='Blarney'?'Pirate Department':character==='Emilee Dickinsun'?'Women Poets':category,
+ description:character+' · '+description,fictional:true
 })));
-const listings=[...digital,...merchandise,...birthday];
+const stock=[...merchandise,...birthday];
+const listings=[
+ ...digital,
+ ...stock.filter(item=>item.category==='Pirate Department'),
+ ...stock.filter(item=>item.category!=='Pirate Department' && item.category!=='Women Poets'),
+ ...stock.filter(item=>item.category==='Women Poets')
+];
 
 const coverSettings = JSON.parse(byId('coverSettings').textContent);
 const defaultCovers = {'digital-gallery':'Artwork/LMAC-AtGulliversMuseumOfAbstractArt.jpg'};
