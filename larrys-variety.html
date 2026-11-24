@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Larry’s Variety</title>
+<title>Larry’s Variety — 03 Cash Register</title>
 <link rel="preconnect" href="https://larrysvariety.ca">
 <link rel="preload" as="image" fetchpriority="high" href="https://larrysvariety.ca/Artwork/LMAC-ArquaneTheQuietTeenPoet.jpg">
 <link rel="preload" as="image" fetchpriority="high" href="https://larrysvariety.ca/Artwork/LMAC-AstropopEffect.jpg">
@@ -144,6 +144,16 @@ figcaption { display:inline-block; margin-top:8px; padding:4px 9px; background:#
 #board:empty + #leaveBroken { display:none; }
 .puzzle-slot { fill:#292929; stroke:#777; stroke-width:1; vector-effect:non-scaling-stroke; cursor:pointer; }
 .puzzle-slot:hover, .puzzle-slot:focus-visible { fill:#4d4d4d; }
+.puzzle-slot.piece-destination {
+    fill:#d71728;
+    stroke:#ffddd0;
+    filter:drop-shadow(0 0 5px #ff2614) drop-shadow(0 0 10px #ff5714);
+    animation:puzzleDestination 1.8s ease-in-out infinite;
+}
+@keyframes puzzleDestination {
+    50% { fill:#ff8a11; filter:drop-shadow(0 0 5px #ff9a24) drop-shadow(0 0 10px #ff6413); }
+}
+@media(prefers-reduced-motion:reduce){.puzzle-slot.piece-destination{animation:none}}
 #tray {
     display:grid;
     grid-column:3;
@@ -731,7 +741,6 @@ figcaption { display:inline-block; margin-top:8px; padding:4px 9px; background:#
   line-height:.9;
   letter-spacing:-.06em;
   opacity:0;
-  transform:translate3d(var(--sx),var(--sy),var(--sz)) rotateY(var(--ry)) rotateZ(var(--rz)) scale(.35);
   text-shadow:
     2px 2px 0 #3b2110,
     5px 5px 0 #2a160b,
@@ -742,9 +751,9 @@ figcaption { display:inline-block; margin-top:8px; padding:4px 9px; background:#
   animation-delay:var(--delay);
 }
 @keyframes larLetterArrive{
-  0%{opacity:0;transform:translate3d(var(--sx),var(--sy),var(--sz)) rotateY(var(--ry)) rotateZ(var(--rz)) scale(.35)}
-  55%{opacity:1;transform:translate3d(calc(var(--sx)*.18),calc(var(--sy)*.18),0) rotateY(calc(var(--ry)*.22)) rotateZ(calc(var(--rz)*.22)) scale(1.08)}
-  100%{opacity:1;transform:translate3d(0,0,0) rotateY(0) rotateZ(0) scale(1)}
+  0%{opacity:0;transform:translateY(.65em);clip-path:inset(0 0 75% 0)}
+  55%{opacity:1;transform:translateY(-.11em);clip-path:inset(-20%)}
+  100%{opacity:1;transform:translateY(0);clip-path:inset(-30%)}
 }
 .larOpeningSpace{width:.28em;display:inline-block}
 #larOpeningTitle,#larOpeningVortex,#larOpeningGulls,#skipOpening{transition:opacity 1.35s ease}
@@ -758,7 +767,8 @@ header h1{font-size:clamp(15px,2vw,21px)}
 header nav{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 #artworkGallery{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;padding:16px}
 #artworkGallery .excerpt-figure{display:block;min-width:0;max-width:none;margin:0}
-#artworkGallery figure{margin:0;height:100%}
+#artworkGallery figure{margin:0;height:100%;user-select:none;-webkit-user-select:none}
+#artworkGallery img{-webkit-user-drag:none}
 #artworkGallery .painting-frame {
     position:relative;
     width:fit-content;
@@ -821,7 +831,7 @@ header nav{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 #larOpeningIntro.car-arrive #larOpeningCar{animation-duration:4.2s}
 #larOpeningIntro.smoke-build #larOpeningSmoke{animation-duration:1.7s}
 #larOpeningIntro.smoke-whiteout #larOpeningSmoke{animation-duration:2.1s}
-.larOpeningLetter{animation-duration:2.6s;font-size:clamp(21px,8vw,100px)}
+.larOpeningLetter{animation-duration:.32s;font-size:clamp(21px,8vw,100px)}
 body:has(#viewer:not([hidden]), #busSelectionOverlay[style*="flex"], #niagaraPortal[style*="flex"]) #galleryNotices{visibility:hidden}
 #galleryNotices{position:fixed;inset:0;z-index:5;pointer-events:none}
 .gallery-notice{position:absolute;display:grid;place-content:center;gap:5px;width:max-content;max-width:min(330px,calc(100vw - 32px));min-height:72px;box-sizing:border-box;margin:0;animation:galleryAdFade 8.5s ease both;background:#211910f2;border:1px solid #ae9266;color:#fff5d5;padding:11px 15px;border-radius:4px;box-shadow:0 2px 8px #0009;font-size:14px;text-align:center;text-wrap:balance;overflow-wrap:anywhere}
@@ -1103,7 +1113,9 @@ function startJigsaw(source, width, height, ticket) {
 
     function select(piece) {
         selected?.button.setAttribute("aria-pressed", "false");
+        selected?.slot.classList.remove("piece-destination");
         selected = piece;
+        piece.slot.classList.add("piece-destination");
         piece.button.setAttribute("aria-pressed", "true");
     }
 
@@ -1180,6 +1192,7 @@ function startJigsaw(source, width, height, ticket) {
                 const rect = thumbnail.getBoundingClientRect();
                 drag = {id:event.pointerId, x:event.clientX, y:event.clientY, rect, moving:false};
                 button.setPointerCapture(event.pointerId);
+                select(piece);
             };
             button.onpointermove = event => {
                 if (drag?.id !== event.pointerId) return;
@@ -1273,6 +1286,7 @@ images.forEach(function(imagePath, index) {
     const image = document.createElement("img");
     const caption = document.createElement("figcaption");
 
+    image.draggable = false;
     image.loading = "eager";
     image.decoding = "async";
     if (index < 5) image.fetchPriority = "high";
@@ -1698,7 +1712,7 @@ function openBusRoom() {
         card.onclick = () => {
             if (card.disabled) return;
             attempts++;
-            if (attempts === 4) {
+            if (attempts === 3) {
                 busRoom.style.display = "none";
                 portal.style.display = "flex";
                 document.getElementById("niagaraPortalButton").focus();
@@ -1761,15 +1775,12 @@ window.addEventListener("pageshow", event => {
   }
   document.getElementById('skipOpening').onclick=finish;
 
-  letters.forEach((el,i)=>{
-    const side=i%4;
-    const sx=side===0 ? (-70-i*4)+'vw' : side===1 ? (70+i*4)+'vw' : (Math.random()*50-25)+'vw';
-    const sy=side===2 ? (-55-i*3)+'vh' : side===3 ? (55+i*3)+'vh' : (Math.random()*30-15)+'vh';
-    el.style.setProperty('--sx',sx); el.style.setProperty('--sy',sy);
-    el.style.setProperty('--sz',(Math.random()*500-250)+'px');
-    el.style.setProperty('--ry',(Math.random()*120-60)+'deg');
-    el.style.setProperty('--rz',(Math.random()*70-35)+'deg');
-    el.style.setProperty('--delay',(5.4+i*.115)+'s');
+  for (let i = letters.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [letters[i], letters[j]] = [letters[j], letters[i]];
+  }
+  letters.forEach((letter, i) => {
+    letter.style.setProperty('--delay', (5.75 + i * .16) + 's');
   });
 
   function addGulls(host, count) {
@@ -1792,8 +1803,8 @@ window.addEventListener("pageshow", event => {
   after(1850, () => intro.classList.add('car-arrive'));
   after(2750, () => intro.classList.add('smoke-build'));
   after(4450, () => intro.classList.add('smoke-whiteout'));
-  after(10100, () => intro.classList.add('welcoming'));
-  after(13000, finish);
+  after(9250, () => intro.classList.add('welcoming'));
+  after(10850, finish);
 })();
 </script>
 <script>
