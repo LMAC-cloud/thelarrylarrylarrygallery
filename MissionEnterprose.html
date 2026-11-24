@@ -235,7 +235,7 @@
   }
 
   /* Drawing layer */
-  #launchedDrawCanvas,#drawingCanvas{
+  #launchedDrawCanvas,#burningDrawCanvas,#liveGlowCanvas,#drawingCanvas{
     position:fixed;
     inset:0;
     width:100%;
@@ -243,7 +243,8 @@
     pointer-events:none;
   }
   #launchedDrawCanvas{z-index:7;}
-  #drawingCanvas{z-index:8;}
+  #burningDrawCanvas,#liveGlowCanvas,#drawingCanvas{z-index:8;}
+  #liveGlowCanvas,#planetGlowCanvas{opacity:.88;}
 
 
   .small-note {
@@ -412,7 +413,7 @@
   .textSection{min-width:0!important;border:1px solid rgba(210,225,240,.18)!important;padding:6px!important;}
   .textSection label{display:block!important;min-width:0!important;}
   .colourBarWrap{width:100%!important;height:auto!important;min-height:42px!important;display:block!important;}
-  .colourSwatches{display:grid!important;grid-template-columns:repeat(11,minmax(0,1fr))!important;grid-template-rows:repeat(2,20px)!important;gap:1px!important;width:100%!important;height:41px!important;overflow:visible!important;}
+  .colourSwatches{display:grid!important;grid-template-columns:repeat(10,minmax(0,1fr))!important;grid-template-rows:repeat(2,20px)!important;gap:1px!important;width:100%!important;height:41px!important;overflow:visible!important;}
   .colourSwatch{width:auto!important;min-width:0!important;height:20px!important;padding:0!important;border:1px solid #080808!important;}
   .colourSwatch.selected{outline:1px solid #ddd!important;outline-offset:-2px!important;}
   .colourArrow{height:20px!important;width:20px!important;min-width:20px!important;}
@@ -645,14 +646,7 @@
 .colourSwatches{height:24px!important;gap:1px!important;}
 .colourSwatch{height:24px!important;min-width:12px!important;border:1px solid #080808!important;}
 .colourSwatch.selected{outline:1px solid #ddd!important;outline-offset:-2px!important;}
-#poemTitleDialog{display:none;position:absolute;inset:0;z-index:30000;align-items:center;justify-content:center;background:rgba(0,0,0,.12);}
-#poemTitleDialog.show{display:flex;}
-.poemTitleBox{width:230px;background:#4a4a4a;border:1px solid #777;padding:9px;box-shadow:0 7px 24px rgba(0,0,0,.45);}
-.poemTitleHeading{font-size:9px;color:#ddd;margin-bottom:5px;}
-#poemTitleInput{width:100%;height:24px;border:1px solid #888;background:#666;color:#eee;outline:none;padding:3px 5px;font:10px "Segoe UI",Arial,sans-serif;}
-#poemSaveError{color:#ffe0dc;font-size:11px;margin-top:6px;}
-.poemTitleActions{display:flex;justify-content:flex-end;gap:4px;margin-top:6px;}
-.poemTitleActions button{border:1px solid #888;background:#303030;color:#ddd;font:8px "Segoe UI",Arial,sans-serif;padding:4px 8px;cursor:pointer;}
+
 .lineSubhead{font-size:8px;color:#ccc;margin:3px 0 1px;}
 .sectionTitle{font-size:8px!important;}
 .tinyCheck{font-size:7px!important;}
@@ -717,7 +711,7 @@
 .rotary button{border:0;background:none;color:white!important;padding:2px;min-width:20px;}
 .rotary output{display:block;text-align:center;border:1px solid #647080;padding:4px;overflow-wrap:anywhere;}
 
-#planetInk{position:absolute;inset:0;z-index:501;pointer-events:none;}
+#planetGlowCanvas,#planetInk{position:absolute;inset:0;z-index:501;pointer-events:none;}
 #planetPhone{width:67px!important;height:65px!important;font-size:50px!important;color:#05090f!important;cursor:grab;touch-action:none;text-shadow:none!important;animation:planetHover 4.8s ease-in-out infinite;}
 #planetPhone:active{animation:none;cursor:grabbing;}
 #planetPhone .phoneGraphic{filter:drop-shadow(-3px 0 3px #f43) drop-shadow(3px 0 3px #32e4f8) drop-shadow(0 -3px 3px #ffe64b) drop-shadow(0 3px 3px #a55cff);}
@@ -810,8 +804,7 @@
 .effect-window .window-body{display:grid;gap:5px;}
 .effect-targets{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding-bottom:4px;border:0;}
 .effect-targets button{border:1px solid var(--menu-outline,#6d7986);background:none;color:inherit;cursor:pointer;padding:3px 4px;}
-.effect-targets button[aria-pressed=true]{border-color:#99d9d8;}
-.effect-palette{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:2px;}
+.effect-palette{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:2px;}
 .effect-palette button{height:16px;border:1px solid #14191f;cursor:pointer;padding:0;}
 .effect-palette button[aria-pressed=true]{outline:1px solid #efffff;outline-offset:-2px;}
 .effect-options{display:flex;flex-direction:column;gap:4px;}
@@ -909,8 +902,6 @@
 #effectColourPopover:popover-open{display:flex;}
 .colour-chip{width:23px;height:23px;border-radius:50%;border:1px solid #aaa;flex:none;}
 #effectColourPopover .effect-range{flex:1;grid-template-columns:minmax(35px,1fr) 30px 21px 21px;}
-.rainbow-slider input::-webkit-slider-runnable-track{background:linear-gradient(90deg,red,#ff0,#0f0,#0ff,#00f,#f0f,red);}
-.rainbow-slider input::-moz-range-track{background:linear-gradient(90deg,red,#ff0,#0f0,#0ff,#00f,#f0f,red);}
 #effectColourPopover button.triangle{background:none;color:#fff;border:0;padding:0;font:17px Arial;}
 .effect-palette button:last-child{background:transparent;color:inherit;}
 .effect-checks{grid-template-columns:repeat(3,max-content);gap:6px;}
@@ -959,9 +950,8 @@
 .effect-window{width:min(350px,calc(100vw - 16px));}
 .effect-window .window-body{overflow-x:hidden!important;}
 .effect-window .effect-palette,.effect-window .effect-options{min-width:0;}
-.effect-palette{grid-template-columns:repeat(11,minmax(0,1fr));width:100%;}
+.effect-palette{grid-template-columns:repeat(10,minmax(0,1fr));width:100%;}
 .effect-palette button{min-width:0;}
-.effect-targets button[aria-pressed=true]{border-color:#98e1e1!important;background:#233d44!important;color:#e7ffff!important;}
 .effect-window .effect-option-row{grid-template-columns:78px minmax(0,1fr);}
 #effectColourPopover{width:225px;display:none;padding:6px;}
 #effectColourPopover:popover-open{display:block;}
@@ -1022,8 +1012,6 @@
 #settingsWindow .settings-colour-fields label{grid-template-columns:105px 18px;margin:1px 0;}
 #settingsWindow .menu-colour-swatch{box-sizing:border-box;width:18px;height:18px;min-width:18px;min-height:18px;margin:0;padding:0;aspect-ratio:1;}
 #settingsPalette{display:grid;grid-template-columns:none;gap:2px;}
-.settings-palette-row{display:grid;grid-template-columns:repeat(5,17px);gap:2px;}
-#settingsPalette .settings-palette-row button{width:17px;height:17px;grid-column:auto;}
 #settingsWindow .settings-actions{padding-left:110px;}
 #settingsWindow .settings-actions button{min-width:0;}
 :root .window :is(#bgToggleList,#radio-toggle-list){border:0!important;background:transparent!important;}
@@ -1037,7 +1025,7 @@
 :root[data-menu-font] #drawWindow .triangle{font:17px/1 Arial,sans-serif!important;width:18px;min-width:18px;}
 #drawWindow .effect-range{grid-template-columns:minmax(24px,1fr) 36px 18px 18px;gap:0;}
 #drawWindow .rotary{grid-template-columns:minmax(0,1fr) 18px 18px;gap:0;}
-#poemTitleDialog .poemTitleBox{position:absolute;}
+
 
 </style>
 <style>
@@ -1070,8 +1058,6 @@
 .settings-colour-layout{grid-template-columns:124px minmax(0,1fr);gap:12px;}
 #settingsWindow .settings-colour-fields label{grid-template-columns:105px 14px;}
 #settingsWindow .menu-colour-swatch{width:14px;height:14px;min-width:14px;min-height:14px;}
-#settingsPalette .settings-palette-row{grid-template-columns:repeat(5,minmax(0,1fr));width:100%;}
-#settingsPalette .settings-palette-row button{width:100%;height:14px;}
 #settingsWindow .settings-actions{padding-left:0;}
 @keyframes selected-word{
   0%,100%{color:#ff5353;}20%{color:#ffab52;}40%{color:#fff062;}60%{color:#69efac;}80%{color:#7f9fff;}90%{color:#dba4ff;}
@@ -1120,11 +1106,7 @@
 #telephoneWindow .window-recovery{height:3px;}
 #telephoneWindow .telephoneBody{padding-bottom:2px!important;gap:3px;}
 #telephoneWindow .telephoneToolbar{min-height:20px;padding-bottom:0;padding-right:19px;}
-#effectColourPopover .rainbow-slider input[type=range]::-webkit-slider-runnable-track{background:linear-gradient(90deg,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00)!important;}
-#effectColourPopover .rainbow-slider input[type=range]::-moz-range-track{background:linear-gradient(90deg,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00)!important;}
 #settingsPalette{justify-self:start;}
-#settingsPalette .settings-palette-row{grid-template-columns:repeat(5,29px);width:max-content;}
-#settingsPalette .settings-palette-row button{width:29px;height:16px;min-height:0;}
 #launchImageFromMenu{display:block;margin:7px auto 0;}
 .image-position-row{display:flex;justify-content:center;gap:4px;flex-wrap:wrap;margin-top:6px;}
 #bgPlaylist,#radio-panel #radio-song-list{border:0;max-height:106px;}
@@ -1393,7 +1375,7 @@
 :root.rainbow-synced.rainbow-hover #radio-panel .volume-track{
   --volume-fill:hsl(var(--sync-hue) 93% 64%);animation:none;
 }
-#syncRainbow[aria-pressed=true]{outline:1px solid currentColor;outline-offset:-1px;}
+
 @media(prefers-reduced-motion:reduce){
   :root.rainbow-hover #planetOrb:is(:hover,:focus-visible,.dragging) #planetSphere,
   :root.rainbow-synced #planetPhone .phoneGraphic{animation:none;}
@@ -1411,13 +1393,182 @@
 :root.rainbow-synced #backgroundWindow #visualOverlay[aria-pressed=true]{color:hsl(var(--sync-hue) 95% 75%)!important;animation:none;}
 @media(prefers-reduced-motion:reduce){#backgroundWindow #visualOverlay[aria-pressed=true]{animation:none;}}
 </style>
+
+<style>
+#planetPhoneMenu #phoneRime{width:100%;margin-top:5px;}
+#telephoneWindow .telephoneFontBar{display:grid;justify-items:stretch;grid-template-columns:minmax(0,1fr) minmax(0,2fr) minmax(0,1fr);align-items:center;gap:5px;}
+.poem-title-row{grid-column:2;display:flex;align-items:center;gap:4px;min-width:0;}
+#telephoneFont[open]+.poem-title-row{visibility:hidden;}
+#telephoneWindow #poemTitleInput{min-width:0;width:100%;height:21px;padding:2px 4px;color:var(--menu-text);background:transparent;border:1px solid var(--menu-outline);font:inherit;}
+#telephoneWindow .poem-title-row button{
+  white-space:nowrap;border:0!important;outline:0;background:none!important;padding:2px 3px;
+  font-size:calc(var(--menu-font-size,10px)*.82)!important;
+}
+#poemSaveError{color:var(--menu-text);font:inherit;padding-block:2px;}
+#textWindow .text-writing-controls{display:flex;flex-wrap:nowrap;gap:5px;padding-block:4px 0;}
+.writing-drag-space{flex:1;align-self:stretch;min-width:12px;cursor:grab;}
+#textWindow .effect-checks{row-gap:5px;padding-bottom:0;}
+#textWindow .screen-type-button{font:inherit;padding:3px 5px;}
+:root:not(.screen-type-mode) .screen-writing-block{visibility:hidden;}
+#screenCaret{position:absolute;width:12px;height:var(--caret-height);transform:translateX(-5px);pointer-events:none;}
+#screenCaret.awaiting,
+:is(#bookScreenToggle,.screen-type-button,.movable-caret-button,.text-match-button,#planetTextLaunch,#planetLineLaunch,#planetDrawOnScreen,#planetRainbow,#selectEffect,#allFonts,#imageDepth,#setImagePosition)[aria-pressed=true],
+#textWindow .effect-check:has(input:checked),
+#settingsWindow .settings-rainbow-options label:has(input:checked),
+.screen-type-label:has(input:checked){
+  animation:active-rainbow-box 4.8s linear infinite !important;
+}
+:root.rainbow-synced :is(#screenCaret.awaiting, :is(#bookScreenToggle,.screen-type-button,.movable-caret-button,.text-match-button,#planetTextLaunch,#planetLineLaunch,#planetDrawOnScreen,#planetRainbow,#selectEffect,#allFonts,#imageDepth,#setImagePosition)[aria-pressed=true], #textWindow .effect-check:has(input:checked), #settingsWindow .settings-rainbow-options label:has(input:checked), .screen-type-label:has(input:checked)){animation:planet-arrival-synced 6s linear infinite!important;}
+@keyframes active-rainbow-box{
+  0%,100%{box-shadow:0 0 0 1px #ff4e5e,0 0 9px #ff4e5e;}
+  17%{box-shadow:0 0 0 1px #ffaf43,0 0 9px #ffaf43;}
+  34%{box-shadow:0 0 0 1px #f8ee58,0 0 9px #f8ee58;}
+  50%{box-shadow:0 0 0 1px #5effaa,0 0 9px #5effaa;}
+  67%{box-shadow:0 0 0 1px #5dd8ff,0 0 9px #5dd8ff;}
+  84%{box-shadow:0 0 0 1px #bb75ff,0 0 9px #bb75ff;}
+}
+.screen-type-mode.move-caret-mode #screenCaret,.move-caret-mode #textGrab{pointer-events:auto;cursor:grab;}
+.move-caret-mode #textEntry,.move-caret-mode .screen-writing-block{caret-color:#fff;}
+.move-caret-mode #screenCaret:not(.awaiting)::after{
+  content:"";position:absolute;top:1px;bottom:1px;left:5px;width:2px;
+  background:#fff;box-shadow:0 0 3px #dcefff;pointer-events:none;
+}
+#screenCaret.caret-dragging{cursor:grabbing;}
+@media(prefers-reduced-motion:reduce){
+  :root :is(#screenCaret.awaiting, :is(#bookScreenToggle,.screen-type-button,.movable-caret-button,.text-match-button,#planetTextLaunch,#planetLineLaunch,#planetDrawOnScreen,#planetRainbow,#selectEffect,#allFonts,#imageDepth,#setImagePosition)[aria-pressed=true], #textWindow .effect-check:has(input:checked), #settingsWindow .settings-rainbow-options label:has(input:checked), .screen-type-label:has(input:checked)){
+    animation:none!important;box-shadow:0 0 0 1px #ad8bff,0 0 6px #ad8bff;
+  }
+}
+</style>
+
+<style>
+.window{padding-bottom:0;}
+.window .window-body{padding-bottom:5px!important;}
+#telephoneWindow .telephoneBody{padding-bottom:2px!important;}
+#settingsWindow .window-body{padding-bottom:0!important;}
+#settingsWindow .settings-actions{padding-bottom:4px;}
+#radio-panel .window-body{padding-bottom:0!important;}
+#radio-panel .radio-list-toolbar{padding-bottom:4px;}
+:is(.window,#telephoneWindow,#settingsWindow) .window-recovery{height:4px;width:100%;cursor:grab;}
+#drawWindow .window-body{overflow:visible!important;}
+#textWindow .screen-zamboni{white-space:nowrap;padding:3px 5px;margin-left:auto;}
+#textWindow .writing-drag-space{min-width:7px;}
+#drawWindow .draw-glow-label{display:inline-flex;gap:4px;align-items:center;}
+#drawWindow .draw-glow-label button{
+  font-size:calc(var(--menu-font-size,10px)*.76)!important;
+  line-height:1;padding:2px 4px;background:transparent;
+}
+@property --control-glow-hue{syntax:"<angle>";inherits:false;initial-value:0deg;}
+@keyframes control-glow-cycle{to{--control-glow-hue:360deg;}}
+:is(#drawWindow,#textWindow) .effect-targets button[aria-pressed=true],
+#drawWindow .draw-glow-label button[aria-pressed=true],
+:root :is(.effect-check input,.round-check,#radio-song-list input,.settings-rainbow-options input):checked{
+  --control-glow:hsl(var(--control-glow-hue) 94% 63%);
+  animation:control-glow-cycle 3.4s linear infinite!important;
+  border-color:var(--control-glow)!important;
+  outline:0!important;
+  box-shadow:0 0 2px var(--control-glow),0 0 8px var(--control-glow);
+}
+:root :is(.effect-check input,.round-check,#radio-song-list input,.settings-rainbow-options input):checked{
+  background:var(--control-glow)!important;
+}
+:root.rainbow-synced :is(#drawWindow .effect-targets button,#textWindow .effect-targets button,#drawWindow .draw-glow-label button)[aria-pressed=true],
+:root.rainbow-synced :is(.effect-check input,.round-check,#radio-song-list input,.settings-rainbow-options input):checked{
+  --control-glow:hsl(var(--sync-hue) 94% 63%);
+}
+@media(prefers-reduced-motion:reduce){
+  :is(#drawWindow,#textWindow) .effect-targets button[aria-pressed=true],
+  #drawWindow .draw-glow-label button[aria-pressed=true],
+  :root :is(.effect-check input,.round-check,#radio-song-list input,.settings-rainbow-options input):checked{
+    --control-glow-hue:270deg;animation:none!important;
+  }
+}
+</style>
+
+<style>
+#drawWindow .draw-footer{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-left:0;}
+#drawWindow .draw-fuse-row{display:flex;gap:12px;align-items:center;}
+#drawWindow .draw-glow-label button:first-child{font-size:var(--menu-font-size,10px)!important;}
+#drawWindow .draw-footer button[aria-pressed=true],
+#backgroundWindow :is(#visualOverlay,#opArtOverlay)[aria-pressed=true]{animation:var(--selection-animation,starfield-selection) 3.4s linear infinite!important;}
+#settingsWindow #syncRainbow{border-color:transparent!important;outline:0!important;box-shadow:none!important;animation:none!important;}
+#settingsWindow #syncRainbow[aria-pressed=true]{animation:selected-word 3.4s linear infinite!important;}
+:root.rainbow-synced #settingsWindow #syncRainbow[aria-pressed=true]{animation:none!important;color:hsl(var(--sync-hue) 95% 75%)!important;}
+#backgroundWindow .visual-switches{display:flex;align-items:center;justify-content:space-between;gap:7px;margin-top:5px;}
+#backgroundWindow .visual-switches .visual-rainbow{white-space:nowrap;margin-block:0;}
+#imageLaunchWindow .image-position-row{flex-wrap:nowrap;}
+#imageDepth{min-width:4.5em;}
+#imageLaunchWindow .image-position-row #imageDepth{flex:0 0 4.5em;}
+@media(prefers-reduced-motion:reduce){
+  #drawWindow .draw-footer button[aria-pressed=true],
+  #backgroundWindow :is(#visualOverlay,#opArtOverlay)[aria-pressed=true]{animation:none!important;box-shadow:0 0 6px #ad8bff;}
+}
+</style>
+
+<style>
+#telephoneWindow #poemTitleInput{box-sizing:border-box;padding:0 5px;line-height:normal!important;}
+#poemSaveError{grid-column:3;grid-row:1;font-size:.8em;line-height:1.15;padding:0 44px 0 0;overflow-wrap:anywhere;}
+#planetPhoneMenu :is(#phoneBroken,#phoneRime){display:grid;place-items:center;text-align:center;min-height:24px;padding:2px 6px;}
+#planetPhoneMenu #planetRainbow{font-size:.84em;padding:0 4px;}
+#backgroundWindow #showStars{border:0!important;background:transparent!important;font-size:calc(var(--menu-font-size,10px)*.78)!important;white-space:nowrap;}
+#v49LaunchBar,#planetLaunchBarV49{gap:clamp(4px,.65vw,11px)!important;}
+:root :is(#selection-suppression,.selection-clicked-off).selection-clicked-off:hover{animation:none!important;box-shadow:none!important;outline:0!important;}
+</style>
+<style>
+#textWindow .text-writing-controls{column-gap:8px;}
+#textWindow .writing-drag-space{min-width:12px;}
+#paragraphPopup .planet-launch-options{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px;padding:5px 1px 2px;}
+#planetPhoneMenu #planetRainbow{align-self:stretch;}
+</style>
+<style>
+#effectColourPopover .hue-spectrum-track{
+  position:relative;display:block;width:100%;min-width:0;height:12px;border:1px solid #788491;
+  box-sizing:border-box;background:linear-gradient(90deg,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);
+}
+#effectColourPopover .hue-spectrum-track input[type=range]{
+  appearance:none;position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;
+  border:0;background:transparent!important;
+}
+#effectColourPopover .hue-spectrum-track input[type=range]::-webkit-slider-runnable-track{
+  height:12px;border:0;background:transparent!important;
+}
+#effectColourPopover .hue-spectrum-track input[type=range]::-moz-range-track{
+  height:12px;border:0;background:transparent!important;
+}
+#effectColourPopover .hue-spectrum-track input[type=range]::-webkit-slider-thumb{
+  appearance:none;width:5px;height:14px;margin-top:-1px;background:#fff;border:1px solid #111;
+}
+#effectColourPopover .hue-spectrum-track input[type=range]::-moz-range-thumb{
+  width:5px;height:14px;background:#fff;border:1px solid #111;
+}
+#effectColourPopover .hue-spectrum-track:focus-within{outline:1px solid #fff;outline-offset:2px;}
+#telephoneFontColour{text-decoration:underline;text-underline-offset:2px;}
+</style>
+<style>
+.transparent-screen-text .screen-writing-block{opacity:.64;}
+</style>
+<style>
+#settingsWindow .settings-colour-layout{grid-template-columns:124px minmax(0,1fr) max-content;}
+#settingsWindow #settingsPalette,.effect-window .effect-palette{
+  display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:1px;width:100%;
+}
+#settingsWindow #settingsPalette>button,.effect-window .effect-palette>button{
+  box-sizing:border-box;width:100%;min-width:0;height:16px;margin:0;padding:0;grid-column:auto;
+  border:1px solid #080808!important;border-radius:0!important;opacity:1;filter:none;background-image:none;
+}
+#settingsWindow #settingsPalette>button:last-child,.effect-window .effect-palette>button:last-child{
+  border-color:var(--menu-outline,#6d7986)!important;
+}
+</style>
 </head>
 <body>
 
 <canvas id="space"></canvas>
 <canvas id="launchedDrawCanvas"></canvas>
+<canvas id="burningDrawCanvas" aria-hidden="true"></canvas>
+<canvas id="liveGlowCanvas" aria-hidden="true"></canvas>
 <canvas id="drawingCanvas"></canvas>
-<div id="screenWriting"></div>
+<div id="screenWriting"><span id="screenCaret" aria-hidden="true" hidden></span></div>
 
 <div id="textGrab" aria-label="Move text entry">
   <input id="textEntry" type="text" autocomplete="off" spellcheck="false" aria-label="Starfield text entry">
@@ -1429,7 +1580,7 @@
 </div>
 
 <div id="planetView">
-  <canvas id="planetCanvas"></canvas><canvas id="planetInk" aria-hidden="true"></canvas>
+  <canvas id="planetCanvas"></canvas><canvas id="planetGlowCanvas" aria-hidden="true"></canvas><canvas id="planetInk" aria-hidden="true"></canvas>
   <input id="planetEntry" autocomplete="off" spellcheck="false" aria-label="Planet text entry">
   <button id="returnStarfield">return to starfield</button>
 
@@ -1440,22 +1591,23 @@
     <label>Orbit <select id="phonePlanetMotion">
         <option value="ring">circular ring</option>
         <option value="axis">axis spin</option>
-        <option value="orbit">wide orbit</option>
+        <option value="orbit">wide orbit</option><option value="orbitRing">wide orbit ring</option><option value="row" selected>Row</option>
         <option value="float">floating letters</option>
         <option value="scatter">Scatter</option>
         <option value="wave">wave field</option>
         <option value="spiral">spiral rings</option>
         <option value="planet">Inner orbit</option><option value="saturn">Saturn ticker</option><option value="page">Scrolling page</option><option value="hover">Hovering letters</option>
-        
+   
       </select></label>
-    <label>Text <select id="planetInkStyle"><option value="cycle">Rainbow text</option><option value="fixed">Rainbow letters</option><option value="moving">Rainbow letters 2</option><option value="solid">Solid</option><option value="alternating">Black and white</option><option value="lineRainbow" selected>Rainbow lines</option><option value="lineRandom">Random lines</option></select></label>
-    <label>Effects <select id="planetOrbitEffect"><option value="none">None</option><option value="shadow">Planet shadow</option><option value="spin">Spin lines</option><option value="reverseSpin">Reverse spin</option><option value="mirror">Mirror shadow</option><option value="tracers">Tracers</option></select></label>
-    <label>Glow <select id="planetGlow"><option value="off">Off</option><option value="match">Match text</option><option value="rainbow">Rainbow glow</option></select></label>
-    <label>Speed <input id="planetSpeed" type="number" min="2" max="35" step="1" value="14" class="v49Number"></label>
-    <label>Size <input id="planetTextSize" type="number" min="8" max="30" step="1" value="15" class="v49Number"></label>
+    <label>Colour <select id="planetInkStyle"><option value="lineRainbow" selected>Rainbow 1</option><option value="cycle">Rainbow 2</option><option value="gradient">Rainbow 3</option><option value="moving">Rainbow letters</option><option value="lineRandom">Random lines</option><option value="fixed">Random letters</option><option value="solid">Solid</option><option value="alternating">Black and white</option></select></label>
+    <label>Effects <select id="planetOrbitEffect"><option value="none">None</option><option value="spin">Spin lines</option><option value="reverseSpin">Reverse spin</option><option value="mirror">Mirror</option><option value="shake">Ripple shake</option><option value="letterSpin">Letter spin</option><option value="mirrorSpin">Mirror + letter spin</option><option value="sticks">Sticks</option><option value="depth">Receding rows</option></select></label>
+    <label>Glow <select id="planetGlow"><option value="off">Off</option><option value="rainbow">Rainbow glow</option><option value="tracers">Tracers</option><option value="shadow">Shadow</option></select></label>
+    <label>Speed <input id="planetSpeed" type="number" min="2" max="35" step="1" value="27" class="v49Number"></label>
+    <label>Size <input id="planetTextSize" type="number" min="8" max="30" step="1" value="17" class="v49Number"></label>
     <div class="planetPalette"><span>Text</span><div class="colourBarWrap" data-colour-target="planetTextColourRange"><div class="colourSwatches"></div><input id="planetTextColourRange" class="colourState" type="range" min="0" max="100" value="0" step="1" aria-hidden="true" tabindex="-1"></div></div>
     <div class="planetPalette"><span>Planet</span><div class="colourBarWrap" data-colour-target="planetColourRange"><div class="colourSwatches"></div><input id="planetColourRange" class="colourState" type="range" min="0" max="100" value="82" step="1" aria-hidden="true" tabindex="-1"></div></div>
 
+    <button id="phoneRime" type="button">Rime poem</button>
   </div>
 </div>
 
@@ -1468,9 +1620,9 @@
   <input id="drawFuseSpeed" class="v49Number" type="number" min="180" max="1800" step="20" value="1240">
   <input id="launchFuseSpeed" class="v49Number" type="number" min="180" max="1800" step="20" value="180">
   <input id="launchedLineInvisible" type="checkbox">
-<input id="drawLineWidth" type="number" min="1" max="45" step="1" value="2" class="v49Number">
-<input id="drawGlowRange" type="number" min="0" max="50" step="1" value="12" class="v49Number">
-<input id="launchedDrawGlowRange" type="number" min="0" max="60" step="1" value="0" class="v49Number">
+<input id="drawLineWidth" type="number" min="1" max="14" step="1" value="2" class="v49Number">
+<input id="drawSpacing" type="number" min="0" max="100" step="1" value="77" class="v49Number">
+<input id="launchSpacing" type="number" min="0" max="100" step="1" value="77" class="v49Number">
 <input id="drawDuration" type="number" min="1200" max="6200" step="100" value="6100" class="v49Number">
 <input type="checkbox" id="typedTextInvisible">
 <input id="typedTextSizeRange" type="number" min="8" max="32" step="2" value="18" class="v49Number">
@@ -1479,7 +1631,7 @@
 <input id="textGlowRange" type="number" min="0" max="30" step="1" value="0" class="v49Number">
 <input type="checkbox" id="movableCursor">
 <input id="invisibleDrawLine" type="checkbox">
-<input id="launchedLineSize" class="v49Number" type="number" min="1" max="45" step="1" value="11">
+<input id="launchedLineSize" class="v49Number" type="number" min="1" max="14" step="1" value="9">
 <input id="typedGlow" class="v49Number" type="number" min="0" max="30" step="1" value="0">
 <input id="textDuration" class="v49Number" type="number" min="3000" max="18000" step="500" value="10500">
 <input id="drawnRepeat" class="v49Number" type="number" min="1" max="7" step="1" value="1">
@@ -1512,7 +1664,7 @@
   <div class="titlebar"><span>Background</span><button type="button" id="visualOverlay" aria-pressed="false">Overlay</button><button class="close" aria-label="Close">Close</button></div>
   <div class="window-body">
     <div id="bgTabs"><button id="showVisuals">Op Art</button><button id="showImages">Images</button><button id="showVideos">Videos</button><button id="showStars">Starfield</button><span id="bgNavigation"></span></div>
-<label id="bgModeRow">Background <select id="bgMode"><option value="stars">Starfield</option><option value="grid">Cyber grid</option><option value="waves">Waves</option><option value="lightning">Lightning</option><option value="prism">Prism lattice</option><option value="aurora">Aurora curtains</option><option value="rings">Rings</option><option value="vortex">Checker tunnel</option><option value="spiral">Op-art spiral</option><option value="images">Images</option><option value="videos">Videos</option></select></label>
+<label id="bgModeRow">Background <select id="bgMode"><option value="stars">Starfield</option><option value="grid">Cyber grid</option><option value="waves">Waves</option><option value="lightning">Lightning</option><option value="prism">Prism lattice</option><option value="checkerboard">Checkerboard</option><option value="checkerGrid">Checker Grid</option><option value="aurora">Aurora curtains</option><option value="rings">Rings</option><option value="vortex">Checker tunnel</option><option value="spiral">Op-art spiral</option><option value="images">Images</option><option value="videos">Videos</option></select></label>
 <div id="bgVisual">
  <label>Direction <select id="visualDirection"><option value="forward">Forward</option><option value="backward">Backward</option><option value="spiral">Spiral</option><option value="up">Up</option><option value="down">Down</option><option value="left">Left</option><option value="right">Right</option><option value="random">Random</option></select></label>
  <label>Speed <input id="visualSpeed" type="range" min="0" max="4" step=".05" value="1"></label>
@@ -1521,11 +1673,14 @@
   <label>Thickness <input id="visualWidth" type="range" min=".25" max="7" step=".25" value="1.5"></label>
   <label>Colour <input id="visualColour" type="hidden" value="#ffffff"></label>
   <label>Background colour <input id="visualBack" type="hidden" value="#000000"></label>
-  <div class="visual-switches">
-    <label class="visual-rainbow">Rainbow <input id="visualRainbow" class="round-check" type="checkbox"></label>
-  </div>
+  
   <label id="gridControls" hidden>Grid start <input id="visualHorizon" type="range" min="0" max="100" value="42"></label>
   <label id="auroraControls" hidden>Curtains <input id="aurora-count" type="range" min="2" max="24" value="12"></label>
+  <div class="visual-switches">
+    <label class="visual-rainbow">Rainbow <input id="visualRainbow" class="round-check" type="checkbox"></label>
+    <button id="visualNoStars" type="button" aria-pressed="true">Starfield on</button>
+    <button id="opArtOverlay" type="button" aria-pressed="false">Overlay</button>
+  </div>
  </div>
 </div>
 <div id="bgMedia" hidden>
@@ -1554,14 +1709,16 @@
 <div class="window" id="imageLaunchWindow">
   <div class="titlebar"><span>Image launch</span><button class="close" aria-label="Close">Close</button></div>
   <div class="window-body">
-    <label id="imageSizeRow">Size <input id="imageLaunchSize" type="range" min="10" max="100" step="5" value="95"></label>
-    <label id="imageDurationRow">Duration <input id="imageLaunchDuration" type="range" min="1" max="24" step="1" value="7"></label>
+    <label id="imageStartSizeRow">Start size <input id="imageStartSize" type="range" min="1" max="100" step="1" value="10"></label>
+    <label id="imageEndSizeRow">End size <input id="imageEndSize" type="range" min="1" max="100" step="1" value="74"></label>
+    <label id="imageDurationRow">Duration <input id="imageLaunchDuration" type="range" min="1" max="24" step="1" value="3"></label>
     <label>Effect <select id="imageLaunchEffect"><option value="centre">Centre</option><option value="rise">Rise</option><option value="spin">Spin</option><option value="reverse">Reverse spin</option><option value="eight">Figure eight</option><option value="shake">Shake</option><option value="still">Still</option></select></label>
-    <label id="imageSpeedRow">Speed <input id="imageLaunchSpeed" type="range" min="0.25" max="3" step="0.25" value="1"></label>
+    <label id="imageSpeedRow">Speed <input id="imageLaunchSpeed" type="range" min="0.25" max="3" step="0.25" value="1.75"></label>
     <label>Slideshow <input class="round-check" id="imageLaunchSlides" type="checkbox"></label>
     <label id="imageIntervalRow">Interval <input id="imageLaunchInterval" type="range" min="1" max="20" step="1" value="3"></label>
     <label>Mode <select id="imageLaunchMode"><option value="all">All</option><option value="one">One</option><option value="random">Random</option></select></label>
-    <div class="image-position-row"><button id="setImagePosition" type="button">Set position</button><button id="resetImagePosition" type="button">Centre position</button><button id="imageDepth" type="button" aria-pressed="false">Near</button></div>
+    <div class="image-position-row"><button id="setImagePosition" type="button">Set position</button></div>
+    <div class="image-position-row"><button id="resetImagePosition" type="button">Centre position</button><button id="imageDepth" type="button" aria-pressed="false">Near</button></div>
     <button id="launchImageFromMenu" type="button">Launch image</button>
   </div>
 </div>
@@ -1569,7 +1726,7 @@
 <div class="window" id="telephoneWindow">
   <div class="titlebar telephoneTitlebar"><span id="telephoneWindowTitle">Broken Telephone Book</span><button class="close" aria-label="Close">Close</button></div>
   <div class="window-body telephoneBody">
-    <div class="telephoneFontBar"><details id="telephoneFont"><summary>Font</summary><select id="telephoneFontFamily" aria-label="Notepad font"></select> <label>Size <input id="telephoneFontSize" type="number" min="8" max="48" step="1" value="16"></label></details></div>
+    <div class="telephoneFontBar"><details id="telephoneFont"><summary>Font</summary><select id="telephoneFontFamily" aria-label="Notepad font"></select> <label>Size <input id="telephoneFontSize" type="number" min="8" max="48" step="1" value="11"></label><button id="telephoneFontColour" type="button" data-colour-trigger>Colour</button></details><div class="poem-title-row"><input id="poemTitleInput" type="text" placeholder="Title" aria-label="Poem title" autocomplete="off"><button id="downloadTitledPoem" type="button" aria-label="Download titled poem" title="Download poem">↓</button></div><div id="poemSaveError" role="status" hidden></div></div>
     <textarea id="telephoneText" spellcheck="false"></textarea>
     <div class="telephoneToolbar">
       <button id="loadText" title="Load a poem">Load poem</button><button id="rimePoem" title="Save this poem">Rime poem</button><button id="editParagraph" type="button" aria-expanded="false">Edit</button><button id="poemAlign" class="alignLeft" title="Align left" aria-label="Alignment: left"><span></span></button>
@@ -1586,10 +1743,13 @@
 <div id="paragraphPopup" class="writing-popover" popover aria-label="Paragraph options">
   <label id="writingSideMargins">Side margins <input id="writingSides" type="range" min="0" max="2" step=".125" value=".125"></label>
   <label id="writingTopMargins">Top and bottom <input id="writingTop" type="range" min="0" max="2" step=".125" value=".125"></label>
-  <label class="screen-type-label"><input id="screenTypeToggle" class="round-check" type="checkbox"> Screenwrite</label>
+  <label class="screen-type-label">Screenwrite <input id="screenTypeToggle" class="round-check" type="checkbox"></label>
+  <div class="planet-launch-options">
+    <button id="planetTextLaunch" type="button" aria-pressed="false">Text launch off</button>
+    <button id="planetLineLaunch" type="button" aria-pressed="true">Line launch on</button>
+    <button id="planetDrawOnScreen" type="button" aria-pressed="false">Draw on screen off</button>
+  </div>
 </div>
-
-<div id="poemTitleDialog" aria-hidden="true"><div class="poemTitleBox"><div class="poemTitleHeading">title poem</div><input id="poemTitleInput" type="text" autocomplete="off" spellcheck="false"><div id="poemSaveError" role="alert" hidden></div><div class="poemTitleActions"><button id="poemTitleSave">SAVE</button><button id="poemTitleCancel">CANCEL</button></div></div></div>
 
 <div class="window" id="settingsWindow">
  <div class="titlebar"><span>Settings</span><button class="close" aria-label="Close">Close</button></div>
@@ -1613,7 +1773,7 @@
   </div>
   <label id="menuOpacityRow">Opacity <input id="menuOpacity" type="range" min="0" max="1" step=".05" value=".35"></label>
   <label id="menuSizeRow">Size <input id="menuSize" type="range" min="7" max="22" step=".1" value="9.6"></label>
-  <div class="settings-actions"><input id="menuCorners" type="hidden" value="0px"><button type="button" id="toggleCorners">Square</button><button type="button" id="selectEffect" aria-pressed="true">Select</button><button type="button" id="syncRainbow" aria-pressed="false">Synch</button><button type="button" id="allFonts" aria-pressed="false">Apply to all</button></div>
+  <div class="settings-actions"><input id="menuCorners" type="hidden" value="0px"><button type="button" id="toggleCorners">Square</button><button type="button" id="selectEffect" aria-pressed="true">Select</button><button type="button" id="syncRainbow" aria-pressed="false" title="Synchronise rainbow cycling">Synch R</button><button type="button" id="allFonts" aria-pressed="false">Apply to all</button></div>
  </div>
 </div>
 
@@ -1745,9 +1905,12 @@
     last = now;
 
     ctx.clearRect(0, 0, W, H);
-    dctx.clearRect(0, 0, W, H);
+    if(burningStrokes.length || hadBurningStrokes)burningCtx.clearRect(0,0,W,H);
+    hadBurningStrokes=burningStrokes.length>0;
 
-    if(!paintAlternateBackground(now))for (const s of stars) {
+    const visual=overlayEnabled ? lastVisual : backgroundConfigs[bgMode.value] && bgMode.value!=="stars" ? bgMode.value : null;
+    const paintedBase=paintAlternateBackground(now);
+    if(visual ? opArtStars : !paintedBase)for (const s of stars) {
       const oldZ = s.z;
       // Smooth constant movement. No sinusoidal pulse, no global reset.
       const speed=backgroundConfigs.stars.speed;
@@ -1773,12 +1936,12 @@
       drawStar(s, oldZ);
     }
 
-    if(overlayEnabled)paintEffect(lastVisual,W,H,dt,now);
+    if(visual)paintEffect(visual,W,H,dt,now);
     drawLaunchedImages(now);
     drawTexts(dt);
     drawIncomingDrawings(dt);
-    if (drawing) drawLiveLine();
-    drawBurningStrokes(dt);
+    drawBurningStrokes(dt,burningCtx,false);
+    if(drawing)refreshLiveRainbow(liveInk);
     refreshTypedEffect();
 
     requestAnimationFrame(animate);
@@ -1811,7 +1974,7 @@
 
     const a = getTextAnchorCenter();
 
-    const settings=captureEffect("text");
+    const settings=captureLaunchedText(text,record);
     for(let copy=0;copy<appliedValue("textRepeat",1);copy++)movingTexts.push({
       settings,
       text: text,
@@ -1892,26 +2055,11 @@
       ctx.save();
       ctx.textAlign="center";ctx.textBaseline="middle";
       ctx.font=`${t.size}px ${settings.font}`;
-      ctx.globalAlpha=t.opacity;
-      const base=effectPaint(settings,ctx,t.age);
-      const useChange=settings.mode==="spectrum";
-      if(useChange){
-        const chars=[...t.text];
-        const widths=chars.map(ch=>ctx.measureText(ch).width);
-        const total=widths.reduce((a,b)=>a+b,0);
-        let px=t.x-total/2;
-        chars.forEach((ch,ci)=>{
-          const w=widths[ci];
-          ctx.fillStyle=cycleRainbowColour(effectPhase()+ci*.09);
-          ctx.shadowColor=ctx.fillStyle;ctx.shadowBlur=settings.glow;
-          ctx.fillText(ch,px+w/2,t.y);px+=w;
-        });
-      }else{
-        ctx.fillStyle=base;
-        ctx.shadowColor=typeof base==="string" ? base : "#fff";
-        ctx.shadowBlur=settings.glow;
-        ctx.fillText(t.text,t.x,t.y);
-      }
+      ctx.globalAlpha=t.opacity*(settings.transparent?textTransparency:1);
+      ctx.fillStyle=launchedTextPaint(ctx,settings,t.text,t.x,t.age);
+      ctx.shadowColor=typeof ctx.fillStyle==="string"?ctx.fillStyle:"#fff";
+      ctx.shadowBlur=settings.glow;
+      ctx.fillText(t.text,t.x,t.y);
       ctx.restore();
     }
   }
@@ -1921,6 +2069,10 @@
 
   const drawCanvas = document.getElementById("drawingCanvas");
   const dctx = drawCanvas.getContext("2d");
+  const liveGlowContext=byId("liveGlowCanvas").getContext("2d");
+  const burningCanvas=document.getElementById("burningDrawCanvas");
+  const burningCtx=burningCanvas.getContext("2d");
+  let hadBurningStrokes=false;
   const launchedDrawCanvas = document.getElementById("launchedDrawCanvas");
   const launchedCtx = launchedDrawCanvas.getContext("2d");
   let colour = "#ffffff";
@@ -1948,6 +2100,10 @@
     drawCanvas.style.width = window.innerWidth + "px";
     drawCanvas.style.height = window.innerHeight + "px";
     dctx.setTransform(dpr,0,0,dpr,0,0);
+    resizeLiveGlow(liveGlowContext,window.innerWidth,window.innerHeight);
+    burningCanvas.width=drawCanvas.width;
+    burningCanvas.height=drawCanvas.height;
+    burningCtx.setTransform(dpr,0,0,dpr,0,0);
   }
   resizeDrawingCanvas();
   window.addEventListener("resize", resizeDrawingCanvas);
@@ -1978,7 +2134,10 @@
     liveStrokeStart=performance.now();
     const q=pointerPos(e);
     points=[q];
-    strokeAngles.set(points,Math.random()*180);
+    liveStrokeTip=q;
+    const angle=Math.random()*180;
+    strokeAngles.set(points,angle);
+    liveInk=beginLiveInk(dctx,q,liveStrokeSettings,angle,liveGlowContext);
     window.__drawingPointerId=e.pointerId;
     drawCanvas.setPointerCapture(e.pointerId);
     e.preventDefault();
@@ -1987,6 +2146,8 @@
   drawCanvas.addEventListener("pointermove", e => {
     if(!drawing || e.pointerId!==window.__drawingPointerId)return;
     const q=pointerPos(e);
+    liveStrokeTip=q;
+    extendLiveInk(liveInk,q);
     const last=points[points.length-1];
     if(!last){
       points.push(q);
@@ -2016,6 +2177,7 @@
     drawing=false;
     window.__drawingPointerId=null;
 
+    if(liveStrokeTip && Math.hypot(liveStrokeTip.x-points.at(-1).x,liveStrokeTip.y-points.at(-1).y)>.05)points.push(liveStrokeTip);
     if(points.length===1){
       points.push({x:points[0].x+.5,y:points[0].y+.5});
     }
@@ -2023,14 +2185,16 @@
     if(points.length>1){
       const shape=points.slice();
       strokeAngles.set(shape,strokeAngles.get(points)||0);
+      drawnStrokeStyles.set(shape,liveStrokeSettings);
       rememberDrawing(shape,planetOpen);
-      if(!liveStrokeSettings.invisible && liveStrokeSettings.fuse){
-        burningStrokes.push({shape,age:0,settings:liveStrokeSettings,elapsed:performance.now()-liveStrokeStart});
+      if(!liveStrokeSettings.invisible && (liveStrokeSettings.fuse || deformsReleasedInk(liveStrokeSettings.lineEffect))){
+        burningStrokes.push({shape,age:0,settings:releaseInkSettings(liveInk,liveStrokeSettings),elapsed:performance.now()-liveStrokeStart,halo:liveInk.haloSamples});
       }
     }
 
     points=[];
     dctx.clearRect(0,0,W,H);
+    liveGlowContext.clearRect(0,0,W,H);
     e.preventDefault();
   }
 
@@ -2041,11 +2205,18 @@
       minY=Math.min(minY,q.y);maxY=Math.max(maxY,q.y);
     }
     if(!relaunch)lastDrawing=shape;
+    if(planet && byId("planetLineLaunch").getAttribute("aria-pressed")!=="true")return;
     const repeat=appliedValue("launchRepeat",1);
     for(let copy=0;copy<repeat;copy++){
       const path=simplifyLaunchPoints(shape,900).slice();
-      strokeAngles.set(path,Math.random()*180);
       const settings=captureEffect("line");
+      const drawn=drawnStrokeStyles.get(shape);
+      if(settings.matchDrawn && drawn){
+        for(const key of matchedDrawFields)settings[key]=drawn[key];
+      }
+      if(!settings.lineEffect && drawn?.lineEffect)settings.lineEffect=drawn.lineEffect;
+      assignSequenceColour(settings,"launched");
+      strokeAngles.set(path,settings.matchDrawn ? (strokeAngles.get(shape)??0) : Math.random()*180);
       incomingDrawings.push({planet,settings,lastLaunch:effectState.line.origin==="stroke"?{x:(minX+maxX)/2,y:(minY+maxY)/2}:null,
         points:path,ox:(minX+maxX)/2,oy:(minY+maxY)/2,age:-copy*280,opacity:1});
     }
@@ -2056,28 +2227,6 @@
   drawCanvas.addEventListener("lostpointercapture",e=>{
     if(drawing)finishDrawing(e);
   });
-
-  function drawLiveLine() {
-    dctx.clearRect(0,0,W,H);
-    const settings=liveStrokeSettings;
-    if(points.length<2 || !settings || settings.invisible)return;
-    const paint=effectPaint(settings,dctx,performance.now()-liveStrokeStart);
-    dctx.save();
-    dctx.lineCap="round";
-    dctx.lineJoin="round";
-    dctx.shadowBlur=settings.glow;
-    dctx.shadowColor=typeof paint==="string"?paint:"#fff";
-    dctx.strokeStyle=paint;
-    dctx.lineWidth=settings.size;
-    repeatedLinePath(dctx,points,settings);
-    if(!["stripe","stripePath","spectrum"].includes(settings.mode) && paint!=="#000000"){
-      dctx.shadowBlur=4;
-      dctx.strokeStyle="rgba(255,255,255,.50)";
-      dctx.lineWidth=.55;
-      repeatedLinePath(dctx,points,settings,settings.size);
-    }
-    dctx.restore();
-  }
 
   function simplifyLaunchPoints(srcPoints,maxPoints=700){
     if(srcPoints.length<=maxPoints)return srcPoints.slice();
@@ -2109,8 +2258,6 @@
       const fadeStart=.70;
       const fade=p<fadeStart ? 1 : Math.max(0,1-(p-fadeStart)/(1-fadeStart));
 
-      const glow=settings.glow;
-      const lineW=settings.size;
 
       launchedCtx.save();
       launchedCtx.translate(x,y);
@@ -2121,9 +2268,8 @@
       launchedCtx.globalAlpha=fade;
       launchedCtx.lineCap="round";
       launchedCtx.lineJoin="round";
-      launchedCtx.lineWidth=lineW;
 
-      paintLaunchedStroke(launchedCtx,d,settings,lineW,glow);
+      paintDrawingStroke(launchedCtx,d.points,settings,d.age,settings.fuse ? d.age*settings.fuseSpeed/1000 : 0);
 
       launchedCtx.restore();
     }
@@ -2157,7 +2303,7 @@
   let planetDrag = null;
   let planetStars = [];
   let planetStart = 0;
-  let planetSpin={angle:0,rate:0,at:0};
+  let planetSpin={angle:0,rate:0,at:0,travel:0,size:17};
 
   function resizePlanetCanvas() {
     const pdpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -2211,15 +2357,18 @@
 
   const planetTextFlights=[];
   let planetTextFont='"Segoe UI",Arial,sans-serif';
-  function currentPlanetColour(){
+  function currentPlanetColour(now){
+    if(byId("planetRainbow")?.getAttribute("aria-pressed")==="true")return hexColour(cycleRainbowColour(now/18000));
+
     return planetCustomColours.planetColourRange || (planetColourRange ? rainbowColour(planetColourRange.value) : "#888888");
   }
-  const planetLineColours=["#ff0000","#ff4c00","#ff8500","#ffbd00","#ffe600","#58da00","#00c998","#00a8ec","#2359ee","#7427ca","#a42a80"];
-  function planetLetterColour(now,index,lineIndex=0){
-    switch(planetInkStyle.value){
+  const planetLineColours=["#ff0000","#ff2600","#ff4c00","#ff6900","#ff8500","#ffb600","#ffe600","#ace000","#58da00","#2ced73","#00ffe5","#17d3f2","#2da6ff","#317af9","#344ef3","#543bdf","#7427ca","#9451e5","#b47bff","#da3e80"];
+  const planetLetterHues=[0,30,58,122,178,239,286];
+  function planetLetterColour(now,index,lineIndex=0,style=planetInkStyle.value){
+    switch(style){
       case "cycle":return cycleRainbowColour(now/4400);
-      case "fixed":return cycleRainbowColour(index/10);
-      case "moving":return cycleRainbowColour(now/4400+index/10);
+      case "fixed":return planetLetterColour(now,0,lineIndex*67+index+1,"lineRandom");
+      case "moving":return cycleRainbowColour(planetLetterHues[mod(index+Math.floor(now/220),7)]/360);
       case "alternating":return index%2?"#171717":"#ffffff";
       case "lineRainbow":return planetLineColours[lineIndex%planetLineColours.length];
       case "lineRandom":return cycleRainbowColour((Math.sin((lineIndex+1)*78.233)*43758.5453)%1);
@@ -2238,7 +2387,7 @@
           submittedLines.push(text);
           telephone.value=submittedLines.join("\n");
           planetEntry.value="";
-          launchPlanetText(text);
+          launchPlanetText(text,true);
         }
       }
     });
@@ -2262,7 +2411,7 @@
     const x=pw*.5,y=ph*.53,R=Math.min(pw,ph)*.205;
 
     // Complete, smooth 3-D sphere. No separate shadow overlay, bands, or edge mask.
-    const pc=currentPlanetColour();
+    const pc=currentPlanetColour(now);
     const baseR=parseInt(pc.slice(1,3),16), baseG=parseInt(pc.slice(3,5),16), baseB=parseInt(pc.slice(5,7),16);
     const shade=(m,a=1)=>`rgba(${Math.max(0,Math.min(255,Math.round(baseR*m)))},${Math.max(0,Math.min(255,Math.round(baseG*m)))},${Math.max(0,Math.min(255,Math.round(baseB*m)))},${a})`;
     const sphere=pctx.createRadialGradient(x-R*.38,y-R*.42,R*.02,x+R*.18,y+R*.16,R*1.02);
@@ -2282,21 +2431,27 @@
     // always placed first; new phrases are appended after it. When a ring
     // fills, the next ring is created just outside it.
     const ringLines=submittedLines.slice();
-    const motion=planetMotion ? planetMotion.value : "ring";
-    const textSize=Math.max(8,Math.min(30,appliedValue("planetTextSize",15)));
-    const baseRadius=motion==="orbit" ? R*1.42 : R*1.30;
-    const ringGap=Math.max(8,textSize*.75);
-    const gap=Math.max(12,textSize*.9);
-    const speedSetting=planetSpeed ? appliedValue("planetSpeed",14) : 14;
-    const phase=(now-planetStart)*speedSetting*.0000035;
+    const motion=planetMotion ? planetMotion.value : "row";
+    const dt=Math.max(0,Math.min(.06,(now-planetSpin.at)/1000));
+    planetSpin.at=now;
+    const targetSize=appliedValue("planetTextSize",17);
+    planetSpin.size+=(targetSize-planetSpin.size)*(1-Math.exp(-dt*13));
+    const textSize=planetSpin.size;
+    const baseRadius=R*1.30;
+    const ringGap=11.25;
+    const gap=13.5;
+    const speedSetting=planetSpeed ? appliedValue("planetSpeed",27) : 27;
+    planetSpin.travel+=dt*1000*speedSetting;
+    const travel=planetSpin.travel,phase=travel*.0000035;
     pctx.font=`${textSize}px ${planetTextFont}`;
     pctx.textAlign="center";
     pctx.textBaseline="middle";
     const items=ringLines.map((line,index)=>({line,index,w:pctx.measureText(line).width}));
-    const effect=orbitEffect.value;
+    pctx.font=`15px ${planetTextFont}`;
+    for(const item of items)item.orbitWidth=pctx.measureText(item.line).width;
+    pctx.font=`${textSize}px ${planetTextFont}`;
+    const effect=orbitEffect.value,glow=byId("planetGlow").value;
     const spinTime=(now-planetStart)/1000;
-    const dt=Math.max(0,Math.min(.06,(now-planetSpin.at)/1000));
-    planetSpin.at=now;
     const direction=effect==="spin"?1:effect==="reverseSpin"?-1:0;
     const targetRate=direction*(.026+(speedSetting-2)*.014)*(1-.45*Math.cos(spinTime/4));
     planetSpin.rate+=(targetRate-planetSpin.rate)*(1-Math.exp(-dt*4));
@@ -2306,35 +2461,58 @@
       const outLength=Math.hypot(tx-x,ty-y)||1;
       const dx=(tx-x)/outLength,dy=(ty-y)/outLength;
       const angle=rotation+planetSpin.angle;
-      if(effect==="shadow" || effect==="mirror" || effect==="tracers"){
+      const surfaceX=x+(tx-x)*Math.min(.76,R*.78/outLength);
+      const surfaceY=y+(ty-y)*Math.min(.76,R*.78/outLength);
+      const draw=(px,py,scale=1,alpha=1,paint={})=>{
         pctx.save();
-        pctx.shadowBlur=0;
-        if(effect==="tracers"){
-          for(let trail=3;trail>=1;trail--){
-            pctx.save();
-            pctx.translate(tx+dx*trail*9,ty+dy*trail*9);
-            pctx.rotate(angle);
-            pctx.globalAlpha=.26/trail;
-            pctx.fillStyle=planetLetterColour(now-trail*100,0,item.index);
-            pctx.fillText(item.line,0,0);
-            pctx.restore();
-          }
-        }else{
-          const mirror=effect==="mirror";
-          pctx.translate(tx+dx*(mirror?textSize:-13),ty+dy*(mirror?textSize:-13));
-          pctx.rotate(angle);
-          pctx.scale(mirror?-1:.88,mirror?1:.88);
-          pctx.globalAlpha=.38;
-          pctx.fillStyle=planetLetterColour(now,0,item.index);
-          pctx.fillText(item.line,0,0);
-        }
+        pctx.translate(px,py);
+        pctx.rotate(angle);
+        pctx.scale(scale*(paint.mirror?-1:1),scale);
+        pctx.globalAlpha*=alpha;
+        paintPlanetLine(pctx,item,now,textSize,effect,paint.glow||"off",{...paint,hover,motionTime:travel/14});
+        pctx.restore();
+      };
+      if(glow==="shadow"){
+        pctx.save();
+        pctx.beginPath();
+        pctx.arc(x,y,R,0,Math.PI*2);
+        pctx.clip();
+        const darkPlanet=Math.max(baseR,baseG,baseB)<30;
+        draw(surfaceX,surfaceY,.58,darkPlanet?.82:.65,{colour:darkPlanet?"#343434":"#080808"});
         pctx.restore();
       }
-      pctx.save();
-      pctx.translate(tx,ty);
-      pctx.rotate(angle);
-      paintPlanetLine(pctx,item,now,hover);
-      pctx.restore();
+      if(glow==="tracers"){
+        for(let trail=3;trail>=1;trail--)draw(tx+dx*trail*8,ty+dy*trail*8,1,.36/trail);
+      }
+      if(effect==="mirror" || effect==="mirrorSpin"){
+        draw(tx+dx*textSize*1.3,ty+dy*textSize*1.3,1,.52,{mirror:true,glow});
+      }
+      if(effect==="depth"){
+        for(let row=5;row>=1;row--){
+          const t=row/5;
+          const mode=planetInkStyle.value;
+          const colour=["lineRainbow","lineRandom"].includes(mode)?planetLetterColour(now,0,item.index+row):undefined;
+          draw(tx+(surfaceX-tx)*t,ty+(surfaceY-ty)*t+textSize*t,.96-.78*t,.86-.64*t,{colour,glow});
+        }
+      }
+      if(effect==="sticks" && item.line.trim() && item.lineCentre!==false){
+        const end=Math.min(R*.78,outLength*.6);
+        pctx.save();
+        pctx.strokeStyle=planetLetterColour(now,Math.floor(item.line.length/2),item.index);
+        pctx.lineWidth=Math.max(1,textSize*.08);
+        pctx.beginPath();
+        const bottom=Math.max(textSize*.35,pctx.measureText(item.line).actualBoundingBoxDescent||0);
+        const nx=-Math.sin(angle),ny=Math.cos(angle);
+        const startX=tx+nx*bottom,startY=ty+ny*bottom;
+        const aimX=x+dx*end,aimY=y+dy*end;
+        const clearOfText=(aimX-startX)*nx+(aimY-startY)*ny>0;
+        const length=Math.max(textSize,Math.hypot(tx-aimX,ty-aimY)-bottom);
+        pctx.moveTo(startX,startY);
+        pctx.lineTo(clearOfText?aimX:startX+nx*length,clearOfText?aimY:startY+ny*length);
+        pctx.stroke();
+        pctx.restore();
+      }
+      draw(tx,ty,1,1,{glow});
     };
 
     if(motion==="saturn" && items.length){
@@ -2342,85 +2520,96 @@
       const ringWidth=R*1.26,ringDepth=R*.23;
       const beltLength=Math.PI*ringWidth;
       const ticker=items.flatMap(item=>[...[...item.line].map((letter,index)=>({letter,index,item})),{letter:"     ",index:0,item}]).reverse();
-      const run=ticker.reduce((sum,glyph)=>sum+pctx.measureText(glyph.letter).width,0);
+      pctx.font=`15px ${planetTextFont}`;
+      for(const glyph of ticker)glyph.orbitWidth=pctx.measureText(glyph.letter).width;
+      pctx.font=`${textSize}px ${planetTextFont}`;
+      const run=ticker.reduce((sum,glyph)=>sum+glyph.orbitWidth,0);
       if(run>0){
-        let distance=mod((now-planetStart)*speedSetting*.004,run)-run;
+        let distance=mod(travel*.004,run)-run;
         for(let lap=0;lap<Math.ceil(beltLength/run)+2 && distance<beltLength;lap++){
           for(const glyph of ticker){
             if(distance>beltLength)break;
             const width=pctx.measureText(glyph.letter).width;
-            const centre=distance+width/2;
+            const centre=distance+glyph.orbitWidth/2;
             if(centre>=0 && centre<=beltLength){
               const a=centre/beltLength*Math.PI;
               pctx.save();
-              pctx.translate(x+Math.cos(a)*ringWidth,y+Math.sin(a)*ringDepth);
               pctx.globalAlpha=Math.min(1,Math.sin(a)*5);
-              pctx.scale(Math.max(.3,Math.sin(a)),1);
-              pctx.fillStyle=planetLetterColour(now,glyph.index,glyph.item.index);
-              const glow=byId("planetGlow").value;
-              if(glow!=="off"){
-                pctx.shadowBlur=22;
-                pctx.shadowColor=glow==="rainbow"||planetInkStyle.value==="alternating"?cycleRainbowColour(now/2600):pctx.fillStyle;
-              }
-              pctx.fillText(glyph.letter,0,0);
+              paintLine({line:glyph.letter,index:glyph.item.index,w:width,letterOffset:glyph.index,
+                lineCentre:glyph.index===Math.floor([...glyph.item.line].length/2)},
+                x+Math.cos(a)*ringWidth,y+Math.sin(a)*ringDepth);
               pctx.restore();
             }
-            distance+=width;
+            distance+=glyph.orbitWidth;
           }
         }
       }
+    }else if(motion==="row"){
+      const slots=30;
+      const step=Math.PI*2/slots;
+      items.forEach((item,index)=>{
+        const radius=R*1.42+Math.floor(index/slots)*36;
+        const angle=phase+Math.PI-(index%slots)*step;
+        paintLine(item,x+Math.cos(angle)*radius,y+Math.sin(angle)*radius);
+      });
+    }else if(motion==="orbit" || motion==="orbitRing"){
+      items.forEach((item,index)=>{
+        const slot=index%8,ring=Math.floor(index/8);
+        const angle=phase-Math.PI/2+slot*Math.PI/4;
+        const radius=R*1.42+ring*36;
+        paintLine(item,x+Math.cos(angle)*radius,y+Math.sin(angle)*radius,
+          motion==="orbit"?0:angle+Math.PI/2);
+      });
     }else if(motion==="page" && items.length){
-      const rowHeight=textSize*1.45;
-      const distance=(now-planetStart)*speedSetting*.0018;
+      const rowHeight=15*1.45;
+      const distance=travel*.0018;
       const count=Math.max(1,Math.ceil(R*1.52/rowHeight));
-      pctx.save();
-      pctx.beginPath();
-      pctx.rect(x-R*.83,y-R*.76,R*1.66,R*1.52);
-      pctx.clip();
       for(let i=-1;i<=count;i++){
         const index=mod(i-Math.floor(distance/rowHeight),items.length);
-        paintLine(items[index],x,y-R*.76+i*rowHeight+mod(distance,rowHeight));
+        const baseline=y-R*.76+i*rowHeight+mod(distance,rowHeight);
+        if(baseline<y-R*.76-rowHeight/2 || baseline>y+R*.76+rowHeight/2)continue;
+        paintLine(items[index],Math.round(x),Math.round(baseline));
       }
-      pctx.restore();
     }else{
       const rings=[];
       let radius=baseRadius,current=[];
       for(const item of items){
-        const used=current.reduce((sum,existing)=>sum+existing.w+gap,0);
-        if(current.length && used+item.w+gap>2*Math.PI*radius*.90){
+        const used=current.reduce((sum,existing)=>sum+existing.orbitWidth+gap,0);
+        if(current.length && used+item.orbitWidth+gap>2*Math.PI*radius*.90){
           rings.push({items:current,radius});
-          radius+=textSize+ringGap;
+          radius+=15+ringGap;
           current=[];
         }
         current.push(item);
       }
       if(current.length)rings.push({items:current,radius});
       rings.forEach((ring,ringIndex)=>{
-        let cursor=-ring.items.reduce((sum,it)=>sum+it.w+gap,0)/2;
+        let cursor=-ring.items.reduce((sum,it)=>sum+it.orbitWidth+gap,0)/2;
         ring.items.forEach((item,index)=>{
-          const arc=cursor+item.w/2;
-          cursor+=item.w+gap;
+          const arc=cursor+item.orbitWidth/2;
+          cursor+=item.orbitWidth+gap;
           let angle=phase+arc/ring.radius-Math.PI/2;
           let rr=ring.radius,tx=x+Math.cos(angle)*rr,ty=y+Math.sin(angle)*rr;
           if(motion==="axis"){
             angle=phase*(1+ringIndex*.25)+arc/ring.radius-Math.PI/2;
             rr=ring.radius*.86;tx=x+Math.cos(angle)*rr;ty=y+Math.sin(angle)*rr*.52;
           }else if(motion==="float"){
-            tx+=Math.sin(now*.00013+index*.75)*R*.10;ty+=Math.cos(now*.00011+index*.61)*R*.10;
+            tx+=Math.sin(travel*.00014+index*.75)*R*.28;ty+=Math.cos(travel*.00018+index*.61)*R*.26;
           }else if(motion==="scatter"){
             const spread=Math.max(0,Math.sin(now*.00055+index*.72))*R*.26;
             tx+=Math.cos(now*.00072+index)*spread;ty+=Math.sin(now*.00061+index*1.2)*spread;
           }else if(motion==="wave"){
-            ty+=Math.sin(now*.00016+index*.62)*R*.14;
+            tx=x+Math.sin(angle)*ring.radius;
+            ty=y+Math.sin(tx/R*2+travel*.00042)*R*.5+(ringIndex-.5)*R*.35;
           }else if(motion==="spiral"){
-            rr+=Math.sin(now*.000065)*R*.18*(ringIndex+1);tx=x+Math.cos(angle)*rr;ty=y+Math.sin(angle)*rr;
+            rr+=Math.sin(travel*.00006-index*.35)*R*.30;tx=x+Math.cos(angle)*rr;ty=y+Math.sin(angle)*rr;
           }else if(motion==="planet"){
             rr=Math.max(R*.64,ring.radius-R*.50);
             angle=phase*.62+arc/Math.max(1,rr)-Math.PI/2;
             tx=x+Math.cos(angle)*rr*.80;ty=y+Math.sin(angle)*rr*.42;
           }
-          const rotation=motion==="axis"||motion==="planet"?Math.sin(angle)*.18:angle+Math.PI/2;
-          paintLine(item,tx,ty,rotation,motion==="hover");
+          const rotation=["float","wave"].includes(motion)?0:motion==="axis"||motion==="planet"?Math.sin(angle)*.18:angle+Math.PI/2;
+          paintLine(item,tx,ty,rotation,["hover","float"].includes(motion));
         });
       });
     }
@@ -2428,6 +2617,8 @@
     // Drawings made on the planetary surface launch above the planet.
     drawLaunchedImages(now,pctx,pw,ph,true);
     drawPlanetIncomingDrawings(now);
+    drawPlanetBurningStrokes(now);
+    if(planetPointer!==null)refreshLiveRainbow(planetLiveInk);
     for(let i=planetTextFlights.length-1;i>=0;i--){
       const flight=planetTextFlights[i];
       const p=(now-flight.start)/flight.duration;
@@ -2437,46 +2628,89 @@
       const dx=flight.style==="left"?-width:flight.style==="right"?width:0;
       pctx.save();
       pctx.textAlign="center";
-      pctx.globalAlpha=Math.min(1,(1-p)*3);
+      pctx.globalAlpha=Math.min(1,(1-p)*3)*(flight.transparent?textTransparency:1);
       pctx.font=`${15+(flight.size-15)*p}px ${flight.font}`;
       pctx.shadowBlur=flight.glow;
-      pctx.fillStyle=flight.ink==="cycle"?cycleRainbowColour(now/4400):flight.planetColour;
+      const tx=pw/2+dx*p,ty=ph*.90-p*ph*.65;
+      pctx.fillStyle=launchedTextPaint(pctx,flight,flight.text,tx,now-flight.start);
       pctx.shadowColor=typeof pctx.fillStyle==="string"?pctx.fillStyle:"#fff";
-      pctx.fillText(flight.text,pw/2+dx*p,ph*.90-p*ph*.65);
+      pctx.fillText(flight.text,tx,ty);
       pctx.restore();
     }
     requestAnimationFrame(drawPlanetScene);
   }
 
-  function launchPlanetText(text){
-    const shot=captureEffect("text");
-    const start=performance.now();
-    const ink=planetInkStyle.value;
-    const planetColour=planetLetterColour(start,0,Math.max(0,submittedLines.lastIndexOf(text)));
-    const count=appliedValue("textRepeat",1);
-    for(let i=0;i<count;i++){
-      planetTextFlights.push({...shot,text,start:start+i*280,font:planetTextFont,ink,planetColour});
+  function syncPlanetLaunchOptions(){
+    for(const [id,kind] of [["planetTextLaunch","text"],["planetLineLaunch","line"]]){
+      const button=byId(id);
+      const launch=byId("planetLaunchBarV49")?.querySelector(`[data-screen-launch="${kind}"]`);
+      if(launch)launch.disabled=screenType || button.getAttribute("aria-pressed")!=="true";
     }
   }
-  function paintPlanetLine(context,item,now,hover=false){
-    const style=planetInkStyle.value;
-    const glow=byId("planetGlow").value;
-    const separated=hover || ["fixed","moving","alternating"].includes(style);
-    const paint=(text,offset,y,index)=>{
-      context.fillStyle=planetLetterColour(now,index,item.index);
-      if(glow!=="off"){
-        context.shadowBlur=22;
-        context.shadowColor=glow==="rainbow" || style==="alternating"?cycleRainbowColour(now/2600+index/12):context.fillStyle;
-      }else context.shadowBlur=0;
-      context.fillText(text,offset,y);
-    };
-    if(!separated){paint(item.line,0,0,0);return;}
-    let offset=-item.w/2;
-    [...item.line].forEach((letter,index)=>{
-      const width=context.measureText(letter).width;
-      paint(letter,offset+width/2,hover?Math.sin(now*.004+index*.86+item.index)*7:0,index);
-      offset+=width;
+  for(const [id,label] of [["planetTextLaunch","Text launch"],["planetLineLaunch","Line launch"],["planetDrawOnScreen","Draw on screen"]]){
+    byId(id).addEventListener("click",event=>{
+      const button=event.currentTarget;
+      const enabled=button.getAttribute("aria-pressed")!=="true";
+      button.setAttribute("aria-pressed",String(enabled));
+      button.textContent=label+(enabled?" on":" off");
+      syncPlanetLaunchOptions();
     });
+  }
+  function launchPlanetText(text,fromEntry=false){
+    if(byId("planetTextLaunch").getAttribute("aria-pressed")!=="true")return;
+    const shot=captureLaunchedText(text,fromEntry);
+    const start=performance.now();
+    const count=appliedValue("textRepeat",1);
+    for(let i=0;i<count;i++){
+      planetTextFlights.push({...shot,text,start:start+i*280,font:shot.font});
+    }
+  }
+  function paintPlanetLine(context,item,now,size,effect,glow,{hover,colour,motionTime=now}){
+    const style=planetInkStyle.value;
+    const spin=effect==="letterSpin" || effect==="mirrorSpin";
+    const shake=effect==="shake";
+    const separated=hover || spin || shake || item.letterOffset!==undefined || ["fixed","moving","alternating"].includes(style);
+    let gradient;
+    if(style==="gradient" && !colour){
+      const period=10*size;
+      gradient=context.createLinearGradient(-item.w/2,0,Math.max(1,item.w)/2,0);
+      const start=(item.letterOffset || 0)*size*.65/period-now/3800;
+      const span=item.w/period;
+      const stops=Math.max(2,Math.ceil(span*24));
+      for(let i=0;i<=stops;i++)gradient.addColorStop(i/stops,cycleRainbowColour(start+span*i/stops));
+    }
+    const paint=(text,offset,index)=>{
+      const shift=motionTime*.009-index*.58;
+      const ripple=Math.pow(Math.max(0,Math.sin(shift*.42)),5);
+      const x=offset+(shake?Math.sin(shift*3)*ripple*size*.19:0);
+      const y=(hover?Math.sin(motionTime*.004+index*.86+item.index)*7:0)+(shake?Math.cos(shift*2)*ripple*size*.16:0);
+      const fill=colour || gradient || planetLetterColour(now,index,item.index);
+      context.save();
+      context.fillStyle=fill;
+      if(spin){
+        context.translate(x,y);
+        context.scale(Math.cos(motionTime*.005-index*.42),1);
+      }
+      const tx=spin?0:x,ty=spin?0:y;
+      if(glow==="rainbow"){
+        const halo=cycleRainbowColour(now/4800);
+        context.shadowColor=halo;
+        context.shadowBlur=Math.max(13,size*1.3);
+        context.strokeStyle=halo;
+        context.lineWidth=Math.max(1.6,size*.22);
+        context.lineJoin="round";
+        context.strokeText(text,tx,ty);
+      }
+      context.fillText(text,tx,ty);
+      context.restore();
+    };
+    if(!separated){paint(item.line,0,0);return;}
+    let offset=-item.w/2,index=item.letterOffset || 0;
+    for(const letter of item.line){
+      const width=context.measureText(letter).width;
+      paint(letter,offset+width/2,index++);
+      offset+=width;
+    }
   }
 
   function drawPlanetIncomingDrawings(now){
@@ -2494,12 +2728,10 @@
       const {x,y}=linePosition(d,p,pw,ph,.10);
       const scale=launchLineScale(settings,p);
       const fade=p<.70?1:Math.max(0,1-(p-.70)/.30);
-      const glow=settings.glow;
-      const lineW=settings.size;
       pctx.save();
       pctx.translate(x,y);if(settings.spinning)pctx.rotate(d.age*.001*settings.spinSpeed*Math.PI/180);pctx.scale(scale,scale);pctx.translate(-d.ox,-d.oy);
-      pctx.globalAlpha=fade;pctx.lineCap="round";pctx.lineJoin="round";pctx.lineWidth=lineW;
-      paintLaunchedStroke(pctx,d,settings,lineW,glow);
+      pctx.globalAlpha=fade;pctx.lineCap="round";pctx.lineJoin="round";
+      paintDrawingStroke(pctx,d.points,settings,d.age,settings.fuse ? d.age*settings.fuseSpeed/1000 : 0);
       pctx.restore();
     }
   }
@@ -2538,14 +2770,18 @@
 
   function openPlanet() {
     closeAllMenusAndWindows();
+    settingImagePosition=false;
+    byId("setImagePosition").textContent=imagePosition?"Set again":"Set position";
+    byId("setImagePosition").setAttribute("aria-pressed","false");
     planetPhoneMenu.classList.remove("show");
     planetOpen = true;
     refreshScreenScene();
     planetStart = performance.now();
-    planetSpin={angle:0,rate:0,at:planetStart};
+    planetSpin={angle:0,rate:0,at:planetStart,travel:0,size:appliedValue("planetTextSize",17)};
     planetView.style.display = "block";
     planetOrb.style.display = "none"; planetEntry.value="";
     if(planetEntry)planetEntry.style.display="block";
+    syncPlanetLaunchOptions();
     resizePlanetCanvas();
     resizePlanetInk();
     makePlanetStars();
@@ -2684,6 +2920,7 @@
         for(const property of ["top","left","right","bottom","transform"])w.style[property]="";
       }
       w.style.display="block";
+      byId("phoneBroken").textContent="Close Broken Telephone Book";
       bringToFront(w);
     }
     const ta=document.getElementById("telephoneText");
@@ -2711,14 +2948,28 @@
   });
   planetPhone.addEventListener("click",e=>{
     e.stopPropagation();
-    if(!phoneDrag?.moved || e.detail===0)planetPhoneMenu.classList.toggle("show");
+    if(!phoneDrag?.moved || e.detail===0){
+      byId("phoneBroken").textContent=(telephoneBookOpen()?"Close":"Open")+" Broken Telephone Book";
+      planetPhoneMenu.classList.toggle("show");
+      restoreEntryFocus();
+    }
     phoneDrag=null;
   });
   planetPhone.addEventListener("pointercancel",()=>{phoneDrag=null;});
+  function telephoneBookOpen(){return getComputedStyle(byId("telephoneWindow")).display!=="none";}
+  function closeTelephoneBook(){
+    byId("telephoneWindow").style.display="none";
+    byId("phoneBroken").textContent="Open Broken Telephone Book";
+    hideWritingMenus();
+    restoreEntryFocus(true);
+  }
   document.getElementById("phoneBroken")?.addEventListener("click",e=>{
     e.preventDefault(); e.stopPropagation();
-    openTelephoneWindow();
-    planetPhoneMenu?.classList.remove("show");
+    if(telephoneBookOpen())closeTelephoneBook();
+    else{
+      openTelephoneWindow();
+      planetPhoneMenu.classList.remove("show");
+    }
   });
 
   document.getElementById("phoneDownload")?.addEventListener("click",()=>{
@@ -2751,7 +3002,7 @@
     const header=win.querySelector(".windowHeader,.titlebar,.panelHeader");
     if(!header || header.dataset.dragReady)return;
     header.dataset.dragReady="1";
-    header.addEventListener("pointerdown",e=>{
+    const startDrag=e=>{
       if(e.button!==0 || e.target.closest("button,input,select,textarea,a"))return;
       bringToFront(win);
       const r=win.getBoundingClientRect();
@@ -2765,10 +3016,20 @@
       const up=()=>{
         window.removeEventListener("pointermove",move);
         window.removeEventListener("pointerup",up);
+        window.removeEventListener("pointercancel",up);
       };
       window.addEventListener("pointermove",move);
       window.addEventListener("pointerup",up,{once:true});
+      window.addEventListener("pointercancel",up,{once:true});
       e.preventDefault();
+    };
+    header.addEventListener("pointerdown",startDrag);
+    win.addEventListener("pointerdown",e=>{
+      if(e.target.closest(".writing-drag-space")){startDrag(e);return;}
+      const body=e.target.closest(".window-body");
+      if(!body || e.target.closest("label,button,input,select,textarea,a,summary,output,[role=button]"))return;
+      const rect=body.getBoundingClientRect();
+      if(e.clientY>=rect.bottom-31 && e.clientY<=rect.bottom)startDrag(e);
     });
     win.addEventListener("pointerdown",()=>bringToFront(win),true);
   }
@@ -2806,9 +3067,11 @@
       } else {
         if(win.id==="radio-panel")closeRadioPopups();
         if(win.id==="radio-panel" || win.id==="backgroundWindow")closeMediaListsFor(win.id);
-        win.style.display = "none";
+        if(win.id==="telephoneWindow")closeTelephoneBook();
+        else win.style.display = "none";
         btn.classList.remove("active","selected");
       }
+      restoreEntryFocus();
     });
   });
 
@@ -2819,9 +3082,9 @@
       win.style.display = "none";
       const btn = document.querySelector(`.mainButton[data-window="${win.id}"]`);
       if (btn) btn.classList.remove("active");
-      if(win.id==="telephoneWindow")hideWritingMenus();
+      if(win.id==="telephoneWindow")closeTelephoneBook();
       closeMediaListsFor(win.id);
-      setTimeout(restoreEntryFocus,20);
+      if(win.id!=="telephoneWindow")restoreEntryFocus();
     });
   });
 
@@ -2890,14 +3153,9 @@
     const m=document.getElementById("mainMenu");
     const open=m.classList.contains("open");
     m.classList.toggle("open",!open); m.classList.toggle("closed",open);
+    restoreEntryFocus();
   });
   installAllWindowDrags();
-
-  document.querySelectorAll("#telephoneWindow .close").forEach(btn=>{
-    btn.addEventListener("click",()=>{
-      setTimeout(()=>entry?.focus({preventScroll:true}),30);
-    });
-  });
 
   /* Text entry: normal editing by default; movement is opt-in. */
   const textGrab=document.getElementById("textGrab");
@@ -2915,6 +3173,7 @@
     };
     textGrab.setPointerCapture(e.pointerId);
     textGrab.style.cursor="grabbing";
+    textGrab.classList.add("caret-dragging");
     e.preventDefault();
   });
 
@@ -2941,14 +3200,19 @@
 
   textGrab.addEventListener("pointerup",()=>{
     textDrag=null;
+    textGrab.classList.remove("caret-dragging");
     textGrab.style.cursor=(movableCursor&&movableCursor.checked)?"grab":"text";
     entry.focus({preventScroll:true});
   });
-  textGrab.addEventListener("pointercancel",()=>textDrag=null);
+  textGrab.addEventListener("pointercancel",()=>{
+    textDrag=null;
+    textGrab.classList.remove("caret-dragging");
+  });
 
   if(movableCursor){
     movableCursor.addEventListener("change",()=>{
       textGrab.style.cursor=movableCursor.checked?"grab":"text";
+      document.documentElement.classList.toggle("move-caret-mode",movableCursor.checked);
       if(!movableCursor.checked){
         textGrab.style.left="50%";
         textGrab.style.bottom="0";
@@ -2968,7 +3232,7 @@
     entry.style.lineHeight=event.target.value+"px";
   });
   entry.focus({preventScroll:true});
-  const PALETTE=["#f00000","#ff3b00","#ff7a00","#ffb300","#ffd000","#9dcc32","#35b96d","#00b8a5","#008cff","#4f62ff","#7c3bd4","#b52bc8","#e92b9f","#ff6fae","#ff9fc7","#e7b184","#b88755","#777777","#444444","#000000","#ffffff"];
+  const PALETTE=["#f00000","#ff3b00","#ff7a00","#ffd000","#9dcc32","#00ffe5","#2da6ff","#344ef3","#7c3bd4","#b47bff","#e92b9f","#ff6fae","#ff9fc7","#e7b184","#b88755","#777777","#444444","#000000","#ffffff"];
   const planetCustomColours={};
   function markPalette(id){
     const state=document.getElementById(id),wrap=document.querySelector(`.colourBarWrap[data-colour-target="${id}"]`); if(!state||!wrap)return;
@@ -2986,6 +3250,7 @@
         control.value="solid";
         control.dispatchEvent(new Event("change"));
       }
+      if(!isText)byId("planetRainbow")?.setAttribute("aria-pressed","false");
       restoreEntryFocus();
     };
     const currentIndex=()=>Math.round(Number(state.value)/100*(PALETTE.length-1));
@@ -3015,30 +3280,55 @@
       });
       button.className="colourSwatch";
       button.style.background=colour;
-      button.title=colour;
+      button.title=colour+" · Double-click for colour picker";
       button.setAttribute("aria-label",colour+(isText?" text":" planet"));
       button.addEventListener("dblclick",event=>{event.preventDefault();open();});
       sw.appendChild(button);
     });
-    const custom=makeEffectButton("C",false,open);
+    const custom=isText?makeEffectButton("C",false,open):makeEffectButton("R",false,()=>{
+      custom.setAttribute("aria-pressed",String(custom.getAttribute("aria-pressed")!=="true"));
+    });
     custom.className="planet-colour-custom";
-    custom.dataset.colourTrigger="";
-    custom.setAttribute("aria-label",isText?"Custom text colour":"Custom planet colour");
+    if(isText)custom.dataset.colourTrigger="";
+    else custom.id="planetRainbow";
+    custom.setAttribute("aria-label",isText?"Custom text colour":"Rainbow planet");
     sw.appendChild(custom);
     markPalette(id);
   }
 
   ["planetColourRange","planetTextColourRange"].forEach(buildPalette);
 
+  document.addEventListener("click",event=>{
+    const control=event.target.closest("button,summary");
+    if(!control || control.matches("#phoneRime,#phoneBroken,#rimePoem,#loadText,[popovertarget]"))return;
+    if(document.activeElement===byId("poemTitleInput"))return;
+    if(control.closest(".window,#mainMenu,#planetPhoneMenu"))restoreEntryFocus();
+  });
+  const clickedSelections=new WeakSet();
+  document.addEventListener("click",event=>{
+    const button=event.target.closest("button[aria-pressed=true]");
+    const label=event.target.closest("label:has(input[type=checkbox]:checked)");
+    const control=button||label;
+    if(!control || !control.matches(":hover") || clickedSelections.has(control))return;
+    setTimeout(()=>{
+      if(!control.matches(":hover") || control.matches("[aria-pressed=true],label:has(input:checked)"))return;
+      clickedSelections.add(control);
+      control.classList.add("selection-clicked-off");
+      control.addEventListener("pointerleave",()=>{
+        control.classList.remove("selection-clicked-off");
+        clickedSelections.delete(control);
+      },{once:true});
+    },0);
+  },true);
   function restoreEntryFocus(preferScene=false){setTimeout(()=>{
     const telephoneWindow=document.getElementById("telephoneWindow");
     const telephoneVisible=telephoneWindow && getComputedStyle(telephoneWindow).display!=="none";
     const sceneEntry=planetOpen ? planetEntry : entry;
-    const target=screenType ? (activeScreenBlock?.input || (telephoneVisible ? telephone : null)) :
+    const target=screenType ? (activeScreenBlock?.input || (telephoneVisible && !preferScene ? telephone : sceneEntry)) :
       (telephoneVisible && preferScene!==true ? telephone : sceneEntry);
-    if(target && document.activeElement!==target){target.focus({preventScroll:true});target.setSelectionRange(target.value.length,target.value.length);}
+    if(target && document.activeElement!==target)target.focus({preventScroll:true});
   },0);}
-  document.querySelectorAll(".window:not(.effect-window):not(#settingsWindow) button:not(.rotary button),.window:not(.effect-window) input[type=checkbox]").forEach(el=>{el.addEventListener("pointerup",restoreEntryFocus);el.addEventListener("change",restoreEntryFocus);});
+  document.querySelectorAll(".window:not(.effect-window):not(#settingsWindow) button:not(.rotary button,#rimePoem,.poem-title-row button),.window:not(.effect-window) input[type=checkbox]").forEach(el=>{el.addEventListener("pointerup",()=>restoreEntryFocus());el.addEventListener("change",()=>restoreEntryFocus());});
   window.addEventListener("pointerup",()=>document.querySelectorAll('.colourSwatch[data-held="1"]').forEach(b=>delete b.dataset.held));
 
   const appliedRanges={};
@@ -3063,14 +3353,14 @@
     planetPhoneMenu?.classList.remove("show");
   });
 
-  let poemArchiveIndex=-1, pendingPoemText="";
+  let poemArchiveIndex=-1;
   const poemArchive=document.getElementById("poemArchiveList");
   function downloadCurrentPoem(){
-    const saved=poemsFromStorage()[poemArchiveIndex];
-    const text=telephone.value||saved?.text||"";
+    const text=telephone.value;
     if(!text.trim())return;
-    const title=saved?.text===text?saved.title:"broken-telephone";
-    const filename=(title||"broken-telephone").replace(/[<>:"/\\|?*]/g,"-").trim()||"broken-telephone";
+    const title=byId("poemTitleInput").value.trim() || "broken-telephone";
+    let filename=title.replace(/[<>:"/\\|?*\x00-\x1f]/g,"-").slice(0,120).replace(/[. ]+$/,"") || "broken-telephone";
+    if(/^(con|prn|aux|nul|com[0-9¹²³]|lpt[0-9¹²³])(?:\.|$)/i.test(filename))filename="_"+filename;
     downloadPlainText(filename+".txt",text);
   }
   const poemAlign=document.getElementById("poemAlign");
@@ -3124,53 +3414,61 @@
   function loadPoemAt(index,focus=true){
     const poems=poemsFromStorage(); if(!poems.length)return;
     poemArchiveIndex=mod(index,poems.length); const p=poems[poemArchiveIndex];
-    telephone.value=p.text||""; refreshPoemArchive();
+    telephone.value=p.text||""; byId("poemTitleInput").value=p.title||""; refreshPoemArchive();
+    poemSaveError.hidden=true;
     if(focus){telephone.focus({preventScroll:true}); telephone.setSelectionRange(telephone.value.length,telephone.value.length);}
   }
   document.getElementById("poemPrev")?.addEventListener("click",()=>loadPoemAt(poemArchiveIndex-1));
   document.getElementById("poemNext")?.addEventListener("click",()=>loadPoemAt(poemArchiveIndex+1));
   document.getElementById("downloadAllPoems")?.addEventListener("click",()=>{const p=poemsFromStorage();downloadPlainText("starfield-poems.txt",p.map(x=>`=== ${x.title||"Untitled"}${x.created ? " ("+x.created.slice(0,10)+")" : ""} ===\n${x.text}`).join("\n\n"));});
 
-  const poemSaveError=document.getElementById("poemSaveError");
-  document.getElementById("rimePoem")?.addEventListener("click",()=>{
-    const text=telephone?.value||""; if(!text.trim())return;
-    poemSaveError.hidden=true;
-    pendingPoemText=text; document.getElementById("poemTitleInput").value="";
-    const rimeButton=byId("rimePoem");
-    const dialog=byId("poemTitleDialog");
-    dialog.classList.add("show");
-    const anchor=rimeButton.getBoundingClientRect();
-    const box=dialog.querySelector(".poemTitleBox");
-    box.style.left=Math.max(8,Math.min(innerWidth-box.offsetWidth-8,anchor.left))+"px";
-    box.style.top=Math.max(8,anchor.top-box.offsetHeight-7)+"px"; document.getElementById("poemTitleDialog").setAttribute("aria-hidden","false");
-    setTimeout(()=>document.getElementById("poemTitleInput")?.focus(),0);
+  const poemSaveError=byId("poemSaveError");
+  const poemTitleInput=byId("poemTitleInput");
+  function showPoemTitle(){
+    byId("telephoneFont").open=false;
+    poemTitleInput.focus({preventScroll:true});
+    poemTitleInput.select();
+  }
+  byId("phoneRime").addEventListener("click",()=>{
+    planetPhoneMenu.classList.remove("show");
+    openTelephoneWindow();
+    showPoemTitle();
   });
-  document.getElementById("poemTitleCancel")?.addEventListener("click",()=>{document.getElementById("poemTitleDialog").classList.remove("show");document.getElementById("poemTitleDialog").setAttribute("aria-hidden","true");telephone.focus({preventScroll:true});});
-  document.getElementById("poemTitleSave")?.addEventListener("click",()=>{
-    const title=(document.getElementById("poemTitleInput").value||"").trim()||"Untitled RIME POEM";
-    const poems=poemsFromStorage(); poems.push({title,text:pendingPoemText,created:new Date().toISOString()});
-    try{
-      localStorage.setItem("starfieldPoems",JSON.stringify(poems));
-    }catch{
-      poemSaveError.textContent="Could not save this poem in the browser. Your draft is still open.";
-      poemSaveError.hidden=false;
-      return;
+  byId("rimePoem").addEventListener("click",showPoemTitle);
+  byId("downloadTitledPoem").addEventListener("click",downloadCurrentPoem);
+  function savePoem(){
+    const text=telephone.value;
+    if(!text.trim())return;
+    const title=poemTitleInput.value.trim() || "Untitled RIME POEM";
+    const poems=poemsFromStorage();
+    const previous=poems[poemArchiveIndex];
+    if(previous?.title===title && previous.text===text){
+      poemSaveError.textContent="Poem already saved";
+    }else{
+      const poem={title,text,created:new Date().toISOString()};
+      poems.push(poem);
+      try{localStorage.setItem("starfieldPoems",JSON.stringify(poems));}
+      catch{
+        poemSaveError.textContent="Could not save this poem. Your draft is still open.";
+        poemSaveError.hidden=false;
+        return;
+      }
+      poemArchiveIndex=poems.length-1;
+      refreshPoemArchive();
+      poemSaveError.textContent="Poem saved";
     }
-    poemArchiveIndex=poems.length-1; refreshPoemArchive();
-    telephone.value=""; submittedLines.length=0;
-    clearScreenWriting();
-    invalidateWritingUndo();
-    document.getElementById("poemTitleDialog").classList.remove("show"); document.getElementById("poemTitleDialog").setAttribute("aria-hidden","true");
-    telephone.focus({preventScroll:true});
+    poemSaveError.hidden=false;
+  }
+  poemTitleInput.addEventListener("keydown",e=>{
+    if(e.key==="Enter"){e.preventDefault();savePoem();}
   });
-  document.getElementById("poemTitleInput")?.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();document.getElementById("poemTitleSave").click();}else if(e.key==="Escape"){e.preventDefault();document.getElementById("poemTitleCancel").click();}});
   refreshPoemArchive();
 
   const effectState={
-    drawn:{mode:"rainbow",colour:20,size:"drawLineWidth",glow:"drawGlowRange",repeat:"drawnRepeat",fuseSpeed:"drawFuseSpeed",fuse:true},
-    line:{mode:"stripePath",colour:20,size:"launchedLineSize",startSize:"lineStartSize",endSize:"lineEndSize",glow:"launchedDrawGlowRange",duration:"drawDuration",spinSpeed:"lineSpinSpeed",spinning:true,repeat:"lineRepeat",copies:"launchRepeat",fuseSpeed:"launchFuseSpeed",fuse:false,direction:"up",origin:"stroke",recede:true},
-    typed:{mode:"solid",colour:20,size:"typedTextSizeRange",glow:"typedGlow",font:'"Segoe UI",Arial,sans-serif'},
-    text:{mode:"solid",colour:20,size:"launchedTextSizeRange",glow:"textGlowRange",duration:"textDuration",copies:"textRepeat",style:"original",font:'"Segoe UI",Arial,sans-serif'}
+    drawn:{mode:"spectrum",colour:PALETTE.length-1,size:"drawLineWidth",spacing:"drawSpacing",glow:12,glowEnabled:true,rainbowGlow:true,repeat:"drawnRepeat",fuseSpeed:"drawFuseSpeed",fuse:true},
+    line:{mode:"stripePath",colour:PALETTE.length-1,size:"launchedLineSize",startSize:"lineStartSize",endSize:"lineEndSize",spacing:"launchSpacing",glow:12,glowEnabled:false,matchDrawn:false,duration:"drawDuration",spinSpeed:"lineSpinSpeed",spinning:true,repeat:"lineRepeat",copies:"launchRepeat",fuseSpeed:"launchFuseSpeed",fuse:false,direction:"up",origin:"stroke",lineEffect:"plain",recede:true},
+    typed:{mode:"solid",colour:PALETTE.length-1,size:"typedTextSizeRange",glow:"typedGlow",font:'"Segoe UI",Arial,sans-serif'},
+    text:{mode:"solid",colour:PALETTE.length-1,size:"launchedTextSizeRange",glow:"textGlowRange",duration:"textDuration",copies:"textRepeat",style:"original",font:'"Segoe UI",Arial,sans-serif'}
   };
   const effectPhase=()=>performance.now()/4400;
   function drawRainbowPhase(elapsed){
@@ -3184,19 +3482,55 @@
   stripeContext.fillStyle="#000";stripeContext.fillRect(0,0,8,16);
   const stripePatterns=new WeakMap();
 
+  const matchedDrawFields=["mode","colour","customColour","size","spacing","angle","repeat","fuse","fuseSpeed","invisible","randomColour","stripeSeed","sequenceColour","lineEffect"];
+  const drawnStrokeStyles=new WeakMap();
+  let matchTextColour=false,lastMatchedText=null;
+  const textTransparency=.64;
+  function captureLaunchedText(text,fromEntry=false){
+    const shot=captureEffect("text");
+    if(matchTextColour){
+      if(fromEntry){
+        const typed=effectState.typed;
+        prepareTypedTextColour(typed);
+        lastMatchedText={text,mode:typed.mode,sequenceColour:typed.sequenceColour,randomColour:typed.randomColour};
+        delete typed.sequenceColour;
+        delete typed.randomColour;
+      }
+      if(lastMatchedText?.text===text && lastMatchedText.mode===shot.mode){
+        shot.sequenceColour=lastMatchedText.sequenceColour;
+        shot.randomColour=lastMatchedText.randomColour;
+      }
+    }
+    assignSequenceColour(shot);
+    return shot;
+  }
   function captureEffect(target){
     const state={...effectState[target],invisible:byId(invisibleIds[target])?.checked||false};
-    for(const key of ["size","startSize","endSize","glow","duration","repeat","fuseSpeed","spinSpeed"]){
+    if(target==="line" && state.matchDrawn){
+      const drawn=captureEffect("drawn");
+      for(const key of matchedDrawFields)state[key]=drawn[key];
+    }
+    for(const key of ["size","startSize","endSize","glow","duration","repeat","spacing","fuseSpeed","spinSpeed"]){
       if(typeof state[key]==="string")state[key]=appliedValue(state[key],key==="repeat"?1:0);
     }
-    if(state.mode==="randomEach")state.randomColour=cycleRainbowColour(Math.random());
+    if(state.mode==="randomEach" && !state.randomColour)state.randomColour=cycleRainbowColour(Math.random());
+    if(state.mode==="randomStripe" && state.stripeSeed===undefined)state.stripeSeed=Math.random();
     return state;
+  }
+  function releaseInkSettings(ink,settings){
+    if(settings.rainbowGlow && settings.mode==="rainbow" && ink.haloSamples.length){
+      const frozenColour=effectPaint(settings,null,performance.now()-ink.started);
+      return {...settings,frozenColour};
+    }
+    return settings;
   }
   function effectPaint(effect,context,elapsed){
     const state=typeof effect==="string"?effectState[effect]:effect;
+    if(state.frozenColour)return state.frozenColour;
+    if(state.mode==="rainbowSequence")return state.sequenceColour||"#ff0000";
     if(state.mode==="rainbow"){
       const phase=elapsed===undefined ? effectPhase() : state.fuseSpeed===undefined ? Math.max(0,elapsed-100)/4400 : drawRainbowPhase(elapsed-100);
-      return cycleRainbowColour(phase);
+      return state.fuseSpeed===undefined ? cycleRainbowColour(phase) : drawCycleColour(phase);
     }
     if(state.mode==="spectrum" && context){
       const gradient=context.createLinearGradient(-100,0,120,0);
@@ -3205,22 +3539,52 @@
     }
     if(state.mode==="randomEach")return state.randomColour||"#fff";
     if(state.mode==="random")return state.randomColour;
-    if(state.mode==="stripe" && context){
+    if(state.mode==="stripe" && state.fuseSpeed===undefined && context){
       if(!stripePatterns.has(context))stripePatterns.set(context,context.createPattern(stripeTile,"repeat"));
       return stripePatterns.get(context);
     }
     return state.customColour || PALETTE[state.colour];
   }
 
+  function movingTextRainbow(now){
+    const phase=now/6200;
+    return Array.from({length:15},(_,i)=>drawCycleColour(phase+i/14*.78));
+  }
+  function launchedTextPaint(context,settings,text,x,age){
+    if(settings.mode!=="spectrum")return effectPaint(settings,context,age);
+    const width=Math.max(1,context.measureText(text).width);
+    const gradient=context.createLinearGradient(x-width/2,0,x+width/2,0);
+    movingTextRainbow(performance.now()).forEach((colour,i)=>gradient.addColorStop(i/14,colour));
+    return gradient;
+  }
+  function prepareTypedTextColour(state){
+    assignSequenceColour(state);
+    if(state.mode==="randomEach" && !state.randomColour)state.randomColour=cycleRainbowColour(Math.random());
+  }
   function refreshTypedEffect(){
-    const state=effectState.typed;
+    const state=effectState.typed,input=planetOpen?planetEntry:entry;
+    if(input.value)prepareTypedTextColour(state);
+    else {
+      delete state.sequenceColour;
+      if(state.mode==="randomEach")delete state.randomColour;
+    }
+    const spectrum=state.mode==="spectrum";
     const gradient=state.mode==="stripe" ? "repeating-linear-gradient(90deg, #000 0 8px,#fff 8px 16px)" :
-      state.mode==="spectrum" ? "linear-gradient(90deg,red,orange,yellow,lime,cyan,blue,magenta)" : "";
-    entry.style.backgroundImage=gradient;
-    entry.style.backgroundClip=gradient ? "text" : "";
-    entry.style.color=gradient ? "transparent" : effectPaint("typed");
-    entry.style.fontFamily=state.font;
-    entry.style.textShadow=gradient || !appliedValue("typedGlow",0) ? "" : `0 0 ${appliedValue("typedGlow",0)}px currentColor`;
+      spectrum ? "linear-gradient(90deg,"+movingTextRainbow(performance.now()).join(",")+")" : "";
+    input.style.fontFamily=state.font;
+    if(spectrum){
+      ctx.save();
+      ctx.font=appliedValue("typedTextSizeRange",18)+"px "+state.font;
+      input.style.backgroundSize=Math.max(30,Math.ceil(ctx.measureText(input.value).width)+6)+"px 100%";
+      ctx.restore();
+    }else input.style.backgroundSize="";
+    input.style.backgroundPosition="center";
+    input.style.backgroundRepeat=spectrum?"no-repeat":"";
+    input.style.backgroundImage=gradient;
+    input.style.backgroundClip=gradient ? "text" : "";
+    input.style.color=gradient ? "transparent" : effectPaint("typed");
+    input.style.opacity=byId("typedTextInvisible").checked?0:state.transparent?textTransparency:1;
+    input.style.textShadow=gradient || !appliedValue("typedGlow",0) ? "" : `0 0 ${appliedValue("typedGlow",0)}px currentColor`;
   }
 
   function launchLineScale(settings,progress){
@@ -3229,25 +3593,295 @@
     return (start+(end-start)*progress)/100;
   }
   function linePosition(d,p,width,height,top){
-    const positions={left:[.10,.5],right:[.90,.5],top:[.5,.10],bottom:[.5,.90],topLeft:[.12,.14],topRight:[.88,.14],bottomLeft:[.12,.86],bottomRight:[.88,.86],near:[.5,.5],centre:[.5,.66]};
+    const positions={left:[.25,.5],right:[.75,.5],top:[.5,.10],bottom:[.5,.90],topLeft:[.12,.14],topRight:[.88,.14],bottomLeft:[.12,.86],bottomRight:[.88,.86],near:[.5,.5],centre:[.5,.5],lowerMiddle:[.5,.66]};
     const [sx,sy]=positions[d.settings.origin]||positions.centre;
-    if(d.settings.direction==="centre")return {x:width/2,y:height/2};
+
     const start=d.lastLaunch || {x:width*sx,y:height*sy};
-    const ends={up:[start.x,height*top],down:[start.x,height*.975],left:[width*.025,start.y],right:[width*.975,start.y],diagonal:[width*.975,height*top]};
+    const ends={up:[start.x,height*top],down:[start.x,height*.975],left:[width*.025,start.y],right:[width*.975,start.y],diagonal:[width*.975,height*top],centre:[width/2,height/2]};
     const [x,y]=ends[d.settings.direction];
     return {x:start.x+(x-start.x)*p,y:start.y+(y-start.y)*p};
   }
 
-  let liveStrokeSettings=null,liveStrokeStart=0;
-  const rainbowStops=["#ff0000","#ff8000","#ffe500","#39cf00","#00cfae","#168aff","#7321db","#a82681"].map(hex=>[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)));
+  let liveStrokeSettings=null,liveStrokeStart=0,liveStrokeTip=null,liveInk=null;
+
+  function resizeLiveGlow(context,width,height){
+    const scale=.5;
+    context.canvas.width=Math.max(1,Math.ceil(width*scale));
+    context.canvas.height=Math.max(1,Math.ceil(height*scale));
+    context.canvas.style.width=width+"px";
+    context.canvas.style.height=height+"px";
+    context.setTransform(scale,0,0,scale,0,0);
+  }
+
+  function beginLiveInk(context,point,settings,angle,glowContext=null){
+    assignSequenceColour(settings,"drawn");
+    const ink={context,point,settings,angle,glowContext:settings.glowEnabled===false?null:glowContext,started:performance.now(),distance:0,lastTint:null,haloSamples:[],path:[point]};
+
+    extendLiveInk(ink,point,true);
+    return ink;
+  }
+
+  function extendLiveInk(ink,point,first=false){
+    if(!ink)return;
+    if(ink.settings.invisible){ink.point=point;return;}
+    const {context,settings}=ink;
+    const from=ink.point,dx=point.x-from.x,dy=point.y-from.y;
+    const distance=Math.hypot(dx,dy);
+    if(!first && !distance)return;
+    const connected=!["dots","blur"].includes(settings.lineEffect) &&
+      !["spectrum","stripe","stripePath","randomStripe"].includes(settings.mode);
+    if((connected || deformsLiveInk(settings.lineEffect)) && !first){
+      ink.path.push(point);
+      if(ink.path.length>MAX_LIVE_DRAW_POINTS)ink.path.shift();
+    }
+    if(deformsLiveInk(settings.lineEffect) && !first){
+      ink.point=point;
+      paintLiveDeformation(ink);
+      return;
+    }
+    const elapsed=performance.now()-ink.started;
+    const width=settings.size;
+    const angle=(settings.angle==="random"?ink.angle:(settings.angle||0))*Math.PI/180;
+    const count=settings.repeat||1;
+    const banded=["spectrum","stripe","stripePath","randomStripe"].includes(settings.mode);
+    const bandWidth=colourBandWidth(settings.mode,width);
+    const solid=effectPaint(settings,context,settings.rainbowGlow && settings.mode==="rainbow"?0:elapsed);
+    const halo=ink.glowContext;
+    context.save();
+    context.lineCap=banded?"butt":"round";
+    context.lineWidth=width;
+    if(settings.lineEffect==="transparent")context.globalAlpha*=.58;
+    for(let line=0;line<count;line++){
+      const offset=(line-(count-1)/2)*strokeSpacing(settings,width);
+      const x=from.x+Math.cos(angle)*offset,y=from.y+Math.sin(angle)*offset;
+      let start=0;
+      do{
+        const band=Math.floor((ink.distance+start+1e-8)/bandWidth);
+        const end=banded?Math.min(distance,(band+1)*bandWidth-ink.distance):distance;
+        if(!first && end<=start)break;
+        const x1=x+(first?0:dx*start/distance),y1=y+(first?0:dy*start/distance);
+        const x2=x+(first?0:dx*end/distance),y2=y+(first?0:dy*end/distance);
+        const tint=settings.mode==="spectrum"?
+          rainbowStrokePaint(context,x1,y1,x2,y2,ink.distance+start,ink.distance+end):
+          banded?drawingBandColour(settings,band):solid;
+        if(settings.lineEffect==="dots"){
+          visitStrokeDots(x1,y1,x2,y2,ink.distance+start,ink.distance+end,width,(x,y)=>{
+            fillStrokeDot(context,x,y,width,tint);
+            if(halo)recordLiveHalo(ink,x,y,x,y,settings.rainbowGlow?drawCycleColour(elapsed/5200):tint,ink.distance+start,ink.distance+end);
+          });
+          start=end;
+          continue;
+        }
+        if(settings.lineEffect==="blur"){
+          const softColour=settings.mode==="spectrum"?strokeRainbowColour(ink.distance+(start+end)/2):tint;
+          stampSoftInk(context,Math.max(11,width+8),x1,y1,x2,y2,softColour);
+        }else if(!connected || first){
+          context.strokeStyle=context.fillStyle=tint;
+          context.beginPath();
+          if(first){
+            context.arc(x,y,Math.max(.5,width/2),0,Math.PI*2);
+            context.fill();
+          }else{
+            const overlap=banded?.55:0;
+            context.moveTo(x1-dx/distance*overlap,y1-dy/distance*overlap);
+            context.lineTo(x2+dx/distance*overlap,y2+dy/distance*overlap);
+            context.stroke();
+          }
+        }
+        if(halo){
+          const haloColour=settings.rainbowGlow?drawCycleColour(elapsed/5200):
+            settings.mode==="spectrum"?strokeRainbowColour(ink.distance+(start+end)/2):
+            settings.mode==="stripe"&&!banded?"#aaa":tint;
+          recordLiveHalo(ink,x1,y1,x2,y2,haloColour,ink.distance+start,ink.distance+end);
+        }
+        start=end;
+      }while(start<distance);
+    }
+    context.restore();
+    ink.distance+=distance;
+    ink.point=point;
+    if(connected && !first)paintConnectedLiveInk(ink,elapsed);
+  }
+
+  function paintConnectedLiveInk(ink,elapsed){
+    const {context,settings,path}=ink;
+    const scale=context.getTransform().a;
+    context.clearRect(0,0,context.canvas.width/scale,context.canvas.height/scale);
+    strokeAngles.set(path,ink.angle);
+    const lineEffect=settings.lineEffect==="zigzag"?"plain":settings.lineEffect;
+    paintDrawingStroke(context,path,{...settings,lineEffect,glowEnabled:false},elapsed);
+  }
+
+  const haloStamps=new Map();
+  function haloStamp(colour){
+    if(haloStamps.has(colour))return haloStamps.get(colour);
+    const stamp=document.createElement("canvas");
+    stamp.width=stamp.height=24;
+    const brush=stamp.getContext("2d");
+    const edge=brush.createRadialGradient(12,12,0,12,12,12);
+    edge.addColorStop(0,"rgba(255,255,255,.64)");
+    edge.addColorStop(.28,"rgba(255,255,255,.35)");
+    edge.addColorStop(.66,"rgba(255,255,255,.08)");
+    edge.addColorStop(1,"rgba(255,255,255,0)");
+    brush.fillStyle=edge;
+    brush.fillRect(0,0,24,24);
+    brush.globalCompositeOperation="source-in";
+    brush.fillStyle=typeof colour==="string"?colour:"#aaa";
+    brush.fillRect(0,0,24,24);
+    if(haloStamps.size>=64)haloStamps.delete(haloStamps.keys().next().value);
+    haloStamps.set(colour,stamp);
+    return stamp;
+  }
+
+  function stampSoftInk(context,diameter,x1,y1,x2,y2,colour){
+    const count=Math.max(1,Math.ceil(Math.hypot(x2-x1,y2-y1)/Math.max(3,diameter*.23)));
+    const stamp=haloStamp(colour);
+    for(let i=1;i<=count;i++){
+      const t=i/count;
+      context.drawImage(stamp,x1+(x2-x1)*t-diameter/2,y1+(y2-y1)*t-diameter/2,diameter,diameter);
+    }
+  }
+  function recordLiveHalo(ink,x1,y1,x2,y2,colour,start,end){
+    const halo=ink.glowContext,width=ink.settings.size;
+
+    const diameter=Math.max(26,width+20);
+    const spacing=Math.max(5,diameter*.27);
+    const stamps=Math.max(1,Math.ceil(Math.hypot(x2-x1,y2-y1)/spacing));
+    const image=haloStamp(colour);
+    for(let i=1;i<=stamps;i++){
+      const t=i/stamps;
+      const x=x1+(x2-x1)*t,y=y1+(y2-y1)*t;
+      halo.drawImage(image,x-diameter/2,y-diameter/2,diameter,diameter);
+      if(ink.settings.rainbowGlow)ink.haloSamples.push({x,y,colour,at:start+(end-start)*t});
+    }
+    if(ink.haloSamples.length>6500)ink.haloSamples.splice(0,ink.haloSamples.length-6500);
+  }
+  function paintRecordedHalo(context,samples,width,burn){
+    const diameter=Math.max(26,width+20);
+    context.save();
+    context.globalAlpha*=.88;
+    for(const {x,y,colour,at} of samples){
+      if(at>=burn)context.drawImage(haloStamp(colour),x-diameter/2,y-diameter/2,diameter,diameter);
+    }
+    context.restore();
+  }
+
+  function deformsLiveInk(effect){return effect==="lightning" || effect==="wave";}
+  function deformsReleasedInk(effect){return effect==="zigzag" || deformsLiveInk(effect);}
+
+  function paintLiveDeformation(ink){
+    const {context,settings,path,glowContext}=ink;
+    if(path.length<2)return;
+    const elapsed=performance.now()-ink.started;
+    if(ink.lastDeformation===elapsed)return;
+    ink.lastDeformation=elapsed;
+    const clear=layer=>{
+      const scale=layer.getTransform().a;
+      layer.clearRect(0,0,layer.canvas.width/scale,layer.canvas.height/scale);
+    };
+    clear(context);
+    if(glowContext)clear(glowContext);
+    strokeAngles.set(path,ink.angle);
+    const shaped=shapeLineEffect(path,settings.lineEffect,elapsed,settings.size);
+    if(glowContext){
+      glowContext.save();
+      glowContext.lineCap="round";
+      glowContext.lineWidth=Math.max(settings.size,5);
+      const colour=settings.rainbowGlow?drawCycleColour(elapsed/5200):effectPaint(settings,glowContext,elapsed);
+      glowContext.strokeStyle=colour;
+      glowContext.shadowColor=typeof colour==="string"?colour:"#fff";
+      glowContext.shadowBlur=5;
+      repeatedLinePath(glowContext,shaped,settings,settings.size,0,!settings.rainbowGlow);
+      if(settings.lineEffect==="lightning")paintLightningBranches(glowContext,shaped,settings,0);
+      glowContext.restore();
+    }
+    paintDrawingStroke(context,path,{...settings,glowEnabled:false},elapsed);
+  }
+
+  function refreshLiveRainbow(ink){
+    if(!ink || ink.settings.invisible)return;
+    const {context,settings,glowContext}=ink;
+    const elapsed=performance.now()-ink.started;
+    if(settings.lineEffect==="wave" && elapsed-(ink.lastDeformation??-100)>=33){
+      paintLiveDeformation(ink);
+      return;
+    }
+    if(settings.mode!=="rainbow" || deformsLiveInk(settings.lineEffect))return;
+    const tint=effectPaint(settings,context,elapsed);
+    if(tint===ink.lastTint)return;
+    ink.lastTint=tint;
+    recolourLiveCanvas(context,tint);
+    if(glowContext && !settings.rainbowGlow)recolourLiveCanvas(glowContext,effectPaint(settings,glowContext,elapsed));
+  }
+  function recolourLiveCanvas(context,tint){
+    context.save();
+    const scale=context.getTransform().a;
+    context.globalCompositeOperation="source-in";
+    context.fillStyle=tint;
+    context.fillRect(0,0,context.canvas.width/scale,context.canvas.height/scale);
+    context.restore();
+  }
+  const rainbowStops=["#ff0000","#ff3900","#ff7900","#ffac00","#ffe500","#a9ed00","#23cf2c","#00d4a2","#49d5ff","#2665ff","#6822ea","#b47bff","#ff7cbd","#f018a2"].map(hex=>[1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)));
+  const rainbowSequenceIndices=new Map();
+  function assignSequenceColour(settings,channel="text"){
+    if(settings.mode==="rainbowSequence" && !settings.sequenceColour){
+      const index=rainbowSequenceIndices.get(channel)??0;
+      settings.sequenceColour="rgb("+rainbowStops[index].join(",")+")";
+      rainbowSequenceIndices.set(channel,(index+1)%rainbowStops.length);
+    }
+  }
+  const rainbowCycleStops=[0,1,2,3,4,5,6,7,8,9,9,10,10,11,12,13].map(index=>rainbowStops[index]);
+  function drawCycleColour(phase){
+    const position=mod(phase,1)*rainbowCycleStops.length;
+    const index=Math.floor(position),fraction=position-index;
+    const from=rainbowCycleStops[index],to=rainbowCycleStops[(index+1)%rainbowCycleStops.length];
+    return "rgb("+from.map((channel,i)=>Math.round(channel+(to[i]-channel)*fraction)).join(",")+")";
+  }
   function trailColour(distance){
-    const index=Math.floor(distance/72)%rainbowStops.length;
-    const blend=Math.max(0,(distance%72-54)/18);
+    const stop=mod(distance,420)/420*rainbowStops.length;
+    const index=Math.floor(stop),blend=stop-index;
     const from=rainbowStops[index],to=rainbowStops[(index+1)%rainbowStops.length];
     return "rgb("+from.map((channel,i)=>Math.round(channel+(to[i]-channel)*blend)).join(",")+")";
   }
+  function stripeColour(index,seed){
+    const value=Math.sin(index*78.233+seed*143.79)*43758.5453;
+    return cycleRainbowColour(value-Math.floor(value));
+  }
+  const rainbowStretch=80;
+  function strokeRainbowColour(distance,elapsed=0){
+    return drawCycleColour((distance-elapsed*.095)/(rainbowStops.length*rainbowStretch));
+  }
+  function rainbowStrokePaint(context,x1,y1,x2,y2,start,end,elapsed=0){
+    const colour=distance=>strokeRainbowColour(distance,elapsed);
+    if(start===end)return colour(start);
+    const gradient=context.createLinearGradient(x1,y1,x2,y2);
+    gradient.addColorStop(0,colour(start));
+    gradient.addColorStop(1,colour(end));
+    return gradient;
+  }
+  function colourBandWidth(mode,width){
+    return mode==="randomStripe"?Math.max(80,width*4):mode==="spectrum" || mode==="rainbowSequence"?rainbowStretch:mode==="stripe"?Math.max(34,width*2.5):Math.max(2,width);
+  }
+  function drawingBandColour(state,band){
+    if(state.mode==="randomStripe")return stripeColour(band,state.stripeSeed);
+    return band%2?(state.mode==="stripe"?"#000":"#111"):"#fff";
+  }
+  function strokeSpacing(state,width){return width+1+(state.spacing??12)*.9;}
   const strokeDistances=new WeakMap(),strokeAngles=new WeakMap();
   const burningStrokes=[];
+  const glowLayer=document.createElement("canvas");
+  const glowContext=glowLayer.getContext("2d");
+  const strokeBounds=new WeakMap();
+  function drawingBounds(shape){
+    if(strokeBounds.has(shape))return strokeBounds.get(shape);
+    const bounds={left:Infinity,top:Infinity,right:-Infinity,bottom:-Infinity};
+    for(const {x,y} of shape){
+      bounds.left=Math.min(bounds.left,x); bounds.right=Math.max(bounds.right,x);
+      bounds.top=Math.min(bounds.top,y); bounds.bottom=Math.max(bounds.bottom,y);
+    }
+    if(shape!==points && shape!==planetLivePoints)strokeBounds.set(shape,bounds);
+    return bounds;
+  }
   function strokeDistance(shape){
     if(strokeDistances.has(shape))return strokeDistances.get(shape);
     const lengths=[0];
@@ -3255,37 +3889,102 @@
     if(shape!==points && shape!==planetLivePoints)strokeDistances.set(shape,lengths);
     return lengths;
   }
-  function repeatedLinePath(context,shape,state,width=context.lineWidth,burn=0,painted=true){
+  function visitStrokeDots(x1,y1,x2,y2,start,end,width,paint){
+    const spacing=Math.max(7,width*2.2);
+    for(let at=Math.ceil((start-1e-7)/spacing)*spacing;at<=end+1e-7;at+=spacing){
+      const t=end>start?Math.max(0,Math.min(1,(at-start)/(end-start))):0;
+      paint(x1+(x2-x1)*t,y1+(y2-y1)*t,at);
+    }
+  }
+
+  function fillStrokeDot(context,x,y,width,colour){
+    context.fillStyle=colour;
+    context.beginPath();
+    context.arc(x,y,Math.max(.5,width/2),0,Math.PI*2);
+    context.fill();
+  }
+
+  function shapeLineEffect(shape,effect,elapsed,width){
+    if(!deformsReleasedInk(effect))return shape;
+    const lengths=strokeDistance(shape);
+    const length=lengths.at(-1);
+    if(length<4)return shape;
+    const steps=Math.min(450,Math.max(4,Math.ceil(length/(effect==="wave"?9:15))));
+    const amplitude=Math.min(20,Math.max(6,width*.55));
+    const result=[shape[0]];
+    let index=1;
+    for(let i=1;i<steps;i++){
+      const at=i*length/steps;
+      while(lengths[index]<at)index++;
+      const a=shape[index-1],b=shape[index],span=lengths[index]-lengths[index-1];
+      if(!span)continue;
+      const ratio=(at-lengths[index-1])/span;
+      const offset=effect!=="wave"?(i%2?-1:1)*amplitude*(.7+(i%3)*.22):
+        Math.sin(at*.071-elapsed*.009)*amplitude;
+      result.push({x:a.x+(b.x-a.x)*ratio-(b.y-a.y)*offset/span,
+        y:a.y+(b.y-a.y)*ratio+(b.x-a.x)*offset/span});
+    }
+    result.push(shape.at(-1));
+    strokeAngles.set(result,strokeAngles.get(shape)??0);
+    return result;
+  }
+
+  function repeatedLinePath(context,shape,state,width=context.lineWidth,burn=0,painted=true,offsetDistance=0,elapsed=0){
     const count=Math.floor(state.repeat||1);
-    const spacing=Math.max(16,width+4);
+    const spacing=strokeSpacing(state,width);
     const angle=(state.angle==="random"?(strokeAngles.get(shape)??0):(state.angle||0))*Math.PI/180;
-    const spectrum=painted && state.mode==="spectrum";
-    const stripes=painted && state.mode==="stripePath";
-    const distances=spectrum || stripes || burn ? strokeDistance(shape) : null;
+    const banded=painted && ["spectrum","stripe","stripePath","randomStripe"].includes(state.mode);
+    const dotted=state.lineEffect==="dots";
+    const distances=banded || burn || dotted ? strokeDistance(shape) : null;
     for(let i=0;i<count;i++){
       context.save();
       const offset=(i-(count-1)/2)*spacing;
       context.translate(Math.cos(angle)*offset,Math.sin(angle)*offset);
       if(!distances){
-        smoothLaunchPath(context,shape);
+        if(state.lineEffect==="lightning" || state.lineEffect==="zigzag"){
+          context.beginPath();
+          for(let j=0;j<shape.length;j++)context[j?"lineTo":"moveTo"](shape[j].x,shape[j].y);
+        }else smoothLaunchPath(context,shape);
         context.stroke();
+      }else if(!banded && !dotted){
+        let start=1;
+        while(start<shape.length && distances[start]<=burn)start++;
+        if(start<shape.length){
+          const a=shape[start-1],b=shape[start];
+          const t=(burn-distances[start-1])/(distances[start]-distances[start-1]);
+          const tail=[{x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t},...shape.slice(start)];
+          if(state.lineEffect==="lightning" || state.lineEffect==="zigzag"){
+            context.beginPath();
+            for(let j=0;j<tail.length;j++)context[j?"lineTo":"moveTo"](tail[j].x,tail[j].y);
+          }else smoothLaunchPath(context,tail);
+          context.stroke();
+        }
       }else{
         for(let j=1;j<shape.length;j++){
-          const from=distances[j-1],to=distances[j];
-          if(to<=burn || to===from)continue;
+          const from=offsetDistance+distances[j-1],to=offsetDistance+distances[j];
+          if(to<=offsetDistance+burn || to===from)continue;
           const a=shape[j-1],b=shape[j];
-          const low=Math.max(from,burn);
-          const segment=stripes?Math.max(2,width):spectrum?4:Infinity;
+          const low=Math.max(from,offsetDistance+burn);
+          const segment=banded?colourBandWidth(state.mode,width):Infinity;
           for(let cursor=low;cursor<to;){
-            const end=Math.min(to,Number.isFinite(segment)?(Math.floor(cursor/segment)+1)*segment:to);
+            const band=banded?Math.floor((cursor+1e-8)/segment):0;
+            const end=banded?Math.min(to,(band+1)*segment):to;
             if(end<=cursor)break;
-            if(spectrum)context.strokeStyle=trailColour((cursor+end)/2);
-            if(stripes){context.lineCap="butt";context.strokeStyle=Math.floor(cursor/segment)%2?"#111":"#fff";}
+            if(banded)context.lineCap="butt";
             const start=(cursor-from)/(to-from),finish=(end-from)/(to-from);
-            context.beginPath();
-            context.moveTo(a.x+(b.x-a.x)*start,a.y+(b.y-a.y)*start);
-            context.lineTo(a.x+(b.x-a.x)*finish,a.y+(b.y-a.y)*finish);
-            context.stroke();
+            const x1=a.x+(b.x-a.x)*start,y1=a.y+(b.y-a.y)*start;
+            const x2=a.x+(b.x-a.x)*finish,y2=a.y+(b.y-a.y)*finish;
+            if(banded)context.strokeStyle=state.mode==="spectrum"?
+              rainbowStrokePaint(context,x1,y1,x2,y2,cursor,end):drawingBandColour(state,band);
+            if(dotted){
+              const tint=context.strokeStyle;
+              visitStrokeDots(x1,y1,x2,y2,cursor,end,width,(x,y)=>fillStrokeDot(context,x,y,context.lineWidth,tint));
+            }else{
+              context.beginPath();
+              context.moveTo(x1,y1);
+              context.lineTo(x2,y2);
+              context.stroke();
+            }
             cursor=end;
           }
         }
@@ -3294,41 +3993,126 @@
     }
   }
 
-  function paintLaunchedStroke(context,d,settings,width,glow){
-    const burn=settings.fuse ? d.age*settings.fuseSpeed/1000 : 0;
-    if(glow>0){
-      const alpha=context.globalAlpha;
-      context.strokeStyle="#fff";
-      for(const [spread,opacity] of [[1.55,.14],[1.05,.26],[.57,.48]]){
-        context.lineWidth=width+glow*spread;
-        context.globalAlpha=alpha*opacity;
-        repeatedLinePath(context,d.points,settings,width,burn,false);
-      }
-      context.globalAlpha=alpha;
-      context.lineWidth=width;
+  function paintLightningBranches(context,shape,settings,burn){
+    const distances=strokeDistance(shape);
+    context.save();
+    context.lineWidth=Math.max(.8,context.lineWidth*.48);
+    for(let i=3;i<shape.length-1;i+=4){
+      if(distances[i]<burn)continue;
+      const a=shape[Math.max(0,i-2)],b=shape[i],next=shape[Math.min(shape.length-1,i+2)];
+      const length=Math.hypot(next.x-a.x,next.y-a.y)||1;
+      const dx=(next.x-a.x)/length,dy=(next.y-a.y)/length;
+      const side=i%8===3?1:-1;
+      const reach=Math.min(150,75+settings.size*1.6)*(i%3===0?1:.75);
+      const mx=b.x+(dx*.28-dy*side*.68)*reach,my=b.y+(dy*.28+dx*side*.68)*reach;
+      context.beginPath();
+      context.moveTo(b.x,b.y);
+      context.lineTo(mx,my);
+      context.lineTo(mx+(dx*.5-dy*side*.25)*reach,my+(dy*.5+dx*side*.25)*reach);
+      context.moveTo(mx,my);
+      context.lineTo(mx+(dx*.42+dy*side*.30)*reach,my+(dy*.42-dx*side*.30)*reach);
+      context.stroke();
     }
-    context.strokeStyle=effectPaint(settings,context,d.age);
-    repeatedLinePath(context,d.points,settings,width,burn);
+    context.restore();
   }
 
-  function drawBurningStrokes(dt){
+  function paintDrawingStroke(context,shape,settings,elapsed,burn=0,halo=null){
+    if(shape.length<2)return;
+    const width=settings.size;
+    shape=shapeLineEffect(shape,settings.lineEffect,elapsed,width);
+    if(settings.lineEffect==="blur"){
+      paintDrawingGlow(context,shape,{...settings,glow:1,rainbowGlow:false,lineEffect:"blur"},width,elapsed,burn);
+      if(settings.glowEnabled!==false && settings.rainbowGlow && halo?.length)paintRecordedHalo(context,halo,width,burn);
+      return;
+    }
+    if(settings.glowEnabled!==false){
+      if(settings.rainbowGlow && halo?.length)paintRecordedHalo(context,halo,width,burn);
+      else paintDrawingGlow(context,shape,settings,width,elapsed,burn);
+    }
+
+    context.save();
+    context.lineCap=context.lineJoin="round";
+    context.lineWidth=width;
+    if(settings.lineEffect==="transparent")context.globalAlpha*=.58;
+    context.strokeStyle=effectPaint(settings,context,elapsed);
+    repeatedLinePath(context,shape,settings,width,burn,true,0,elapsed);
+    if(settings.lineEffect==="lightning")paintLightningBranches(context,shape,settings,burn);
+    context.restore();
+  }
+
+  function paintDrawingGlow(context,shape,settings,width,elapsed,burn,offsetDistance=0){
+    const matrix=context.getTransform();
+    const scale=Math.hypot(matrix.a,matrix.b);
+    if(!scale)return;
+    const deviceScale=context.canvas.width/Math.max(1,innerWidth);
+    const soft=settings.lineEffect==="blur";
+    const blur=(soft?2.8:6+settings.glow*.28)*deviceScale;
+    const reach=Math.ceil(blur*3);
+    const {left,top,right,bottom}=drawingBounds(shape);
+    const corners=[[left,top],[left,bottom],[right,top],[right,bottom]].map(([x,y])=>matrix.transformPoint({x,y}));
+    const extra=(width+strokeSpacing(settings,width)*((settings.repeat||1)-1))*scale/2+4*deviceScale;
+    const pad=extra+reach+(settings.lineEffect==="lightning"?170*scale:0);
+    const x=Math.max(-reach,Math.floor(Math.min(...corners.map(p=>p.x))-pad));
+    const y=Math.max(-reach,Math.floor(Math.min(...corners.map(p=>p.y))-pad));
+    const w=Math.min(context.canvas.width+reach,Math.ceil(Math.max(...corners.map(p=>p.x))+pad))-x;
+    const h=Math.min(context.canvas.height+reach,Math.ceil(Math.max(...corners.map(p=>p.y))+pad))-y;
+    if(w<=0 || h<=0)return;
+
+    if(glowLayer.width<w || glowLayer.height<h){
+      glowLayer.width=Math.max(glowLayer.width,w);
+      glowLayer.height=Math.max(glowLayer.height,h);
+    }
+    glowContext.resetTransform();
+    glowContext.clearRect(0,0,w,h);
+    glowContext.setTransform(matrix.a,matrix.b,matrix.c,matrix.d,matrix.e-x,matrix.f-y);
+    glowContext.lineJoin=glowContext.lineCap="round";
+    glowContext.lineWidth=Math.max(width,(soft?3:7)*deviceScale/scale);
+    const cycling=settings.rainbowGlow;
+    glowContext.strokeStyle=cycling ? cycleRainbowColour(effectPhase()) : effectPaint(settings,glowContext,elapsed);
+    if(Math.hypot(shape[1].x-shape[0].x,shape[1].y-shape[0].y)<.11 && shape.length===2 && !burn){
+      const point=shape[0];
+      const dotColour=settings.mode==="spectrum"?
+        rainbowStrokePaint(glowContext,point.x,point.y,point.x,point.y,offsetDistance,offsetDistance):
+        settings.mode==="stripePath" || settings.mode==="randomStripe"?drawingBandColour(settings,0):effectPaint(settings,glowContext,elapsed);
+      glowContext.strokeStyle=cycling?cycleRainbowColour(effectPhase()):dotColour;
+      repeatedLinePath(glowContext,shape,settings,width,0,false);
+    }else repeatedLinePath(glowContext,shape,settings,width,burn,!cycling,offsetDistance,elapsed);
+    if(settings.lineEffect==="lightning")paintLightningBranches(glowContext,shape,settings,burn);
+
+    context.save();
+    context.resetTransform();
+    const alpha=context.globalAlpha;
+    context.filter="blur("+blur+"px)";
+    context.drawImage(glowLayer,0,0,w,h,x,y,w,h);
+    context.filter="blur("+Math.max(1,blur*.42)+"px)";
+    context.globalAlpha=alpha*.8;
+    context.drawImage(glowLayer,0,0,w,h,x,y,w,h);
+    context.restore();
+  }
+
+  let planetBurningFrame=0;
+  function drawPlanetBurningStrokes(now){
+    const dt=planetBurningFrame?Math.min(32,now-planetBurningFrame):0;
+    planetBurningFrame=now;
+    drawBurningStrokes(dt,pctx,true);
+  }
+  function drawBurningStrokes(dt,context,planet){
     for(let i=burningStrokes.length-1;i>=0;i--){
       const stroke=burningStrokes[i],settings=stroke.settings;
+      if(Boolean(stroke.planet)!==planet)continue;
       stroke.age+=dt;
-      const burn=stroke.age*settings.fuseSpeed/1000;
-      if(burn>=strokeDistance(stroke.shape).at(-1)){burningStrokes.splice(i,1);continue;}
-      dctx.save();
-      dctx.lineCap="round";
-      dctx.lineWidth=settings.size;
-      dctx.strokeStyle=effectPaint(settings,dctx,stroke.elapsed+stroke.age);
-      repeatedLinePath(dctx,stroke.shape,settings,settings.size,burn);
-      dctx.restore();
+      const burn=settings.fuse?stroke.age*settings.fuseSpeed/1000:0;
+      if(settings.fuse?burn>=strokeDistance(stroke.shape).at(-1):stroke.age>=500){
+        burningStrokes.splice(i,1);
+        continue;
+      }
+      paintDrawingStroke(context,stroke.shape,settings,stroke.elapsed+stroke.age,burn,stroke.halo);
     }
   }
   function byId(id){return document.getElementById(id);}
-  const modeChoices=[["solid","Solid"],["rainbow","Rainbow cycle"],["spectrum","Spectrum"],["stripe","B&W stripes"],["stripePath","B&W squares"],["random","Random 1"],["randomEach","Random 2"]];
+  const modeChoices=[["solid","Solid"],["rainbowSequence","Rainbow 1"],["rainbow","Rainbow 2"],["spectrum","Rainbow 3"],["stripe","B&W stripes"],["randomEach","Random"]];
   const fontChoices=[["\"Segoe UI\",Arial,sans-serif", "Segoe UI"], ["'Courier New', Courier, monospace", "Classic"], ["'Lucida Console', Monaco, monospace", "Sharp"], ["'Consolas', monospace", "Modern"], ["Georgia, serif", "Vintage"], ["TypewriterLocal10, monospace", "Silent L"], ["TypewriterLocal9, monospace", "Silent M"], ["TypewriterLocal8, monospace", "Silent S"], ["TypewriterLocal6, monospace", "Res Evil"], ["TypewriterLocal5, monospace", "Res Evil L"], ["TypewriterLocal4, monospace", "Silent Witness"], ["TypewriterLocal3, monospace", "Olde English"], ["TypewriterLocal2, monospace", "Type Press"], ["TypewriterLocal1, monospace", "Elegant Type"], ["TypewriterLocal0, monospace", "Bohemian"], ["'Chomsky', serif", "Chomsky"], ["'Dune Rise', sans-serif", "Dune Rise"]];
-  const metricLabels={size:"Size",startSize:"Start size %",endSize:"End size %",glow:"Glow",duration:"Duration (ms)",repeat:"Line count",copies:"Repeat",fuseSpeed:"Fuse speed",spinSpeed:"Spin speed"};
+  const metricLabels={size:"Size",startSize:"Start size %",endSize:"End size %",glow:"Glow",duration:"Duration",spacing:"Line spacing",repeat:"Line count",copies:"Repeat",fuseSpeed:"Fuse speed",spinSpeed:"Spin speed"};
   const invisibleIds={line:"launchedLineInvisible",drawn:"invisibleDrawLine",typed:"typedTextInvisible",text:"launchedTextInvisible"};
 
   function makeEffectButton(label,selected,onClick){
@@ -3357,18 +4141,22 @@
     return row;
   }
   function installEffectMenus(){
-    let lastIndependentLaunchFont='"Segoe UI",Arial,sans-serif';
-    let fontsBeforeApply=[byId("menuFont").value,effectState.typed.font,'"Segoe UI",Arial,sans-serif',telephoneFontFamily.value,planetTextFont];
-    const fonts=()=>{
-      const options=[effectState.typed.font,effectState.text.font];
-      return {match:options[0]===options[1],all:options.every(font=>font===byId("menuFont").value && telephoneFontFamily.value===font && planetTextFont===font)};
-    };
+    let matchLaunchFont=false;
+    function copyTextColour(from,to){
+      for(const key of ["mode","colour","customColour"])to[key]=from[key];
+      delete to.randomColour;
+      delete to.sequenceColour;
+    }
     for(const [section,targets] of [["draw",["drawn","line"]],["text",["typed","text"]]]){
       const panel=byId(section+"Window");
       const tabs=panel.querySelector(".effect-targets"),palette=panel.querySelector(".effect-palette");
       const options=panel.querySelector(".effect-options");
       let target=targets[0];
       const state=()=>effectState[target];
+      const otherText=()=>effectState[target==="typed"?"text":"typed"];
+      const syncTextColour=()=>{
+        if(section==="text" && matchTextColour)copyTextColour(state(),otherText());
+      };
       const addRow=(label,control)=>{
         const row=document.createElement("div");
         row.className="effect-option-row";
@@ -3407,8 +4195,7 @@
         wrapper.className="effect-check";
         wrapper.dataset.control=label;
         const text=document.createTextNode(label);
-        if(label==="Type on screen" || label==="Movable caret")wrapper.append(text,field);
-        else wrapper.append(field,text);
+        wrapper.append(text,field);
         field.addEventListener("change",()=>change(field.checked));
         return wrapper;
       };
@@ -3416,7 +4203,7 @@
         const current=state();
         for(let i=0;i<PALETTE.length;i++){
           const button=palette.children[i];
-          button.style.background=i===current.colour && current.customColour?current.customColour:PALETTE[i];
+          button.style.backgroundColor=i===current.colour && current.customColour?current.customColour:PALETTE[i];
           button.setAttribute("aria-pressed",String(current.mode==="solid" && i===current.colour));
         }
       }
@@ -3427,6 +4214,7 @@
             closeEffectColour();
             if(current.colour!==index || current.mode!=="solid")current.customColour=null;
             current.colour=index;current.mode="solid";
+            syncTextColour();
             updatePaletteSelection();
             updateModeDisplay?.();
           };
@@ -3435,6 +4223,7 @@
           button.addEventListener("dblclick",event=>{
             event.preventDefault();
             showEffectColour(palette,current,()=>{
+              syncTextColour();
               updatePaletteSelection();
               updateModeDisplay?.();
             });
@@ -3442,6 +4231,7 @@
           return button;
         }));
         const custom=makeEffectButton("C",false,()=>showEffectColour(palette,current,()=>{
+          syncTextColour();
           updatePaletteSelection();
           updateModeDisplay?.();
         }));
@@ -3455,91 +4245,127 @@
         drawPalette();
         options.replaceChildren();
         const current=state();
-        const colours=modeChoices.filter(([key])=>section==="draw"||!["stripePath","randomEach"].includes(key)).map(([key,label])=>[key,key==="spectrum" && section==="draw"?"Rainbow trail":label]);
+        const colours=section==="draw" ?
+          [["solid","Solid"],["rainbowSequence","Rainbow 1"],["rainbow","Rainbow 2"],["spectrum","Rainbow 3"],["stripe","B&W stripes"],["stripePath","B&W squares"],["randomEach","Random"],["randomStripe","Random stripes"]] :
+          modeChoices;
         const modeRow=choiceRow("Colour",()=>colours,()=>current.mode,mode=>{
           current.mode=mode;
-          if(mode==="random" || mode==="randomEach")current.randomColour=cycleRainbowColour(Math.random());
+          syncTextColour();
+          if(mode==="random")current.randomColour=cycleRainbowColour(Math.random());
           updatePaletteSelection();
         });
         updateModeDisplay=modeRow.refresh;
         addRow("Colour",modeRow.row);
         if(section==="draw"){
-          range("size",target==="line"?"Line size":undefined);
-          if(target==="line"){
+          const launched=target==="line";
+          range("size","Line size");
+          range("repeat");
+          if(launched){
+            range("copies");
             range("startSize");
             range("endSize");
-            choose("Launch point",[["centre","Lower middle"],["stroke","From drawing"],["left","Left"],["right","Right"],["top","Top"],["bottom","Bottom"],["topLeft","Top left"],["topRight","Top right"],["bottomLeft","Bottom left"],["bottomRight","Bottom right"],["near","Near"]],()=>current.origin,value=>current.origin=value);
+            choose("Launch point",[["centre","Centre"],["lowerMiddle","Lower middle"],["stroke","From drawing"],["left","Left"],["right","Right"],["top","Top"],["bottom","Bottom"],["topLeft","Top left"],["topRight","Top right"],["bottomLeft","Bottom left"],["bottomRight","Bottom right"],["near","Near"]],()=>current.origin,value=>current.origin=value);
             choose("Direction",[["up","Up"],["down","Down"],["left","Left"],["right","Right"],["diagonal","Diagonal"],["centre","Centre"]],()=>current.direction,value=>current.direction=value);
+            range("duration");
           }
-          range("repeat");
-          if(target==="line")range("copies");
-          range("glow");
-          if(current.duration)range("duration");
-          choose("Spacing",[[0,"Horizontal"],[90,"Vertical"],[45,"Diagonal ↘"],[-45,"Diagonal ↗"],["random","Random"]],()=>current.angle||0,value=>current.angle=value);
+          range("spacing");
+          choose("Line effect",[["plain","Plain"],["zigzag","Zigzag"],["lightning","Lightning"],["wave","Wave"],["dots","Dots"],["transparent","Transparent"],["blur","Blur"]],
+            ()=>current.lineEffect||"plain",value=>current.lineEffect=value);
+          choose("Angle",[[0,"Horizontal"],[90,"Vertical"],[45,"Diagonal ↘"],[-45,"Diagonal ↗"],["random","Random"]],()=>current.angle||0,value=>current.angle=value);
+          range("fuseSpeed","Fuse speed");
+          if(launched)range("spinSpeed",radio("Spin",()=>current.spinning,on=>current.spinning=on));
           const checks=document.createElement("div");
-          checks.className="effect-checks";
+          checks.className="effect-checks draw-footer";
           const [getVisible,setVisible]=visible();
-          checks.append(radio("Visible",getVisible,setVisible));
           const fuse=radio("Fuse",()=>current.fuse,on=>current.fuse=on);
-          if(target==="line"){
-            checks.append(radio("Recede",()=>!!current.recede,on=>current.recede=on));
-            options.append(checks);
-            range("fuseSpeed",fuse);
-            range("spinSpeed",radio("Spin",()=>current.spinning,on=>current.spinning=on));
-          }else{
-            range("fuseSpeed");
-            checks.append(fuse);
-            options.append(checks);
-          }
+          const match=radio("Match",()=>effectState.line.matchDrawn,on=>effectState.line.matchDrawn=on);
+          match.title="Use the drawn line's appearance and fuse for launch";
+          const glow=makeEffectButton("Glow",current.glowEnabled,()=>{
+            current.glowEnabled=!current.glowEnabled;
+            glow.setAttribute("aria-pressed",String(current.glowEnabled));
+          });
+          const rainbow=makeEffectButton("R",Boolean(current.rainbowGlow),()=>{
+            current.rainbowGlow=!current.rainbowGlow;
+            rainbow.setAttribute("aria-pressed",String(current.rainbowGlow));
+          });
+          rainbow.setAttribute("aria-label","Rainbow glow");
+          const glowGroup=document.createElement("span");
+          glowGroup.className="draw-glow-label";
+          glowGroup.append(glow,rainbow);
+          const visibility=radio("Visible",getVisible,setVisible);
+          if(launched){
+            const fuseRow=document.createElement("div");
+            fuseRow.className="draw-fuse-row";
+            fuseRow.append(fuse,match);
+            options.insertBefore(fuseRow,options.lastElementChild);
+            checks.append(visibility,radio("Recede",()=>!!current.recede,on=>current.recede=on),glowGroup);
+          }else checks.append(visibility,fuse,match,glowGroup);
+          options.append(checks);
         }else{
           if(target==="text")choose("Launch style",[["original","Original"],["left","Drift left"],["right","Drift right"]],()=>current.style,value=>current.style=value);
           range("size");
           if(current.duration){range("duration");range("copies");}
           range("glow");
+          const transparent=makeEffectButton("Transparent",Boolean(current.transparent),()=>{
+            current.transparent=!current.transparent;
+            transparent.setAttribute("aria-pressed",String(current.transparent));
+            if(target==="typed")document.documentElement.classList.toggle("transparent-screen-text",current.transparent);
+          });
+          transparent.className="text-match-button";
+          addRow("Effect",transparent);
           choose("Font",fontChoices,()=>current.font,value=>{
             current.font=value;
+            if(matchLaunchFont)effectState.typed.font=effectState.text.font=value;
             if(document.fonts)document.fonts.load("16px "+value).catch(()=>{});
-            updateFontChecks();
           });
           const checks=document.createElement("div");
           checks.className="effect-checks";
-          const match=radio("Match",()=>fonts().match,checked=>{
-            if(checked){lastIndependentLaunchFont=effectState.text.font;effectState.text.font=effectState.typed.font;}
-            else effectState.text.font=lastIndependentLaunchFont;
-            render();
+          const colourMatch=makeEffectButton("Match colour",matchTextColour,()=>{
+            matchTextColour=!matchTextColour;
+            syncTextColour();
+            colourMatch.setAttribute("aria-pressed",String(matchTextColour));
           });
-          const all=radio("Use for all",()=>fonts().all,checked=>{
-            if(checked){
-              fontsBeforeApply=[byId("menuFont").value,effectState.typed.font,effectState.text.font,telephoneFontFamily.value,planetTextFont];
-              applyAllFonts(current.font);
-            }else if(fontsBeforeApply){
-              const [menu,typed,launched,book,planet]=fontsBeforeApply;
-              setMenuFont(menu);
-              effectState.typed.font=typed;effectState.text.font=launched;
-              telephoneFontFamily.value=book;telephone.style.fontFamily=book;
-              planetTextFont=planet;planetEntry.style.fontFamily=planet;
-            }
-            render();
+          const fontMatch=makeEffectButton("Match font",matchLaunchFont,()=>{
+            matchLaunchFont=!matchLaunchFont;
+            if(matchLaunchFont)otherText().font=current.font;
+            fontMatch.setAttribute("aria-pressed",String(matchLaunchFont));
           });
+          colourMatch.className=fontMatch.className="text-match-button";
           const [getVisible,setVisible]=visible();
-          checks.append(radio("Visible",getVisible,setVisible),all,match);
+          checks.append(radio("Invisible",()=>!getVisible(),value=>setVisible(!value)),colourMatch,fontMatch);
           const writingControls=document.createElement("div");
           writingControls.className="text-writing-controls";
-          writingControls.append(radio("Type on screen",()=>screenType,setScreenTyping));
-          if(target==="typed"){
-            const setting=byId("movableCursor");
-            writingControls.append(radio("Movable caret",()=>setting.checked,value=>{
-              setting.checked=value;setting.dispatchEvent(new Event("change",{bubbles:true}));
-            }));
-          }
+          const typeButton=makeEffectButton("Type on screen",screenType,()=>setScreenTyping(!screenType));
+          typeButton.className="screen-type-button";
+          const grip=document.createElement("span");
+          grip.className="writing-drag-space";
+          writingControls.append("Mode",typeButton,grip);
+          const setting=byId("movableCursor");
+          const move=makeEffectButton("Movable caret",setting.checked,()=>{
+            setting.checked=!setting.checked;
+            move.setAttribute("aria-pressed",String(setting.checked));
+            setting.dispatchEvent(new Event("change",{bubbles:true}));
+          });
+          move.className="movable-caret-button";
+          writingControls.append(move);
 
+          if(screenType){
+            const clear=document.createElement("button");
+            clear.type="button";
+            clear.className="screen-zamboni";
+            clear.textContent="Zamboni";
+            clear.title="Clear on-screen writing";
+            clear.addEventListener("click",()=>{
+              const previous=activeScreenBlock;
+              clearScreenWriting();
+              if(previous)createScreenBlock(previous.x,previous.y);
+              else if(planetOpen)positionPlanetCaret();
+              else restoreEntryFocus(true);
+            });
+            writingControls.append(clear);
+          }
           checks.append(writingControls);
           options.append(checks);
-          function updateFontChecks(){
-            match.firstElementChild.checked=fonts().match;
-            all.firstElementChild.checked=fonts().all;
-            lastIndependentLaunchFont=effectState.text.font;
-          }
         }
       }
       tabs.addEventListener("click",event=>{
@@ -3585,7 +4411,23 @@
     const hue=config.rainbow?rainbowInk(now,config.rainbowStart,config.rainbowSpeed):config.colour;
     ctx.save();
     ctx.strokeStyle=ctx.fillStyle=hue;ctx.lineWidth=config.width;
-    if(mode==='vortex'){
+    if(mode==='checkerboard'){
+      const square=Math.max(12,Math.round(64*size));
+      const offset=config.checkerOffset??={x:0,y:0};
+      const step=delta*.065*config.speed;
+      offset.x=mod(offset.x-Math.sin(angle)*step,square*2);
+      offset.y=mod(offset.y+Math.cos(angle)*step,square*2);
+      ctx.globalAlpha=overlayEnabled?.62:1;
+      ctx.fillStyle="#000";
+      ctx.fillRect(0,0,w,h);
+      ctx.fillStyle="#fff";
+      for(let row=-2;row*square+offset.y<h;row++){
+        const start=mod(row,2)-2;
+        for(let col=start;col*square+offset.x<w;col+=2){
+          ctx.fillRect(Math.round(col*square+offset.x),Math.round(row*square+offset.y),square,square);
+        }
+      }
+    }else if(mode==='vortex'){
       ctx.translate(w/2,h/2);
       const reach=Math.hypot(w,h)/2+2;
       const sign=angle===0||angle===Math.PI/2?1:-1;
@@ -3652,14 +4494,40 @@
           wavePath(x,y*(.14+.72*i/count),10,z=>Math.sin(z/Math.max(35,145*size)+phase*.65+i*.27)*Math.min(y*.34,35*size));
         }
       }
-      if(mode==='grid'){
+      if(mode==='grid' || mode==='checkerGrid'){
         const horizon=y*config.horizon/100,spacing=1/Math.max(3,Math.round(22/Math.sqrt(size)));
-        ctx.beginPath();
-        for(let i=-24;i<=24;i++){ctx.moveTo(x/2+i*x*.022*size,horizon);ctx.lineTo(x/2+i*x*.18*size,y);}
-        for(let z=mod(phase*.22,spacing);z<1;z+=spacing){
-          const line=horizon+z**2.2*(y-horizon);ctx.moveTo(0,line);ctx.lineTo(x,line);
+        if(mode==='checkerGrid'){
+          const offset=phase*.22/spacing;
+          const fraction=mod(offset,1);
+          const project=(column,z)=>{
+            const depth=Math.max(0,Math.min(1,z));
+            return [x/2+column*x*size*(.022+.158*depth**2.2),horizon+depth**2.2*(y-horizon)];
+          };
+          const columns=Math.ceil(1/(.044*size))+1;
+          ctx.save();
+          ctx.globalAlpha*=overlayEnabled?.62:1;
+          for(let row=-1;(row+fraction)*spacing<1;row++){
+            const near=(row+fraction)*spacing,far=near+spacing;
+            for(let col=-columns;col<columns;col++){
+              ctx.fillStyle=mod(col+row-Math.floor(offset),2)?"#fff":"#000";
+              ctx.beginPath();
+              ctx.moveTo(...project(col,near));
+              ctx.lineTo(...project(col+1,near));
+              ctx.lineTo(...project(col+1,far));
+              ctx.lineTo(...project(col,far));
+              ctx.closePath();
+              ctx.fill();
+            }
+          }
+          ctx.restore();
+        }else{
+          ctx.beginPath();
+          for(let i=-24;i<=24;i++){ctx.moveTo(x/2+i*x*.022*size,horizon);ctx.lineTo(x/2+i*x*.18*size,y);}
+          for(let z=mod(phase*.22,spacing);z<1;z+=spacing){
+            const line=horizon+z**2.2*(y-horizon);ctx.moveTo(0,line);ctx.lineTo(x,line);
+          }
+          ctx.stroke();
         }
-        ctx.stroke();
       }
       if(mode==='prism'){
         const gap=45*size,shift=mod(phase*26,gap);
@@ -3676,7 +4544,6 @@
 
   const backgroundCatalog={
     images:[
-      "images/BambooPath.jpg",
       "images/BeachShack.jpg",
       "images/DockPool.jpg",
       "images/GardenTable.jpg",
@@ -3694,6 +4561,7 @@
       "images/TempleSteps.jpg",
       "images/TileKitchen.jpg",
       "images/WritersShed.jpg",
+      "images/BambooPath.jpg",
     ],
     videos:[
       "Videos/CathedralClouds.mp4",
@@ -3713,9 +4581,9 @@
   const number=id=>Number(byId(id).value);
   const rainbowInk=now=>cycleRainbowColour(now/4400);
   const bgMode=byId("bgMode");
-  let baseBackground="stars",lastVisual="grid",overlayEnabled=false;
-  const backgroundConfigs=Object.fromEntries(["stars","grid","waves","lightning","prism","aurora","rings","vortex","spiral"].map(key=>[key,{
-    colour:"#ffffff",back:"#000000",width:1.5,size:1,speed:1,phase:0,direction:key==="stars"?"forward":"down",rainbow:false,horizon:42,nextDirection:0,randomAngle:0
+  let baseBackground="stars",lastVisual="grid",overlayEnabled=false,opArtStars=true;
+  const backgroundConfigs=Object.fromEntries(["stars","grid","waves","lightning","prism","checkerboard","checkerGrid","aurora","rings","vortex","spiral"].map(key=>[key,{
+    colour:"#ffffff",back:"#000000",width:key==="lightning"?1:1.5,size:key==="lightning"?1.5:1,speed:1,phase:0,direction:key==="stars"?"forward":"down",rainbow:false,horizon:42,nextDirection:0,randomAngle:0
   }]));
   const visualFields={direction:"visualDirection",speed:"visualSpeed",size:"visualSize",width:"visualWidth",colour:"visualColour",back:"visualBack",rainbow:"visualRainbow",horizon:"visualHorizon"};
   const backgroundMedia=Object.fromEntries(["images","videos"].map(mode=>[mode,{
@@ -3735,92 +4603,97 @@
     control.value=String(transitionSeconds(queue));
     control.dispatchEvent(new Event("rotaryrefresh"));
   }
-  const backgroundImage=document.createElement("img");
-  // Preparing the next clip must never replace the source that is still onscreen.
-  const videoPlayers=Array.from({length:2},()=>{
-    const video=document.createElement("video");
-    video.muted=true;
-    video.playsInline=true;
-    video.preload="auto";
-    video.loop=true; // Keep a departing clip moving if loading spans its end.
-    return video;
-  });
-  let activeVideo=null,pendingVideo=null,videoFade=null;
-  function clearVideo(video){
-    video.pause();
-    if(video.getAttribute("src")!==null){
-      video.removeAttribute("src");
-      video.load();
+  const mediaScenes={images:{layers:[],pending:null},videos:{layers:[],pending:null,warm:null}};
+  let nextSlide=0,visibleMediaMode=null,mediaModeWipe=null;
+  function releaseMedia(asset){
+    if(!asset || asset.mode!=="videos")return;
+    asset.element.pause();
+    asset.element.removeAttribute("src");
+    asset.element.load();
+  }
+  function resetMediaScene(mode){
+    const scene=mediaScenes[mode];
+    for(const asset of [...scene.layers,scene.pending,scene.warm])releaseMedia(asset);
+    scene.layers.length=0;
+    scene.pending=scene.warm=null;
+  }
+  function resetVideos(){resetMediaScene("videos");}
+  function makeMediaAsset(mode,source){
+    const element=document.createElement(mode==="videos"?"video":"img");
+    if(mode==="videos"){
+      element.muted=true;
+      element.playsInline=true;
+      element.preload="auto";
+      element.loop=true;
+    }
+    element.src=source;
+    return {mode,source,element,wipe:null};
+  }
+  function prepareMedia(mode,queue,source){
+    const scene=mediaScenes[mode];
+    if(scene.pending?.source===source)return;
+    releaseMedia(scene.pending);
+    scene.pending=null;
+    if(scene.layers.at(-1)?.source===source)return;
+    const asset=scene.warm?.source===source?scene.warm:makeMediaAsset(mode,source);
+    if(asset===scene.warm)scene.warm=null;
+    scene.pending=asset;
+    asset.element.addEventListener("error",()=>{
+      if(scene.pending===asset)scene.pending=null;
+    },{once:true});
+    if(mode==="videos")asset.element.play().catch(()=>{});
+    const eligible=queue.items.filter(item=>mode==="images" || queue.marked.has(item));
+    const index=eligible.findIndex(item=>item.src===source);
+    const next=eligible[(index+1)%eligible.length]?.src;
+    if(next && next!==source && scene.warm?.source!==next){
+      releaseMedia(scene.warm);
+      scene.warm=makeMediaAsset(mode,next);
     }
   }
-  function resetVideos(){
-    if(!activeVideo && !pendingVideo && !videoFade)return;
-    activeVideo=pendingVideo=videoFade=null;
-    videoPlayers.forEach(clearVideo);
-  }
-  function queueVideo(source){
-    if(pendingVideo?.source===source)return;
-    if(activeVideo?.source===source){
-      if(pendingVideo)clearVideo(pendingVideo.video);
-      pendingVideo=null;
-      activeVideo.video.play().catch(()=>{});
-      return;
-    }
-    const video=videoPlayers.find(player=>player!==activeVideo?.video);
-    if(videoFade){clearVideo(videoFade.video);videoFade=null;}
-    pendingVideo={video,source};
-    video.src=source;
-    video.play().catch(()=>{});
-  }
-  const readyVideo=video=>video.readyState>=2 && video.videoWidth>0 && video.videoHeight>0;
-  for(const video of videoPlayers){
-    video.addEventListener("error",()=>{
-      if(pendingVideo?.video!==video)return;
-      pendingVideo=null;
-      clearVideo(video);
-    });
-  }
-  function paintVideos(now,queue){
-    if(pendingVideo && readyVideo(pendingVideo.video) && !pendingVideo.video.paused){
-      if(activeVideo){
-        videoFade={video:activeVideo.video,...startMediaTransition(queue,now)};
-      }
-      activeVideo=pendingVideo;
-      pendingVideo=null;
-      nextSlide=now+queue.seconds*1000;
-    }
-    if(!activeVideo)return;
-    const video=activeVideo.video;
-    if(readyVideo(video)){
-      drawFittedMedia(ctx,video,video.videoWidth,video.videoHeight,queue.fit);
-    }
-    if(videoFade){
-      const progress=(now-videoFade.start)/(1000*videoFade.seconds);
-      const outgoing=videoFade.video;
-      if(progress>=1){
-        videoFade=null;
-        clearVideo(outgoing);
-      }else if(readyVideo(outgoing)){
-        drawOutgoingMedia(progress,videoFade.mode,()=>drawFittedMedia(ctx,outgoing,outgoing.videoWidth,outgoing.videoHeight,queue.fit));
+  function paintMediaLayers(now,mode,queue,advance=true){
+    const scene=mediaScenes[mode],layers=scene.layers;
+    const pending=scene.pending;
+    if(pending){
+      const media=pending.element;
+      const ready=mode==="videos"?media.readyState>=2 && media.videoWidth>0:media.complete && media.naturalWidth>0;
+      if(ready){
+        pending.wipe=layers.length && queue.transition!=="off"?startMediaTransition(queue,now):null;
+        if(!pending.wipe)for(const layer of layers.splice(0))releaseMedia(layer);
+        layers.push(pending);
+        scene.pending=null;
+        nextSlide=now+queue.seconds*1000;
       }
     }
-    if(!video.paused && !pendingVideo && !videoFade && queue.slideshow && queue.playback!=="one" && queue.items.length>1){
-      const remaining=video.duration-video.currentTime;
-      if(now>=nextSlide || Number.isFinite(remaining) && remaining<transitionSeconds(queue)+.25){
-        advanceMedia(1,true,"videos");
-      }
+    const progress=wipe=>(now-wipe.start)/(1000*wipe.seconds);
+    let first=Math.max(0,layers.length-5);
+    for(let i=layers.length-1;i>first;i--){
+      if(!layers[i].wipe || progress(layers[i].wipe)>=1){first=i;break;}
+    }
+    if(first>0)for(const layer of layers.splice(0,first))releaseMedia(layer);
+    if(layers[0])layers[0].wipe=null;
+    const paint=index=>{
+      const asset=layers[index],media=asset.element;
+      const width=media.videoWidth||media.naturalWidth,height=media.videoHeight||media.naturalHeight;
+      if(queue.fit==="contain" && mode==="images")drawContainedTiles(ctx,media,width,height);
+      else if(width && height)drawFittedMedia(ctx,media,width,height,queue.fit);
+      if(index>0 && asset.wipe)drawOutgoingMedia(progress(asset.wipe),asset.wipe.mode,()=>paint(index-1));
+    };
+    if(layers.length){
+      ctx.fillStyle="#000";
+      ctx.fillRect(0,0,W,H);
+      paint(layers.length-1);
+    }
+    if(advance && !scene.pending && queue.slideshow && queue.playback!=="one" && queue.items.length>1 && layers.length){
+      const video=layers.at(-1).element;
+      const remaining=mode==="videos"?video.duration-video.currentTime:Infinity;
+      if(now>=nextSlide || Number.isFinite(remaining) && remaining<transitionSeconds(queue)+.25)advanceMedia(1,true,mode);
     }
   }
 
-  const latestMediaFrame=document.createElement("canvas");
-  const latestMediaContext=latestMediaFrame.getContext("2d");
-  const outgoingMediaFrame=document.createElement("canvas");
-  const outgoingMediaContext=outgoingMediaFrame.getContext("2d");
-  let paintedSource="",previousMediaMode="",transition=null,nextSlide=0;
-  function drawOutgoingMedia(progress,mode=transition.mode,draw=()=>ctx.drawImage(outgoingMediaFrame,0,0,W,H)){
+  function drawOutgoingMedia(progress,mode,draw){
     ctx.save();
     if(mode==="fade"){
-      ctx.globalAlpha=1-progress;
+      ctx.globalAlpha*=1-progress;
     }else{
       ctx.beginPath();
       ctx.rect(0,0,W,H);
@@ -3859,10 +4732,7 @@
     queue.index=index;
     if(mode===bgMode.value)byId("bgFileList").value=String(queue.index);
     const source=queue.items[queue.index].src;
-    if(mode==="images")backgroundImage.src=source;
-    else{
-      queueVideo(source);
-    }
+    prepareMedia(mode,queue,source);
     nextSlide=performance.now()+Math.max(2,queue.seconds)*1000;
     byId("bgFileList").dispatchEvent(new Event("rotaryrefresh"));
     if(mode===bgMode.value)for(const row of byId("bgPlaylist").children){
@@ -3885,8 +4755,11 @@
   function syncBackgroundSource(){
     const mode=bgMode.value;
     const base=overlayEnabled ? baseBackground : mode;
-    if(base!=="videos"){resetVideos();return;}
-    if(mode!=="videos" && !activeVideo && !pendingVideo)chooseMedia(backgroundMedia.videos.index,"videos");
+    if(base!=="videos"){
+      if(base!=="images"){resetVideos();visibleMediaMode=mediaModeWipe=null;}
+      return;
+    }
+    if(mode!=="videos" && !mediaScenes.videos.layers.length && !mediaScenes.videos.pending)chooseMedia(backgroundMedia.videos.index,"videos");
   }
   function refreshBackgroundMenu(){
     const mode=bgMode.value,config=backgroundConfigs[mode];
@@ -3899,11 +4772,12 @@
     byId("opArtControls").hidden=!config || mode==="stars";
     byId("auroraControls").hidden=mode!=="aurora";
 
-    byId("gridControls").hidden=mode!=="grid";
+    byId("gridControls").hidden=!["grid","checkerGrid"].includes(mode);
+    for(const id of ["visualWidth","visualColour","visualBack","visualRainbow"])byId(id).closest("label").hidden=["checkerboard","checkerGrid"].includes(mode);
     syncBackgroundSource();
     if(config){
       for(const [key,id] of Object.entries(visualFields)){
-        if(key==="rainbow")byId(id).checked=config[key];
+        if(byId(id).type==="checkbox")byId(id).checked=config[key];
         else byId(id).value=config[key];
       }
       for(const option of byId("visualDirection").options){
@@ -3937,8 +4811,7 @@
   function setMedia(items){
     const queue=backgroundMedia[bgMode.value];
     for(const item of queue.items)if(item.local)URL.revokeObjectURL(item.src);
-    if(bgMode.value==="images")backgroundImage.removeAttribute("src");
-    else resetVideos();
+    resetMediaScene(bgMode.value);
     queue.items=items;queue.index=0;queue.loaded=true;
     queue.marked=new Set(bgMode.value==="videos"?items:[]);
     if(bgMode.value==="images")imageLaunchIndex=-1;
@@ -3952,9 +4825,15 @@
     });
   }
   bgMode.addEventListener("change",refreshBackgroundMenu);
-  byId("visualOverlay").addEventListener("click",event=>{
+  byId("visualNoStars").addEventListener("click",event=>{
+    opArtStars=!opArtStars;
+    event.currentTarget.textContent=opArtStars?"Starfield on":"Starfield off";
+    event.currentTarget.setAttribute("aria-pressed",String(opArtStars));
+  });
+  const overlayButtons=[byId("visualOverlay"),byId("opArtOverlay")];
+  for(const button of overlayButtons)button.addEventListener("click",()=>{
     overlayEnabled=!overlayEnabled;
-    event.currentTarget.setAttribute("aria-pressed",String(overlayEnabled));
+    for(const control of overlayButtons)control.setAttribute("aria-pressed",String(overlayEnabled));
     syncBackgroundSource();
   });
   for(const [key,id] of Object.entries(visualFields)){
@@ -3990,7 +4869,8 @@
     chooseMedia(candidates[mod(next,candidates.length)].index,mode);
   }
   function navigateBackground(direction){
-    if(backgroundMedia[bgMode.value]){advanceMedia(direction);return;}
+    const visible=overlayEnabled?baseBackground:bgMode.value;
+    if(backgroundMedia[visible]){advanceMedia(direction,false,visible);return;}
     const modes=Object.keys(backgroundConfigs);
     bgMode.value=modes[mod(modes.indexOf(bgMode.value)+direction,modes.length)];
     bgMode.dispatchEvent(new Event("change"));
@@ -4020,7 +4900,10 @@
     const queue=backgroundMedia[bgMode.value];
     if(!queue)return;
     queue.transition=event.target.value;
-    if(queue.transition==="off")transition=null;
+    if(queue.transition==="off"){
+      const layers=mediaScenes[bgMode.value].layers;
+      if(layers.length)layers.at(-1).wipe=null;
+    }
     refreshTransitionSeconds(queue);
   });
   byId("bgFadeSeconds").addEventListener("input",event=>{
@@ -4055,9 +4938,7 @@
     const keptIndex=queue.items.indexOf(current);
     queue.index=keptIndex<0?Math.max(0,Math.min(queue.index,queue.items.length-1)):keptIndex;
     if(!queue.items.length){
-      paintedSource="";transition=null;
-      if(mode==="videos")resetVideos();
-      else backgroundImage.removeAttribute("src");
+      resetMediaScene(mode);
     }
     refreshMediaList(keptIndex<0);
     renderBackgroundPlaylist();
@@ -4190,61 +5071,34 @@
   function paintAlternateBackground(now){
     const selected=bgMode.value;
     const mode=overlayEnabled ? baseBackground : selected;
-    if(backgroundConfigs[mode]){
-      paintedSource="";
-      previousMediaMode="";
-      transition=null;
-    }
     if(mode==="stars")return false;
     if(backgroundConfigs[mode]){
       ctx.fillStyle=backgroundConfigs[mode].back;
       ctx.fillRect(0,0,W,H);
-      paintEffect(mode,W,H,16,now);
       return true;
     }
-    const queue=backgroundMedia[mode];
-    if(mode==="videos"){
-      previousMediaMode="videos";
-      paintedSource="";transition=null;
-      paintVideos(now,queue);
-      return true;
-    }
-    if(queue.slideshow && queue.playback!=="one" && queue.items.length>1 && now>=nextSlide)advanceMedia(1,true,"images");
-    const media=backgroundImage;
-    const width=media.naturalWidth,height=media.naturalHeight;
-    if(previousMediaMode!==mode){
-      previousMediaMode=mode;
-      paintedSource="";
-      transition=null;
-    }
-    if(queue.items.length && width && height && media.complete){
-      const source=queue.items[queue.index].src;
-      if(queue.transition!=="off" && source!==paintedSource && paintedSource){
-        outgoingMediaFrame.width=latestMediaFrame.width;
-        outgoingMediaFrame.height=latestMediaFrame.height;
-        outgoingMediaContext.drawImage(latestMediaFrame,0,0);
-        transition=startMediaTransition(queue,now);
+    if(visibleMediaMode && visibleMediaMode!==mode){
+      paintMediaLayers(now,mode,backgroundMedia[mode],false);
+      if(!mediaScenes[mode].layers.length){
+        paintMediaLayers(now,visibleMediaMode,backgroundMedia[visibleMediaMode],false);
+        return true;
       }
-      paintedSource=source;
-      const frameWidth=Math.round(W),frameHeight=Math.round(H);
-      if(latestMediaFrame.width!==frameWidth || latestMediaFrame.height!==frameHeight){
-        latestMediaFrame.width=frameWidth;latestMediaFrame.height=frameHeight;
-      }
-      latestMediaContext.fillStyle="#000";
-      latestMediaContext.fillRect(0,0,W,H);
-      if(queue.fit==="contain")drawContainedTiles(latestMediaContext,media,width,height);
-      else drawFittedMedia(latestMediaContext,media,width,height,queue.fit);
-      ctx.drawImage(latestMediaFrame,0,0,W,H);
-      if(transition){
-        const progress=(now-transition.start)/(1000*transition.seconds);
-        if(progress>=1)transition=null;
-        else drawOutgoingMedia(progress);
-      }
-    }else if(paintedSource){
-      ctx.drawImage(latestMediaFrame,0,0,W,H);
+      mediaModeWipe={from:visibleMediaMode,start:now};
+    }else paintMediaLayers(now,mode,backgroundMedia[mode]);
+    visibleMediaMode=mode;
+    if(mediaModeWipe){
+      const progress=(now-mediaModeWipe.start)/700;
+      if(progress>=1){
+        if(mediaModeWipe.from==="videos")resetVideos();
+        mediaModeWipe=null;
+      }else drawOutgoingMedia(progress,"circle",()=>{
+        const from=mediaModeWipe.from;
+        paintMediaLayers(now,from,backgroundMedia[from],false);
+      });
     }
     return true;
   }
+
   refreshBackgroundMenu();
 
   const menuFont=byId("menuFont");
@@ -4279,7 +5133,6 @@
     telephone.style.fontFamily=font;
     telephoneFontFamily.value=font;
     if(planetEntry)planetEntry.style.fontFamily=font;
-    byId("poemTitleInput").style.fontFamily=font;
     planetTextFont=font;
     byId("textWindow").dispatchEvent(new Event("effectrefresh"));
   }
@@ -4294,6 +5147,7 @@
     document.documentElement.dataset.duneMenu=String(dune);
   }
   telephoneFontFamily.addEventListener("change",()=>{telephone.style.fontFamily=telephoneFontFamily.value;});
+  telephone.style.fontSize=byId("telephoneFontSize").value+"px";
   byId("telephoneFontSize").addEventListener("input",event=>{telephone.style.fontSize=event.target.value+"px";});
   const applyToAll=byId("allFonts");
   menuFont.addEventListener("change",()=>{
@@ -4400,19 +5254,18 @@
     input.colourButton=button;
     input.after(button);
   }
-  const settingColourRows=[PALETTE.slice(0,5),PALETTE.slice(5,10),[...PALETTE.slice(10,14),"#643925"],["#c6c6c6",...PALETTE.slice(17)]];
-  for(const colours of settingColourRows){
-    const row=document.createElement("div");
-    row.className="settings-palette-row";
-    for(const colour of colours){
-      const swatch=makeEffectButton("",false,()=>{closeEffectColour();applyMenuColour(colour);});
-      swatch.style.background=colour;
-      swatch.setAttribute("aria-label",colour);
-      swatch.addEventListener("dblclick",event=>{event.preventDefault();editSettingsColour();});
-      row.append(swatch);
-    }
-    settingsPalette.append(row);
+  for(const colour of PALETTE){
+    const swatch=makeEffectButton("",false,()=>{closeEffectColour();applyMenuColour(colour);});
+    swatch.className="shared-palette-swatch";
+    swatch.style.backgroundColor=colour;
+    swatch.setAttribute("aria-label",colour);
+    swatch.addEventListener("dblclick",event=>{event.preventDefault();editSettingsColour();});
+    settingsPalette.append(swatch);
   }
+  const customSettingsColour=makeEffectButton("C",false,editSettingsColour);
+  customSettingsColour.dataset.colourTrigger="";
+  customSettingsColour.setAttribute("aria-label","Custom menu colour");
+  settingsPalette.append(customSettingsColour);
   const closeMenuColours=()=>closeEffectColour();
   byId("settingsWindow").querySelector(".close").addEventListener("click",closeMenuColours);
 
@@ -4458,7 +5311,8 @@
   }));
   const radioList=byId('radio-song-list');
   let radioIndex=radioTracks.findIndex(track=>track.name==='Drumbo.mp3');
-  let radioStarted=false,radioMode='1';
+  let radioStarted=false,radioMode='1',radioAttempt=0,radioFallback=false,radioWantsPlayback=false;
+  const failedRadioTracks=new Set();
   radio.loop=true;
   const radioProgress=byId('radio-progress');
   function radioTime(seconds){
@@ -4480,11 +5334,47 @@
       row.firstElementChild.setAttribute('aria-current',String(active));
     }
   }
-  function playRadio(){
-    radio.play().catch(()=>{byId('radio-status').textContent='Could not play this track.';});
+  function tryNextPlayableTrack(attempt){
+    if(attempt!==radioAttempt || !radioWantsPlayback)return;
+    const track=radioTracks[radioIndex];
+    if(!track)return;
+    if(!radioFallback && track.fallback && track.fallback!==track.url){
+      radioFallback=true;
+      radioAttempt++;
+      radio.src=track.fallback;
+      radio.load();
+      playRadio();
+      return;
+    }
+    failedRadioTracks.add(track);
+    for(let offset=1;offset<radioTracks.length;offset++){
+      const next=mod(radioIndex+offset,radioTracks.length);
+      if(!failedRadioTracks.has(radioTracks[next])){
+        selectRadioTrack(next,true,true);
+        return;
+      }
+    }
+    radioWantsPlayback=false;
+    byId("radio-status").textContent="No playable tracks found.";
   }
-  function selectRadioTrack(index,autoplay=true){
+  function playRadio(){
+    radioWantsPlayback=true;
+    const attempt=radioAttempt;
+    if(radio.error){tryNextPlayableTrack(attempt);return;}
+    radio.play().catch(error=>{
+      if(attempt!==radioAttempt || error.name==="AbortError")return;
+      if(error.name==="NotAllowedError"){
+        radioWantsPlayback=false;
+        byId("radio-status").textContent="Press Play to start the radio.";
+      }else tryNextPlayableTrack(attempt);
+    });
+  }
+  function selectRadioTrack(index,autoplay=true,skipping=false){
     if(!radioTracks[index])return;
+    if(!skipping)failedRadioTracks.clear();
+    radioAttempt++;
+    radioFallback=false;
+    radioWantsPlayback=autoplay;
     radioIndex=index;
     radioStarted=true;
     byId('radio-status').textContent='';
@@ -4627,20 +5517,15 @@
   }
   byId('radio-play').onclick=()=>{
     if(!radioStarted){startRadioOnOpen();return;}
-    if(radio.paused)playRadio();
-    else radio.pause();
+    if(radio.paused){failedRadioTracks.clear();playRadio();}
+    else{radioWantsPlayback=false;radio.pause();}
   };
+  radio.addEventListener('playing',()=>failedRadioTracks.clear());
   for(const event of ['play','pause','ended'])radio.addEventListener(event,()=>{
     byId('radio-play').textContent=radio.paused?'Play':'Pause';
     if(!radio.paused)byId('radio-status').textContent='';
   });
-  radio.addEventListener('error',()=>{
-    const track=radioTracks[radioIndex];
-    if(track?.fallback&&radio.src===track.url){
-      radio.src=track.fallback;
-      playRadio();
-    }else byId('radio-status').textContent='Could not play this track.';
-  });
+  radio.addEventListener('error',()=>{if(radio.error)tryNextPlayableTrack(radioAttempt);});
   for(const event of ['timeupdate','loadedmetadata','emptied','durationchange'])radio.addEventListener(event,updateRadioProgress);
   radioProgress.oninput=()=>{
     radioProgress.style.setProperty("--radio-played",Number(radioProgress.value)/10+"%");
@@ -4858,7 +5743,10 @@
   });
   customHue.addEventListener("input",customColourChanged);
   const customRange=rangeWithArrows("Hue",customHue,value=>value+"°");
-  customRange.classList.add("rainbow-slider");
+  const hueSpectrumTrack=document.createElement("span");
+  hueSpectrumTrack.className="hue-spectrum-track";
+  customHue.replaceWith(hueSpectrumTrack);
+  hueSpectrumTrack.append(customHue);
   const hueValue=customRange.children[1];
   hueValue.tabIndex=0;
   holdAdvance(hueValue,()=>{
@@ -4870,6 +5758,14 @@
   hueRow.append(customChip,customRange);
   effectColourPopover.append(toneField,hueRow);
   document.body.append(effectColourPopover);
+  const bookInk={colour:PALETTE.length-1,customColour:"#ffffff"};
+  const bookColourButton=byId("telephoneFontColour");
+  bookColourButton.addEventListener("click",()=>{
+    showEffectColour(bookColourButton,bookInk,()=>{
+      telephone.style.color=bookInk.customColour;
+      bookColourButton.style.textDecorationColor=bookInk.customColour;
+    },false,true);
+  });
   function closeEffectColour(){if(effectColourPopover.matches(":popover-open"))effectColourPopover.hidePopover();}
   function showEffectColour(palette,target,refresh,alongsideSettings=false,above=false){
     if(effectColourPopover.matches(":popover-open") && customTarget===target){closeEffectColour();return;}
@@ -4901,6 +5797,16 @@
     return true;
   }
   let imageLaunchIndex=-1,nextImageLaunch=0,imageLaunchGeneration=0,imageLaunchOrder=0;
+  const launchImageCache=new Map();
+  function preloadLaunchImage(source){
+    if(launchImageCache.has(source))return launchImageCache.get(source);
+    const image=new Image();
+    launchImageCache.set(source,image);
+    image.addEventListener("error",()=>launchImageCache.delete(source),{once:true});
+    image.src=source;
+    if(launchImageCache.size>8)launchImageCache.delete(launchImageCache.keys().next().value);
+    return image;
+  }
   function launchAnImage(now=performance.now()){
     const queue=backgroundMedia.images;
     if(!queue.loaded){queue.items=galleryItems("images");queue.loaded=true;}
@@ -4910,18 +5816,20 @@
     if(mode==="random" && queue.items.length>1)imageLaunchIndex=mod(imageLaunchIndex+1+Math.floor(Math.random()*(queue.items.length-1)),queue.items.length);
     else if(mode==="one")imageLaunchIndex=Math.max(0,Math.min(queue.index,queue.items.length-1));
     else imageLaunchIndex=mod(imageLaunchIndex+1,queue.items.length);
-    const image=document.createElement("img");
+    const image=preloadLaunchImage(queue.items[imageLaunchIndex].src);
     const effect=byId("imageLaunchEffect").value;
-    const size=number("imageLaunchSize")/100;
+    const startSize=number("imageStartSize")/100,endSize=number("imageEndSize")/100;
     const duration=number("imageLaunchDuration")*1000/number("imageLaunchSpeed");
     const generation=imageLaunchGeneration,planet=planetOpen,position=imagePosition,far=imageFar,order=++imageLaunchOrder;
-    image.addEventListener("load",()=>{
+    const startFlight=()=>{
       if(generation!==imageLaunchGeneration)return;
       if(launchedImageQueue.length>=35)launchedImageQueue.shift();
-      launchedImageQueue.push({image,started:performance.now(),effect,size,duration,planet,position,far,order});
+      launchedImageQueue.push({image,started:performance.now(),effect,startSize,endSize,duration,planet,position,far,order});
       launchedImageQueue.sort((a,b)=>a.order-b.order);
-    },{once:true});
-    image.src=queue.items[imageLaunchIndex].src;
+    };
+    if(image.complete && image.naturalWidth)startFlight();
+    else image.addEventListener("load",startFlight,{once:true});
+    preloadLaunchImage(queue.items[mod(imageLaunchIndex+1,queue.items.length)].src);
     nextImageLaunch=now+number("imageLaunchInterval")*1000;
   }
   function drawLaunchedImages(now,context=ctx,widthAvailable=W,heightAvailable=H,onPlanet=false){
@@ -4932,10 +5840,12 @@
       if(p>=1){launchedImageQueue.splice(i--,1);continue;}
       if(flight.planet!==onPlanet)continue;
       const aspect=flight.image.naturalWidth/flight.image.naturalHeight;
-      const expansion=flight.effect==="still"?1:flight.far?1-.9*p:.10+.90*Math.sqrt(Math.min(1,p/.68));
-      const height=Math.min(heightAvailable,widthAvailable/aspect)*flight.size*expansion;
+      const start=flight.far?flight.endSize:flight.startSize;
+      const end=flight.far?flight.startSize:flight.endSize;
+      const expansion=flight.effect==="still"?start:start+(end-start)*(p*p*(3-2*p));
+      const height=Math.min(heightAvailable,widthAvailable/aspect)*expansion;
       const width=height*aspect;
-      const origin=flight.position || {x:.5,y:flight.effect==="rise"?.86:.52};
+      const origin=flight.position || {x:.5,y:.5};
       let x=origin.x*widthAvailable,y=origin.y*heightAvailable;
       if(flight.effect==="rise")y-=heightAvailable*.36*p;
       if(flight.effect==="eight"){
@@ -4943,13 +5853,14 @@
         y+=heightAvailable*.075*Math.sin(p*4*Math.PI);
       }
       if(flight.effect==="shake"){
-        x+=widthAvailable*.018*Math.sin(p*32*Math.PI);
-        y+=heightAvailable*.012*Math.cos(p*23*Math.PI);
+        const frame=Math.floor((now-flight.started)/32);
+        x+=widthAvailable*.009*Math.sin(frame*57.21);
+        y+=heightAvailable*.008*Math.sin(frame*31.43);
       }
       context.save();
       context.translate(x,y);
       if(["spin","reverse"].includes(flight.effect))context.rotate(p*Math.PI*2*(flight.effect==="spin"?1:-1));
-      context.globalAlpha=flight.effect==="still"?Math.min(1,p*6,(1-p)*4):1-Math.max(0,p-.68)/.32;
+      context.globalAlpha=flight.effect==="still"?Math.min(1,p*6,(1-p)*4):1-Math.max(0,p-.58)/.42;
       context.drawImage(flight.image,-width/2,-height/2,width,height);
       context.restore();
     }
@@ -4965,12 +5876,11 @@
         popup.style.left="auto";popup.style.right="8px";popup.style.bottom="auto";
         popup.style.top=Math.max(8,(anchor.top||box.top)-popup.offsetHeight-5)+"px";
         bringToFront(popup);
+        const queue=backgroundMedia.images;
+        if(queue.items.length)preloadLaunchImage(queue.items[mod(imageLaunchIndex+1,queue.items.length)].src);
       }
     });
-    document.addEventListener("pointerdown",event=>{
-      if(!settingImagePosition && popup.style.display==="block" && !event.target.closest("#imageLaunchWindow,#showImageLaunch,[data-image-launch]"))popup.style.display="none";
-    });
-    byId("launchImageFromMenu").addEventListener("click",()=>launchAnImage());
+    byId("launchImageFromMenu").addEventListener("click",()=>{launchAnImage();restoreEntryFocus(true);});
     byId("setImagePosition").addEventListener("click",()=>{
       settingImagePosition=!settingImagePosition;
       byId("setImagePosition").textContent=settingImagePosition?"Click screen":imagePosition?"Set again":"Set position";
@@ -4986,7 +5896,7 @@
       event.currentTarget.textContent=imageFar?"Far":"Near";
       event.currentTarget.setAttribute("aria-pressed",String(imageFar));
     });
-    for(const [id,row,label] of [["imageLaunchSize","imageSizeRow","Size"],["imageLaunchDuration","imageDurationRow","Duration"],["imageLaunchSpeed","imageSpeedRow","Speed"],["imageLaunchInterval","imageIntervalRow","Interval"]]){
+    for(const [id,row,label] of [["imageStartSize","imageStartSizeRow","Start size"],["imageEndSize","imageEndSizeRow","End size"],["imageLaunchDuration","imageDurationRow","Duration"],["imageLaunchSpeed","imageSpeedRow","Speed"],["imageLaunchInterval","imageIntervalRow","Interval"]]){
       byId(row).append(rangeWithArrows(label,byId(id)));
     }
     rotaryControl("imageLaunchEffect");
@@ -5046,16 +5956,22 @@
       input.style.height="auto";
       input.style.height=Math.max(28,input.scrollHeight+2)+"px";
     }
+    reflectScreenCaret();
   }
   window.addEventListener("resize",applyWritingMargins);
   function refreshScreenScene(){
     for(const block of screenBlocks)block.input.hidden=block.planet!==planetOpen;
-    if(activeScreenBlock?.planet!==planetOpen)activeScreenBlock=null;
+    if(activeScreenBlock?.planet!==planetOpen){
+      activeScreenBlock=screenBlocks.findLast(block=>block.planet===planetOpen)||null;
+    }
+    if(screenType && planetOpen && !activeScreenBlock)positionPlanetCaret(false);
+    reflectScreenCaret();
   }
   function clearScreenWriting(){
-    screenWriting.replaceChildren();
+    for(const block of screenBlocks)block.input.remove();
     screenBlocks.length=0;
     activeScreenBlock=null;
+    reflectScreenCaret();
   }
   function startScreenBlock(event){
     for(const id of ["mainMenu","mainItems","v49LaunchBar","planetLaunchBarV49","planetPhone","planetPhoneMenu","returnStarfield"]){
@@ -5068,7 +5984,21 @@
     event.preventDefault();
     createScreenBlock(event.clientX,event.clientY);
   }
-  function createScreenBlock(clientX,clientY){
+  function positionPlanetCaret(focus=true){
+    const radius=Math.min(innerWidth,innerHeight)*.205;
+    createScreenBlock(innerWidth*.5-radius*.80,innerHeight*.53-radius*.76,focus);
+  }
+  function reflectScreenCaret(){
+    const marker=byId("screenCaret");
+    const block=activeScreenBlock;
+    marker.hidden=!screenType || !block;
+    if(marker.hidden)return;
+    marker.classList.toggle("awaiting",block.planet && !block.input.value);
+    marker.style.left=block.x+"px";
+    marker.style.top=(block.y+(parseFloat(block.input.style.paddingTop)||0))+"px";
+    marker.style.setProperty("--caret-height",Math.max(14,parseFloat(block.input.style.fontSize)*1.38)+"px");
+  }
+  function createScreenBlock(clientX,clientY,focus=true){
     const x=Math.max(0,Math.min(innerWidth,clientX));
     const y=Math.max(0,Math.min(innerHeight-30,clientY));
     const input=document.createElement("textarea");
@@ -5099,10 +6029,11 @@
       block.lastBook=block.bookPrefix+separator+text;
       block.lastText=text;
       telephone.value=block.lastBook;
+      poemSaveError.hidden=true;
       applyWritingMargins();
     });
     applyWritingMargins();
-    input.focus({preventScroll:true});
+    if(focus)input.focus({preventScroll:true});
   }
   let writingUndo=null;
   function invalidateWritingUndo(){
@@ -5112,7 +6043,9 @@
   function clearOrUndoWriting(){
     if(writingUndo){
       const record=writingUndo;
+      clearScreenWriting();
       telephone.value=record.text;
+      poemTitleInput.value=record.title;
       poemArchiveIndex=record.archiveIndex;
       submittedLines.splice(0,submittedLines.length,...record.lines);
       screenBlocks.push(...record.blocks);
@@ -5124,12 +6057,17 @@
       refreshScreenScene();
       applyWritingMargins();
       invalidateWritingUndo();
-    }else if(telephone.value || screenBlocks.length){
-      writingUndo={text:telephone.value,archiveIndex:poemArchiveIndex,lines:[...submittedLines],blocks:[...screenBlocks],active:activeScreenBlock};
+    }else if(telephone.value || screenBlocks.length || submittedLines.length || planetTextFlights.length){
+      writingUndo={text:telephone.value,title:poemTitleInput.value,archiveIndex:poemArchiveIndex,lines:[...submittedLines],blocks:[...screenBlocks],active:activeScreenBlock};
       telephone.value="";
+      byId("poemTitleInput").value="";
+      poemSaveError.hidden=true;
+
       poemArchiveIndex=-1;
       submittedLines.length=0;
+      planetTextFlights.length=0;
       clearScreenWriting();
+      if(screenType && planetOpen)positionPlanetCaret(false);
       byId("clearWriting").textContent="Undo";
     }
     refreshPoemArchive();
@@ -5140,11 +6078,20 @@
     byId("bookScreenToggle").setAttribute("aria-pressed",String(enabled));
     document.documentElement.classList.toggle("screen-type-mode",enabled);
     for(const button of document.querySelectorAll("[data-screen-launch]"))button.disabled=enabled;
+    syncPlanetLaunchOptions();
     if(enabled){
       drawing=false;points=[];window.__drawingPointerId=null;
-      planetPointer=null;planetLivePoints=[];redrawPlanetInk();
+      dctx.clearRect(0,0,W,H);
+      liveGlowContext.clearRect(0,0,W,H);
+        planetPointer=null;planetLivePoints=[];redrawPlanetInk();
+    }
+    if(enabled && planetOpen){
+      byId("telephoneWindow").style.display="none";
+      planetPhoneMenu.classList.remove("show");
+      if(!activeScreenBlock)positionPlanetCaret();
     }
     for(const block of screenBlocks)block.input.readOnly=!enabled;
+    refreshScreenScene();
     byId("textWindow").dispatchEvent(new Event("effectrefresh"));
     restoreEntryFocus(!enabled);
   }
@@ -5161,6 +6108,30 @@
     }
   }
   function installWritingControls(){
+    const marker=byId("screenCaret");
+    let drag=null;
+    marker.addEventListener("pointerdown",event=>{
+      if(event.button!==0 || !activeScreenBlock)return;
+      event.preventDefault();
+      drag={id:event.pointerId,x:event.clientX,y:event.clientY,block:activeScreenBlock,
+        left:activeScreenBlock.x,top:activeScreenBlock.y};
+      marker.setPointerCapture(event.pointerId);
+      marker.classList.add("caret-dragging");
+    });
+    marker.addEventListener("pointermove",event=>{
+      if(drag?.id!==event.pointerId)return;
+      const {block,left,top,x,y}=drag;
+      block.x=Math.max(8,Math.min(innerWidth-44,left+event.clientX-x));
+      block.y=Math.max(0,Math.min(innerHeight-30,top+event.clientY-y));
+      block.input.style.top=block.y+"px";
+      block.input.style.maxHeight=Math.max(28,innerHeight-block.y-5)+"px";
+      applyWritingMargins();
+    });
+    marker.addEventListener("lostpointercapture",()=>{
+      drag=null;
+      marker.classList.remove("caret-dragging");
+      activeScreenBlock?.input.focus({preventScroll:true});
+    });
     for(const [id,anchorId] of [["poemArchivePopup","poemArchiveButton"],["paragraphPopup","editParagraph"]]){
       const panel=byId(id),anchor=byId(anchorId);
       anchor.setAttribute("popovertarget",id);
@@ -5187,7 +6158,7 @@
       if(screenType)hideWritingMenus();
     });
     byId("clearWriting").addEventListener("click",clearOrUndoWriting);
-    telephone.addEventListener("input",invalidateWritingUndo);
+    telephone.addEventListener("input",()=>{invalidateWritingUndo();poemSaveError.hidden=true;});
     applyWritingMargins();
   }
 
@@ -5299,14 +6270,26 @@
   }
   for(const action of ["click","pointerup"]){
     byId("planetPhoneMenu").addEventListener(action,event=>{
-      if(!event.target.closest("#phoneBroken"))restoreEntryFocus();
+      if(!event.target.closest("#phoneBroken,#phoneRime"))restoreEntryFocus();
     });
   }
   const planetInkStyle=byId("planetInkStyle"),orbitEffect=byId("planetOrbitEffect");
   const planetInk=byId("planetInk"),planetInkContext=planetInk.getContext("2d");
-  let planetLivePoints=[],planetPointer=null;
-  function resizePlanetInk(){redrawPlanetInk();}
-  function redrawPlanetInk(){planetInkContext.clearRect(0,0,planetInk.width,planetInk.height);}
+  const planetGlowContext=byId("planetGlowCanvas").getContext("2d");
+  let planetLivePoints=[],planetPointer=null,planetLiveInk=null,planetStrokeSettings=null;
+  function resizePlanetInk(){
+    const scale=Math.min(window.devicePixelRatio||1,2);
+    planetInk.width=Math.floor(innerWidth*scale);
+    planetInk.height=Math.floor(innerHeight*scale);
+    planetInk.style.width=innerWidth+"px";
+    planetInk.style.height=innerHeight+"px";
+    planetInkContext.setTransform(scale,0,0,scale,0,0);
+    resizeLiveGlow(planetGlowContext,innerWidth,innerHeight);
+  }
+  function redrawPlanetInk(){
+    planetInkContext.clearRect(0,0,innerWidth,innerHeight);
+    planetGlowContext.clearRect(0,0,innerWidth,innerHeight);
+  }
   planetCanvas.style.pointerEvents="auto";
   planetCanvas.style.touchAction="none";
   planetCanvas.addEventListener("pointerdown",event=>{
@@ -5315,32 +6298,52 @@
     if(screenType){startScreenBlock(event);return;}
     planetPointer=event.pointerId;
     planetLivePoints=[pointerPos(event)];
-    strokeAngles.set(planetLivePoints,Math.random()*180);
+    redrawPlanetInk();
+    const angle=Math.random()*180;
+    strokeAngles.set(planetLivePoints,angle);
+    planetStrokeSettings=captureEffect("drawn");
+    assignSequenceColour(planetStrokeSettings,"drawn");
+    const visible=byId("planetDrawOnScreen").getAttribute("aria-pressed")==="true";
+    const preview={...planetStrokeSettings,invisible:planetStrokeSettings.invisible || !visible};
+    planetLiveInk=beginLiveInk(planetInkContext,planetLivePoints[0],preview,angle,planetGlowContext);
     planetCanvas.setPointerCapture(event.pointerId);
     event.preventDefault();
   });
   planetCanvas.addEventListener("pointermove",event=>{
     if(event.pointerId!==planetPointer)return;
     const point=pointerPos(event),last=planetLivePoints.at(-1);
+    extendLiveInk(planetLiveInk,point);
     if(last && Math.hypot(point.x-last.x,point.y-last.y)>=2){
       planetLivePoints.push(point);
       if(planetLivePoints.length>MAX_LIVE_DRAW_POINTS)planetLivePoints.shift();
-      redrawPlanetInk();
     }
   });
   for(const event of ["pointerup","pointercancel","lostpointercapture"])planetCanvas.addEventListener(event,e=>{
     if(e.pointerId!==planetPointer)return;
-    if(event==="pointerup" && planetLivePoints.length>1)rememberDrawing(planetLivePoints,true);
+    if(event==="pointerup"){
+      const tip=planetLiveInk.point,last=planetLivePoints.at(-1);
+      if(tip!==last)planetLivePoints.push(tip);
+      if(planetLivePoints.length===1)planetLivePoints.push({x:last.x+.5,y:last.y+.5});
+      drawnStrokeStyles.set(planetLivePoints,planetStrokeSettings);
+      rememberDrawing(planetLivePoints,true);
+      const settings=planetLiveInk.settings;
+      if(!settings.invisible && (settings.fuse || deformsReleasedInk(settings.lineEffect))){
+        burningStrokes.push({shape:planetLivePoints,age:0,settings:releaseInkSettings(planetLiveInk,settings),elapsed:performance.now()-planetLiveInk.started,planet:true,halo:planetLiveInk.haloSamples});
+      }
+    }
     planetPointer=null;planetLivePoints=[];redrawPlanetInk();
   });
   window.addEventListener("resize",resizePlanetInk);
 
   window.__starfieldControls={
-    launchDraw(){if(!screenType && lastDrawing)rememberDrawing(lastDrawing,planetOpen,true);},
+    launchDraw(){
+      if(!screenType && lastDrawing)rememberDrawing(lastDrawing,planetOpen,true);
+      restoreEntryFocus(true);
+    },
     isScreenTyping:()=>screenType,
     launchImage(){
       launchAnImage();
-      if(screenType)restoreEntryFocus();
+      restoreEntryFocus(true);
     },
     navigateBackground(direction){
       if(!planetOpen){navigateBackground(direction);if(screenType)restoreEntryFocus();return;}
@@ -5379,6 +6382,8 @@
       drawing=false;
       window.__drawingPointerId=null;
       dctx.clearRect(0,0,W,H);
+      liveGlowContext.clearRect(0,0,W,H);
+        burningCtx.clearRect(0,0,W,H);
       launchedCtx.clearRect(0,0,W,H);
       if(previous)createScreenBlock(previous.x,previous.y);
       else restoreEntryFocus(true);
@@ -5402,10 +6407,10 @@ const all=id=>Array.from(document.querySelectorAll('#'+CSS.escape(id)));
 
 /* ----- Numeric steppers: same IDs, therefore V30 renderer stays compatible. ----- */
 const configs={
- drawLineWidth:[1,45,2,4],drawGlowRange:[0,50,1,12],launchedDrawGlowRange:[0,60,1,16],
+ drawLineWidth:[1,14,2,4],
  drawDuration:[1200,6200,100,3000],typedTextSizeRange:[8,32,2,18],
  launchedTextSizeRange:[10,60,2,30],textGlowRange:[0,30,1,0],
- planetSpeed:[2,35,1,14],planetTextSize:[8,30,2,15]
+ planetSpeed:[2,35,1,27],planetTextSize:[8,30,2,17]
 };
 function clamp(n,a,b){return Math.max(a,Math.min(b,n));}
 function setNum(id,n){
