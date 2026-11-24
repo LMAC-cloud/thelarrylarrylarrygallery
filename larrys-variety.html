@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Larry’s Variety</title>
+<link rel="preconnect" href="https://larrysvariety.ca">
+<link rel="preload" as="image" fetchpriority="high" href="https://larrysvariety.ca/Artwork/LMAC-ArquaneTheQuietTeenPoet.jpg">
+<link rel="preload" as="image" fetchpriority="high" href="https://larrysvariety.ca/Artwork/LMAC-AstropopEffect.jpg">
+<link rel="preload" as="image" fetchpriority="high" href="https://larrysvariety.ca/Artwork/LMAC-AtGulliversMuseumOfAbstractArt.jpg">
+<link rel="preload" as="image" fetchpriority="high" href="https://larrysvariety.ca/Artwork/LMAC-AylaDream.jpg">
+<link rel="preload" as="image" fetchpriority="high" href="https://larrysvariety.ca/Artwork/LMAC-BarthesDilnsby.jpg">
 <style>
 body { margin:0; isolation:isolate; background:#101010; color:white; text-align:center; font-family:Arial,sans-serif; overflow-x:hidden; }
 body::before {
@@ -73,12 +79,11 @@ figcaption { display:inline-block; margin-top:8px; padding:4px 9px; background:#
     pointer-events:none;
     box-sizing:border-box;
     padding:8px 14px;
-    border:2px solid transparent;
-    border-radius:8px;
+    border:8px solid transparent;
+    border-radius:12px;
     background:linear-gradient(#151515,#151515) padding-box,
         linear-gradient(100deg,#ff345c,#ff9628,#fff62a,#39ff93,#24ddff,#8b6aff,#ff53db) border-box;
-    box-shadow:-9px 0 20px #ff345c, 0 -7px 18px #fff62a,
-        8px 0 20px #8b6aff, 0 8px 18px #24ddff;
+    box-shadow:0 0 18px 5px #bb65ff, 0 0 30px 7px #44dfff;
 }
 .celebration-gull {
     position:absolute;
@@ -795,9 +800,61 @@ header nav{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 #artworkGallery{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;padding:16px}
 #artworkGallery .excerpt-figure{display:block;min-width:0;max-width:none;margin:0}
 #artworkGallery figure{margin:0;height:100%}
-#artworkGallery figure>button:first-child{position:relative;border:0;border-radius:0;background:transparent;box-shadow:none}
-#artworkGallery figure img{width:auto;height:auto;max-width:100%;max-height:clamp(65px,16vw,250px);filter:drop-shadow(0 5px 8px #0009)}
-.painting-warning{position:absolute;z-index:1;left:50%;top:50%;transform:translate(-50%,-50%);width:max-content;max-width:calc(100% - 8px);box-sizing:border-box;padding:6px 8px;background:#181512;color:white;border:1px solid #b18d61;border-radius:4px;box-shadow:0 3px 12px #000b;font-size:clamp(11px,1.5vw,15px);pointer-events:none}
+#artworkGallery .painting-frame {
+    position:relative;
+    width:fit-content;
+    max-width:100%;
+    margin:auto;
+}
+#artworkGallery .painting-thumbnail {
+    position:relative;
+    border:clamp(6px,1vw,15px) solid #000;
+    border-radius:2px;
+    background:#000;
+}
+#artworkGallery figure img{width:auto;height:auto;max-width:100%;max-height:clamp(65px,16vw,250px)}
+.painting-cracks{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.painting-cracks path {
+    fill:none;
+    stroke:#edfbff;
+    stroke-width:2;
+    vector-effect:non-scaling-stroke;
+    filter:drop-shadow(0 1px 1px #000) drop-shadow(0 0 2px #69c9ff);
+    stroke-dasharray:1;
+    stroke-dashoffset:1;
+    animation:paintingCrack .42s var(--crack-delay) ease-out forwards;
+}
+@keyframes paintingCrack{to{stroke-dashoffset:0}}
+#artworkGallery .painting-repair {
+    position:absolute;
+    z-index:1;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:max-content;
+    max-width:calc(100% - 14px);
+    box-sizing:border-box;
+    padding:6px 8px;
+    background:#181512f5;
+    color:white;
+    border:1px solid #b18d61;
+    border-radius:4px;
+    box-shadow:0 3px 12px #000b;
+    font-size:clamp(11px,1.5vw,15px);
+    visibility:hidden;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .15s ease;
+}
+#artworkGallery .painting-repair[hidden]{display:none}
+.painting-repair strong{display:block;margin-top:3px}
+#artworkGallery .painting-frame:hover .painting-repair,
+#artworkGallery .painting-frame:focus-within .painting-repair{visibility:visible;opacity:1;pointer-events:auto}
+@media(hover:none){#artworkGallery .painting-repair{visibility:visible;opacity:1;pointer-events:auto}}
+@media(prefers-reduced-motion:reduce){
+    .painting-cracks path{animation:none;stroke-dashoffset:0}
+    #artworkGallery .painting-repair{transition:none}
+}
 #artworkGallery figcaption{max-width:100%;box-sizing:border-box;font-size:clamp(10px,1.15vw,14px);overflow-wrap:anywhere}
 #viewer #closePuzzle,#skipOpening,#galleryAudio{background:#181512;color:white;border:1px solid #b18d61;border-radius:4px;padding:7px 12px;cursor:pointer}
 #viewer #closePuzzle,#skipOpening{position:absolute;top:12px;right:12px;z-index:20}
@@ -975,22 +1032,6 @@ const tray = document.getElementById("tray");
 const puzzleStatus = document.getElementById("puzzleStatus");
 const celebration = document.getElementById("celebration");
 const leaveBroken = document.getElementById("leaveBroken");
-let paintingWarningTimer;
-let paintingWarning;
-
-function showPaintingWarning(image, button) {
-    clearTimeout(paintingWarningTimer);
-    paintingWarning?.remove();
-    paintingWarning = document.createElement("span");
-    paintingWarning.className = "painting-warning";
-    paintingWarning.setAttribute("role", "status");
-    paintingWarning.textContent = "you broke it you bought it!";
-    button.append(paintingWarning);
-    paintingWarningTimer = setTimeout(() => {
-        paintingWarning.remove();
-        openJigsaw(image.src, button);
-    }, 900);
-}
 const busRoom = document.getElementById("busSelectionOverlay");
 const portal = document.getElementById("niagaraPortal");
 let activePainting = null;
@@ -1009,10 +1050,6 @@ document.addEventListener("keydown", event => {
     if (event.key !== "Escape") return;
     if (!viewer.hidden) closeJigsaw();
     else if (portal.style.display === "flex" || busRoom.style.display === "flex") closeBusRoom();
-    else {
-        clearTimeout(paintingWarningTimer);
-        paintingWarning?.remove();
-    }
 });
 
 function revealPrizeCard() {
@@ -1281,8 +1318,7 @@ function artworkTitle(path) {
         .replace(/([a-z])([A-Z])/g, "$1 $2");
 }
 
-images.forEach(function(imagePath) {
-
+images.forEach(function(imagePath, index) {
     const item = document.createElement("li");
     item.className = "excerpt-figure";
 
@@ -1290,18 +1326,65 @@ images.forEach(function(imagePath) {
     const image = document.createElement("img");
     const caption = document.createElement("figcaption");
 
-    image.src = assetBase + encodeURIComponent(imagePath);
     image.loading = "eager";
     image.decoding = "async";
+    if (index < 5) image.fetchPriority = "high";
+    image.src = assetBase + encodeURIComponent(imagePath);
     image.alt = artworkTitle(imagePath);
     caption.textContent = artworkTitle(imagePath);
 
+    const frame = document.createElement("div");
+    frame.className = "painting-frame";
     const button = document.createElement("button");
+    button.className = "painting-thumbnail";
     button.type = "button";
-    button.setAttribute("aria-label", "Play jigsaw: " + image.alt);
-    button.appendChild(image);
-    button.addEventListener("click", () => showPaintingWarning(image, button));
-    figure.appendChild(button);
+    button.setAttribute("aria-label", "Break painting: " + image.alt);
+    button.append(image);
+
+    const repair = document.createElement("button");
+    repair.type = "button";
+    repair.className = "painting-repair";
+    repair.hidden = true;
+    const prompt = document.createElement("strong");
+    prompt.textContent = "Repair puzzle?";
+    repair.append("you broke it you bought it!", prompt);
+    repair.addEventListener("click", () => openJigsaw(image.currentSrc || image.src, repair));
+
+    button.addEventListener("click", () => {
+        if (repair.hidden && image.naturalWidth) {
+            const width = 600;
+            const height = width * image.naturalHeight / image.naturalWidth;
+            const w = width / 3;
+            const h = height / 3;
+            const depth = Math.min(w, h) * .23;
+            const cracks = svgNode("svg", {
+                class:"painting-cracks", viewBox:`0 0 ${width} ${height}`, "aria-hidden":"true"
+            });
+            // Trace each shared seam once, beginning near the centre.
+            for (let index = 0; index < 6; index++) {
+                const line = 1 + index % 2;
+                const segment = [1, 0, 2][Math.floor(index / 2)];
+                const horizontal = (line + segment) % 2 ? 1 : -1;
+                const vertical = (line + segment) % 2 ? -1 : 1;
+                const x = segment * w;
+                const y = segment * h;
+                for (const d of [
+                    `M ${x} ${line * h} ${edge(x, line * h, w, 0, depth, horizontal)}`,
+                    `M ${line * w} ${y} ${edge(line * w, y, 0, h, depth, vertical)}`
+                ]) {
+                    const path = svgNode("path", {d, pathLength:1});
+                    path.style.setProperty("--crack-delay", `${index * 95 + cracks.childElementCount % 2 * 40}ms`);
+                    cracks.append(path);
+                }
+            }
+            button.append(cracks);
+            repair.hidden = false;
+            if (button.matches(":focus-visible")) repair.focus({preventScroll:true});
+        }
+    });
+
+    frame.append(button, repair);
+    figure.appendChild(frame);
     figure.appendChild(caption);
     item.appendChild(figure);
     artworkGallery.appendChild(item);
