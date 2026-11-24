@@ -137,6 +137,10 @@ figcaption { display:inline-block; margin-top:8px; padding:4px 9px; background:#
     padding:6px 12px;
     cursor:pointer;
 }
+#leaveBroken{user-select:none;-webkit-tap-highlight-color:transparent}
+#leaveBroken:focus{outline:none}
+#leaveBroken:focus-visible{outline:2px solid #e8c48b;outline-offset:3px}
+#viewer{user-select:none}
 #board:empty + #leaveBroken { display:none; }
 .puzzle-slot { fill:#292929; stroke:#777; stroke-width:1; vector-effect:non-scaling-stroke; cursor:pointer; }
 .puzzle-slot:hover, .puzzle-slot:focus-visible { fill:#4d4d4d; }
@@ -588,9 +592,9 @@ figcaption { display:inline-block; margin-top:8px; padding:4px 9px; background:#
 .busGraphic.minibus .busBody { left:20%; width:60%; height:37%; border-radius:14px 30px 6px 8px; }
 .busGraphic.minibus .busWindow.w3 { display:none; }
 .busGraphic.minibus .busRoof { left:27%; width:39%; height:19%; }
-#larSeagulls{display:block;position:fixed;inset:0;z-index:4;pointer-events:none;overflow:hidden}
-.larSeagull{position:absolute;color:#fff;font-size:38px;font-weight:1000;text-shadow:0 2px 5px #000,0 0 10px #fff;animation:larGullFly linear infinite;letter-spacing:-10px}
-@keyframes larGullFly{from{transform:translateX(-14vw) translateY(0) scale(.7)}25%{transform:translateX(28vw) translateY(-38px) scale(1.15)}50%{transform:translateX(55vw) translateY(25px) scale(.9)}75%{transform:translateX(82vw) translateY(-45px) scale(1.25)}to{transform:translateX(118vw) translateY(10px) scale(.72)}}
+#larSeagulls{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+#larSeagulls .larOpeningGull{width:clamp(22px,3.2vw,46px);height:14px;opacity:.55}
+#larSeagulls .larOpeningGull::before,#larSeagulls .larOpeningGull::after{top:5px;height:6px;border-top-width:2px}
 #larOpeningIntro{
   position:fixed;
   inset:0;
@@ -601,7 +605,7 @@ figcaption { display:inline-block; margin-top:8px; padding:4px 9px; background:#
   align-items:center;
   justify-content:center;
   opacity:1;
-  transition:opacity 2.4s ease;
+  transition:opacity 1.4s ease, background-color 1.4s ease;
   pointer-events:auto;
 }
 #larOpeningIntro.intro-fade{
@@ -651,15 +655,15 @@ figcaption { display:inline-block; margin-top:8px; padding:4px 9px; background:#
 #larOpeningIntro.car-arrive #larOpeningCar{
   animation:larCarDrive 6.8s cubic-bezier(.2,.72,.25,1) forwards;
 }
-.larCarBody{position:absolute;left:4%;bottom:10%;width:84%;height:52%;background:linear-gradient(#6b3d20,#4a2814 55%,#321b0d);border:5px solid #201008;border-radius:12px 22px 10px 10px;box-shadow:inset 0 -12px 0 rgba(0,0,0,.25),0 0 0 2px #8b5a32;}
-.larCarRoof{position:absolute;left:29%;top:10%;width:39%;height:42%;background:#5a321a;border:5px solid #201008;border-bottom:0;border-radius:35px 45px 0 0;transform:skewX(-10deg);}
-.larCarWindow{position:absolute;left:36%;top:18%;width:28%;height:25%;background:#070707;border:3px solid #1d1008;transform:skewX(-10deg);}
-.larCarHood{position:absolute;left:0;bottom:28%;width:34%;height:24%;background:#5b3219;border:5px solid #201008;border-right:0;border-radius:16px 0 0 7px;}
-.larCarTrunk{position:absolute;right:0;bottom:29%;width:18%;height:24%;background:#4b2915;border:5px solid #201008;border-left:0;border-radius:0 18px 8px 0;}
+.larCarBody{position:absolute;left:4%;bottom:10%;width:91%;height:46%;background:linear-gradient(#79563c,#50301f 48%,#291c16);border:4px solid #201008;border-radius:3px 5px 4px 3px;box-shadow:inset 0 -8px #2d1d15,inset 0 -11px #a0876d,0 0 0 1px #957353}
+.larCarRoof{position:absolute;left:24%;top:12%;width:47%;height:44%;background:#553523;clip-path:polygon(16% 0,76% 0,100% 100%,0 100%)}
+.larCarWindow{position:absolute;left:27%;top:18%;width:41%;height:34%;background:linear-gradient(90deg,#181d21 0 49%,#836d58 49% 54%,#262d34 54%);clip-path:polygon(13% 0,78% 0,100% 100%,0 100%)}
+.larCarHood{position:absolute;right:3%;bottom:30%;width:29%;height:23%;background:#513423;border-top:3px solid #a38367;border-right:7px solid #e7e0bb;border-radius:0 2px 2px 0}
+.larCarTrunk{position:absolute;left:3%;bottom:28%;width:22%;height:25%;background:#543224;border-top:3px solid #9c785c;border-left:6px solid #a22c24}
 .larCarWheel{position:absolute;bottom:0;width:18%;aspect-ratio:1;border-radius:50%;background:#090909;border:5px solid #2a160b;box-shadow:inset 0 0 0 9px #6b3d20;}
 .larCarWheel.one{left:15%}.larCarWheel.two{right:12%}
-.larCarTailpipe{position:absolute;right:-3%;bottom:31%;width:12%;height:7%;background:#151515;border:3px solid #050505;border-radius:0 8px 8px 0;box-shadow:0 0 5px #000;}
-.larCarSmoke{position:absolute;right:-28%;bottom:18%;width:58%;height:78%;opacity:.96;filter:blur(7px);}
+.larCarTailpipe{position:absolute;left:-3%;bottom:12%;width:12%;height:7%;background:#151515;border:3px solid #050505;border-radius:0 8px 8px 0;box-shadow:0 0 5px #000;}
+.larCarSmoke{position:absolute;left:-58%;bottom:5%;width:58%;height:78%;opacity:.96;filter:blur(7px);}
 .larCarSmoke i{position:absolute;border-radius:50%;background:rgba(255,255,255,.8);box-shadow:0 0 25px rgba(255,255,255,.55);animation:larExhaust 2.8s ease-out infinite;}
 .larCarSmoke i:nth-child(1){width:44px;height:44px;right:1%;bottom:8%}.larCarSmoke i:nth-child(2){width:62px;height:62px;right:13%;bottom:20%;animation-delay:.25s}.larCarSmoke i:nth-child(3){width:82px;height:82px;right:27%;bottom:4%;animation-delay:.55s}.larCarSmoke i:nth-child(4){width:106px;height:106px;right:39%;bottom:24%;animation-delay:.85s}.larCarSmoke i:nth-child(5){width:132px;height:132px;right:50%;bottom:2%;animation-delay:1.15s}.larCarSmoke i:nth-child(6){width:165px;height:165px;right:61%;bottom:22%;animation-delay:1.45s}.larCarSmoke i:nth-child(7){width:205px;height:205px;right:70%;bottom:-4%;animation-delay:1.75s}.larCarSmoke i:nth-child(8){width:240px;height:240px;right:77%;bottom:20%;animation-delay:2.05s}
 @keyframes larCarDrive{0%{left:-32vw;opacity:0;transform:scale(.8)}8%{opacity:1}55%{left:38vw;opacity:1;transform:scale(1)}100%{left:112vw;opacity:0;transform:scale(1.06)}}
@@ -743,57 +747,12 @@ figcaption { display:inline-block; margin-top:8px; padding:4px 9px; background:#
   100%{opacity:1;transform:translate3d(0,0,0) rotateY(0) rotateZ(0) scale(1)}
 }
 .larOpeningSpace{width:.28em;display:inline-block}
-#larOpeningRays{
-  position:absolute;
-  inset:0;
-  z-index:3;
-  pointer-events:none;
-  opacity:0;
-  transform:scale(.25);
-}
-#larOpeningIntro.intro-burst #larOpeningRays{
-  animation:larBurstIn 2.2s ease-out forwards;
-}
-@keyframes larBurstIn{
-  0%{opacity:0;transform:scale(.25) rotate(0deg)}
-  35%{opacity:1}
-  100%{opacity:.96;transform:scale(1.12) rotate(8deg)}
-}
-.larOpeningRay{
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:clamp(8px,1vw,16px);
-  height:47%;
-  transform-origin:50% 100%;
-  border-radius:999px;
-  background:linear-gradient(to top,rgba(255,255,255,.95),var(--ray),rgba(255,255,255,0));
-  box-shadow:0 0 18px 6px var(--ray),0 0 45px 12px var(--ray);
-}
-#larOpeningGlow{
-  position:absolute;
-  width:28vw;height:28vw;min-width:220px;min-height:220px;
-  border-radius:50%;
-  background:conic-gradient(from 0deg,rgba(255,0,0,.42),rgba(255,220,0,.35),rgba(0,255,90,.35),rgba(0,220,255,.38),rgba(70,90,255,.4),rgba(210,0,255,.42),rgba(255,0,0,.42));
-  filter:blur(12px);
-  opacity:0;
-  z-index:2;
-}
-#larOpeningIntro.intro-burst #larOpeningGlow{
-  animation:larGlowPulse 2.4s ease-out forwards;
-}
-@keyframes larGlowPulse{
-  0%{opacity:0;transform:scale(.3)}
-  35%{opacity:1;transform:scale(1.2)}
-  100%{opacity:.75;transform:scale(1.5)}
-}
-#larOpeningIntro.intro-shrink #larOpeningTitle{
-  animation:larTitleShrink 2.2s cubic-bezier(.2,.75,.25,1) forwards;
-}
-@keyframes larTitleShrink{
-  0%{transform:scale(1)}
-  100%{transform:scale(.045);opacity:0}
-}
+#larOpeningTitle,#larOpeningVortex,#larOpeningGulls,#skipOpening{transition:opacity 1.35s ease}
+#larOpeningIntro.welcoming{background-color:transparent}
+#larOpeningIntro.welcoming :is(#larOpeningTitle,#larOpeningVortex,#larOpeningGulls,#skipOpening){opacity:0}
+#larOpeningIntro.welcoming #larOpeningGulls{animation:none}
+#openingWelcome{position:absolute;z-index:12;top:50%;left:50%;transform:translate(-50%,-50%);width:max-content;max-width:85%;margin:0;padding:12px 20px;background:#181512;color:#fff5d5;border:1px solid #b18d61;border-radius:4px;font-size:clamp(18px,4vw,34px);opacity:0;transition:opacity 1.35s ease;pointer-events:none}
+#larOpeningIntro.welcoming #openingWelcome{opacity:1}
 header{padding:10px 16px}
 header h1{font-size:clamp(15px,2vw,21px)}
 header nav{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -859,17 +818,15 @@ header nav{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 #viewer #closePuzzle,#skipOpening,#galleryAudio{background:#181512;color:white;border:1px solid #b18d61;border-radius:4px;padding:7px 12px;cursor:pointer}
 #viewer #closePuzzle,#skipOpening{position:absolute;top:12px;right:12px;z-index:20}
 #viewer #puzzleStatus{max-width:calc(100% - 230px)}
-#larOpeningIntro{transition-duration:.55s}
-#larOpeningIntro.car-arrive #larOpeningCar{animation-duration:2.55s}
-#larOpeningIntro.smoke-build #larOpeningSmoke{animation-duration:1.25s}
-#larOpeningIntro.smoke-whiteout #larOpeningSmoke{animation-duration:1.2s}
-#larOpeningIntro.intro-shrink #larOpeningTitle{animation-duration:.95s}
-.larOpeningLetter{animation-duration:1.2s;font-size:clamp(21px,8vw,100px)}
-#openingWelcome{position:absolute;z-index:12;top:9%;left:50%;transform:translateX(-50%);width:max-content;max-width:85%;margin:0;padding:8px 14px;background:#181512;color:#fff5d5;border:1px solid #b18d61;border-radius:4px;font-size:clamp(15px,3vw,26px)}
-#galleryNotices,#openingNotices{position:fixed;inset:0;z-index:5;pointer-events:none;text-align:left}
-#openingNotices{z-index:11}
-.gallery-notice{position:absolute;width:max-content;max-width:min(230px,65vw);margin:0;animation:galleryAdFade 3s ease both;background:#211910f2;border:1px solid #ae9266;color:#fff5d5;padding:7px 9px;border-radius:4px;box-shadow:0 2px 8px #0009;font-size:12px}
-@keyframes galleryAdFade{0%,100%{opacity:0}18%,65%{opacity:1}}
+#larOpeningIntro.car-arrive #larOpeningCar{animation-duration:4.2s}
+#larOpeningIntro.smoke-build #larOpeningSmoke{animation-duration:1.7s}
+#larOpeningIntro.smoke-whiteout #larOpeningSmoke{animation-duration:2.1s}
+.larOpeningLetter{animation-duration:2.6s;font-size:clamp(21px,8vw,100px)}
+body:has(#viewer:not([hidden]), #busSelectionOverlay[style*="flex"], #niagaraPortal[style*="flex"]) #galleryNotices{visibility:hidden}
+#galleryNotices{position:fixed;inset:0;z-index:5;pointer-events:none}
+.gallery-notice{position:absolute;display:grid;place-content:center;gap:5px;width:max-content;max-width:min(330px,calc(100vw - 32px));min-height:72px;box-sizing:border-box;margin:0;animation:galleryAdFade 8.5s ease both;background:#211910f2;border:1px solid #ae9266;color:#fff5d5;padding:11px 15px;border-radius:4px;box-shadow:0 2px 8px #0009;font-size:14px;text-align:center;text-wrap:balance;overflow-wrap:anywhere}
+.gallery-notice strong{color:#ffe39b}
+@keyframes galleryAdFade{0%,100%{opacity:0}8%,88%{opacity:1}}
 @media(prefers-reduced-motion:reduce){.gallery-notice{animation:none}}
 @media(max-width:760px){#artworkGallery{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;padding:9px}}
 @media(max-width:420px){#artworkGallery{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -881,7 +838,6 @@ header nav{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
   <button id="skipOpening" type="button">Skip opening</button>
   <div id="larOpeningVortex"></div>
   <p id="openingWelcome">Welcome to Larry’s Variety!</p>
-  <div id="openingNotices" aria-hidden="true"></div>
   <div id="larOpeningCar" aria-hidden="true">
     <div class="larCarSmoke"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
     <div class="larCarBody"></div><div class="larCarRoof"></div><div class="larCarWindow"></div><div class="larCarHood"></div><div class="larCarTrunk"></div><div class="larCarTailpipe"></div>
@@ -889,8 +845,6 @@ header nav{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
   </div>
   <div id="larOpeningGulls" aria-hidden="true"></div>
   <div id="larOpeningSmoke"></div>
-  <div id="larOpeningGlow"></div>
-  <div id="larOpeningRays"></div>
   <div id="larOpeningTitle">
     <div id="larOpeningLetters" aria-hidden="true">
       <span class="larOpeningLetter">L</span><span class="larOpeningLetter">A</span><span class="larOpeningLetter">R</span><span class="larOpeningLetter">R</span><span class="larOpeningLetter">Y</span><span class="larOpeningLetter">'</span><span class="larOpeningLetter">S</span><span class="larOpeningSpace"></span><span class="larOpeningLetter">V</span><span class="larOpeningLetter">A</span><span class="larOpeningLetter">R</span><span class="larOpeningLetter">I</span><span class="larOpeningLetter">E</span><span class="larOpeningLetter">T</span><span class="larOpeningLetter">Y</span>
@@ -898,17 +852,7 @@ header nav{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
   </div>
 </div>
 
-<div id="larSeagulls" aria-hidden="true">
-  <span class="larSeagull" style="top:10%;font-size:48px;animation-duration:12s;animation-delay:-3s">⌁⌁</span>
-  <span class="larSeagull" style="top:18%;font-size:26px;animation-duration:16s;animation-delay:-9s">⌁</span>
-  <span class="larSeagull" style="top:27%;font-size:38px;animation-duration:10s;animation-delay:-6s">⌁⌁</span>
-  <span class="larSeagull" style="top:36%;font-size:22px;animation-duration:18s;animation-delay:-12s">⌁</span>
-  <span class="larSeagull" style="top:45%;font-size:52px;animation-duration:14s;animation-delay:-4s">⌁⌁</span>
-  <span class="larSeagull" style="top:54%;font-size:30px;animation-duration:20s;animation-delay:-11s">⌁</span>
-  <span class="larSeagull" style="top:63%;font-size:44px;animation-duration:13s;animation-delay:-7s">⌁⌁</span>
-  <span class="larSeagull" style="top:72%;font-size:24px;animation-duration:17s;animation-delay:-14s">⌁</span>
-  <span class="larSeagull" style="top:81%;font-size:40px;animation-duration:15s;animation-delay:-2s">⌁⌁</span>
-</div>
+<div id="larSeagulls" aria-hidden="true"></div>
 <div id="galleryNotices" aria-hidden="true"></div>
 <header>
 <h1>Larry’s Variety</h1>
@@ -1046,6 +990,7 @@ function closeJigsaw(restoreFocus = true) {
 }
 
 document.getElementById("closePuzzle").onclick = leaveBroken.onclick = () => closeJigsaw();
+leaveBroken.onpointerdown = event => event.preventDefault();
 document.addEventListener("keydown", event => {
     if (event.key !== "Escape") return;
     if (!viewer.hidden) closeJigsaw();
@@ -1181,16 +1126,13 @@ function startJigsaw(source, width, height, ticket) {
         } else if (ticket) {
             tray.hidden = true;
             puzzleStatus.textContent = "Your prize is revealed!";
-            const next = document.createElement("button");
-            next.id = "continuePrize";
-            next.type = "button";
-            next.textContent = "Continue";
-            next.onclick = () => {
+            leaveBroken.hidden = true;
+            const version = puzzleVersion;
+            setTimeout(() => {
+                if (version !== puzzleVersion) return;
                 closeJigsaw(false);
                 openBusRoom();
-            };
-            puzzleStatus.append(" ", next);
-            next.focus({preventScroll:true});
+            }, 1200);
         } else {
             celebratePuzzle(source, width, height);
         }
@@ -1234,11 +1176,12 @@ function startJigsaw(source, width, height, ticket) {
             let drag = null;
             grip.onpointerdown = event => {
                 if (event.button !== 0 || drag) return;
+                event.preventDefault();
                 const rect = thumbnail.getBoundingClientRect();
                 drag = {id:event.pointerId, x:event.clientX, y:event.clientY, rect, moving:false};
-                grip.setPointerCapture(event.pointerId);
+                button.setPointerCapture(event.pointerId);
             };
-            grip.onpointermove = event => {
+            button.onpointermove = event => {
                 if (drag?.id !== event.pointerId) return;
                 const dx = event.clientX - drag.x;
                 const dy = event.clientY - drag.y;
@@ -1255,7 +1198,11 @@ function startJigsaw(source, width, height, ticket) {
                 drag = null;
                 button.classList.remove("carrying");
                 thumbnail.removeAttribute("style");
-                if (!moving || event.type !== "pointerup") return;
+                if (event.type !== "pointerup") return;
+                if (!moving) {
+                    select(piece);
+                    return;
+                }
                 const target = document.elementFromPoint(event.clientX, event.clientY);
                 const destination = pieces.find(candidate => candidate.slot === target);
                 if (destination) {
@@ -1263,9 +1210,9 @@ function startJigsaw(source, width, height, ticket) {
                     place(destination);
                 }
             }
-            grip.onpointerup = finishDrag;
-            grip.onpointercancel = finishDrag;
-            grip.onlostpointercapture = finishDrag;
+            button.onpointerup = finishDrag;
+            button.onpointercancel = finishDrag;
+            button.onlostpointercapture = finishDrag;
             slot.onclick = () => place(piece);
             slot.onkeydown = event => {
                 if (event.key === "Enter" || event.key === " ") {
@@ -1803,16 +1750,14 @@ window.addEventListener("pageshow", event => {
 (function(){
   const intro=document.getElementById('larOpeningIntro');
   const letters=[...document.querySelectorAll('.larOpeningLetter')];
-  const rays=document.getElementById('larOpeningRays');
   const gullHost=document.getElementById('larOpeningGulls');
-  if(!intro || !rays) return;
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){intro.remove();return;}
   const timers=[];
   function after(delay,action){timers.push(setTimeout(action,delay));}
   function finish(){
     timers.forEach(clearTimeout);
     intro.classList.add('intro-fade');
-    setTimeout(()=>intro.remove(),600);
+    setTimeout(()=>intro.remove(),1400);
   }
   document.getElementById('skipOpening').onclick=finish;
 
@@ -1824,32 +1769,31 @@ window.addEventListener("pageshow", event => {
     el.style.setProperty('--sz',(Math.random()*500-250)+'px');
     el.style.setProperty('--ry',(Math.random()*120-60)+'deg');
     el.style.setProperty('--rz',(Math.random()*70-35)+'deg');
-    el.style.setProperty('--delay',(2.9+i*.074)+'s');
+    el.style.setProperty('--delay',(5.4+i*.115)+'s');
   });
 
-  const colours=['#ff1b1b','#ff7a00','#ffe600','#39ff5a','#00eaff','#4169ff','#a855ff','#ff35d1'];
-  for(let i=0;i<48;i++){
-    const r=document.createElement('i'); r.className='larOpeningRay';
-    r.style.setProperty('--ray',colours[i%colours.length]); r.style.transform='rotate('+(i*7.5)+'deg)'; rays.appendChild(r);
-  }
-
-  if(gullHost){
-    for(let i=0;i<24;i++){
-      const g=document.createElement('i'); g.className='larOpeningGull';
-      g.style.left=(Math.random()*92)+'%'; g.style.top=(8+Math.random()*62)+'%';
-      g.style.setProperty('--gx',(Math.random()*42-21)+'vw'); g.style.setProperty('--gy',(Math.random()*30-15)+'vh');
-      g.style.setProperty('--gd',(3.5+Math.random()*4.5)+'s'); g.style.setProperty('--delay',(-Math.random()*5)+'s');
-      g.style.transform='scale('+(0.65+Math.random()*1.15)+')'; gullHost.appendChild(g);
+  function addGulls(host, count) {
+    for (let i = 0; i < count; i++) {
+      const gull = document.createElement('i');
+      gull.className = 'larOpeningGull';
+      gull.style.left = (4 + Math.random() * 82) + '%';
+      gull.style.top = (8 + Math.random() * 76) + '%';
+      gull.style.setProperty('--gx', (Math.random() * 42 - 21) + 'vw');
+      gull.style.setProperty('--gy', (Math.random() * 22 - 11) + 'vh');
+      gull.style.setProperty('--gd', (6 + Math.random() * 7) + 's');
+      gull.style.setProperty('--delay', (-Math.random() * 8) + 's');
+      host.append(gull);
     }
   }
+  addGulls(gullHost, 18);
+  addGulls(document.getElementById('larSeagulls'), 9);
 
-  after(140,()=>intro.classList.add('car-arrive'));
-  after(490,()=>intro.classList.add('gulls-arrive'));
-  after(1650,()=>intro.classList.add('smoke-build'));
-  after(2850,()=>intro.classList.add('smoke-whiteout'));
-  after(4550,()=>intro.classList.add('intro-burst'));
-  after(5700,()=>intro.classList.add('intro-shrink'));
-  after(6650,finish);
+  after(650, () => intro.classList.add('gulls-arrive'));
+  after(1850, () => intro.classList.add('car-arrive'));
+  after(2750, () => intro.classList.add('smoke-build'));
+  after(4450, () => intro.classList.add('smoke-whiteout'));
+  after(10100, () => intro.classList.add('welcoming'));
+  after(13000, finish);
 })();
 </script>
 <script>
@@ -2086,128 +2030,75 @@ window.addEventListener("pageshow", event => {
 </script>
 <script>
 (function(){
-  const tinyLarryMessages = [
-"Freshly arrived: paintings with a future and, possibly, a past.",
-"Good news for people who like looking at things: new artwork is available.",
-"Larry's has put more art where the art can be found. This is efficient.",
-"Today's recommendation: acquire something you did not expect to acquire.",
-"Beautiful things have a way of improving a room. Larry has several suggestions.",
-"Your wall has been unusually quiet. Larry thinks this can be remedied.",
-"Art is a conversation starter. Larry's prefers that it start immediately.",
-"Why leave a wall empty when it could be doing something?",
-"A painting can make a room look finished. Larry refuses to say which painting.",
-"Fresh choices are waiting at Larry's. Some are more choice than others.",
-"Give your eyes something interesting to do. Larry has arranged a selection.",
-"Good art does not demand much. A wall, perhaps. A little attention.",
-"Larry's recommends the ancient practice of owning something interesting.",
-"Today's special consideration: your home deserves one more interesting object.",
-"An empty wall is a decision. Larry suggests reconsidering.",
-"Some people collect art. Some people begin collecting art today.",
-"Larry believes a good painting improves the general atmosphere of a room.",
-"New arrivals have been noticed. Larry is pleased with himself.",
-"Looking is free. Taking one home is an entirely separate discussion.",
-"There's always room for one more picture if Larry is doing the measuring.",
-"Your room has possibilities. Larry has paintings.",
-"A little colour can do remarkable things to a wall. Larry has evidence.",
-"Art is portable, decorative and surprisingly good at starting conversations.",
-"Today's opportunity: find the picture that makes you stop for a second look.",
-"Larry's has selections for people who know exactly what they want and people who don't.",
-"Something interesting may be waiting for you. This announcement will not identify it.",
-"Why buy ordinary when Larry's has made extraordinary unnecessarily available?",
-"Your eyes work hard. Give them something better to look at.",
-"Good rooms contain objects with stories. Larry's contains objects with several.",
-"An artwork on a wall is technically a furnishing. Larry has chosen not to mention the loophole.",
-"Perhaps today is the day you discover the painting you did not know you wanted.",
-"Larry's: helping walls reach their full decorative potential.",
-"One tasteful addition can change a room. One untasteful addition can also change a room.",
-"Art can make a place feel lived in. Larry's can make it feel investigated.",
-"Today's deal philosophy: see something interesting, investigate immediately.",
-"Larry says there is no wrong time to improve a wall.",
-"Your visitors will notice the art. Larry is counting on it.",
-"A good picture has presence. Larry's has several kinds of presence.",
-"New things to see have entered the building.",
-"Larry's is currently experiencing an unusually high concentration of pictures.",
-"More art means more possibilities. Larry has done the arithmetic.",
-"Decorating is difficult. Choosing something interesting is considerably easier.",
-"Perhaps your wall has been waiting for this moment.",
-"Larry's recommends browsing with an open mind and a closed wallet only temporarily.",
-"Some bargains are obvious. Others are standing quietly on a wall.",
-"Art does not need to explain itself. Larry certainly won't.",
-"Today you may encounter something you like. Larry considers this a successful outcome.",
-"One glance can become a second glance. Larry calls that progress.",
-"Your home deserves a little visual trouble.",
-"Larry's has made the difficult decision to continue offering interesting things.",
-"A picture is worth a thousand words. Larry would like to discuss the other nine hundred.",
-"Good news: the art has not become less interesting overnight.",
-"There's no need to hurry. There is, however, every reason to look.",
-"Today's selection contains opportunities for tasteful improvement.",
-"Somewhere in Larry's is something that would look excellent somewhere in your house.",
-"Find something that makes the room feel more like yours.",
-"An interesting picture is a small luxury with a very large wall.",
-"Today's browsing may result in unexpected appreciation.",
-"Larry's Variety: where the walls are never quite finished.",
-"Take your time. The paintings are not going anywhere without paperwork.",
-"A room can change dramatically without moving a single wall.",
-"Today's advice: look at the pictures before making any important decisions.",
-"Larry's has a selection for every mood except perhaps complete indifference.",
-"Visual interest is available now. Larry calls this a public service.",
-"One painting can be enough. Larry is not saying how many is ideal.",
-"Perhaps you need art. Perhaps the art needs you. Larry declines to mediate.",
-"Something about this place seems to contain more pictures than expected.",
-"Browse freely. Wonder privately. Ask Larry nothing.",
-"Your walls deserve better than an empty afternoon.",
-"New artwork, new possibilities, same Larry.",
-"Come for the variety. Stay because you found something interesting.",
-"There's always another picture to look at. Larry has arranged it that way.",
-"Your wall called. Larry answered.",
-"Bring home something that makes you ask a question.",
-"Art adds character. Larry has been accused of having character.",
-"Larry's has things for serious collectors and people who just like a good picture.",
-"A room without art is perfectly legal. Larry does not recommend it.",
-"Decorating tip: put something interesting where people can see it.",
-"Your next favourite picture may be here. Larry will not guarantee which one.",
-"Look closely. The good ones reward looking.",
-"Larry's believes every wall should have at least one suspiciously interesting feature.",
-"A picture can be a memory, a mystery, or simply a very good picture.",
-"Fresh artwork is available while Larry continues to make room.",
-"Today's visual opportunity is brought to you by Larry's Variety.",
-"Some things are worth owning simply because you enjoy seeing them.",
-"Your walls have excellent taste. They just need management.",
-"Don't underestimate the power of a well-placed painting.",
-"Larry's offers a variety large enough to make choosing entertaining.",
-"A little art can make a big difference. Larry has made a little too much art.",
-"Good news for browsers: browsing remains encouraged.",
-"Good news for collectors: collecting remains encouraged even more.",
-"Today's selection has been assembled with absolutely no intention of being boring.",
-"Something may catch your eye. Larry suggests letting it.",
-"Your living room has not yet filed a complaint. There is still time.",
-"Art belongs where it can be seen. Larry has been thinking about this.",
-"Larry's has pictures. You have walls. This arrangement seems promising.",
-"Find something that makes the room feel more like yours.",
-"An interesting picture is a small luxury with a very large wall.",
-"Today's browsing may result in unexpected appreciation.",
-"Larry's Variety is pleased to announce that the pictures remain available."
+  const salesMessages = [
+
+    "WHY NOT BUY MORE? You are already here.",
+
+    "URGENT: Your Lar-Bucks are becoming lonely.",
+
+    "For TWO more Lar-Bucks, you can spend FIVE Lar-Bucks, which could earn you THREE more Lar-Bucks!",
+
+    "LIMITED TIME: This offer lasts approximately until we stop looking at it.",
+
+    "ONLY 2 CUSTOMERS ALLOWED! Unfortunately, you are one of them.",
+
+    "ACT NOW! Or act later. But preferably now.",
+
+    "BUY MORE ART. Larry has already put the boxes out.",
+
+    "CONSUMER ALERT: You have not purchased enough imaginary merchandise.",
+
+    "EXCLUSIVE DEAL: Spend 7 Lar-Bucks to unlock the opportunity to spend 9.",
+
+    "WHY SETTLE FOR ONE LAR-BUCK WHEN YOU COULD OWE SIX?",
+
+    "FINAL WARNING: The sale may end at any moment we choose.",
+
+    "YOUR FRIENDS ARE PROBABLY BUYING MORE LAR-BUCKS.",
+
+    "FLASH SALE! Everything is 100% off except the things that aren't.",
+
+    "FOR JUST 4 LAR-BUCKS: receive absolutely no guarantee whatsoever.",
+
+    "BUY NOW! The other customer is thinking about buying now.",
+
+    "CONGRATULATIONS! You have qualified to consider purchasing something.",
+
+    "URGENT DEAL: Spend 5. Receive the satisfaction of having spent 5.",
+
+    "WHY NOT BUY MORE? Larry has already made the suggestion.",
+
+    "EXTRA VALUE: One imaginary Lar-Buck may be worth another imaginary Lar-Buck.",
+
+    "LAST CHANCE! This is your last chance until the next last chance."
+
 ];
   const galleryNotices = document.getElementById('galleryNotices');
-  const openingNotices = document.getElementById('openingNotices');
+  let lastMessage = -1;
   function notices() {
-    const opening = openingNotices.isConnected &&
-        !openingNotices.parentElement.classList.contains('intro-fade');
-    const host = opening ? openingNotices : galleryNotices;
-    if (!document.hidden && document.getElementById('viewer').hidden &&
-        document.getElementById('busSelectionOverlay').style.display !== 'flex' &&
-        document.getElementById('niagaraPortal').style.display !== 'flex') {
-      const notice = document.createElement('div');
-      notice.className = 'gallery-notice';
-      notice.textContent = tinyLarryMessages[Math.floor(Math.random() * tinyLarryMessages.length)];
-      host.append(notice);
-      notice.style.left = 12 + Math.random() * Math.max(0, host.clientWidth - notice.offsetWidth - 24) + 'px';
-      notice.style.top = 72 + Math.random() * Math.max(0, host.clientHeight - notice.offsetHeight - 84) + 'px';
-      setTimeout(() => notice.remove(), 3000);
+    if (document.getElementById('larOpeningIntro')) {
+      setTimeout(notices, 1200);
+      return;
     }
-    setTimeout(notices, opening ? 1850 : 2400 + Math.random() * 450);
+    if (!document.hidden && viewer.hidden &&
+        busRoom.style.display !== 'flex' && portal.style.display !== 'flex') {
+      const index = (lastMessage + 1 + Math.floor(Math.random() * (salesMessages.length - 1))) % salesMessages.length;
+      lastMessage = index;
+      const notice = document.createElement('div');
+      const heading = document.createElement('strong');
+      const copy = document.createElement('span');
+      notice.className = 'gallery-notice';
+      heading.textContent = 'IMPORTANT LARRY NOTICE';
+      copy.textContent = salesMessages[index].replace(/ (?=\S+\s*$)/, '\u00a0');
+      notice.append(heading, copy);
+      galleryNotices.append(notice);
+      notice.style.left = 12 + Math.random() * Math.max(0, galleryNotices.clientWidth - notice.offsetWidth - 24) + 'px';
+      notice.style.top = 65 + Math.random() * Math.max(0, galleryNotices.clientHeight - notice.offsetHeight - 77) + 'px';
+      setTimeout(() => notice.remove(), 8500);
+    }
+    setTimeout(notices, 7600 + Math.random() * 600);
   }
-  setTimeout(notices, 600);
+  setTimeout(notices, 2500);
 })();
 </script>
 </body>
