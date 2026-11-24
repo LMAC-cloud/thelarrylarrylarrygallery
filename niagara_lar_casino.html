@@ -4,7 +4,7 @@
 
 <meta charset="UTF-8">
 
-<title>Niagara Falls — Larry's Art</title>
+<title>Niagara Falls — 06 River Life</title>
 
 <style>
 
@@ -22,7 +22,7 @@ body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: #000;
+    background: #314b57;
 }
 
 body {
@@ -36,6 +36,15 @@ body {
    NIAGARA VIDEO
    ============================================================ */
 
+#fallsBackdrop {
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    background:
+        radial-gradient(ellipse at 56% 69%, #d9e8e6c9 0, #c6e1e492 19%, transparent 46%),
+        repeating-linear-gradient(94deg, #e7f4ef48 0 2px, transparent 5px 17px) center 52% / 100% 39% no-repeat,
+        linear-gradient(to bottom, #566f83 0%, #a4bec9 30%, #587d87 32%, #a1bcc0 65%, #315965 79%, #25424d 100%);
+}
 #waterfall {
     position: fixed;
     inset: 0;
@@ -44,6 +53,8 @@ body {
     height: 100%;
 
     object-fit: cover;
+    opacity: 0;
+    transition: opacity .55s ease;
     transform: translateZ(0);
 
     z-index: 1;
@@ -599,6 +610,24 @@ body {
 }
 
 
+.fish:not(.goldFish) {filter:drop-shadow(0 2px 2px #0009)}
+.fish:not(.goldFish) .fishBody {
+    left:2px;top:7px;width:45px;height:21px;
+    border-radius:52% 65% 60% 48%;
+    background:linear-gradient(#333a3c 0%,#141718 42%,#050607 85%);
+}
+.fish:not(.goldFish) .fishTail {
+    left:auto;right:0;top:4px;width:22px;height:26px;border:0;
+    background:linear-gradient(90deg,#08090a,#252a2b);
+    clip-path:polygon(0 43%,100% 0,80% 50%,100% 100%,0 57%);
+}
+.fish:not(.goldFish) .fishEye {left:10px;right:auto;top:13px;width:4px;height:4px;background:#bbb;box-shadow:inset -1px 0 #101010}
+.fish:not(.goldFish)::before,.fish:not(.goldFish)::after {
+    content:"";position:absolute;pointer-events:none;background:#181b1d;
+}
+.fish:not(.goldFish)::before {left:20px;top:0;width:19px;height:12px;clip-path:polygon(0 100%,33% 6%,58% 0,100% 100%)}
+.fish:not(.goldFish)::after {left:19px;top:19px;width:17px;height:13px;clip-path:polygon(0 0,100% 5%,64% 100%,29% 67%)}
+
 /* GOLD FISH */
 
 .goldFish {
@@ -744,6 +773,8 @@ body {
     z-index: 17;
     width: 82px;
     height: 68px;
+    scale: .8;
+    transform-origin: top left;
     pointer-events: auto;
     cursor: pointer;
     opacity: 0;
@@ -1246,6 +1277,14 @@ body {
         gullSwoop 5s ease-in-out forwards;
 }
 
+.seagull.sky-gull.swooping{animation:skyGullCross 11s linear forwards}
+@keyframes skyGullCross {
+    0%{left:105vw;opacity:0;transform:translateY(0) scale(.68)}
+    8%,92%{opacity:.93}
+    45%{transform:translateY(2.5vh) scale(.68)}
+    75%{transform:translateY(-1vh) scale(.68)}
+    100%{left:-110px;opacity:0;transform:translateY(1vh) scale(.68)}
+}
 @keyframes gullSwoop {
 
     0% {
@@ -2555,6 +2594,7 @@ body {
      NIAGARA FALLS
      ============================================================ -->
 
+<div id="fallsBackdrop" aria-hidden="true"></div>
 <video
     id="waterfall"
     autoplay
@@ -2568,6 +2608,20 @@ body {
         type="video/mp4">
 
 </video>
+<script>
+(() => {
+    const waterfall = document.getElementById("waterfall");
+    const localSource = waterfall.querySelector("source");
+    waterfall.addEventListener("playing", () => { waterfall.style.opacity = "1"; });
+    waterfall.addEventListener("error", () => { waterfall.style.opacity = "0"; });
+    localSource.addEventListener("error", () => {
+        const hostedVideo = "https://larrysvariety.ca/Videos/NiagaraFalls.mp4";
+        if (localSource.src !== hostedVideo) waterfall.src = hostedVideo;
+    }, {once:true});
+    waterfall.muted = true;
+    waterfall.play().catch(() => {});
+})();
+</script>
 
 
 <!-- ANGEL / DESKTOP ICON AREA -->
@@ -5666,9 +5720,9 @@ function sendFish(
 function sendFishSchool() {
 
     const amount =
-        8 +
+        2 +
         Math.floor(
-            Math.random() * 13
+            Math.random() * 3
         );
 
 
@@ -5684,7 +5738,7 @@ function sendFishSchool() {
                 sendFish();
 
             },
-            i * 150
+            i * 550
         );
 
     }
@@ -6317,7 +6371,7 @@ setTimeout(
    SEAGULLS
    ============================================================ */
 
-function sendSeagull() {
+function sendSeagull(acrossTop = false) {
 
     const gull =
         document.createElement(
@@ -6326,7 +6380,8 @@ function sendSeagull() {
 
 
     gull.className =
-        "seagull";
+        acrossTop ? "seagull sky-gull" : "seagull";
+    if (acrossTop) gull.style.top = (4 + Math.random() * 12) + "vh";
 
 
     const leftWing =
@@ -6403,7 +6458,7 @@ function sendSeagull() {
             gull.remove();
 
         },
-        5200
+        acrossTop ? 11200 : 5200
     );
 
 }
@@ -6585,6 +6640,12 @@ setTimeout(
 );
 
 scheduleSeagulls();
+function scheduleSkyGulls() {
+    sendSeagull(true);
+    if (Math.random() < .45) setTimeout(() => sendSeagull(true), 1550);
+    setTimeout(scheduleSkyGulls, 12000 + Math.random() * 5000);
+}
+setTimeout(scheduleSkyGulls, 1700);
 
 
 
