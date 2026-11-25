@@ -4,7 +4,7 @@
 
 <meta charset="UTF-8">
 
-<title>Niagara Falls — 06 River Life</title>
+<title>Niagara Falls — 07 Smooth Opening</title>
 
 <style>
 
@@ -22,7 +22,7 @@ body {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background: #314b57;
+    background: #111;
 }
 
 body {
@@ -36,15 +36,6 @@ body {
    NIAGARA VIDEO
    ============================================================ */
 
-#fallsBackdrop {
-    position:fixed;
-    inset:0;
-    pointer-events:none;
-    background:
-        radial-gradient(ellipse at 56% 69%, #d9e8e6c9 0, #c6e1e492 19%, transparent 46%),
-        repeating-linear-gradient(94deg, #e7f4ef48 0 2px, transparent 5px 17px) center 52% / 100% 39% no-repeat,
-        linear-gradient(to bottom, #566f83 0%, #a4bec9 30%, #587d87 32%, #a1bcc0 65%, #315965 79%, #25424d 100%);
-}
 #waterfall {
     position: fixed;
     inset: 0;
@@ -53,8 +44,6 @@ body {
     height: 100%;
 
     object-fit: cover;
-    opacity: 0;
-    transition: opacity .55s ease;
     transform: translateZ(0);
 
     z-index: 1;
@@ -2570,31 +2559,36 @@ body {
 
 </style>
 <style>
-#bus-arrival { display:none; }
-#bus-arrival:target {
-    display:block;
+#bus-arrival {
     position:fixed;
     inset:0;
+    display:grid;
+    place-items:center;
     z-index:2147483647;
-    background:#000;
-    pointer-events:none;
-    animation:bus-arrival-fade 1.05s ease-out both;
+    background:#111;
+    color:#eee;
+    opacity:1;
+    transition:opacity 1.2s ease, visibility 0s linear 1.2s;
 }
-@keyframes bus-arrival-fade { from {opacity:1} to {opacity:0} }
-@media (prefers-reduced-motion:reduce) { #bus-arrival:target {display:none} }
+#bus-arrival.is-ready {opacity:0;visibility:hidden;pointer-events:none}
+#bus-arrival span {opacity:0;animation:niagaraLoading 1s 1.2s ease forwards}
+@keyframes niagaraLoading {to{opacity:1}}
+@media (prefers-reduced-motion:reduce) {
+    #bus-arrival {transition:none}
+    #bus-arrival span {animation:none;opacity:1}
+}
 </style>
 </head>
 
 
 <body>
-<div id="bus-arrival" aria-hidden="true"></div>
+<div id="bus-arrival" role="status"><span>Loading Niagara Falls…</span></div>
 
 
 <!-- ============================================================
      NIAGARA FALLS
      ============================================================ -->
 
-<div id="fallsBackdrop" aria-hidden="true"></div>
 <video
     id="waterfall"
     autoplay
@@ -2611,15 +2605,52 @@ body {
 <script>
 (() => {
     const waterfall = document.getElementById("waterfall");
+    const curtain = document.getElementById("bus-arrival");
     const localSource = waterfall.querySelector("source");
-    waterfall.addEventListener("playing", () => { waterfall.style.opacity = "1"; });
-    waterfall.addEventListener("error", () => { waterfall.style.opacity = "0"; });
-    localSource.addEventListener("error", () => {
-        const hostedVideo = "https://larrysvariety.ca/Videos/NiagaraFalls.mp4";
-        if (localSource.src !== hostedVideo) waterfall.src = hostedVideo;
-    }, {once:true});
+    const hostedVideo = "https://larrysvariety.ca/Videos/NiagaraFalls.mp4";
+    let fallbackUsed = localSource.src === hostedVideo;
+    let revealed = false;
+
+    function reveal() {
+        if (revealed) return;
+        revealed = true;
+        curtain.classList.add("is-ready");
+        curtain.setAttribute("aria-hidden", "true");
+    }
+
+    function revealFrame() {
+        if (revealed) return;
+        if (typeof waterfall.requestVideoFrameCallback === "function" && !waterfall.paused) {
+            waterfall.requestVideoFrameCallback(reveal);
+        } else {
+            requestAnimationFrame(reveal);
+        }
+    }
+
+    function playFalls() {
+        waterfall.play().catch(error => {
+            if (error.name !== "NotAllowedError") return;
+            if (waterfall.readyState >= 2) revealFrame();
+            else waterfall.addEventListener("loadeddata", revealFrame, {once:true});
+            document.addEventListener("pointerdown", () => waterfall.play().catch(() => {}), {once:true});
+        });
+    }
+
+    function tryFallback() {
+        if (fallbackUsed) {
+            reveal();
+            return;
+        }
+        fallbackUsed = true;
+        waterfall.src = hostedVideo;
+        playFalls();
+    }
+
+    waterfall.addEventListener("playing", revealFrame);
+    waterfall.addEventListener("error", tryFallback);
+    localSource.addEventListener("error", tryFallback, {once:true});
     waterfall.muted = true;
-    waterfall.play().catch(() => {});
+    playFalls();
 })();
 </script>
 
