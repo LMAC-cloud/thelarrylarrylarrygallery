@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Larry Stamp Merge — 13 Lar-Glove and Prize Planets</title>
+<title>Larry Stamp Merge — 14 Saturn Prize Planets</title>
 <style>
   * { box-sizing: border-box; }
   html, body { width:100%; height:100%; margin:0; overflow:hidden; }
@@ -402,40 +402,40 @@
     background:#ffd172;box-shadow:0 0 4px #ff963d;animation:larTailSpark .23s ease-out 3;
   }
   @keyframes larSmoke8 { 0%{transform:translate(0,0) scale(.28);opacity:.78} 100%{transform:translate(30px,-28px) scale(1.5);opacity:0} }
-  #postalCursor.lar-glove {width:30px;height:38px;transform:translate(-9px,-2px)}
-  .larGloveOutline {fill:#965b36;stroke:#2e1b12;stroke-width:2;stroke-linejoin:round}
-  .larGloveSeams {fill:none;stroke:#e0a579;stroke-width:1.25;stroke-linecap:round}
+  #postalCursor.lar-glove {width:30px;height:38px;transform:translate(-9px,-3px)}
   @keyframes larTailSpark {to{transform:translate(10px,-5px);opacity:0}}
   #wasteMailbox.is-dragging { cursor:grabbing; }
   body.mailbox-dragging #postalCursor { display:none !important; }
 
   /* FINAL PRIZE: silver hovering moon gateway */
   #prizeGateways {
-    position:absolute;inset:12% 4% auto;z-index:95;text-align:center;pointer-events:none;
+    position:absolute;inset:0;z-index:95;text-align:center;pointer-events:none;
     color:#fff;font-family:Georgia,serif;
   }
   #prizeGateways h2 {
-    display:inline-block;margin:0 0 22px;padding:8px 18px;
+    position:absolute;top:9%;left:50%;transform:translateX(-50%);width:max-content;max-width:90%;margin:0;padding:8px 18px;
     border:1px solid #dae9ff;border-radius:10px;background:#101721;
     box-shadow:0 0 20px #a9c8fa85;font-size:clamp(17px,3vw,26px);
   }
-  .prizePlanets {display:flex;justify-content:center;gap:clamp(36px,13%,100px)}
+  .prizePlanets {position:absolute;inset:50% 0 auto;transform:translateY(-50%);display:flex;justify-content:center;gap:clamp(36px,13%,100px)}
   .prizePlanets a {
     position:relative;display:block;width:clamp(64px,16vw,116px);aspect-ratio:1;
     border-radius:50%;pointer-events:auto;text-decoration:none;
-    animation:silverMoonFloat 3.8s ease-in-out infinite;
+    box-sizing:border-box;cursor:var(--lar-glove-cursor,auto);
   }
   .prizePlanets a:focus-visible {outline:3px solid #ffdc80;outline-offset:7px}
   #enterprosePlanet {
     background:radial-gradient(circle at 37% 29%,#88bdd5,#394d81 52%,#17192d 82%);
     border:2px solid #afcaeb;box-shadow:0 0 24px #87b8ee88,inset -10px -8px 20px #15172c;
   }
+  #gamePanel:has(.prizePlanets a:hover) #postalCursor {visibility:hidden}
   #enterprosePlanet svg {
     position:absolute;inset:-22%;width:144%;height:144%;overflow:visible;pointer-events:none;
-    animation:enterproseOrbit 19s linear infinite;
   }
-  #enterprosePlanet text {fill:#fff6d6;font:700 9px Georgia,serif;letter-spacing:1.1px}
-  @keyframes enterproseOrbit {to{transform:rotate(360deg)}}
+  #enterprosePlanet text {fill:#fff6d6;font:700 12px Georgia,serif}
+  .missionTicker {animation:missionTicker 24s linear infinite}
+  @keyframes missionTicker {to{transform:translateX(-160px)}}
+  @media(prefers-reduced-motion:reduce){.missionTicker{animation:none}}
   #silverMoon {
     background:
       radial-gradient(circle at 30% 28%, rgba(255,255,255,.95) 0 8%, transparent 9%),
@@ -445,7 +445,6 @@
       radial-gradient(circle at 50% 42%, #fff 0%, #e9e9e9 48%, #bdbdbd 78%, #888 100%);
     border:2px solid rgba(255,255,255,.9);
     box-shadow:0 0 14px 5px rgba(255,255,255,.82), 0 0 38px 14px rgba(210,225,255,.38), inset -14px -12px 22px rgba(50,50,50,.28);
-    animation-delay:-1s;
     transition:transform .18s ease, box-shadow .18s ease;
   }
   #silverMoon::before, #silverMoon::after {
@@ -465,12 +464,6 @@
     font:700 12px Georgia,serif; letter-spacing:.08em; pointer-events:none;
     opacity:.9;
   }
-  @media(prefers-reduced-motion:reduce){.prizePlanets a,#enterprosePlanet svg{animation:none}}
-  @keyframes silverMoonFloat {
-    0%,100% { margin-top:0; }
-    50% { margin-top:-14px; }
-  }
-
   #message {
     position:absolute; left:50%; top:50%;
     transform:translate(-50%,-50%);
@@ -596,13 +589,22 @@
       <div class="prizePlanets">
         <a id="enterprosePlanet" href="MissionEnterprose.html">
           <svg viewBox="0 0 160 160" aria-hidden="true">
-            <path id="enterproseOrbitPath" d="M80 10a70 70 0 1 1 0 140a70 70 0 1 1 0-140" fill="none"/>
-            <text><textPath href="#enterproseOrbitPath" textLength="422">BOARD THE S.S. ENTERPROSE • BOARD THE S.S. ENTERPROSE • </textPath></text>
+            <defs><clipPath id="missionTickerWindow"><rect x="3" y="72" width="154" height="17" rx="8.5"/></clipPath></defs>
+            <g transform="rotate(-17 80 80)">
+              <ellipse cx="80" cy="80" rx="77" ry="21" fill="none" stroke="#a9cbe8" stroke-opacity=".65" stroke-width="2"/>
+              <rect x="3" y="72" width="154" height="17" rx="8.5" fill="#13213e" stroke="#a9cbe8"/>
+              <g clip-path="url(#missionTickerWindow)">
+                <g class="missionTicker">
+                  <text x="8" y="84">Mission: Enterprose? •</text>
+                  <text x="168" y="84">Mission: Enterprose? •</text>
+                </g>
+              </g>
+            </g>
           </svg>
-          <span class="prizePlanetLabel">Board the S.S. Enterprose</span>
+          <span class="prizePlanetLabel">Mission: Enterprose?</span>
         </a>
         <a id="silverMoon" href="starfield.html">
-          <span class="prizePlanetLabel">Enter the Starfield</span>
+          <span class="prizePlanetLabel">Enter the Starfield?</span>
         </a>
       </div>
     </section>
@@ -1303,6 +1305,15 @@ function playTubaCelebration(duration=10000) {
 
 function showPrizeGateways(){
   window.larGameComplete = true;
+  if (mouseConstraint) {
+    mouseConstraint.body = null;
+    mouseConstraint.constraint.bodyB = null;
+    mouseConstraint.constraint.pointB = null;
+  }
+  if (stamps.length) Composite.remove(world, stamps);
+  stamps = [];
+  mergeAnimations.length = 0;
+  mergeBursts.length = 0;
   window.clearLarExhaustHaze?.();
   prizeGateways.hidden = false;
 }
@@ -1434,6 +1445,7 @@ function tryMerge(a,b) {
       saveLarBucks();
       stopAutoLarry();
       showPrizeGateways();
+      return;
     }
   }
 
@@ -1996,10 +2008,11 @@ function carSvg(index) {
   </svg>`;
 }
 
-const larGloveSvg = `<svg viewBox="0 0 30 38" aria-hidden="true">
-  <path class="larGloveOutline" d="M8 23V6a3 3 0 0 1 6 0v12-2a2.5 2.5 0 0 1 5 0v3a2.5 2.5 0 0 1 5 0v2a2 2 0 0 1 4 0v7l-4 8H12l-2-6-6-6a3 3 0 0 1 4-4l3 2Z"/>
-  <path class="larGloveSeams" d="M11 7v12M15 32h9m-8-7 4 3"/>
+const larGloveSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="30" height="38" viewBox="0 0 30 38" aria-hidden="true">
+  <path fill="#965b36" stroke="#2e1b12" stroke-width="2" stroke-linejoin="round" d="M6 35v-5L3 24v-7c0-2 1-3 3-3V5a3 3 0 0 1 6 0v15l3 2h10a3 3 0 0 1 0 6h-8l-4 4v3Z"/>
+  <path fill="none" stroke="#e0a579" stroke-width="1.25" stroke-linecap="round" d="M9 5v15m4 5h11m-19-6v4m2 9h6"/>
 </svg>`;
+panel.style.setProperty('--lar-glove-cursor', `url("data:image/svg+xml,${encodeURIComponent(larGloveSvg)}") 9 3, auto`);
 
 function updateLarPointer() {
   const pointer = document.getElementById('postalCursor');
