@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vintage Typewriter Studio</title>
+<title>Vintage Typewriter Studio — Stage 35 Rainbow</title>
 <style>
   :root {
     --tw-scale: 1;
@@ -1709,7 +1709,7 @@ input[type=range]{accent-color:#595959}
     <div class="btn-group" aria-label="Draw controls"><button type="button" class="menu-btn selected" id="draw-tab-line" aria-controls="draw-line-options" aria-pressed="true">Drawn line</button><button type="button" class="menu-btn" id="draw-tab-launch" aria-controls="draw-launch-options" aria-pressed="false">Launch</button></div>
     <div id="draw-line-options" class="draw-options">
       <div class="draw-pair draw-top-row"><label>Colour <input type="color" id="draw-colour" value="#ffffff"></label><label><input id="draw-enabled" type="checkbox" checked> Draw on background</label></div>
-      <div class="draw-choice" role="group" aria-label="Ink" data-draw-control="draw-ink"><span>Ink</span><select hidden id="draw-ink"><option value="solid">Solid</option><option value="lightning">Lightning 1 · click</option><option value="lightning2">Lightning 2 · trace</option><option value="spectrum">Rainbow 1 · long bands</option><option value="rainbow2">Rainbow 2 · travelling bands</option><option value="rainbow3">Rainbow 3 · horizontal sweep</option><option value="cycle">Rainbow 4 · whole stroke</option><option value="checks">B&amp;W stripe</option><option value="sequence" selected>Sequence</option></select><div class="draw-choice-buttons"><button type="button" class="menu-btn" data-draw-value="solid" aria-pressed="false" title="Solid">Solid</button><button type="button" class="menu-btn" data-draw-value="lightning" aria-pressed="false" title="Lightning 1 · click">Lightning 1</button><button type="button" class="menu-btn" data-draw-value="lightning2" aria-pressed="false" title="Lightning 2 · trace">Lightning 2</button><button type="button" class="menu-btn" data-draw-value="spectrum" aria-pressed="false" title="Rainbow 1 · long bands">Rainbow 1</button><button type="button" class="menu-btn" data-draw-value="rainbow2" aria-pressed="false" title="Rainbow 2 · travelling bands">Rainbow 2</button><button type="button" class="menu-btn" data-draw-value="rainbow3" aria-pressed="false" title="Rainbow 3 · horizontal sweep">Rainbow 3</button><button type="button" class="menu-btn" data-draw-value="cycle" aria-pressed="false" title="Rainbow 4 · whole stroke">Rainbow 4</button><button type="button" class="menu-btn" data-draw-value="checks" aria-pressed="false">B&amp;W stripe</button><button type="button" class="menu-btn selected" data-draw-value="sequence" aria-pressed="true">Sequence</button></div></div>
+      <div class="draw-choice" role="group" aria-label="Ink" data-draw-control="draw-ink"><span>Ink</span><select hidden id="draw-ink"><option value="solid">Solid</option><option value="lightning">Lightning 1 · click</option><option value="lightning2">Lightning 2 · trace</option><option value="stage35" selected>Stage 35 Rainbow</option><option value="spectrum">Rainbow 1 · long bands</option><option value="rainbow2">Rainbow 2 · travelling bands</option><option value="rainbow3">Rainbow 3 · horizontal sweep</option><option value="cycle">Rainbow 4 · whole stroke</option><option value="checks">B&amp;W stripe</option><option value="sequence">Sequence</option></select><div class="draw-choice-buttons"><button type="button" class="menu-btn" data-draw-value="solid" aria-pressed="false" title="Solid">Solid</button><button type="button" class="menu-btn" data-draw-value="lightning" aria-pressed="false" title="Lightning 1 · click">Lightning 1</button><button type="button" class="menu-btn" data-draw-value="lightning2" aria-pressed="false" title="Lightning 2 · trace">Lightning 2</button><button type="button" class="menu-btn selected" data-draw-value="stage35" aria-pressed="true" title="Stage 35 · original rainbow and glow">Stage 35</button><button type="button" class="menu-btn" data-draw-value="spectrum" aria-pressed="false" title="Rainbow 1 · long bands">Rainbow 1</button><button type="button" class="menu-btn" data-draw-value="rainbow2" aria-pressed="false" title="Rainbow 2 · travelling bands">Rainbow 2</button><button type="button" class="menu-btn" data-draw-value="rainbow3" aria-pressed="false" title="Rainbow 3 · horizontal sweep">Rainbow 3</button><button type="button" class="menu-btn" data-draw-value="cycle" aria-pressed="false" title="Rainbow 4 · whole stroke">Rainbow 4</button><button type="button" class="menu-btn" data-draw-value="checks" aria-pressed="false">B&amp;W stripe</button><button type="button" class="menu-btn" data-draw-value="sequence" aria-pressed="false">Sequence</button></div></div>
       <div class="draw-pair draw-checks">
         <label><input type="checkbox" id="draw-build"> Feather</label>
         <label><input type="checkbox" id="draw-fuse" checked> Fuse</label>
@@ -1717,8 +1717,8 @@ input[type=range]{accent-color:#595959}
         <div id="draw-continuity" hidden><label><input type="checkbox" id="draw-continue"> Continue rainbow</label></div>
       </div>
       <div class="draw-pair draw-sliders">
-        <label class="slider-row">Width<input type="range" id="draw-width" min="1" max="70" step="1" value="2"><output for="draw-width">2</output></label>
-        <label class="slider-row">Glow<input type="range" id="draw-glow" min="0" max="45" step="1" value="12"><output for="draw-glow">12</output></label>
+        <label class="slider-row">Width<input type="range" id="draw-width" min="1" max="70" step="1" value="3"><output for="draw-width">3</output></label>
+        <label class="slider-row">Glow<input type="range" id="draw-glow" min="0" max="45" step="1" value="16"><output for="draw-glow">16</output></label>
         <label class="slider-row">Rainbow <input type="range" id="draw-cycle" min="0" max="3" step="0.1" value="1"><output for="draw-cycle">1</output></label>
         <div id="draw-fuse-controls" hidden><label class="slider-row">Fuse speed<input type="range" id="draw-speed" min="25" max="6500" step="25" value="1025"><output for="draw-speed">1025</output></label></div>
       </div>
@@ -1816,6 +1816,73 @@ input[type=range]{accent-color:#595959}
   <button class="menu-btn" value="cancel">Cancel</button></form>
 </dialog>
 
+<script>
+(() => {
+  'use strict';
+
+  const sequence = [
+    '#ff00bd', '#ff003b', '#ff0000', '#ff5500', '#ff9000', '#ffde00',
+    '#c9ed00', '#55dc00', '#00d947', '#00ce99', '#00cadf', '#008bed',
+    '#183bff', '#5325ff', '#7923ef', '#a72bf0', '#ca36ed', '#ed49e4',
+    '#ff4fb4'
+  ];
+  const steps = [6, 3, 5, 3, 7, 4, 3, 7, 5, 6, 6, 7, 7, 5, 5, 5, 4, 5, 4];
+  const channels = hex => hex.slice(1).match(/../g).map(value => parseInt(value, 16));
+  const ramp = sequence.flatMap((colour, index) => {
+    const from = channels(colour);
+    const to = channels(sequence[(index + 1) % sequence.length]);
+    return Array.from({length:steps[index]}, (_, step) => {
+      const rgb = from.map((value, i) =>
+        Math.round(value + (to[i] - value) * step / steps[index])
+      );
+      return `rgb(${rgb.join(',')})`;
+    });
+  });
+  const colourAt = index => ramp[index % ramp.length];
+
+  function drawStroke(ctx, points, {width = 3, glow = true, start = 0, end = points.length - 1, opacity = 1} = {}) {
+    if (end <= start) return;
+
+    ctx.save();
+    ctx.globalAlpha = opacity;
+    ctx.lineCap = 'butt';
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = width;
+    for (let first = start + 1; first <= end;) {
+      const colour = colourAt(first);
+      let last = first;
+      while (last < end && colourAt(last + 1) === colour) last++;
+
+      ctx.beginPath();
+      ctx.moveTo(points[first - 1].x, points[first - 1].y);
+      for (let i = first; i <= last; i++) ctx.lineTo(points[i].x, points[i].y);
+      if (last < end) {
+        const p = points[last];
+        const q = points[last + 1];
+        const distance = Math.hypot(q.x - p.x, q.y - p.y) || 1;
+        const overlap = Math.min(.35 / distance, .25);
+        ctx.lineTo(p.x + (q.x - p.x) * overlap, p.y + (q.y - p.y) * overlap);
+      }
+
+      ctx.strokeStyle = colour;
+      ctx.shadowBlur = typeof glow === 'number' ? glow : glow ? Math.max(16, width * 4.5) : 0;
+      ctx.shadowColor = colour;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+      first = last + 1;
+    }
+    for (const [point, index] of [[points[start], start + 1], [points[end], end]]) {
+      ctx.fillStyle = colourAt(index);
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, width / 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  window.Stage35RainbowLine = Object.freeze({drawStroke});
+})();
+</script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   /* =========================================
@@ -3688,6 +3755,23 @@ document.addEventListener('DOMContentLoaded', function() {
       const stroke = strokes[i];
       const length = stroke.points.at(-1).distance;
       const elapsed = stroke.ended === null ? 0 : (now - stroke.ended) / 1000;
+      if (stroke.mode === 'stage35') {
+        const end = stroke.points.length - 1;
+        const duration = (.45 + stroke.points.length * .014) * 5 / 6 * 1025 / stroke.speed;
+        const burning = stroke.fuse && stroke.ended !== null;
+        const burned = burning ? Math.floor(Math.max(0,elapsed) / duration * Math.max(1,end)) : 0;
+        if (burning && burned >= Math.max(1,end)) {
+          strokes.splice(i--,1);
+          continue;
+        }
+        const width = stroke.width * (stroke.build ? .3 + .7 * Math.min(1,length / 120) : 1);
+        Stage35RainbowLine.drawStroke(drawing,stroke.points,{
+          width, glow:stroke.glow, start:stroke.reverse ? 0 : burned,
+          end:stroke.reverse ? end - burned : end
+        });
+        animating ||= burning;
+        continue;
+      }
       const fuseDistance = stroke.fuse && stroke.ended !== null ? Math.max(0, elapsed) * stroke.speed : 0;
       if (stroke.fuse && stroke.ended !== null && fuseDistance >= Math.max(length, 8)) {
         strokes.splice(i--, 1);
@@ -3796,8 +3880,9 @@ document.addEventListener('DOMContentLoaded', function() {
   function sampleInk(x, y, exact=false) {
     const last = currentStroke.points.at(-1);
     const distance = Math.hypot(x - last.x, y - last.y);
-    if (distance < (exact ? .01 : 1)) return;
-    const steps = ['spectrum','rainbow2','rainbow3'].includes(currentStroke.mode) || currentStroke.build ? Math.ceil(distance / 5) : 1;
+    if (currentStroke.mode === 'stage35' ? distance <= 1.5 : distance < (exact ? .01 : 1)) return;
+    const interpolate = currentStroke.mode !== 'stage35' && (['spectrum','rainbow2','rainbow3'].includes(currentStroke.mode) || currentStroke.build);
+    const steps = interpolate ? Math.ceil(distance / 5) : 1;
     for (let i = 1; i <= steps; i++) {
       const part = i / steps;
       currentStroke.points.push({
@@ -3879,7 +3964,7 @@ document.addEventListener('DOMContentLoaded', function() {
   drawingSurface.addEventListener('pointermove', event => {
     if (event.pointerId !== drawingPointer) return;
     const rect=drawingSurface.getBoundingClientRect();
-    for(const sample of event.getCoalescedEvents?.()||[]){
+    for(const sample of currentStroke.mode==='stage35' ? [] : event.getCoalescedEvents?.()||[]){
       const {x,y}=inkPoint(sample,rect);
       sampleInk(x,y);
     }
@@ -3889,7 +3974,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   function finishInk(event) {
     if (event.pointerId !== drawingPointer) return;
-    if(event.type==='pointerup'){
+    if(event.type==='pointerup' && currentStroke.mode!=='stage35'){
       const {x,y}=inkPoint(event,drawingSurface.getBoundingClientRect());
       sampleInk(x,y,true);
     }
@@ -4970,7 +5055,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const flyingLines=[];
   function queueLineLaunch(stroke){
     if(!stroke||stroke.points.length<2)return;
-    const samples=stroke.points,step=Math.max(1,Math.ceil(samples.length/260));
+    const samples=stroke.points,step=stroke.mode==='stage35' && checked('launch-line-match') ? 1 : Math.max(1,Math.ceil(samples.length/260));
     const points=samples.filter((_,index)=>index%step===0||index===samples.length-1);
     const xs=points.map(point=>point.x),ys=points.map(point=>point.y);
     const bounds={left:Math.min(...xs),right:Math.max(...xs),top:Math.min(...ys),bottom:Math.max(...ys)};
@@ -5048,6 +5133,16 @@ document.addEventListener('DOMContentLoaded', function() {
     if(flight.spin)drawing.rotate(p*TAU);
     drawing.scale(zoom,zoom);drawing.translate(-flight.x,-flight.y);
     drawing.lineWidth=stroke.width;drawing.shadowBlur=stroke.glow;
+    if (stroke.mode === 'stage35') {
+      const first = points.findIndex(point => point.distance >= lower);
+      let last = points.length - 1;
+      while (last > first && points[last].distance > upper) last--;
+      if (first >= 0) Stage35RainbowLine.drawStroke(drawing,points,{
+        width:stroke.width, glow:stroke.glow, start:first, end:last, opacity:drawing.globalAlpha
+      });
+      drawing.restore();
+      return;
+    }
     if(stroke.mode==='checks'){
       paintCheckedLine(points,lower,upper,stroke.width,stroke.glow);
       drawing.restore();return;
