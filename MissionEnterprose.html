@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mission Enterprose</title>
+<title>Mission Enterprose — Stage 35 Rainbow</title>
 <style>
   * { box-sizing: border-box; }
   html, body {
@@ -1813,6 +1813,74 @@
 
 <script>
 (() => {
+  'use strict';
+
+  const sequence = [
+    '#ff00bd', '#ff003b', '#ff0000', '#ff5500', '#ff9000', '#ffde00',
+    '#c9ed00', '#55dc00', '#00d947', '#00ce99', '#00cadf', '#008bed',
+    '#183bff', '#5325ff', '#7923ef', '#a72bf0', '#ca36ed', '#ed49e4',
+    '#ff4fb4'
+  ];
+  const steps = [6, 3, 5, 3, 7, 4, 3, 7, 5, 6, 6, 7, 7, 5, 5, 5, 4, 5, 4];
+  const channels = hex => hex.slice(1).match(/../g).map(value => parseInt(value, 16));
+  const ramp = sequence.flatMap((colour, index) => {
+    const from = channels(colour);
+    const to = channels(sequence[(index + 1) % sequence.length]);
+    return Array.from({length:steps[index]}, (_, step) => {
+      const rgb = from.map((value, i) =>
+        Math.round(value + (to[i] - value) * step / steps[index])
+      );
+      return `rgb(${rgb.join(',')})`;
+    });
+  });
+  const colourAt = index => ramp[index % ramp.length];
+
+  function drawStroke(ctx, points, {width = 3, glow = true, start = 0, opacity = 1} = {}) {
+    const end = points.length - 1;
+    if (end <= start) return;
+
+    ctx.save();
+    ctx.globalAlpha = opacity;
+    ctx.lineCap = 'butt';
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = width;
+    for (let first = start + 1; first <= end;) {
+      const colour = colourAt(first);
+      let last = first;
+      while (last < end && colourAt(last + 1) === colour) last++;
+
+      ctx.beginPath();
+      ctx.moveTo(points[first - 1].x, points[first - 1].y);
+      for (let i = first; i <= last; i++) ctx.lineTo(points[i].x, points[i].y);
+      if (last < end) {
+        const p = points[last];
+        const q = points[last + 1];
+        const distance = Math.hypot(q.x - p.x, q.y - p.y) || 1;
+        const overlap = Math.min(.35 / distance, .25);
+        ctx.lineTo(p.x + (q.x - p.x) * overlap, p.y + (q.y - p.y) * overlap);
+      }
+
+      ctx.strokeStyle = colour;
+      ctx.shadowBlur = glow ? Math.max(16, width * 4.5) : 0;
+      ctx.shadowColor = colour;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+      first = last + 1;
+    }
+    for (const [point, index] of [[points[start], start + 1], [points[end], end]]) {
+      ctx.fillStyle = colourAt(index);
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, width / 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  window.Stage35RainbowLine = Object.freeze({drawStroke});
+})();
+</script>
+<script>
+(() => {
   "use strict";
 
   /* ---------------- STARFIELD ---------------- */
@@ -2183,7 +2251,7 @@
     }
 
     if(points.length>1){
-      const shape=points.slice();
+      const shape=(liveStrokeSettings.mode==="stage35" && liveInk.path.length>1 ? liveInk.path : points).slice();
       strokeAngles.set(shape,strokeAngles.get(points)||0);
       drawnStrokeStyles.set(shape,liveStrokeSettings);
       rememberDrawing(shape,planetOpen);
@@ -3628,6 +3696,16 @@
     const from=ink.point,dx=point.x-from.x,dy=point.y-from.y;
     const distance=Math.hypot(dx,dy);
     if(!first && !distance)return;
+    if(settings.mode==="stage35"){
+      if(first || Math.hypot(point.x-ink.path.at(-1).x,point.y-ink.path.at(-1).y)<=1.5)return;
+      ink.path.push(point);
+      if(ink.path.length>MAX_LIVE_DRAW_POINTS)ink.path.shift();
+      ink.point=point;
+      const scale=context.getTransform().a;
+      context.clearRect(0,0,context.canvas.width/scale,context.canvas.height/scale);
+      paintDrawingStroke(context,ink.path,settings,performance.now()-ink.started);
+      return;
+    }
     const connected=!["dots","blur"].includes(settings.lineEffect) &&
       !["spectrum","stripe","stripePath","randomStripe"].includes(settings.mode);
     if((connected || deformsLiveInk(settings.lineEffect)) && !first){
@@ -4019,7 +4097,23 @@
   function paintDrawingStroke(context,shape,settings,elapsed,burn=0,halo=null){
     if(shape.length<2)return;
     const width=settings.size;
+    const angle=(settings.angle==="random"?(strokeAngles.get(shape)??0):(settings.angle||0))*Math.PI/180;
     shape=shapeLineEffect(shape,settings.lineEffect,elapsed,width);
+    if(settings.mode==="stage35"){
+      const lengths=burn ? strokeDistance(shape) : null;
+      let start=0;
+      while(lengths && start<shape.length && lengths[start]<burn)start++;
+      const count=Math.floor(settings.repeat||1);
+      const opacity=context.globalAlpha*(settings.lineEffect==="transparent"?.58:1);
+      for(let lane=0;lane<count;lane++){
+        const offset=(lane-(count-1)/2)*strokeSpacing(settings,width);
+        context.save();
+        context.translate(Math.cos(angle)*offset,Math.sin(angle)*offset);
+        Stage35RainbowLine.drawStroke(context,shape,{width,glow:settings.glowEnabled!==false,start,opacity});
+        context.restore();
+      }
+      return;
+    }
     if(settings.lineEffect==="blur"){
       paintDrawingGlow(context,shape,{...settings,glow:1,rainbowGlow:false,lineEffect:"blur"},width,elapsed,burn);
       if(settings.glowEnabled!==false && settings.rainbowGlow && halo?.length)paintRecordedHalo(context,halo,width,burn);
@@ -4101,7 +4195,13 @@
       const stroke=burningStrokes[i],settings=stroke.settings;
       if(Boolean(stroke.planet)!==planet)continue;
       stroke.age+=dt;
-      const burn=settings.fuse?stroke.age*settings.fuseSpeed/1000:0;
+      let burn=settings.fuse?stroke.age*settings.fuseSpeed/1000:0;
+      if(settings.mode==="stage35" && settings.fuse){
+        const lengths=strokeDistance(stroke.shape);
+        const duration=(.45+stroke.shape.length*.014)*5/6*1240/settings.fuseSpeed;
+        const burned=Math.floor(stroke.age/1000/duration*(lengths.length-1));
+        burn=lengths[Math.min(lengths.length-1,burned)];
+      }
       if(settings.fuse?burn>=strokeDistance(stroke.shape).at(-1):stroke.age>=500){
         burningStrokes.splice(i,1);
         continue;
@@ -4246,7 +4346,7 @@
         options.replaceChildren();
         const current=state();
         const colours=section==="draw" ?
-          [["solid","Solid"],["rainbowSequence","Rainbow 1"],["rainbow","Rainbow 2"],["spectrum","Rainbow 3"],["stripe","B&W stripes"],["stripePath","B&W squares"],["randomEach","Random"],["randomStripe","Random stripes"]] :
+          [["solid","Solid"],["rainbowSequence","Rainbow 1"],["rainbow","Rainbow 2"],["spectrum","Rainbow 3"],["stage35","Stage 35 Rainbow"],["stripe","B&W stripes"],["stripePath","B&W squares"],["randomEach","Random"],["randomStripe","Random stripes"]] :
           modeChoices;
         const modeRow=choiceRow("Colour",()=>colours,()=>current.mode,mode=>{
           current.mode=mode;
@@ -6324,6 +6424,11 @@
       const tip=planetLiveInk.point,last=planetLivePoints.at(-1);
       if(tip!==last)planetLivePoints.push(tip);
       if(planetLivePoints.length===1)planetLivePoints.push({x:last.x+.5,y:last.y+.5});
+      if(planetStrokeSettings.mode==="stage35" && planetLiveInk.path.length>1){
+        const angle=strokeAngles.get(planetLivePoints);
+        planetLivePoints=planetLiveInk.path.slice();
+        strokeAngles.set(planetLivePoints,angle);
+      }
       drawnStrokeStyles.set(planetLivePoints,planetStrokeSettings);
       rememberDrawing(planetLivePoints,true);
       const settings=planetLiveInk.settings;
