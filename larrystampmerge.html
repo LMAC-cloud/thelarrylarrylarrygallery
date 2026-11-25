@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Larry Stamp Merge — 16 Smooth Start and Planet Ticker</title>
+<title>Larry Stamp Merge — 17 Welcome to the Lar Casino</title>
 <style>
   * { box-sizing: border-box; }
   html, body { width:100%; height:100%; margin:0; overflow:hidden; }
@@ -115,6 +115,15 @@
     box-shadow:0 12px 30px rgba(0,0,0,.55);
     overflow:hidden;
   }
+  #larWelcome {
+    position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);
+    box-sizing:border-box;width:max-content;max-width:90%;z-index:70;
+    padding:clamp(14px,3vw,24px);border:2px solid #b7bec6;border-radius:16px;
+    background:#181c22;color:#f8f4e9;text-align:center;pointer-events:none;
+    box-shadow:0 8px 30px #000a;font-family:Georgia,serif;
+  }
+  #larWelcome h1 {margin:0;font-size:clamp(19px,4vw,34px)}
+  #larWelcome p {margin:8px 0 0;font-size:clamp(13px,2.4vw,18px)}
   #gameCanvas { width:100%; height:100%; display:block; cursor:none; }
   #tankGenerator {
     position:absolute; left:56px; top:calc(100% - 45px); width:54px; height:46px;
@@ -570,6 +579,10 @@
 
   <main id="gamePanel">
     <canvas id="gameCanvas"></canvas>
+    <section id="larWelcome" aria-labelledby="larWelcomeTitle">
+      <h1 id="larWelcomeTitle">Welcome to the Lar Casino</h1>
+      <p>Collect all Lar stamps to win a prize!</p>
+    </section>
     <div id="tankGenerator" aria-label="Larrys Variety tank generator" title="Release Lar stamps">
       <div class="bagTop">LARRYS</div>
       <div class="bagBottom">VARIETY</div>
@@ -837,7 +850,7 @@ let mailboxX = 0.5;
 let mailboxTargetX = 0.5;
 
 let lastDropTime = -Infinity;
-let openingStampReady = false;
+let openingComplete = false;
 let unlockedTier = 1;
 let levelNumber = 1;
 let levelTransitionPending = false;
@@ -1384,7 +1397,7 @@ function launchCelebration(nextStart) {
 }
 
 function dropStamp(isAuto = false) {
-  if (window.larGameComplete || !openingStampReady) return false;
+  if (window.larGameComplete || !openingComplete) return false;
   const tier = Number(heldStampImg.dataset.tier) || chooseNextTier();
   if (!imgs[tier-1].complete) return false;
   const now = performance.now();
@@ -2261,7 +2274,7 @@ function draw() {
   for(let i=activePageStart;i<Math.min(activePageStart+currentLevelLength(),images.length);i++){
     activePageTiers.push(i+1);
   }
-  const pageTiers = activePageTiers;
+  const pageTiers = openingComplete ? activePageTiers : [];
   const shelfLeft = 108;
   const shelfRight = W-20;
   const slotWidth = (shelfRight-shelfLeft) / Math.max(1,pageTiers.length);
@@ -2457,11 +2470,23 @@ updateLevelBadge();
 showCurrentLevelInBook();
 startAutoLarry();
 updateHeldStamp();
-// Decode the first artwork before letting the opening token fall.
-imgs[0].decode().catch(() => {}).then(() => {
-  openingStampReady = true;
+async function openLarCasino() {
+  const welcome = document.getElementById('larWelcome');
+  // All artwork is already fetching. First decode the three stamps the opening generator can use.
+  await Promise.all([
+    new Promise(resolve => setTimeout(resolve, 2400)),
+    Promise.allSettled(imgs.slice(0,3).map(image => image.decode()))
+  ]);
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    await welcome.animate([{opacity:1},{opacity:0}], {
+      duration:800, easing:'ease-in-out', fill:'forwards'
+    }).finished;
+  }
+  welcome.hidden = true;
+  openingComplete = true;
   if (stamps.length === 0 && !levelCelebration.classList.contains('show')) dropStamp();
-});
+}
+openLarCasino();
 window.addEventListener('resize',resize);
 Runner.run(runner,engine);
 draw();
@@ -2594,7 +2619,7 @@ animateMailbox();
   }
 
   function populateLarTank(count=10){
-    if (window.larGameComplete) return;
+    if (window.larGameComplete || !openingComplete) return;
     const first=generatorStart+1, max=Math.min(first+2,currentLevelEnd(),images.length);
     const choices=[]; for(let tier=first;tier<=max;tier++) choices.push(tier); if(!choices.length) return;
     const columns=Math.max(4,Math.min(8,Math.floor((W-220)/115)));
