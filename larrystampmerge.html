@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Larry Stamp Merge — 15 Lar-Glove and Left Mitten</title>
+<title>Larry Stamp Merge — 16 Smooth Start and Planet Ticker</title>
 <style>
   * { box-sizing: border-box; }
   html, body { width:100%; height:100%; margin:0; overflow:hidden; }
@@ -589,14 +589,22 @@
       <div class="prizePlanets">
         <a id="enterprosePlanet" href="MissionEnterprose.html">
           <svg viewBox="0 0 160 160" aria-hidden="true">
-            <defs><clipPath id="missionTickerWindow"><rect x="3" y="72" width="154" height="17" rx="8.5"/></clipPath></defs>
+            <defs>
+              <linearGradient id="missionTickerFade" gradientUnits="userSpaceOnUse" x1="26" y1="0" x2="134" y2="0">
+                <stop offset="0" stop-color="white" stop-opacity="0"/>
+                <stop offset=".2" stop-color="white"/>
+                <stop offset=".8" stop-color="white"/>
+                <stop offset="1" stop-color="white" stop-opacity="0"/>
+              </linearGradient>
+              <mask id="missionTickerWindow" maskUnits="userSpaceOnUse" x="26" y="70" width="108" height="20">
+                <rect x="26" y="70" width="108" height="20" fill="url(#missionTickerFade)"/>
+              </mask>
+            </defs>
             <g transform="rotate(-17 80 80)">
-              <ellipse cx="80" cy="80" rx="77" ry="21" fill="none" stroke="#a9cbe8" stroke-opacity=".65" stroke-width="2"/>
-              <rect x="3" y="72" width="154" height="17" rx="8.5" fill="#13213e" stroke="#a9cbe8"/>
-              <g clip-path="url(#missionTickerWindow)">
+              <g mask="url(#missionTickerWindow)">
                 <g class="missionTicker">
-                  <text x="8" y="84">Mission: Enterprose? •</text>
-                  <text x="168" y="84">Mission: Enterprose? •</text>
+                  <text x="26" y="84" textLength="108" lengthAdjust="spacingAndGlyphs">Mission: Enterprose?</text>
+                  <text x="186" y="84" textLength="108" lengthAdjust="spacingAndGlyphs">Mission: Enterprose?</text>
                 </g>
               </g>
             </g>
@@ -828,7 +836,8 @@ let dropLock = false;
 let mailboxX = 0.5;
 let mailboxTargetX = 0.5;
 
-let lastDropTime = 0;
+let lastDropTime = -Infinity;
+let openingStampReady = false;
 let unlockedTier = 1;
 let levelNumber = 1;
 let levelTransitionPending = false;
@@ -853,8 +862,9 @@ const DROP_COOLDOWN = 260;
 bucksEl.textContent = bucks;
 saveLarBucks();
 
-const imgs = images.map(src => {
+const imgs = images.map((src, index) => {
   const im = new Image();
+  if (index === 0) im.fetchPriority = 'high';
   im.src = src;
   return im;
 });
@@ -1374,7 +1384,9 @@ function launchCelebration(nextStart) {
 }
 
 function dropStamp(isAuto = false) {
-  if (window.larGameComplete) return false;
+  if (window.larGameComplete || !openingStampReady) return false;
+  const tier = Number(heldStampImg.dataset.tier) || chooseNextTier();
+  if (!imgs[tier-1].complete) return false;
   const now = performance.now();
   if (now-lastDropTime < DROP_COOLDOWN) return false;
   lastDropTime = now;
@@ -1382,7 +1394,6 @@ function dropStamp(isAuto = false) {
   const origin = getDropOrigin();
   const x = origin.x;
   const y = origin.y;
-  const tier = Number(heldStampImg.dataset.tier) || chooseNextTier();
 
   const body = createStamp(tier, x, y);
   body.plugin.autoSpawned = isAuto;
@@ -2064,7 +2075,7 @@ function renderCarLot() {
     button.type = 'button';
     button.className = 'carLotItem'+(selected?' current':'');
     button.setAttribute('aria-pressed', String(selected));
-    button.innerHTML = `<div class="carLotSvg">${handwear.svg}</div><div class="carLotName">${handwear.name}</div><div class="carLotPrice">${selected?'ON — USE LAR MOBILE':'OFF — USE '+handwear.name}</div>`;
+    button.innerHTML = `<div class="carLotSvg">${handwear.svg}</div><div class="carLotName">${handwear.name}</div><div class="carLotPrice">${handwear.name} — ${selected?'On':'Off'}</div>`;
     button.addEventListener('click',()=>{
       const position = [...grid.children].indexOf(button);
       larHandwear = selected ? null : key;
@@ -2327,7 +2338,15 @@ function draw() {
     ctx.arc(0,0,r-1.5,0,Math.PI*2);
     ctx.clip();
     if(im && im.complete && im.naturalWidth) drawStampArtwork(ctx,im,-r+1.5,-r+1.5,(r-1.5)*2);
-    else { ctx.fillStyle='#d8c49a'; ctx.fillRect(-r+1.5,-r+1.5,(r-1.5)*2,(r-1.5)*2); }
+    else {
+      ctx.fillStyle='#d8c49a';
+      ctx.fillRect(-r,-r,r*2,r*2);
+      ctx.fillStyle='#342317';
+      ctx.textAlign='center';
+      ctx.textBaseline='middle';
+      ctx.font=`bold ${Math.round(r*.6)}px Georgia`;
+      ctx.fillText(String(b.plugin.tier).padStart(2,'0'),0,0);
+    }
     ctx.restore();
 
     ctx.lineWidth=1.5;
@@ -2438,11 +2457,11 @@ updateLevelBadge();
 showCurrentLevelInBook();
 startAutoLarry();
 updateHeldStamp();
-// Start the first round with one Lar already on the board; it is not collected
-// until it is merged with its matching partner.
-setTimeout(() => {
+// Decode the first artwork before letting the opening token fall.
+imgs[0].decode().catch(() => {}).then(() => {
+  openingStampReady = true;
   if (stamps.length === 0 && !levelCelebration.classList.contains('show')) dropStamp();
-}, 350);
+});
 window.addEventListener('resize',resize);
 Runner.run(runner,engine);
 draw();
