@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mission Enterprose — Stage 35 Rainbow Effects</title>
+<title>Mission Enterprose — Wave and Lightning Repair</title>
 <style>
   * { box-sizing: border-box; }
   html, body {
@@ -3712,6 +3712,8 @@
     if((connected || deformsLiveInk(settings.lineEffect)) && !first){
       ink.path.push(point);
       if(ink.path.length>MAX_LIVE_DRAW_POINTS)ink.path.shift();
+      // This path changes in place. Wave and Lightning use its full current length.
+      strokeDistances.delete(ink.path);
     }
     if(deformsLiveInk(settings.lineEffect) && !first){
       ink.point=point;
