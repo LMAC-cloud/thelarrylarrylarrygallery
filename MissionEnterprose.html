@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mission Enterprose — Wave and Lightning Repair</title>
+<title>Mission Enterprose — Steady Wave and Lightning</title>
 <style>
   * { box-sizing: border-box; }
   html, body {
@@ -2251,7 +2251,8 @@
     }
 
     if(points.length>1){
-      const shape=(liveStrokeSettings.mode==="stage35" && liveInk.path.length>1 ? liveInk.path : points).slice();
+      const usePreviewPath=liveStrokeSettings.mode==="stage35" || isBandedDeformation(liveStrokeSettings);
+      const shape=(usePreviewPath && liveInk.path.length>1 ? liveInk.path : points).slice();
       strokeAngles.set(shape,strokeAngles.get(points)||0);
       drawnStrokeStyles.set(shape,liveStrokeSettings);
       rememberDrawing(shape,planetOpen);
@@ -3847,6 +3848,9 @@
     context.restore();
   }
 
+  function isBandedDeformation(settings){
+    return (settings.mode==="stripe" || settings.mode==="stripePath") && deformsLiveInk(settings.lineEffect);
+  }
   function deformsLiveInk(effect){return effect==="lightning" || effect==="wave";}
   function deformsReleasedInk(effect){return effect==="zigzag" || deformsLiveInk(effect);}
 
@@ -4092,13 +4096,14 @@
     const distances=strokeDistance(shape);
     context.save();
     context.lineWidth=Math.max(.8,context.lineWidth*.48);
+    const banded=isBandedDeformation(settings);
     for(let i=3;i<shape.length-1;i+=4){
-      if(distances[i]<burn)continue;
+      if(distances[i]<burn || (banded && distances[i]<28))continue;
       const a=shape[Math.max(0,i-2)],b=shape[i],next=shape[Math.min(shape.length-1,i+2)];
       const length=Math.hypot(next.x-a.x,next.y-a.y)||1;
       const dx=(next.x-a.x)/length,dy=(next.y-a.y)/length;
       const side=i%8===3?1:-1;
-      const reach=Math.min(150,75+settings.size*1.6)*(i%3===0?1:.75);
+      const reach=(banded ? Math.min(55,distances[i]*.5) : Math.min(150,75+settings.size*1.6))*(i%3===0?1:.75);
       const mx=b.x+(dx*.28-dy*side*.68)*reach,my=b.y+(dy*.28+dx*side*.68)*reach;
       if(branchColour){
         context.strokeStyle=branchColour(i);
@@ -4244,14 +4249,20 @@
       const stroke=burningStrokes[i],settings=stroke.settings;
       if(Boolean(stroke.planet)!==planet)continue;
       stroke.age+=dt;
+      const length=strokeDistance(stroke.shape).at(-1);
       let burn=settings.fuse?stroke.age*settings.fuseSpeed/1000:0;
+      if(settings.fuse && isBandedDeformation(settings)){
+        // Give short strokes a visible release frame before burning them away.
+        const speed=Math.min(settings.fuseSpeed,length*4);
+        burn=Math.max(0,stroke.age-110)*speed/1000;
+      }
       if(settings.mode==="stage35" && settings.fuse){
         const lengths=strokeDistance(stroke.shape);
         const duration=(.45+stroke.shape.length*.014)*5/6*1240/settings.fuseSpeed;
         const burned=Math.floor(stroke.age/1000/duration*(lengths.length-1));
         burn=lengths[Math.min(lengths.length-1,burned)];
       }
-      if(settings.fuse?burn>=strokeDistance(stroke.shape).at(-1):stroke.age>=500){
+      if(settings.fuse?burn>=length:stroke.age>=500){
         burningStrokes.splice(i,1);
         continue;
       }
@@ -6473,7 +6484,7 @@
       const tip=planetLiveInk.point,last=planetLivePoints.at(-1);
       if(tip!==last)planetLivePoints.push(tip);
       if(planetLivePoints.length===1)planetLivePoints.push({x:last.x+.5,y:last.y+.5});
-      if(planetStrokeSettings.mode==="stage35" && planetLiveInk.path.length>1){
+      if((planetStrokeSettings.mode==="stage35" || isBandedDeformation(planetStrokeSettings)) && planetLiveInk.path.length>1){
         const angle=strokeAngles.get(planetLivePoints);
         planetLivePoints=planetLiveInk.path.slice();
         strokeAngles.set(planetLivePoints,angle);
