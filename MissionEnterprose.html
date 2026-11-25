@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mission Enterprose — Stage 35 Rainbow</title>
+<title>Mission Enterprose — Stage 35 Rainbow Effects</title>
 <style>
   * { box-sizing: border-box; }
   html, body {
@@ -1835,7 +1835,7 @@
   });
   const colourAt = index => ramp[index % ramp.length];
 
-  function drawStroke(ctx, points, {width = 3, glow = true, start = 0, opacity = 1} = {}) {
+  function drawStroke(ctx, points, {width = 3, glow = true, start = 0, opacity = 1, glowColour = null} = {}) {
     const end = points.length - 1;
     if (end <= start) return;
 
@@ -1862,7 +1862,7 @@
 
       ctx.strokeStyle = colour;
       ctx.shadowBlur = glow ? Math.max(16, width * 4.5) : 0;
-      ctx.shadowColor = colour;
+      ctx.shadowColor = glowColour ?? colour;
       ctx.stroke();
       ctx.shadowBlur = 0;
       first = last + 1;
@@ -1876,7 +1876,7 @@
     ctx.restore();
   }
 
-  window.Stage35RainbowLine = Object.freeze({drawStroke});
+  window.Stage35RainbowLine = Object.freeze({drawStroke, colourAt});
 })();
 </script>
 <script>
@@ -2281,6 +2281,7 @@
       const drawn=drawnStrokeStyles.get(shape);
       if(settings.matchDrawn && drawn){
         for(const key of matchedDrawFields)settings[key]=drawn[key];
+        if(drawn.mode==="stage35")Object.assign(settings,{glow:drawn.glow,glowEnabled:drawn.glowEnabled,rainbowGlow:drawn.rainbowGlow});
       }
       if(!settings.lineEffect && drawn?.lineEffect)settings.lineEffect=drawn.lineEffect;
       assignSequenceColour(settings,"launched");
@@ -3577,6 +3578,7 @@
     if(target==="line" && state.matchDrawn){
       const drawn=captureEffect("drawn");
       for(const key of matchedDrawFields)state[key]=drawn[key];
+      if(drawn.mode==="stage35")Object.assign(state,{glow:drawn.glow,glowEnabled:drawn.glowEnabled,rainbowGlow:drawn.rainbowGlow});
     }
     for(const key of ["size","startSize","endSize","glow","duration","repeat","spacing","fuseSpeed","spinSpeed"]){
       if(typeof state[key]==="string")state[key]=appliedValue(state[key],key==="repeat"?1:0);
@@ -3701,9 +3703,8 @@
       ink.path.push(point);
       if(ink.path.length>MAX_LIVE_DRAW_POINTS)ink.path.shift();
       ink.point=point;
-      const scale=context.getTransform().a;
-      context.clearRect(0,0,context.canvas.width/scale,context.canvas.height/scale);
-      paintDrawingStroke(context,ink.path,settings,performance.now()-ink.started);
+      strokeDistances.delete(ink.path);
+      paintLiveStage35(ink,performance.now()-ink.started);
       return;
     }
     const connected=!["dots","blur"].includes(settings.lineEffect) &&
@@ -3876,10 +3877,24 @@
     paintDrawingStroke(context,path,{...settings,glowEnabled:false},elapsed);
   }
 
+  function paintLiveStage35(ink,elapsed){
+    const {context,settings,path}=ink;
+    const scale=context.getTransform().a;
+    context.clearRect(0,0,context.canvas.width/scale,context.canvas.height/scale);
+    strokeAngles.set(path,ink.angle);
+    ink.lastDeformation=elapsed;
+    paintDrawingStroke(context,path,settings,elapsed);
+  }
+
   function refreshLiveRainbow(ink){
     if(!ink || ink.settings.invisible)return;
     const {context,settings,glowContext}=ink;
     const elapsed=performance.now()-ink.started;
+    if(settings.mode==="stage35"){
+      const animated=settings.lineEffect==="wave" || (settings.glowEnabled!==false && settings.rainbowGlow);
+      if(animated && elapsed-(ink.lastDeformation??-100)>=33)paintLiveStage35(ink,elapsed);
+      return;
+    }
     if(settings.lineEffect==="wave" && elapsed-(ink.lastDeformation??-100)>=33){
       paintLiveDeformation(ink);
       return;
@@ -4071,7 +4086,7 @@
     }
   }
 
-  function paintLightningBranches(context,shape,settings,burn){
+  function paintLightningBranches(context,shape,settings,burn,branchColour){
     const distances=strokeDistance(shape);
     context.save();
     context.lineWidth=Math.max(.8,context.lineWidth*.48);
@@ -4083,6 +4098,10 @@
       const side=i%8===3?1:-1;
       const reach=Math.min(150,75+settings.size*1.6)*(i%3===0?1:.75);
       const mx=b.x+(dx*.28-dy*side*.68)*reach,my=b.y+(dy*.28+dx*side*.68)*reach;
+      if(branchColour){
+        context.strokeStyle=branchColour(i);
+        if(context.shadowBlur)context.shadowColor=settings.stage35Halo ?? context.strokeStyle;
+      }
       context.beginPath();
       context.moveTo(b.x,b.y);
       context.lineTo(mx,my);
@@ -4100,16 +4119,44 @@
     const angle=(settings.angle==="random"?(strokeAngles.get(shape)??0):(settings.angle||0))*Math.PI/180;
     shape=shapeLineEffect(shape,settings.lineEffect,elapsed,width);
     if(settings.mode==="stage35"){
-      const lengths=burn ? strokeDistance(shape) : null;
+      const {drawStroke,colourAt}=Stage35RainbowLine;
+      const dots=settings.lineEffect==="dots";
+      const lengths=burn || dots ? strokeDistance(shape) : null;
       let start=0;
       while(lengths && start<shape.length && lengths[start]<burn)start++;
+      if(start>=shape.length-1)return;
       const count=Math.floor(settings.repeat||1);
       const opacity=context.globalAlpha*(settings.lineEffect==="transparent"?.58:1);
+      const glow=settings.glowEnabled!==false;
+      const glowColour=glow && settings.rainbowGlow ? cycleRainbowColour(effectPhase()) : null;
       for(let lane=0;lane<count;lane++){
         const offset=(lane-(count-1)/2)*strokeSpacing(settings,width);
         context.save();
         context.translate(Math.cos(angle)*offset,Math.sin(angle)*offset);
-        Stage35RainbowLine.drawStroke(context,shape,{width,glow:settings.glowEnabled!==false,start,opacity});
+        if(settings.lineEffect==="blur")context.filter="blur(2.8px)";
+        if(dots){
+          context.globalAlpha=opacity;
+          context.shadowBlur=glow?Math.max(16,width*4.5):0;
+          let lastDot=-Infinity;
+          for(let i=start+1;i<shape.length;i++){
+            const a=shape[i-1],b=shape[i];
+            visitStrokeDots(a.x,a.y,b.x,b.y,lengths[i-1],lengths[i],width,(x,y,distance)=>{
+              if(distance-lastDot<.001)return;
+              lastDot=distance;
+              const colour=colourAt(i);
+              context.shadowColor=glowColour ?? colour;
+              fillStrokeDot(context,x,y,width,colour);
+            });
+          }
+        }else{
+          drawStroke(context,shape,{width,glow,glowColour,start,opacity});
+          if(settings.lineEffect==="lightning"){
+            context.globalAlpha=opacity;
+            context.lineWidth=width;
+            context.shadowBlur=glow?Math.max(16,width*4.5):0;
+            paintLightningBranches(context,shape,{...settings,stage35Halo:glowColour},burn,colourAt);
+          }
+        }
         context.restore();
       }
       return;
