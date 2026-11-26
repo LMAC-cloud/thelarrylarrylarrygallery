@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Creative Deck · S.S. Enterprose</title>
+<style>
+:root{color-scheme:dark;--ink:#eee7d9;--muted:#b1b1be;--line:#aa9f904d;--accent:#ebbf87;--sky:#0c0e17}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--sky);color:var(--ink);font:15px system-ui,sans-serif}
+button,a{font:inherit;color:inherit}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.deck{min-height:100svh;display:grid;place-items:center;padding:32px 20px;background:radial-gradient(ellipse at 69% 13%,#3a2946,transparent 49%),radial-gradient(ellipse at 8% 95%,#1d3941,transparent 54%),var(--sky)}
+.deck-inner{width:min(100%,880px)}
+.ship{font:13px ui-monospace,monospace;letter-spacing:.16em;color:var(--accent)}
+h1{font:normal clamp(46px,10vw,112px)/.93 Georgia,serif;letter-spacing:-.066em;margin:12px 0 28px}
+.choices{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);background:#141522b5}
+.choices a{display:grid;gap:5px;align-content:center;min-height:116px;padding:17px 20px;text-decoration:none;border:1px solid var(--line)}
+.choices a:hover{background:#ffffff12}
+.choices strong{font:normal clamp(20px,3.5vw,31px) Georgia,serif}
+.choices span{color:var(--muted)}
+.return{display:inline-block;margin-top:18px;color:var(--accent)}
+.work{height:100dvh;display:grid;grid-template-rows:auto minmax(0,1fr)}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:7px 12px;border-bottom:1px solid var(--line);background:#151522;font-size:13px}
+.bar>a,.bar select{color:var(--ink);background:#151522;border:1px solid var(--line);padding:6px 9px;text-decoration:none}
+.bar label{display:flex;align-items:center;gap:6px}
+#direct{margin-left:auto}
+.workspace{min-height:0;position:relative;background:#08090f}
+iframe{display:block;border:0;width:100%;height:100%;color-scheme:normal}
+#load-status{position:absolute;top:5px;right:9px;margin:0;padding:5px 8px;background:#141522;color:var(--accent);pointer-events:none;font-size:12px}
+@media(max-width:510px){.choices{grid-template-columns:1fr}.choices a{min-height:80px}.deck{padding-block:20px}#direct{margin-left:0}}
+</style>
+</head>
+<body>
+<main class="deck" id="deck">
+  <div class="deck-inner">
+    <div class="ship">S.S. ENTERPROSE</div>
+    <h1>The Creative Deck</h1>
+    <nav class="choices" aria-label="Creative workspaces">
+      <a href="#typewriter"><strong>Starfield Typewriter</strong><span>Write on paper, cue cards, or in your book</span></a>
+      <a href="#fortunes"><strong>Fortunes Starfield</strong><span>Draw a fortune and visit the Stellar Orchard</span></a>
+      <a href="#mission"><strong>Mission Enterprose</strong><span>Launch text, drawings, and images</span></a>
+      <a href="#gel-plate"><strong>Electric Gel Plate</strong><span>Layer paint, pull a print, and build a gallery</span></a>
+    </nav>
+    <a class="return" id="assignments-link" href="starfield.html#startrekey">← Return to Enson Assignments</a>
+  </div>
+</main>
+<main class="work" id="work" hidden>
+  <nav class="bar" aria-label="Creative Deck controls">
+    <a href="#">← Creative Deck</a>
+    <label>Workspace <select id="choose"></select></label>
+    <a id="direct" target="_blank" rel="noopener">Open on its own ↗</a>
+  </nav>
+  <div class="workspace" id="workspace"><p id="load-status" role="status" hidden></p></div>
+</main>
+<script>
+'use strict';
+const byId=id=>document.getElementById(id);
+const hostedAt='https://larrysvariety.ca/';
+const base=location.origin===new URL(hostedAt).origin?location.href:hostedAt;
+const projects=new Map([
+  ['typewriter',['Starfield Typewriter','Starfield_Typewriter.html']],
+  ['fortunes',['Fortunes Starfield','Fortunes_Starfield.html']],
+  ['mission',['Mission Enterprose','MissionEnterprose.html']],
+  ['gel-plate',['Electric Gel Plate','Ghostprint.html']]
+]);
+const frames=new Map();
+const choose=byId('choose');
+const loadStatus=byId('load-status');
+let currentKey;
+for(const [key,[title]] of projects)choose.add(new Option(title,key));
+choose.onchange=()=>{location.hash=choose.value;};
+if(location.protocol==='file:')byId('assignments-link').href='starfield.html#startrekey';
+function showWorkspace(){
+  const key=location.hash.slice(1);
+  const project=projects.get(key);
+  if(currentKey&&currentKey!==key){
+    const leaving=frames.get(currentKey).frame;
+    try{
+      leaving.contentDocument?.querySelectorAll('audio,video').forEach(media=>media.pause());
+    }catch{}
+  }
+  currentKey=project?key:null;
+  byId('deck').hidden=Boolean(project);
+  byId('work').hidden=!project;
+  for(const [id,{frame}] of frames)frame.hidden=id!==currentKey;
+  if(!project)return;
+  const [title,path]=project;
+  const url=new URL(path,base).href;
+  choose.value=key;
+  byId('direct').href=url;
+  if(!frames.has(key)){
+    const frame=document.createElement('iframe');
+    frame.title=title;
+    frame.allow='autoplay; fullscreen';
+    frame.allowFullscreen=true;
+    const entry={frame,loaded:false};
+    frames.set(key,entry);
+    frame.addEventListener('load',()=>{
+      entry.loaded=true;
+      if(currentKey===key)loadStatus.hidden=true;
+    },{once:true});
+    frame.src=url;
+    byId('workspace').prepend(frame);
+  }
+  loadStatus.textContent='Opening '+title+'…';
+  loadStatus.hidden=frames.get(key).loaded;
+}
+window.addEventListener('hashchange',showWorkspace);
+showWorkspace();
+</script>
+</body>
+</html>
