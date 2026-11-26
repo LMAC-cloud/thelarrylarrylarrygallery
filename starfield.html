@@ -356,6 +356,8 @@ button.textColourStatus{background:none;border:0;padding:2px;color:#eee;cursor:p
 .pickerValues input[type=number]{width:36px}
 .pickerValues input[type=text]{width:66px}
 #poemPrompt{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:863;background:none;border:0;color:#aaa;font:11px Arial,sans-serif;text-shadow:0 0 8px #fff,0 0 16px #aaa;transition:opacity .65s}
+#skipPoemIntro{position:fixed;right:16px;bottom:18px;z-index:90200;color:#eee;background:#111d;border:1px solid #666;padding:5px 9px;font:12px Arial,sans-serif;cursor:pointer}
+#skipPoemIntro[hidden]{display:none!important}
 #poemPrompt.leaving{opacity:0;pointer-events:none}
 #typeInput.awaitingPoem{caret-color:transparent!important}
 #textPanel .textRainbows{margin-left:calc(111px + 35px + 10px)}
@@ -594,6 +596,7 @@ body,body *,#typeInput,#drawPanel.expanded #drawCanvas{cursor:url("data:image/sv
 </div>
 
 <textarea id="typeInput" autocomplete="off" spellcheck="false" aria-label="Poem text" virtualkeyboardpolicy="manual" writingsuggestions="false"  rows="2"></textarea>
+<button id="skipPoemIntro" type="button" hidden>Skip poem intro</button>
 <button id="poemPrompt" type="button">start poem</button><div id="typingZone" aria-hidden="true"><div id="typingSmoke"></div></div>
 
 <div id="starfieldTab" class="starfieldTab">S.S. Enterprose</div>
@@ -962,7 +965,12 @@ const poemPrompt=document.getElementById('poemPrompt');
 const introMoon=document.getElementById('sphere');
 const introControls=[document.getElementById('controls'),document.getElementById('starfieldTab')];
 const reducedIntro=matchMedia('(prefers-reduced-motion: reduce)').matches;
-let introReady=false,introStarted=false;
+const skipPoemIntro=document.getElementById('skipPoemIntro');
+let introReady=false,introStarted=false,introFinished=false;
+skipPoemIntro.onclick=()=>{
+  finishIntro();
+  speakIntroWelcome();
+};
 typeInput.readOnly=true;
 typeInput.classList.add('awaitingPoem');
 introControls.forEach(control=>control.inert=true);
@@ -994,6 +1002,14 @@ function parkIntroMoon(){
   introMoon.style.left='24px';introMoon.style.top='auto';introMoon.style.bottom='24px';
 }
 function finishIntro(){
+  if(introFinished)return;
+  introFinished=true;
+  introReady=false;
+  skipPoemIntro.hidden=true;
+  introMoon.classList.add('introArrived');
+  introMoon.classList.remove('introGlow','introClickable');
+  introMoon.getAnimations().forEach(animation=>animation.cancel());
+  document.querySelectorAll('.introLetterParticle,.introCrosspiece,.introCaret,.poemMeteor').forEach(node=>node.remove());
   parkIntroMoon();
   poemPrompt.remove();document.body.classList.remove('introPending');
   typeInput.readOnly=false;typeInput.classList.remove('awaitingPoem');
@@ -1006,6 +1022,7 @@ function finishIntro(){
 }
 async function stageIntro(){
   await introWait(3000);
+  if(introFinished)return;
   introMoon.classList.add('introArrived');
   await animateIntro(introMoon,[
     {transform:'translate(-34vw,-13px)',opacity:0},
@@ -1013,9 +1030,11 @@ async function stageIntro(){
     {offset:.78,transform:'translate(-3vw,-5px)',opacity:1},
     {transform:'translate(0,0)',opacity:1}
   ],{duration:3750,easing:'ease-in-out'});
+  if(introFinished)return;
   const from=introMoon.offsetLeft;
   const left=Math.max(74,innerWidth*.16);
   await animateIntro(introMoon,[{left:from+'px'},{left:left+'px'}],{duration:1500,easing:'ease-in-out'});
+  if(introFinished)return;
   introMoon.style.left=left+'px';
   const moon=introMoon.getBoundingClientRect();
   poemPrompt.style.left=(moon.left+moon.width/2)+'px';
@@ -1042,8 +1061,11 @@ async function advanceIntro(){
     introReady=false;
     for(const i of [13,14])letters[i].classList.remove('risen');
     await introWait(600);
+    if(introFinished)return;
     for(const i of [13,14])letters[i].parentElement.hidden=true;
-    revealLetter(0);await introWait(140);revealLetter(1);
+    revealLetter(0);await introWait(140);
+    if(introFinished)return;
+    revealLetter(1);
     introReady=true;
     return;
   }
@@ -1051,12 +1073,14 @@ async function advanceIntro(){
     if(++poemClicks!==3)return;
     introReady=false;
     revealLetter(4);await introWait(300);
+    if(introFinished)return;
     for(const i of [10,11,12]){
       letters[i].parentElement.hidden=false;
       letters[i].classList.add('risen');
       letters[i].classList.add('introQuestion');
     }
     await Promise.all([10,11,12].map((i,n)=>animateIntro(letters[i],[{opacity:0},{opacity:1}],{duration:950+n*440,easing:'ease-in',fill:'both'})));
+    if(introFinished)return;
     questionsReady=true;introReady=true;
     poemPrompt.setAttribute('aria-label','start poem???');
     return;
@@ -1089,7 +1113,9 @@ async function strikeIntro(){
         {offset:.32,opacity:.55},
         {transform:'translate('+innerWidth*.52+'px,'+(y+innerHeight*.14)+'px) rotate(-20deg)',opacity:0}
       ],720,true);
+      if(introFinished)return;
       await introWait(i===0?220:680);
+      if(introFinished)return;
     }
     const t=letters[4].querySelector('.t-stem').getBoundingClientRect();
     const x=t.left+t.width/2,y=t.top+t.height/2;
@@ -1098,7 +1124,9 @@ async function strikeIntro(){
       {offset:.62,transform:'translate('+innerWidth*.60+'px,'+innerHeight*.20+'px) rotate(-25deg)',opacity:1},
       {transform:'translate('+x+'px,'+y+'px) rotate(-35deg) scaleX(.7)',opacity:1}
     ],1150);
+    if(introFinished)return;
     await introWait(200);
+    if(introFinished)return;
     for(const [i,ink] of letters.entries()){
       if(i===4||i===5||ink.parentElement.hidden)continue;
       const box=ink.getBoundingClientRect();
@@ -1112,6 +1140,7 @@ async function strikeIntro(){
       {transform:'translate('+(24-moon.left)+'px,'+(endY-moon.top)+'px)'}
     ],{duration:7600,easing:'cubic-bezier(.16,.68,.21,1)',fill:'forwards'});
     await introWait(450);
+    if(introFinished)return;
 
     for(const [side,direction] of [['left',-1],['right',1]]){
       const piece=letters[4].querySelector('.t-'+side);
@@ -1135,6 +1164,7 @@ async function strikeIntro(){
     });
     const fall=animateIntro(stem,fallFrames,{duration:8500,easing:'ease-in-out',fill:'forwards'});
     await Promise.all([glide,fall]);
+    if(introFinished)return;
     introMoon.getAnimations().forEach(animation=>animation.cancel());
     parkIntroMoon();
     introMoon.classList.add('introGlow');
@@ -1143,6 +1173,9 @@ async function strikeIntro(){
   }finally{
     finishIntro();
   }
+  speakIntroWelcome();
+}
+function speakIntroWelcome(){
   const by=id=>document.getElementById(id);
   if(window.speechSynthesis&&by('speakToggle').checked&&!by('quietPlease').checked){
     const welcome=new SpeechSynthesisUtterance(guestMode?'Welcome aboard, dude.':'Welcome Enson '+ensonName+', to the S.S. Enterprose!');
@@ -1189,7 +1222,10 @@ welcomeGate.querySelector('form').onsubmit=e=>{
       greeting.voice=speechSynthesis.getVoices().find(v=>/^en-US/i.test(v.lang)&&/david|guy|mark|male/i.test(v.name))||null;
       speechSynthesis.speak(greeting);
     }
-  }else stageIntro().catch(finishIntro);
+  }else{
+    skipPoemIntro.hidden=false;
+    stageIntro().catch(finishIntro);
+  }
 };
 document.addEventListener('click',e=>{
   if(!guestMode)return;
