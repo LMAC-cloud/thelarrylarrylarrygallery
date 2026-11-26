@@ -723,7 +723,7 @@ body,body *,#typeInput,#drawPanel.expanded #drawCanvas{cursor:url("data:image/sv
  <div class="row"><label>SIZE</label><select id="starSize"><option value="tiny">Tiny</option><option value="small">Small</option><option value="medium" selected>Medium</option><option value="large">Large</option></select></div>
  <div class="row"><label>DENSITY</label><select id="starDensity"><option value="sparse">Sparse</option><option value="normal" selected>Normal</option><option value="dense">Dense</option></select></div>
  <div class="row"><label><input id="hypnoSpeed" type="checkbox"> HYPNOSPEED</label></div>
- <details id="startrekey"><summary id="assignmentTitle">assignments</summary><ul><li>go and catch a falling star</li><li>spaghetti in zero gravity</li><li>ice skating and the zamboni</li></ul><small>assignments pending</small></details>
+ <details id="startrekey"><summary id="assignmentTitle">assignments</summary><ul><li>go and catch a falling star</li><li>spaghetti in zero gravity</li><li>ice skating and the zamboni</li></ul><small>assignments pending</small><ul aria-label="Available assignments"><li><a href="https://larrysvariety.ca/TheLarryLarryLarryGallery.html">Curate a Lar-Exhibition · Larry Larry Larry Gallery</a></li><li><a href="Enterprose_Creative_Deck.html">Visit the Creative Deck</a></li></ul></details>
  <div class="row"><a href="https://larrysvariety.ca/Larrys_Variety_Department_Store.html">shop</a></div>
  <div class="row"><a href="https://larrysvariety.ca/Ghostprint.html">birthday presents</a></div>
  <div class="row"><button id="niagaraButton">VISIT NIAGARA FALLS?</button></div>
@@ -1179,6 +1179,7 @@ welcomeGate.querySelector('form').onsubmit=e=>{
   }
   document.getElementById('starfieldArrival').classList.add('beginArrival');
   document.getElementById('assignmentTitle').textContent=guestMode?'assignments · visitor':'assignments · enson '+ensonName;
+  if(location.hash==='#startrekey')document.getElementById('startrekey').open=true;
   if(guestMode){
     introMoon.classList.add('introArrived');
     finishIntro();
