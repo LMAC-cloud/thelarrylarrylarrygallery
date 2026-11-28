@@ -103,7 +103,7 @@ function productHref(value){
   return ['http:','https:'].includes(url.protocol) || (url.protocol==='file:' && location.protocol==='file:' && !/^[a-z][a-z\d+.-]*:/i.test(value)) ? url.href : '';
  }catch{return ''}
 }
-const featuredIds = ['gallery','fortunes-starfield','starfield','typewriter','ghostprint','casino','budgie','mathelebet','angel','bamboo','old-road'];
+const featuredIds = ['scenery-studio','fortunes-starfield','starfield','typewriter','ghostprint','casino','gallery','budgie','mathelebet','angel','bamboo','old-road'];
 const featuredOrder = new Map(featuredIds.map((id,index)=>['digital-'+id,index]));
 const publishedFiles = new Set(['Ghostprint.html','Starfield_Typewriter.html','Fortunes_Starfield.html','Angel_Tarot.html','Bamboo_Gate_I_Ching.html','Mathelebet.html','Budgie_Bazaar_Merge.html','MissionEnterprose.html','niagara_lar_casino.html','Old_Road_Tarot.html']);
 function publishedLink(value){
@@ -195,6 +195,7 @@ const BIRTHDAY_STOCK={
 };
 const DIGITAL_LISTINGS=[["typewriter", "Starfield Typewriter", "Writing Studio", "Write on editable cue cards or Letter paper, save poems in the Writing Bank, and draw in the starfield.", "Starfield_Typewriter.html", "Buy"], ["ghostprint", "Ghostprint", "Printmaking Studio", "Pull layered monoprints from a virtual gel plate. A birthday present for anyone, any day.", "https://larrysvariety.ca/Ghostprint.html", "Buy"], ["mathelebet", "Mathelebet", "Games", "Set out for the Mathelebet game.", "Mathelebet.html", "Play"], ["angel", "Angel Fortune Deck", "Fortune Decks", "Open the Angel Tarot deck.", "Angel_Tarot.html", "Open deck"], ["bamboo", "Bamboo Gate I Ching", "Fortune Decks", "Open the Bamboo Gate I Ching deck.", "Bamboo_Gate_I_Ching.html", "Open deck"]];
 DIGITAL_LISTINGS.push(
+ ['scenery-studio','Larry’s Variety Scenery Studio','Creative Studio','Build landscapes with sprites, moving backdrops, subtitles, and chess.','Larrys_Variety_Scenery_Studio.html','Open studio'],
  ['gallery','Larry’s Variety','Art Gallery','Explore the Lar-Gallery, artwork and jigsaw puzzles.','larrys-variety.html','Visit gallery'],
  ['fortunes-starfield','Fortunes Starfield','Starfield','Choose a fortune among the stars and visit the Wisdom Well or Stellar Orchard.','Fortunes_Starfield.html','Open'],
  ['budgie','Budgie Bazaar Merge','Games','Visit the Budgie Bazaar and see what happens when two matching birds meet.','Budgie_Bazaar_Merge.html','Play'],
@@ -203,6 +204,7 @@ DIGITAL_LISTINGS.push(
  ['old-road','Old Road Tarot','Fortune Decks','Open the Old Road Tarot deck.','Old_Road_Tarot.html','Open deck']
 );
 const DIGITAL_ART = {
+ 'scenery-studio':['🌲','✦','#384e48'],
  gallery:['🖼️','✦','#6d4d70'],
  ghostprint:['🎨','🖼️','#a8535f'], typewriter:['⌨️','📜','#855e4b'],
  angel:['🪽','✨','#655596'], bamboo:['🎋','☯','#3a755e'],
